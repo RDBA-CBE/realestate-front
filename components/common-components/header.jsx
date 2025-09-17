@@ -1,0 +1,299 @@
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { Button } from "../ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "../ui/avatar";
+import { Loader, LogIn, LogOut, MenuIcon, User2Icon } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { clearAuthData, setAuthData } from "@/store/slice/AuthSlice";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { useSetState } from "@/utils/function.utils";
+import Models from "@/imports/models.import";
+
+const Header = () => {
+  const dispatch = useDispatch();
+  const tokens = useSelector((state) => state.auth.tokens);
+  const groups = useSelector((state) => state.auth.groups);
+  const username = useSelector((state) => state.auth.username);
+
+  const [activeMenu, setActiveMenu] = useState(null);
+  const [clickedMenu, setClickedMenu] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const router = useRouter();
+
+  const [state, setState] = useSetState({
+    token: null,
+    group: null,
+    username: null,
+    logoutLoading: false,
+  });
+
+  const handleLogout = async () => {
+    try {
+      setState({ logoutLoading: true });
+
+      setDialogOpen(false);
+      router.push("/login");
+    } catch (error) {
+      localStorage.clear();
+      setState({ logoutLoading: false });
+    }
+  };
+
+  // Cancel function to close the dialog without performing any action
+  const handleCancel = () => {
+    setDialogOpen(false);
+  };
+
+  // Left side menus for Admin and Student
+
+
+  const StudentLeftSideMenu = [
+    {
+      title: "The Program",
+      url: "/calendar",
+    },
+    {
+      title: "Session",
+      url: "/student-order",
+    },
+    {
+      title: "Profile",
+      url: "/profile",
+    },
+  ];
+
+  return (
+    <>
+      <header className="bg-white shadow-md sticky top-0 z-[10]">
+        <div className=" border-b border-gray-200">
+          <div className=" container mx-auto flex items-center justify-between gap-20 ">
+            <div className="flex justify-center">
+              <Link href="https://zenwellnesslounge.com/" target="_blank">
+                <Image
+                  src="/assets/images/logo.png"
+                  alt="logo"
+                  width={200}
+                  height={80}
+                />
+              </Link>
+            </div>
+
+            {/* Left Menu (Admin/Student) */}
+            <nav className="hidden lg:flex space-x-6">
+              {StudentLeftSideMenu.map((menu) => (
+                <div
+                  key={menu.title}
+                  className="relative"
+                  onMouseEnter={() => menu.items && setActiveMenu(menu.title)}
+                  onMouseLeave={() => menu.items && setActiveMenu(null)}
+                >
+                  <Link
+                    prefetch={true}
+                    href={menu.url}
+                    className="hover:text-themePurple text-[14px] font-[600] uppercase "
+                  >
+                    {menu.title}
+                  </Link>
+
+                  {/* Submenu */}
+                  {(activeMenu === menu.title ||
+                    clickedMenu === menu.title) && (
+                    <div
+                      className="absolute left-0 w-56 bg-white p-4 rounded-lg shadow-lg"
+                      onMouseEnter={() => setActiveMenu(menu.title)}
+                      onMouseLeave={() => setActiveMenu(null)}
+                    >
+                      {menu.items?.map((item) => (
+                        <div key={item.title} className="mb-2">
+                          <Link
+                            prefetch={true}
+                            href={item.url}
+                            className="text-xs text-black font-[600] uppercase hover:text-themePurple"
+                          >
+                            {item.title}
+                          </Link>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </nav>
+
+            {/* User Avatar Dropdown */}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Avatar className="h-10 w-10 rounded cursor-pointer">
+                      <AvatarFallback>
+                        <User2Icon />
+                      </AvatarFallback>
+                    </Avatar>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    className="bg-fuchsia-100 w-[220px] p-4 rounded-lg"
+                    side="bottom"
+                    align="end"
+                    sideOffset={4}
+                  >
+                    <DropdownMenuLabel className="p-0 pb-2">
+                      {username && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Avatar className="h-8 w-8 rounded">
+                            <AvatarFallback>
+                              <User2Icon />
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <span className="font-semibold">{username}</span>
+                            {/* <span className="text-xs">zenlounge@gmail.com</span> */}
+                          </div>
+                        </div>
+                      )}
+                    </DropdownMenuLabel>
+                    {username && <DropdownMenuSeparator />}
+
+                    {tokens && (
+                      <>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            router?.push("/change-password-confirm")
+                          }
+                        >
+                          Change Password
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
+
+                    {tokens ? (
+                      <DropdownMenuItem onClick={() => setDialogOpen(true)}>
+                        <LogOut /> Logout
+                      </DropdownMenuItem>
+                    ) : (
+                      <DropdownMenuItem onClick={() => router.push("/login")}>
+                        <LogIn /> Login
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+                <div className="block lg:hidden">
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <MenuIcon />
+                    </SheetTrigger>
+                    <SheetContent>
+                      <SheetHeader>
+                        <SheetTitle></SheetTitle>
+                      </SheetHeader>
+                      <div className="flex justify-center">
+                        <Link
+                          href="https://zenwellnesslounge.com/"
+                          target="_blank"
+                        >
+                          <Image
+                            src="/assets/images/logo.png"
+                            alt="logo"
+                            width={200}
+                            height={80}
+                          />
+                        </Link>
+                      </div>
+                      <div className="mt-10">
+                        {StudentLeftSideMenu.map((menu, index) => {
+                          return (
+                            <Accordion
+                              type="single"
+                              collapsible
+                              className="w-full"
+                              key={index}
+                            >
+                              <AccordionItem value={`item-${index + 1}`}>
+                                <AccordionTrigger className="no-underline hover:no-underline uppercase text-sm">
+                                  {menu.title}
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                  {menu.items ? (
+                                    <ul className="pl-5 uppercase">
+                                      {menu.items.map((item, itemIndex) => (
+                                        <li
+                                          key={itemIndex}
+                                          className="pb-2 text-sm"
+                                        >
+                                          <a href={item.url}>{item.title}</a>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  ) : (
+                                    <p className="uppercase">
+                                      <a href={menu.url}>{menu.title}</a>
+                                    </p>
+                                  )}
+                                </AccordionContent>
+                              </AccordionItem>
+                            </Accordion>
+                          );
+                        })}
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+                </div>
+            </div>
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogContent className="bg-white p-6 rounded-lg md:w-96 w-full">
+                <DialogTitle className="text-[20px] font-semibold">
+                  Confirm Logout
+                </DialogTitle>
+                <div className="mb-4">Are you sure you want to log out?</div>
+                <div className="flex justify-end gap-4">
+                  <Button
+                    onClick={handleCancel}
+                    variant={"outline"}
+                    className="px-4 py-2 border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen bg-none rounded text-sm"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleLogout}
+                    className="px-4 py-2 bg-themeGreen hover:bg-themeGreen text-white rounded text-sm"
+                  >
+                    {state.logoutLoading ? <Loader /> : "Confirm"}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
+      </header>
+    </>
+  );
+};
+
+export default Header;
