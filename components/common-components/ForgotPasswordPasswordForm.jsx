@@ -70,7 +70,7 @@ const ForgotPasswordForm = () => {
         confirm_password: state.confirm_password,
       };
 
-      await Validation.reset_password.validate(body);
+      // await Validation.reset_password.validate(body);
 
       console.log("userid");
       const uid = id;

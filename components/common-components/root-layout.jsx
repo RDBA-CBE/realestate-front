@@ -1,25 +1,23 @@
-import React from "react";
-import { AppSidebar } from "../common-sidebar/side-menu";
-import Navbar from "./navbar";
-import { Link } from "lucide-react";
-import { Toaster } from "@/components/ui/sonner";
+"use client";
 
-export default function RootLayout({ children }) {
+import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
+
+export default function PageTransition() {
+  const pathname = usePathname();
+
   return (
-    <>
-      <div className="flex flex-col w-full">
-        <Navbar />
-
-        <main className="w-full p-4">{children}</main>
-
-        <footer className="sticky bottom-0 z-50 w-full bg-white dark:bg-gray-900 border-t p-4">
-          <p className="mb-0 md:text-sm text-xs">
-            Copyright @ 2025 ZenWellness Lounge. Concept by{" "}
-            <Link href="https://irepute.in/">repute</Link>
-          </p>
-        </footer>
-      </div>
-      <Toaster position="top-center" />
-    </>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={pathname} // triggers animation on route change
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.35, ease: "easeInOut" }}
+        className="w-full h-full"
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
   );
 }

@@ -20,7 +20,7 @@ import Models from "@/imports/models.import";
 import useToast from "@/components/ui/toast";
 import { Failure, Success } from "../common-components/toast";
 import * as Yup from "yup";
-import { forgetPassword } from "@/utils/validation.utils";
+// import { forgetPassword } from "@/utils/validation.utils";
 import Link from "next/link";
 import { Loader } from "lucide-react";
 
@@ -51,9 +51,9 @@ const ForgotPasswordEmailForm = () => {
         email: state.username,
       };
 
-      await forgetPassword.validate(validatebody, {
-        abortEarly: false,
-      });
+      // await forgetPassword.validate(validatebody, {
+      //   abortEarly: false,
+      // });
 
       const res = await Models.auth.forgotpassword(body);
       console.log("res", res);

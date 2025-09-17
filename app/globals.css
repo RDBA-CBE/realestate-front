@@ -3,38 +3,38 @@
 @tailwind utilities;
 
 body {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 p {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Poppins ", sans-serif;
 }
 
 h1 {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Poppins ", sans-serif;
 }
 
 h2 {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Poppins ", sans-serif;
 }
 
 h3 {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Poppins ", sans-serif;
 }
 
 h4 {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Poppins ", sans-serif;
 }
 
 h5 {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Poppins ", sans-serif;
 }
 
 h6 {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Poppins ", sans-serif;
 }
 
-.font-marce{
+.font-marce {
   font-family: "Marcellus";
 }
 
@@ -145,8 +145,6 @@ h6 {
   }
 }
 
-
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -156,7 +154,6 @@ h6 {
     @apply bg-background text-foreground;
   }
 }
-
 
 /* App.css */
 .calendar-wrapper {
@@ -198,7 +195,7 @@ h6 {
 }
 
 .backcolor-purpole {
-  background-color: #7f4099
+  background-color: #7f4099;
 }
 
 /* header */
@@ -238,7 +235,9 @@ h6 {
   /* Extra large devices */
 }
 
-.elementor-457 .elementor-element.elementor-element-0bb4dee>.elementor-container {
+.elementor-457
+  .elementor-element.elementor-element-0bb4dee
+  > .elementor-container {
   max-width: 1300px;
 }
 
@@ -252,7 +251,7 @@ h6 {
   color: var(--theme-color);
 }
 
-.main-menu>ul>li {
+.main-menu > ul > li {
   margin: 0 18px;
 }
 
@@ -267,7 +266,7 @@ h6 {
   position: relative;
 }
 
-.main-menu ul li.menu-item-has-children>a:after {
+.main-menu ul li.menu-item-has-children > a:after {
   content: "\f078";
   position: relative;
   font-family: var(--icon-font);
@@ -285,7 +284,7 @@ h6 {
 }
 
 .main-menu ul li:hover .menu-pages,
-.main-menu ul li:hover>ul.sub-menu,
+.main-menu ul li:hover > ul.sub-menu,
 .main-menu ul li:hover ul.mega-menu {
   visibility: visible;
   opacity: 1;
@@ -311,9 +310,11 @@ h6 {
   opacity: 0;
   z-index: -1;
   border-bottom: 3px solid var(--theme-color);
-  box-shadow: 0px 10px 60px 0px rgba(0, 0, 0, 0.09), 0px 3px 0px 0px rgba(231, 13, 60, 0.004);
+  box-shadow: 0px 10px 60px 0px rgba(0, 0, 0, 0.09),
+    0px 3px 0px 0px rgba(231, 13, 60, 0.004);
   transform-origin: top center;
-  transition: margin-top 0.4s ease-in-out 0s, visibility 0.4s ease-in-out 0s, opacity 0.4s ease-in-out 0s, z-index 0s;
+  transition: margin-top 0.4s ease-in-out 0s, visibility 0.4s ease-in-out 0s,
+    opacity 0.4s ease-in-out 0s, z-index 0s;
 }
 
 .main-menu ul.sub-menu a,
@@ -343,7 +344,7 @@ h6 {
   padding: 3px 9px;
 }
 
-.main-menu ul.sub-menu li.menu-item-has-children>a:after {
+.main-menu ul.sub-menu li.menu-item-has-children > a:after {
   content: "\f105";
   float: right;
   top: 3px;
@@ -415,7 +416,7 @@ h6 {
   display: inline-block;
 }
 
-.main-menu ul.mega-menu>li>a {
+.main-menu ul.mega-menu > li > a {
   display: block;
   padding: 0;
   padding-bottom: 5px;
@@ -427,8 +428,8 @@ h6 {
   border-color: var(--theme-color);
 }
 
-.main-menu ul.mega-menu>li>a::after,
-.main-menu ul.mega-menu>li>a::before {
+.main-menu ul.mega-menu > li > a::after,
+.main-menu ul.mega-menu > li > a::before {
   content: "";
   position: absolute;
   bottom: 0;
@@ -438,12 +439,12 @@ h6 {
   background-color: var(--theme-color);
 }
 
-.main-menu ul.mega-menu>li>a::after {
+.main-menu ul.mega-menu > li > a::after {
   width: calc(100% - 20px);
   left: 20px;
 }
 
-.main-menu ul.mega-menu>li>a:hover {
+.main-menu ul.mega-menu > li > a:hover {
   padding-left: 0;
 }
 
@@ -459,13 +460,15 @@ h6 {
   opacity: 0;
   visibility: hidden;
   transform: translateX(-50%);
-  transition: margin-top 0.4s ease-in-out 0s, visibility 0.4s ease-in-out 0s, opacity 0.4s ease-in-out 0s, z-index 0s;
+  transition: margin-top 0.4s ease-in-out 0s, visibility 0.4s ease-in-out 0s,
+    opacity 0.4s ease-in-out 0s, z-index 0s;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  box-shadow: 0px 10px 60px 0px rgba(0, 0, 0, 0.09), 0px 3px 0px 0px rgba(231, 13, 60, 0.004);
+  box-shadow: 0px 10px 60px 0px rgba(0, 0, 0, 0.09),
+    0px 3px 0px 0px rgba(231, 13, 60, 0.004);
 }
 
-.main-menu .menu-pages>li {
+.main-menu .menu-pages > li {
   width: 100%;
   padding: 0 10px 20px 10px;
 }
@@ -494,7 +497,7 @@ h6 {
   color: var(--white-color);
 }
 
-.menu-style1>ul>li>a {
+.menu-style1 > ul > li > a {
   padding: 37px 0;
 }
 
@@ -514,8 +517,8 @@ h6 {
   justify-content: flex-end;
 }
 
-.header-icons button:not([class*=vs-]),
-.header-icons a:not([class*=vs-]) {
+.header-icons button:not([class*="vs-"]),
+.header-icons a:not([class*="vs-"]) {
   border: none;
   padding: 0;
   line-height: 1;
@@ -524,8 +527,8 @@ h6 {
   background-color: transparent;
 }
 
-.header-icons button:not([class*=vs-]):hover,
-.header-icons a:not([class*=vs-]):hover {
+.header-icons button:not([class*="vs-"]):hover,
+.header-icons a:not([class*="vs-"]):hover {
   color: var(--theme-color);
 }
 
@@ -642,7 +645,6 @@ h6 {
 }
 
 @media (min-width: 1500px) {
-
   .header-layout6,
   .header-layout5,
   .header-layout2,
@@ -704,11 +706,11 @@ h6 {
 }
 
 @media (max-width: 1800px) {
-  .header-layout8 .main-menu>ul>li {
+  .header-layout8 .main-menu > ul > li {
     margin: 0 8px;
   }
 
-  .header-layout8 .main-menu>ul>li>a {
+  .header-layout8 .main-menu > ul > li > a {
     font-size: 14px;
   }
 }
@@ -722,11 +724,11 @@ h6 {
 
 /* Medium Large devices */
 @media (max-width: 1399px) {
-  .main-menu>ul>li {
+  .main-menu > ul > li {
     margin: 0 14px;
   }
 
-  .main-menu>ul>li>a {
+  .main-menu > ul > li > a {
     font-size: 14px;
   }
 
@@ -761,8 +763,8 @@ h6 {
     gap: 10px;
   }
 
-  .header-icons button:not([class*=vs-]),
-  .header-icons a:not([class*=vs-]) {
+  .header-icons button:not([class*="vs-"]),
+  .header-icons a:not([class*="vs-"]) {
     font-size: 18px;
   }
 }
@@ -808,8 +810,6 @@ h6 {
 .phone-input-wrapper .custom-phone-input input::placeholder {
   color: #999;
 }
-
-
 
 /* Wrapper */
 .dropdown-wrapper {
@@ -951,66 +951,65 @@ h6 {
   border-radius: 4px;
 }
 
-[data-sonner-toast][data-styled=true] [data-button]{
+[data-sonner-toast][data-styled="true"] [data-button] {
   background-color: transparent !important;
   font-size: 16px !important;
 }
 
-.alumini-form{
+.alumini-form {
   padding-bottom: 120px !important;
 }
 
-@media (max-width:500px){
-  .alumini-form{
-  padding-bottom: 50px !important;
-}
+@media (max-width: 500px) {
+  .alumini-form {
+    padding-bottom: 50px !important;
+  }
 }
 
-
-.order-table{
+.order-table {
   width: 100%;
 }
 
-@media (max-width:650px){
-  .order-table{
-  max-width: 580px;
-  overflow-x: scroll;
-}
-}
-
-@media (max-width:630px){
-  .order-table{
-  max-width: 550px;
-  overflow-x: scroll;
-}
+@media (max-width: 650px) {
+  .order-table {
+    max-width: 580px;
+    overflow-x: scroll;
+  }
 }
 
-@media (max-width:580px){
-  .order-table{
-  max-width: 400px;
-  overflow-x: scroll;
-}
-}
-
-@media (max-width:530px){
-  .order-table{
-  max-width: 360px;
-  overflow-x: scroll;
-}
+@media (max-width: 630px) {
+  .order-table {
+    max-width: 550px;
+    overflow-x: scroll;
+  }
 }
 
-@media (max-width:410px){
-  .order-table{
-  max-width: 330px;
-  overflow-x: scroll;
-}
+@media (max-width: 580px) {
+  .order-table {
+    max-width: 400px;
+    overflow-x: scroll;
+  }
 }
 
-@media (max-width:380px){
-  .order-table{
-  max-width: 310px;
-  overflow-x: scroll;
+@media (max-width: 530px) {
+  .order-table {
+    max-width: 360px;
+    overflow-x: scroll;
+  }
 }
+
+@media (max-width: 410px) {
+  .order-table {
+    max-width: 330px;
+    overflow-x: scroll;
+  }
+}
+
+@media (max-width: 380px) {
+  .order-table {
+    max-width: 310px;
+    overflow-x: scroll;
+  }
 }
 
 /* custom-scroll.css */
@@ -1029,7 +1028,9 @@ h6 {
   border-radius: 6px;
   z-index: 10; /* Keeps thumb visually above track */
 }
-.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box {
+.react-datepicker__time-container
+  .react-datepicker__time
+  .react-datepicker__time-box {
   overflow-y: auto !important; /* 👈 enable scroll */
   max-height: 800px; /* adjust as needed */
 }

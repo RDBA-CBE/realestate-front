@@ -6,9 +6,10 @@ import { useSetState } from "@/utils/function.utils";
 
 import Script from "next/script";
 import LoginForm from "@/components/ui/login-form";
+import SignInForm from "@/components/ui/signin-form";
 
 const App = () => {
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
 
   return (
     <>
@@ -18,7 +19,6 @@ const App = () => {
       />
 
       {isLoading ? (
-        // Show loading spinner or skeleton while checking auth
         <div className="flex md:min-h-[70vh] min-h-[60vh] w-full items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
         </div>

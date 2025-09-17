@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 
 import { useRouter } from "next/navigation";
-import Models from "@/imports/models.import";
 import { useSetState } from "@/utils/function.utils";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import DashboardCalender from "@/components/ui/dashboardCalender";
@@ -25,9 +24,6 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-interface CountResponse {
-  count?: number;
-}
 
 const Dashboard = () => {
   const router = useRouter();
@@ -38,47 +34,10 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
-    getCount();
     getReportData();
   }, []);
 
-  const getCount = async () => {
-    try {
-      const [
-        session,
-        category,
-        registerUser,
-        cancelOrder,
-        payment,
-        coupon,
-        user,
-      ] = await Promise.all<CountResponse>([
-        Models.session.list(1, {}),
-        Models.category.list(),
-        Models.session.registrationList(1, {}),
-        Models.session.cancelRegistrationList(1, {}),
-        Models.payment_gateway.list(),
-        Models.coupon.list(),
-        Models.user.userList(1, {}),
-      ]);
 
-      const counts = {
-        session: session?.count || 0,
-        category: category?.count || 0,
-        registerUser: registerUser?.count || 0,
-        cancelOrder: cancelOrder?.count || 0,
-        payment: payment?.count || 0,
-        coupon: coupon?.count || 0,
-        user: user?.count || 0,
-        booking: registerUser?.count || 0, // assuming bookings = registrations
-      };
-      console.log("Counts: ", counts);
-      setState({ counts: counts });
-    } catch (error) {
-      console.log("error: ", error);
-      return {};
-    }
-  };
 
   const getReportData = async () => {
     try {
@@ -99,16 +58,10 @@ const Dashboard = () => {
         return;
       }
 
-      const responses = await Promise.all(
-        reports.map((report) => Models.session.reports(report.id))
-      );
+   
 
       const reportData = {};
-      let index = 0;
-      for (const report of reports) {
-        reportData[report.name] = responses[index];
-        index++;
-      }
+    
 
       console.log("reportData: ", reportData);
 

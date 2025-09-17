@@ -74,7 +74,7 @@ const ChangePasswordConfirmForm = () => {
         new_password: state.new_password,
         confirm_password: state.confirm_password,
       };
-      await Validation.change_password.validate(body);
+      // await Validation.change_password.validate(body);
       const res = await Models.auth.changepassword(body);
       console.log("res", res);
       setState({

@@ -11,7 +11,6 @@ import { Dropdown, getTime, useSetState } from "@/utils/function.utils";
 import CustomSelect from "../common-components/dropdown";
 import { CalendarClock, Table, XIcon } from "lucide-react";
 import { Failure, Info } from "../common-components/toast";
-import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
 import Modal from "@/components/common-components/modal";
 import PrimaryButton from "../common-components/primaryButton";
 import TimePicker from "../common-components/timePicker";
@@ -110,11 +109,10 @@ const DashboardCalender = ({ events, setEvents }) => {
 
       const res = await Models.category.catDropDownList();
       const dropdowns = Dropdown(res?.results, "name");
-      const filter = dropdowns.filter((item) => item.value != AYURVEDIC_LOUNGE);
       setState({
         categoryList: dropdowns,
         loading: false,
-        loungeTypes: filter,
+        loungeTypes: dropdowns,
       });
     } catch (error) {
       setState({ loading: false });
@@ -171,11 +169,8 @@ const DashboardCalender = ({ events, setEvents }) => {
   const handleEnroll = () => {
     if (token) {
       if (selectedEvent) {
-        if (selectedEvent?.lounge_type?.id == AYURVEDIC_LOUNGE) {
-          router.push(`/view-wellness-lounges?id=${selectedEvent.id}`);
-        } else {
+      
           router.push(`/view-wellness-lounge?id=${selectedEvent.id}`);
-        }
       } else {
         console.log("No event selected.");
       }
@@ -293,9 +288,7 @@ const DashboardCalender = ({ events, setEvents }) => {
       };
       console.log("✌️body --->", body);
 
-      await Validation.sessionCreate.validate(body, {
-        abortEarly: false,
-      });
+      
       const formattedDate = moment(state.startDate).format(
         "DD-MM-YYYY HH:mm:ss"
       );
@@ -738,16 +731,7 @@ const DashboardCalender = ({ events, setEvents }) => {
                 error={state.errors?.startDate}
               />
 
-              {state.lounge_types?.value != AYURVEDIC_LOUNGE && (
-                <TimePicker
-                  title="Start Time"
-                  onChange={(value) => {
-                    setState({ start_time: value });
-                  }}
-                  value={state.start_time}
-                  error={state.errors?.start_time}
-                />
-              )}
+            
             </div>
 
             <div className="flex justify-end gap-5">

@@ -28,7 +28,6 @@ import {
 import Link from "next/link";
 import ProtectedRoute from "@/components/common-components/privateRouter";
 import { Loader } from "lucide-react";
-import { AYURVEDIC_LOUNGE } from "@/utils/constant.utils";
 
 const ProfilePage = () => {
   const router = useRouter();
@@ -168,9 +167,7 @@ const ProfilePage = () => {
         return (
           <Link
             href={
-              row?.event?.lounge_type?.id == AYURVEDIC_LOUNGE
-                ? `/view-paid-order?id=${row?.id}`
-                : `/view-order?id=${row?.id}`
+              `/view-order?id=${row?.id}`
             }
             className="pointer"
             prefetch={true}
