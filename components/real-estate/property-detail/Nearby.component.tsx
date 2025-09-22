@@ -113,7 +113,7 @@ export default function Nearby() {
 
   return (
     <Card className="rounded-2xl shadow p-6">
-      <h3 className="text-lg font-semibold mb-4">What's Nearby?</h3>
+     <h3 className="text-lg font-semibold mb-4">{"What's Nearby?"}</h3>
 
 
       <CardContent>
