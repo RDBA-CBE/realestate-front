@@ -27,12 +27,12 @@ export default function RootLayout({ children }) {
   return (
     <Provider store={store}>
       <html lang="en" className={`${poppins.variable} ${roboto.variable}`}>
-        <body className="font-sans antialiased">
+        <body className="font-sans antialiased bg-[#f7f7f7]">
           <Suspense fallback={<div>Loading...</div>}>
             <div className="flex flex-col w-full min-h-screen">
               <Header />
               <main className="w-full p-4 pt-5 pb-24">
-                <PageTransition>{children}</PageTransition>
+                {children}
               </main>
             </div>
             <Toaster position="top-center" />

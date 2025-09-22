@@ -12,7 +12,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false); // Add loading state
 
   return (
-    <>
+    <div >
       <Script
         src="https://checkout.razorpay.com/v1/checkout.jsx"
         strategy="afterInteractive"
@@ -27,7 +27,7 @@ const App = () => {
           <LoginForm isRefresh={true} />
         </div>
       )}
-    </>
+    </div>
   );
 };
 

@@ -65,12 +65,12 @@ const Header = () => {
 
   const StudentLeftSideMenu = [
     {
-      title: "The Program",
-      url: "/calendar",
+      title: "Home",
+      url: "/",
     },
     {
-      title: "Session",
-      url: "/student-order",
+      title: "Property",
+      url: "/property-list",
     },
     {
       title: "Profile",

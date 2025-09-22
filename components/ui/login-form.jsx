@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 export default function AuthPage() {
   const router=useRouter()
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="flex min-h-screen bg-white p-6">
       {/* LEFT SIDE - Card with form */}
       <motion.div
         initial={{ opacity: 0, x: -50 }}
@@ -50,7 +50,7 @@ export default function AuthPage() {
             </div>
 
             {/* Submit */}
-            <Button className="w-full bg-red-500 hover:bg-red-600" onClick={() => router.push('/home')}>
+            <Button className="w-full bg-red-500 hover:bg-red-600" onClick={() => router.push('/property-list')}>
               Create account
             </Button>
 
@@ -90,8 +90,8 @@ export default function AuthPage() {
         <Image
           src="/assets/images/logo.png" // replace with your asset
           alt="Real Estate Illustration"
-          width={600}
-          height={500}
+          width={500}
+          height={200}
           className="object-contain"
           priority
         />

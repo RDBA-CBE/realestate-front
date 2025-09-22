@@ -1034,3 +1034,17 @@ h6 {
   overflow-y: auto !important; /* 👈 enable scroll */
   max-height: 800px; /* adjust as needed */
 }
+
+/* Custom thin scrollbar only for scrollable divs */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
