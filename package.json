@@ -45,6 +45,7 @@
     "file-saver": "^2.0.5",
     "framer-motion": "^12.23.13",
     "install": "^0.13.0",
+    "lightbox.js-react": "^1.6.2",
     "lucide-react": "^0.475.0",
     "moment": "^2.30.1",
     "moment-timezone": "^0.6.0",
