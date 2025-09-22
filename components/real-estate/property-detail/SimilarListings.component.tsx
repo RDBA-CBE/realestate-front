@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
@@ -7,9 +8,6 @@ import "swiper/css/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Bed, Bath, Square, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
-import { useEffect } from "react";
-import SwiperCore from "swiper";
 
 const mockProperties = [
   {
@@ -48,7 +46,6 @@ const mockProperties = [
     image: "/assets/images/real-estate/3.png",
     yearBuilt: 2020,
   },
-
   {
     id: "4",
     title: "Modern Downtown Apartment",
@@ -119,18 +116,15 @@ export default function FeaturedListings() {
       minimumFractionDigits: 0,
     }).format(price);
 
-  useEffect(() => {
-    // Re-init navigation after mount (important for custom buttons)
-    SwiperCore.use([Navigation]);
-  }, []);
-
   return (
     <div className="space-y-4">
       {/* Header with navigation */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Discover Our Featured Listings</h2>
-          <p className="text-gray-600 text-sm">Aliquam lacinia diam quis lacus euismod</p>
+          <p className="text-gray-600 text-sm">
+            Aliquam lacinia diam quis lacus euismod
+          </p>
         </div>
 
         {/* Custom Navigation */}
@@ -179,7 +173,8 @@ export default function FeaturedListings() {
                   </Badge>
                 )}
                 <Badge className="absolute top-2 right-2 bg-white text-black font-bold px-2 py-1 text-sm shadow-md">
-                  {formatPrice(property.price)} {property.priceType === "rent" && "/ mo"}
+                  {formatPrice(property.price)}{" "}
+                  {property.priceType === "rent" && "/ mo"}
                 </Badge>
               </div>
 
