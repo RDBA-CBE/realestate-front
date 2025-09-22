@@ -1,5 +1,7 @@
 import moment from "moment";
 import { useState } from "react";
+import Swal from 'sweetalert2';
+
 
 export const useSetState = (initialState: any) => {
   const [state, setState] = useState(initialState);
@@ -8,6 +10,40 @@ export const useSetState = (initialState: any) => {
     setState((prevState: any) => ({ ...prevState, ...newState }));
   };
   return [state, newSetState];
+};
+
+
+export const Success = (message: string) => {
+    const toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar:true,
+        // background:"red",
+       
+    });
+
+    toast.fire({
+        icon: 'success',
+        title: message,
+        padding: '10px 20px',
+    });
+};
+
+export const Failure = (message: string) => {
+    const toast = Swal.mixin({
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 3000,
+    });
+
+    toast.fire({
+        icon: 'error',
+        title: message,
+        padding: '10px 20px',
+    });
 };
 
 export const objIsEmpty = (obj: object) => {
@@ -318,3 +354,4 @@ export const extractTimeFromDateTime = (dateTimeString) => {
   
   return null;
 };
+

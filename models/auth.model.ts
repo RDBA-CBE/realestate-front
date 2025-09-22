@@ -163,7 +163,7 @@ const auth = {
 
   registration: (data: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `auth/signup/`;
+      let url = `auth/register/`;
       instance()
         .post(url, data)
         .then((res) => {

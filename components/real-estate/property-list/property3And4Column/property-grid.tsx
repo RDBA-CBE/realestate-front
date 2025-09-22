@@ -1,6 +1,23 @@
 import { PropertyCard } from "./property-card";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
+import FilterDropdown from "../../FilterDropdown.component";
 
 export function PropertyGrid(props: any) {
   const { properties, title = "New York Homes for Sale" } = props;
@@ -19,45 +36,57 @@ export function PropertyGrid(props: any) {
       <h1 className="text-3xl font-bold mb-6">{title}</h1>
 
       {/* Top Filter Bar */}
-      <div className="flex flex-wrap items-center gap-4 mb-6">
-        <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md">
-          For Sale
-        </button>
-        <select className="border border-gray-300 rounded-md px-3 py-2 text-sm">
-          <option>Property Type</option>
-        </select>
-        <select className="border border-gray-300 rounded-md px-3 py-2 text-sm">
-          <option>Price</option>
-        </select>
-        <select className="border border-gray-300 rounded-md px-3 py-2 text-sm">
-          <option>Beds / Baths</option>
-        </select>
-        <button className="border border-gray-300 text-sm px-4 py-2 rounded-md">
+      <div className="flex flex-wrap items-center gap-3 mb-6">
+        <FilterDropdown
+          title="For Sale"
+          subtitle="Listing Status"
+          type="radio"
+          options={["All", "Buy", "Rent"]}
+          onChange={(val) => console.log("Selected:", val)}
+        />
+        <FilterDropdown
+          title=" Property Type"
+          subtitle="Select Options"
+          type="checkbox"
+          options={["All", "Villa", "Office"]}
+          onChange={(val) => console.log("Checked:", val)}
+        />
+        <FilterDropdown
+          title="Price"
+          subtitle="Price Range"
+          type="range"
+          onChange={(val) => console.log("Range:", val)}
+        />
+
+        <Button
+          variant="outline"
+          className="rounded-full bg-white text-gray-800 px-5 py-2 shadow-sm hover:bg-gray-50"
+        >
           More Filter
-        </button>
+        </Button>
 
         {/* Grid/List Toggle */}
         <div className="ml-auto flex gap-2">
-          <button
+          <Button
             onClick={() => setView("grid")}
-            className={`px-3 py-2 rounded-md border ${
+            className={`rounded-full px-5 py-2 ${
               view === "grid"
                 ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700"
+                : "bg-white text-gray-800 border shadow-sm hover:bg-gray-50"
             }`}
           >
             Grid
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setView("list")}
-            className={`px-3 py-2 rounded-md border ${
+            className={`rounded-full px-5 py-2 ${
               view === "list"
                 ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700"
+                : "bg-white text-gray-800 border shadow-sm hover:bg-gray-50"
             }`}
           >
             List
-          </button>
+          </Button>
         </div>
       </div>
 

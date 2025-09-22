@@ -109,5 +109,5 @@ export function ToastContainer() {
     toast.dismiss(); // Clear toasts on route change
   }, [pathname]);
 
-  return <Toaster position="top-center" />;
+  return <Toaster position="top-right"  swipeDirections="right"/>;
 }

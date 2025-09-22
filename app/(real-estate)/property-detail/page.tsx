@@ -13,36 +13,76 @@ import PropertyDesc from "@/components/real-estate/property-detail/PropertyDesc.
 import Nearby from "@/components/real-estate/property-detail/Nearby.component";
 import WalkScore from "@/components/real-estate/property-detail/Walkscore.component";
 import ContactAgentForm from "@/components/real-estate/property-detail/ContactAgentForm.component";
+import PropertyTabs from "@/components/real-estate/PropertyTabs.component";
 
 export default function Home() {
+  const images = [
+    "/assets/images/real-estate/01.png",
+    "/assets/images/real-estate/02.png",
+    "/assets/images/real-estate/03.png",
+    "/assets/images/real-estate/04.png",
+    "/assets/images/real-estate/05.png",
+    "/assets/images/real-estate/6.png",
+    "/assets/images/real-estate/7.png",
+  ];
+
   return (
     <div className="container mx-auto px-9 py-6 space-y-12">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-      ></motion.div>
+      />
 
+      {/* Header + Gallery */}
       <PropertyHeader />
-      <Gallery />
+      <Gallery images={images} />
 
+      {/* Sticky Tabs */}
+      <PropertyTabs />
+
+      {/* Content sections with IDs */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
-          <PropertyDetails />
-          <PropertyDesc />
-          <MapSection />
-          <Amenities />
-          <FloorPlans />
-          <Nearby />
-          <WalkScore />
-          <Reviews />
+        <div className="lg:col-span-2 space-y-12">
+          <div id="overview">
+            <PropertyDetails />
+            <PropertyDesc />
+          </div>
+
+          <div id="map">
+            <MapSection />
+          </div>
+
+          <div id="amenities">
+            <Amenities />
+          </div>
+
+          <div id="floorplans">
+            <FloorPlans />
+          </div>
+
+          <div id="nearby">
+            <Nearby />
+          </div>
+
+          <div id="walkscore">
+            <WalkScore />
+          </div>
+
+          <div id="reviews">
+            <Reviews />
+          </div>
         </div>
+
+        {/* Sticky Contact Form on the right */}
         <div className="lg:col-span-1">
-    <div className="sticky top-24">
-      <ContactAgentForm />
-    </div>
-  </div>
+          <div className="sticky top-24">
+            <ContactAgentForm />
+          </div>
+        </div>
       </div>
+
+      {/* Similar Listings */}
       <SimilarListings />
     </div>
   );
