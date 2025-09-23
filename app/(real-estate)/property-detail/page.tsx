@@ -14,6 +14,7 @@ import Nearby from "@/components/real-estate/property-detail/Nearby.component";
 import WalkScore from "@/components/real-estate/property-detail/Walkscore.component";
 import ContactAgentForm from "@/components/real-estate/property-detail/ContactAgentForm.component";
 import PropertyTabs from "@/components/real-estate/PropertyTabs.component";
+import ImageCarousel from "@/components/real-estate/ImageCarousel.component";
 
 export default function Home() {
   const images = [
@@ -36,6 +37,7 @@ export default function Home() {
 
       {/* Header + Gallery */}
       <PropertyHeader />
+      {/* <ImageCarousel images={images} /> */}
       <Gallery images={images} />
 
       {/* Sticky Tabs */}
@@ -43,9 +45,11 @@ export default function Home() {
 
       {/* Content sections with IDs */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-12">
+        <div className="lg:col-span-2 space-y-6">
           <div id="overview">
             <PropertyDetails />
+          </div>
+          <div id="desc">
             <PropertyDesc />
           </div>
 
