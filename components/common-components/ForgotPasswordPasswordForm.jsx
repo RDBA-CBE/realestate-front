@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux"; // Import useDispatch
-import { setAuthData } from "@/store/slice/AuthSlice"; // Import the action
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux'; // Import useDispatch
+import { setAuthData } from '@/store/slice/AuthSlice'; // Import the action
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useSetState } from "@/utils/function.utils";
-import Models from "@/imports/models.import";
-import useToast from "@/components/ui/toast";
-import { Failure, Success } from "../common-components/toast";
-import * as Yup from "yup";
-import * as Validation from "../../utils/validation.utils";
-import { Eye, EyeOff, Loader } from "lucide-react";
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useSetState } from '@/utils/function.utils';
+import Models from '@/imports/models.import';
+import useToast from '@/components/ui/toast';
+import { Failure, Success } from '../common-components/toast';
+import * as Yup from 'yup';
+import * as Validation from '../../utils/validation.utils';
+import { Eye, EyeOff, Loader } from 'lucide-react';
 
 const ForgotPasswordForm = () => {
   const router = useRouter();
@@ -32,9 +32,9 @@ const ForgotPasswordForm = () => {
   const [token, setToken] = useState(null);
   useEffect(() => {
     // Ensure that searchParams are read only on the client side
-    if (typeof window !== "undefined") {
-      const idFromSearchParams = searchParams.get("id");
-      const tokenFromSearchParams = searchParams.get("token");
+    if (typeof window !== 'undefined') {
+      const idFromSearchParams = searchParams.get('id');
+      const tokenFromSearchParams = searchParams.get('token');
 
       if (idFromSearchParams) {
         setId(idFromSearchParams);
@@ -49,8 +49,8 @@ const ForgotPasswordForm = () => {
   const [isMounted, setIsMounted] = useState(false); // Track mounting state
 
   const [state, setState] = useSetState({
-    new_password: "",
-    confirm_password: "",
+    new_password: '',
+    confirm_password: '',
     btnLoading: false,
     showConfirmPassword: false,
     showNewPassword: false,
@@ -59,12 +59,12 @@ const ForgotPasswordForm = () => {
   useEffect(() => {
     setIsMounted(true); // Ensure component is only rendered on client
   }, []);
-  console.log("id", id);
-  console.log("token", token);
+  console.log('id', id);
+  console.log('token', token);
 
   const handleSubmit = async () => {
     try {
-         setState({ btnLoading: true });
+      setState({ btnLoading: true });
       const body = {
         new_password: state.new_password,
         confirm_password: state.confirm_password,
@@ -72,15 +72,15 @@ const ForgotPasswordForm = () => {
 
       // await Validation.reset_password.validate(body);
 
-      console.log("userid");
+      console.log('userid');
       const uid = id;
       const Token = token;
       const res = await Models.auth.forgotnewpassword(body, uid, Token);
-      console.log("res", res);
+      console.log('res', res);
       setState({
         btnLoading: false,
-        new_password: "",
-        confirm_password: "",
+        new_password: '',
+        confirm_password: '',
       });
       // Store tokens and group in localStorage
       // localStorage.setItem("token", res.access);
@@ -96,9 +96,9 @@ const ForgotPasswordForm = () => {
       // ✅ Trigger storage event to notify other tabs
       // window.dispatchEvent(new Event("storage"));
 
-      router.push("/login");
+      router.push('/login');
     } catch (error) {
-      console.log("error: ", error);
+      console.log('error: ', error);
       setState({ btnLoading: false });
       // if (error instanceof Yup.ValidationError) {
       //     const validationErrors = {};
@@ -140,37 +140,37 @@ const ForgotPasswordForm = () => {
   if (!isMounted) return null;
 
   return (
-    <div className="flex items-center justify-center">
-      <Card className="md:w-[400px] w-[320px]">
+    <div className='flex items-center justify-center'>
+      <Card className='md:w-[400px] w-[320px]'>
         <CardHeader>
-          <CardTitle className="text-2xl">Confirm Password</CardTitle>
+          <CardTitle className='text-2xl'>Confirm Password</CardTitle>
           {/* <CardDescription>
                         Enter your email below to login to your account
                     </CardDescription> */}
         </CardHeader>
         <CardContent>
           <form>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="email">New Password</Label>
-                <div className="relative">
-                     <Input
-                  id="new-password"
-                  type={state.showNewPassword ? "text" : "password"}
-                  placeholder="Enter Your New Password"
-                  required
-                  value={state.new_password}
-                  onChange={(e) => setState({ new_password: e.target.value })}
-                />
-                 <button
-                    type="button"
+            <div className='flex flex-col gap-6'>
+              <div className='grid gap-2'>
+                <Label htmlFor='email'>New Password</Label>
+                <div className='relative'>
+                  <Input
+                    id='new-password'
+                    type={state.showNewPassword ? 'text' : 'password'}
+                    placeholder='Enter Your New Password'
+                    required
+                    value={state.new_password}
+                    onChange={(e) => setState({ new_password: e.target.value })}
+                  />
+                  <button
+                    type='button'
                     onClick={() => {
                       setState({ showNewPassword: !state.showNewPassword });
                     }}
                     className={` ${
                       state.errors?.password
-                        ? "absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
-                        : "absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+                        ? 'absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none bg-red-600'
+                        : 'absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none'
                     }`}
                   >
                     {state?.showNewPassword ? (
@@ -180,31 +180,32 @@ const ForgotPasswordForm = () => {
                     )}
                   </button>
                 </div>
-               
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="email">Confirm New Password</Label>
-                  <div className="relative">
-                     <Input
-                  id="confirm-passsword"
-                  type={state.showConfirmPassword ? "text" : "password"}
-                  placeholder="Enter Your Confirm Password"
-                  required
-                  value={state.confirm_password}
-                  onChange={(e) =>
-                    setState({ confirm_password: e.target.value })
-                  }
-                />
+              <div className='grid gap-2'>
+                <Label htmlFor='email'>Confirm New Password</Label>
+                <div className='relative'>
+                  <Input
+                    id='confirm-passsword'
+                    type={state.showConfirmPassword ? 'text' : 'password'}
+                    placeholder='Enter Your Confirm Password'
+                    required
+                    value={state.confirm_password}
+                    onChange={(e) =>
+                      setState({ confirm_password: e.target.value })
+                    }
+                  />
 
-                <button
-                    type="button"
+                  <button
+                    type='button'
                     onClick={() => {
-                      setState({ showConfirmPassword: !state.showConfirmPassword });
+                      setState({
+                        showConfirmPassword: !state.showConfirmPassword,
+                      });
                     }}
                     className={` ${
                       state.errors?.password
-                        ? "absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
-                        : "absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none"
+                        ? 'absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none'
+                        : 'absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none'
                     }`}
                   >
                     {state?.showConfirmPassword ? (
@@ -213,21 +214,17 @@ const ForgotPasswordForm = () => {
                       <Eye size={18} />
                     )}
                   </button>
-                  </div>
-               
+                </div>
               </div>
-               <div className="flex items-center gap-2">
-               
-
-                              <Button
-                  type="button"
-                  className="w-full bg-themeGreen hover:bg-themeGreen "
+              <div className='flex items-center gap-2'>
+                <Button
+                  type='button'
+                  className='w-full bg-red-600'
                   onClick={handleSubmit}
                 >
-                  {state.btnLoading ? <Loader /> : "Confirm"}
+                  {state.btnLoading ? <Loader /> : 'Confirm'}
                 </Button>
-               </div>
-              
+              </div>
             </div>
           </form>
         </CardContent>
