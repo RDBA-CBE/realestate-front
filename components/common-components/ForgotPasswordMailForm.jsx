@@ -150,7 +150,7 @@ const ForgotPasswordEmailForm = () => {
               <div className="flex items-center gap-2">
                 <Link
                   href={"/"}
-                  className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
+                  className="w-full text- hover:text-red-500 border-red-500 hover:border-red-500"
                 >
                   <Button
                     //   onClick={() => {
@@ -164,7 +164,7 @@ const ForgotPasswordEmailForm = () => {
                     })
                   }
                     variant="outline"
-                    className="w-full text-themeGreen hover:text-themeGreen border-themeGreen hover:border-themeGreen"
+                    className="w-full text-red-500 hover:text-red-500 border-red-500 hover:border-red-500"
                   >
                     Cancel
                   </Button>
@@ -172,7 +172,7 @@ const ForgotPasswordEmailForm = () => {
 
                 <Button
                   type="button"
-                  className="w-full bg-themeGreen hover:bg-themeGreen "
+                  className="w-full bg-red-500 hover:bg-red-500 "
                   onClick={handleSubmit}
                 >
                    {state.btnLoading ? <Loader /> : "Confirm"}
