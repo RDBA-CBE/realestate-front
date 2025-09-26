@@ -6,7 +6,7 @@ import PropertyDetails from "@/components/real-estate/property-detail/PropertyDe
 import PropertyHeader from "@/components/real-estate/property-detail/PropertyHeader.component";
 import MapSection from "@/components/real-estate/property-detail/MapSection.component";
 import FloorPlans from "@/components/real-estate/property-detail/FloorPlans.component";
-import Amenities from "@/components/real-estate/property-detail/Amenities.comopent";
+import Amenities from "@/components/real-estate/property-detail/Amenities.component";
 import Reviews from "@/components/real-estate/property-detail/Reviews.component";
 import SimilarListings from "@/components/real-estate/property-detail/SimilarListings.component";
 import PropertyDesc from "@/components/real-estate/property-detail/PropertyDesc.component";
@@ -15,6 +15,8 @@ import WalkScore from "@/components/real-estate/property-detail/Walkscore.compon
 import ContactAgentForm from "@/components/real-estate/property-detail/ContactAgentForm.component";
 import PropertyTabs from "@/components/real-estate/PropertyTabs.component";
 import ImageCarousel from "@/components/real-estate/ImageCarousel.component";
+import Video from "@/components/real-estate/property-detail/Video.component";
+import VirtualTour from "@/components/real-estate/property-detail/VirtualTour.component";
 
 export default function Home() {
   const images = [
@@ -63,6 +65,14 @@ export default function Home() {
 
           <div id="floorplans">
             <FloorPlans />
+          </div>
+
+          <div id="video">
+            <Video />
+          </div>
+
+          <div id="virtualtour">
+            <VirtualTour />
           </div>
 
           <div id="nearby">

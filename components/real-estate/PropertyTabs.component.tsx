@@ -10,6 +10,8 @@ const sections = [
   { id: "amenities", label: "Amenities" },
   { id: "floorplans", label: "Floor Plans" },
   { id: "nearby", label: "Nearby" },
+  { id: "video", label: "Video" },
+  { id: "virtualtour", label: "Virtual Tour" },
   { id: "walkscore", label: "Walk Score" },
   { id: "reviews", label: "Reviews" },
 ];
