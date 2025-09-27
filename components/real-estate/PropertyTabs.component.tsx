@@ -8,7 +8,7 @@ const sections = [
   { id: "desc", label: "Desc" },
   { id: "map", label: "Map" },
   { id: "amenities", label: "Amenities" },
-  { id: "floorplans", label: "Floor Plans" },
+  { id: "floorplans", label: "FloorPlans" },
   { id: "nearby", label: "Nearby" },
   { id: "video", label: "Video" },
   { id: "virtualtour", label: "Virtual Tour" },
@@ -22,10 +22,8 @@ export default function PropertyTabs() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show tabs after scrolling past 300px
       setShowTabs(window.scrollY > 10);
 
-      // Find active section
       let current = "overview";
       sections.forEach((section) => {
         const el = document.getElementById(section.id);
@@ -47,7 +45,7 @@ export default function PropertyTabs() {
     const el = document.getElementById(id);
     if (el) {
       window.scrollTo({
-        top: el.offsetTop - 80, // account for sticky header
+        top: el.offsetTop - 80,
         behavior: "smooth",
       });
     }
@@ -57,21 +55,23 @@ export default function PropertyTabs() {
 
   return (
     <div className="sticky top-20 z-40 bg-white shadow-md border-b">
-      <div className="container mx-auto flex gap-6 px-6 py-3 overflow-x-auto">
-        {sections.map((s) => (
-          <button
-            key={s.id}
-            onClick={() => scrollTo(s.id)}
-            className={cn(
-              "text-sm font-medium pb-2 border-b-2 transition-colors whitespace-nowrap",
-              active === s.id
-                ? "border-primary text-primary"
-                : "border-transparent text-gray-500 hover:text-gray-800"
-            )}
-          >
-            {s.label}
-          </button>
-        ))}
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="flex flex-wrap gap-x-8 gap-y-2 py-3">
+          {sections.map((s) => (
+            <button
+              key={s.id}
+              onClick={() => scrollTo(s.id)}
+              className={cn(
+                "text-sm font-medium pb-2 border-b-2 transition-colors whitespace-nowrap",
+                active === s.id
+                  ? "border-red-500 text-red-600"
+                  : "border-transparent text-gray-500 hover:text-gray-800"
+              )}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
