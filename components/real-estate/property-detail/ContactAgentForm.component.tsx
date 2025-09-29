@@ -11,22 +11,12 @@ export default function ContactAgentForm() {
   return (
     <Card className="rounded-2xl shadow-lg border border-gray-200 max-w-md mx-auto">
       <CardContent className="p-6 space-y-6">
-        {/* Main Title */}
-        {/* <div className="text-center">
-          <h1 className="text-xl font-bold text-gray-900 mb-2">
-            You have a fine taste. This property is great!
-          </h1>
-          <h2 className="text-lg font-semibold text-gray-800">
-            Contact Seller
-          </h2>
-        </div> */}
-
         {/* Agent Info with Image on Left */}
         <div className="flex items-center gap-4 border-b border-gray-200 pb-4">
           {/* Agent Image */}
           <div className="flex-shrink-0">
             <Image
-              src="/assets/images/real-estate/dummy.png" // Replace with your image path
+              src="/assets/images/real-estate/dummy.png"
               alt="Cinco Realtors"
               width={60}
               height={60}
@@ -94,8 +84,8 @@ export default function ContactAgentForm() {
           </div>
 
           {/* Button */}
-          <Button className="w-50 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 text-base rounded-lg mt-4">
-           Enquire
+          <Button className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 text-base rounded-lg mt-4">
+            Enquire
           </Button>
         </div>
       </CardContent>

@@ -9,9 +9,9 @@ const sections = [
   { id: "map", label: "Map" },
   { id: "amenities", label: "Amenities" },
   { id: "floorplans", label: "FloorPlans" },
-  { id: "nearby", label: "Nearby" },
   { id: "video", label: "Video" },
   { id: "virtualtour", label: "Virtual Tour" },
+  { id: "nearby", label: "Nearby" },
   { id: "walkscore", label: "Walk Score" },
   { id: "reviews", label: "Reviews" },
 ];

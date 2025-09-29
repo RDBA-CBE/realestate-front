@@ -48,8 +48,8 @@ export function PropertyGrid(props: any) {
       <h1 className='text-3xl font-bold mb-6'>{title}</h1>
 
       {/* Top Filter Bar - Updated to match screenshot exactly */}
-      <div className='flex flex-wrap items-center gap-4 mb-6 p-4 rounded-lg'>
-        {/* Filter items */}
+      <div className='flex flex-wrap items-center justify-between gap-4 mb-6 p-4 rounded-lg'>
+        {/* Left side - Filters */}
         <div className='flex items-center gap-4 flex-wrap'>
           <FilterDropdown
             title='For Sale'
@@ -85,23 +85,22 @@ export function PropertyGrid(props: any) {
           <Button
             onClick={() => setState({ isOpen: true })}
             variant='outline'
-            className='rounded-full bg-white text-gray-800 px-4 py-2 border shadow-sm hover:bg-gray-50 flex items-center gap-2'
+            className='rounded-full text-gray-800 px-4 py-2 border shadow-sm hover:bg-gray-50 flex items-center gap-2'
           >
             <SlidersHorizontal className='h-4 w-4' /> More Filter
           </Button>
         </div>
 
-        {/* Right side - Exactly like the image */}
-        <div className='ml-auto flex items-center gap-4'>
-          {/* Sort section - All in one line */}
-          <div className='flex items-center gap-2 rounded-md px-3 py-2'>
+        {/* Right side */}
+        <div className='flex items-center gap-6'>
+          {/* Sort section */}
+          <div className='flex items-center gap-2'>
             <span className='text-sm text-gray-600 whitespace-nowrap'>
               Sort by
             </span>
             <Select defaultValue='newest'>
-              <SelectTrigger className='w-[100px] border-0 shadow-none focus:ring-0 p-0 h-auto'>
+              <SelectTrigger className='w-[130px] border-0 shadow-none focus:ring-0 p-0 h-auto text-sm font-medium'>
                 <SelectValue placeholder='Newest' />
-                {/* <ChevronDown className="h-4 w-4 ml-1" /> */}
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value='newest'>Newest</SelectItem>
@@ -111,15 +110,15 @@ export function PropertyGrid(props: any) {
             </Select>
           </div>
 
-          {/* Grid/List Toggle - Text buttons like in image */}
+          {/* Grid/List Toggle */}
           <div className='flex items-center gap-0 rounded-md overflow-hidden'>
             <Button
               onClick={() => setView('grid')}
               variant='ghost'
-              className={`px-4 py-2 h-9 rounded-none text-sm font-medium hover:bg-none ${
+              className={`px-4 py-2 h-9 rounded-none text-sm font-medium ${
                 view === 'grid'
                   ? 'text-red-600 bg-transparent'
-                  : 'text-gray-600 '
+                  : 'text-gray-600 hover:text-red-500'
               }`}
             >
               Grid
@@ -128,10 +127,10 @@ export function PropertyGrid(props: any) {
             <Button
               onClick={() => setView('list')}
               variant='ghost'
-              className={`px-4 py-2 h-9 rounded-none text-sm font-medium hover:bg-none ${
+              className={`px-4 py-2 h-9 rounded-none text-sm font-medium ${
                 view === 'list'
                   ? 'text-red-600 bg-transparent'
-                  : 'text-gray-600 '
+                  : 'text-gray-600 hover:text-red-500'
               }`}
             >
               List
