@@ -43,12 +43,12 @@ export function PropertyGrid(props: any) {
       className='max-w-6xl mx-auto space-y-8 p-6'
     >
       {/* Breadcrumb */}
-      <div className='text-sm text-gray-600 mb-2'>Home / For Rent</div>
+      {/* <div className='text-sm text-gray-600 mb-2'>Home / For Rent</div> */}
 
       <h1 className='text-3xl font-bold mb-6'>{title}</h1>
 
       {/* Top Filter Bar - Updated to match screenshot exactly */}
-      <div className='flex flex-wrap items-center justify-between gap-4 mb-6 p-4 rounded-lg'>
+      <div className='flex flex-wrap items-center justify-between gap-4 mb-6 rounded-lg'>
         {/* Left side - Filters */}
         <div className='flex items-center gap-4 flex-wrap'>
           <FilterDropdown

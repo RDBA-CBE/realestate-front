@@ -1,5 +1,4 @@
 'use client';
-import { PropertyGrid } from '@/components/real-estate/property-list/property3And4Column/property-grid';
 import { PropertyView } from '@/components/real-estate/property-list/property3And4Column/property-view';
 
 export default function Page() {
@@ -105,12 +104,11 @@ export default function Page() {
 
   return (
     <div>
-      <PropertyGrid
+      <PropertyView
         properties={mockProperties}
         title='New York Homes for Sale'
         // showFilters={true}
       />
-      
     </div>
   );
 }
