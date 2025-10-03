@@ -3,23 +3,28 @@ import React from 'react';
 
 const Header = () => {
   return (
-    <header className="header">
-      <div className="container">
-        <div className="header-content">
-          <div className="logo">
-            <h2>Homez</h2>
+    <header className="bg-white border-b border-gray-200">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <h2 className="text-2xl font-bold text-gray-900">Homez</h2>
           </div>
-          <nav className="nav">
-            <ul>
-              <li><a href="#">listing</a></li>
-              <li><a href="#">Property</a></li>
-              <li><a href="#">Blog</a></li>
-              <li><a href="#">Pages</a></li>
-            </ul>
+
+          {/* Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <a href="#" className="text-gray-600 hover:text-gray-900 text-sm font-medium">listing</a>
+            <a href="#" className="text-gray-600 hover:text-gray-900 text-sm font-medium">Property</a>
+            <a href="#" className="text-gray-600 hover:text-gray-900 text-sm font-medium">Blog</a>
+            <a href="#" className="text-gray-600 hover:text-gray-900 text-sm font-medium">Pages</a>
           </nav>
-          <div className="header-actions">
-            <a href="#" className="login">Login/Register</a>
-            <button className="btn">Add Property</button>
+
+          {/* Header Actions */}
+          <div className="flex items-center space-x-4">
+            <a href="#" className="text-gray-600 hover:text-gray-900 text-sm">Login / Register</a>
+            <button className="bg-red-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-red-700">
+              Add Property
+            </button>
           </div>
         </div>
       </div>

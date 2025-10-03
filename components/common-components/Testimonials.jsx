@@ -16,24 +16,21 @@ const Testimonials = () => {
   ];
 
   return (
-    <section className="section testimonials">
-      <div className="container">
-        <div className="section-header">
-          <div>
-            <h2 className="section-title">People Love Living with Realton</h2>
-            <p className="section-subtitle">Aliquam lacinia diam quis lacus euismod</p>
-          </div>
+    <section className="py-16 bg-white">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">People Love Living with Realton</h2>
+          <p className="text-gray-600">Aliquam lacinia diam quis lacus euismod</p>
         </div>
-        <div className="grid grid-2">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="testimonial-card">
-              <div className="testimonial-content">
-                <h3>Great Work</h3>
-                <p>{testimonial.text}</p>
-                <div className="testimonial-author">
-                  <strong>{testimonial.author}</strong>
-                  <span>{testimonial.company}</span>
-                </div>
+            <div key={index} className="border border-gray-200 rounded-lg p-6">
+              <h3 className="text-red-600 font-semibold mb-4">Great Work</h3>
+              <p className="text-gray-600 mb-6">{testimonial.text}</p>
+              <div>
+                <strong className="text-gray-900">{testimonial.author}</strong>
+                <p className="text-gray-600 text-sm">{testimonial.company}</p>
               </div>
             </div>
           ))}

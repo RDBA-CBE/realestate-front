@@ -14,24 +14,21 @@ const BlogSection = () => {
   ];
 
   return (
-    <section className="section blog">
-      <div className="container">
-        <div className="section-header">
-          <div>
-            <h2 className="section-title">From Our Blog</h2>
-            <p className="section-subtitle">Aliquam lacinia diam quis lacus euismod</p>
-          </div>
+    <section className="py-16 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">From Our Blog</h2>
+          <p className="text-gray-600">Aliquam lacinia diam quis lacus euismod</p>
         </div>
-        <div className="grid grid-2">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {blogPosts.map((post, index) => (
-            <div key={index} className="blog-card">
-              <div className="blog-image">
-                {/* Blog image would go here */}
-              </div>
-              <div className="blog-content">
-                <h3>{post.title}</h3>
-                <p>{post.subtitle}</p>
-                <a href="#" className="read-more">Read More</a>
+            <div key={index} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <div className="h-48 bg-gray-200"></div>
+              <div className="p-6">
+                <h3 className="font-semibold text-gray-900 mb-2">{post.title}</h3>
+                <p className="text-gray-600 mb-4">{post.subtitle}</p>
+                <a href="#" className="text-red-600 font-medium">Read More</a>
               </div>
             </div>
           ))}
