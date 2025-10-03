@@ -527,7 +527,7 @@ function ContactSection() {
         {!isLoggedIn && (
           <Button
             onClick={handleContactClick}
-            className='w-full bg-blue-600 hover:bg-blue-700 text-white'
+            className='w-full bg-red-500 hover:bg-red-600 text-white'
             size='lg'
           >
             Enquiry
@@ -539,7 +539,7 @@ function ContactSection() {
           <DialogContent className='sm:max-w-[425px]'>
             <DialogHeader>
               <DialogTitle>
-                {showLogin ? 'Login to Continue' : 'Contact Agent'}
+                {showLogin ? 'Enquiry' : 'Contact Agent'}
               </DialogTitle>
               <DialogDescription>
                 {showLogin
@@ -590,7 +590,6 @@ export default function PropertyDetailPage() {
       <PropertyHeader />
       <Gallery images={images} />
 
-      {/* Sticky Tabs (unchanged styles) */}
 
       <PropertyTabs />
 
