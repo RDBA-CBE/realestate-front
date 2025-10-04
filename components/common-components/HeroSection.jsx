@@ -1,78 +1,74 @@
-// components/HeroSection.js
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-const HeroSection = () => {
-  const [activeTab, setActiveTab] = useState('buy');
+const BannerSection = () => {
+  // State for active tab
+  const [activeTab, setActiveTab] = useState("Buy");
 
-  const tabs = [
-    { id: 'buy', label: 'Buy' },
-    { id: 'rent', label: 'Rent' },
-    { id: 'sold', label: 'Sold' }
-  ];
+  // Dynamic placeholder based on selected tab
+  const placeholderText = `Enter an address, neighborhood, city, or ZIP code for ${activeTab}`;
 
   return (
-    <section className="bg-gray-50 py-16">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            THE BEST WAY TO.<br />
-            <span className="text-red-600">Find Your Dream Home</span>
-          </h1>
-          <p className="text-gray-600 mb-8 text-lg">
-            We've more than 745,000 apartments, place & plot.
-          </p>
+    <section
+      className="relative flex items-center justify-center bg-cover bg-center bg-no-repeat"
+      style={{
+        height: "860px",
+        backgroundImage:
+          "linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://homez-appdir.vercel.app/_next/static/media/home-1.14c0d866.jpg')",
+      }}
+    >
+      <div className="container mx-auto px-4 text-center relative">
+        {/* Subheading */}
+        <h3 className="text-sm md:text-base font-medium text-white mb-3 uppercase tracking-widest">
+          The Best Way To
+        </h3>
 
-          {/* Search Tabs */}
-          <div className="flex justify-center space-x-2 mb-8">
-            {tabs.map((tab) => (
+        {/* Main Heading */}
+        <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+          Find Your Dream Home
+        </h1>
+
+        {/* Description */}
+        <p className="text-base md:text-lg text-gray-200 mb-10">
+          We’ve more than 745,000 apartments, places & plots.
+        </p>
+
+        {/* Search Card */}
+        <div className="bg-white shadow-2xl rounded-2xl overflow-hidden max-w-4xl mx-auto">
+          {/* Tabs */}
+          <div className="flex border-b">
+            {["Buy", "Rent", "Sold"].map((tab) => (
               <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  activeTab === tab.id
-                    ? 'bg-red-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`flex-1 py-3 font-semibold text-sm md:text-base transition-colors ${
+                  activeTab === tab
+                    ? "border-b-2 border-red-600 text-red-600"
+                    : "text-gray-700 hover:text-red-600"
                 }`}
               >
-                {tab.label}
+                {tab}
               </button>
             ))}
           </div>
 
-          {/* Search Box */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-              <input 
-                type="text" 
-                placeholder="Search for properties..." 
-                className="px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-red-500"
+          {/* Search Bar */}
+          <div className="flex flex-col md:flex-row items-center gap-3 p-4 md:p-5">
+            <div className="flex-1 w-full">
+              <input
+                type="text"
+                placeholder={placeholderText}
+                className="w-full px-5 py-3 rounded-lg border border-gray-200 text-gray-700 placeholder-gray-500 focus:outline-none focus:border-red-500"
               />
-              <select className="px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-red-500">
-                <option>Property Type</option>
-                <option>Apartment</option>
-                <option>House</option>
-                <option>Villa</option>
-              </select>
-              <select className="px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-red-500">
-                <option>Location</option>
-                <option>New York</option>
-                <option>Los Angeles</option>
-                <option>Chicago</option>
-              </select>
-              <button className="bg-red-600 text-white py-3 px-6 rounded font-medium hover:bg-red-700 transition-colors">
+            </div>
+
+            <div className="flex items-center gap-2 w-full md:w-auto">
+              <button className="w-full md:w-auto px-6 py-3 rounded-lg font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition whitespace-nowrap">
+                Advanced
+              </button>
+              <button className="w-full md:w-auto px-8 py-3 rounded-lg font-semibold bg-red-600 text-white hover:bg-red-700 transition whitespace-nowrap">
                 Search
               </button>
             </div>
-            <div className="text-center">
-              <a href="#" className="text-red-600 text-sm font-medium hover:text-red-800">
-                Advanced
-              </a>
-            </div>
-          </div>
-
-          {/* Display active tab for demonstration */}
-          <div className="mt-8 text-sm text-gray-600">
-            Currently viewing: <span className="font-semibold capitalize">{activeTab}</span> properties
           </div>
         </div>
       </div>
@@ -80,4 +76,4 @@ const HeroSection = () => {
   );
 };
 
-export default HeroSection;
+export default BannerSection;

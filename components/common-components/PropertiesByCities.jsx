@@ -1,39 +1,97 @@
-// components/PropertiesByCities.js
+// components/PropertiesByCities.js (Minimal Swiper Version)
 import React from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay } from 'swiper/modules';
+import 'swiper/css';
 
 const PropertiesByCities = () => {
   const cities = [
-    { name: 'Los Angeles', count: '12 Properties' },
-    { name: 'Miami', count: '12 Properties' },
-    { name: 'New York', count: '12 Properties' },
-    { name: 'Chicago', count: '12 Properties' }
+    { 
+      name: 'Los Angeles', 
+      count: '12 Properties',
+      image: 'https://images.unsplash.com/photo-1515896769750-31548aa180ed?w=400&h=300&fit=crop'
+    },
+    { 
+      name: 'Miami', 
+      count: '12 Properties',
+      image: 'https://images.unsplash.com/photo-1514214246283-d427a95c5d2f?w=400&h=300&fit=crop'
+    },
+    { 
+      name: 'New York', 
+      count: '12 Properties',
+      image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=300&fit=crop'
+    },
+    { 
+      name: 'Chicago', 
+      count: '12 Properties',
+      image: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=400&h=300&fit=crop'
+    },
+    { 
+      name: 'San Francisco', 
+      count: '12 Properties',
+      image: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&h=300&fit=crop'
+    },
+    { 
+      name: 'Seattle', 
+      count: '12 Properties',
+      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop'
+    }
   ];
 
   return (
-    <section className="py-16 bg-gray-50">
+    <div className='py-16 bg-white'> 
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-12">
-          <div>
+        {/* Header Section */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-12">
+          <div className="mb-6 lg:mb-0">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Properties by Cities</h2>
             <p className="text-gray-600">Aliquam lacinia diam quis lacus euismod</p>
           </div>
-          <a href="#" className="text-red-600 font-medium">See All Cities →</a>
+          <a href="#" className="text-red-600 font-medium hover:text-red-700 transition-colors">
+            See All Cities →
+          </a>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        {/* Swiper Component */}
+        <Swiper
+          modules={[Autoplay]}
+          spaceBetween={24}
+          slidesPerView={1}
+          breakpoints={{
+            640: { slidesPerView: 2 },
+            1024: { slidesPerView: 4 },
+          }}
+          autoplay={{
+            delay: 4000,
+            disableOnInteraction: false,
+          }}
+          loop={true}
+        >
           {cities.map((city, index) => (
-            <div key={index} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-              <div className="h-32 bg-gray-200"></div>
-              <div className="p-4">
-                <h3 className="font-semibold text-gray-900 mb-1">{city.name}</h3>
-                <p className="text-sm text-gray-600">{city.count}</p>
+            <SwiperSlide key={index}>
+              <div 
+                className="relative bg-cover bg-center rounded-lg overflow-hidden h-48 hover:shadow-lg transition-all duration-300 group cursor-pointer"
+                style={{ backgroundImage: `url(${city.image})` }}
+              >
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent group-hover:from-black/50 transition-all"></div>
+                
+                {/* Content */}
+                <div className="relative z-10 h-full flex flex-col justify-end p-6 text-white">
+                  <h3 className="font-semibold text-lg mb-2">{city.name}</h3>
+                  <p className="text-white text-opacity-90">{city.count}</p>
+                </div>
               </div>
-            </div>
+            </SwiperSlide>
           ))}
-        </div>
+        </Swiper>
       </div>
-    </section>
+    </div>
   );
 };
 
 export default PropertiesByCities;
+
+
+
+

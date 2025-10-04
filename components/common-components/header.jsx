@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { Loader, LogIn, MenuIcon, User2Icon } from "lucide-react";
+import { Loader, LogIn, MenuIcon, User2Icon, UserPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -158,9 +158,29 @@ const Header = () => {
               ))}
             </nav>
 
-            {/* User Avatar Dropdown */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center">
+            {/* User Avatar Dropdown and Auth Buttons */}
+            <div className="flex items-center gap-4">
+              {/* Login and Register Buttons (Visible when not logged in) */}
+              {!username && (
+                <div className="hidden lg:flex items-center gap-3">
+                  <Button
+                    onClick={() => router.push("/login")}
+                    variant="outline"
+                    className="border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900"
+                  >
+                    Login
+                  </Button>
+                  <Button
+                    onClick={() => router.push("/signin")}
+                    className="bg-red-500 hover:bg-red-600 text-white"
+                  >
+                    Register
+                  </Button>
+                </div>
+              )}
+
+              {/* User Avatar Dropdown */}
+              {/* <div className="flex items-center">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Avatar className="h-10 w-10 rounded cursor-pointer">
@@ -197,23 +217,35 @@ const Header = () => {
                         )}
                       </DropdownMenuLabel>
                       {username && <DropdownMenuSeparator />}
-                      <>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            router?.push("/change-password-confirm")
-                          }
-                        >
-                          Change Password
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                      </>
-                      <DropdownMenuItem onClick={() => router.push("/login")}>
-                        <LogIn /> Login
-                      </DropdownMenuItem>
+                      
+                      {username ? (
+                        <>
+                          <DropdownMenuItem
+                            onClick={() =>
+                              router?.push("/change-password-confirm")
+                            }
+                          >
+                            Change Password
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => setDialogOpen(true)}>
+                            Logout
+                          </DropdownMenuItem>
+                        </>
+                      ) : (
+                        <>
+                          <DropdownMenuItem onClick={() => router.push("/login")}>
+                            Login
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => router.push("/signin")}>
+                            Register
+                          </DropdownMenuItem>
+                        </>
+                      )}
                     </motion.div>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              </div>
+              </div> */}
 
               {/* Mobile Sheet Menu */}
               <div className="block lg:hidden">
@@ -238,7 +270,27 @@ const Header = () => {
                         />
                       </Link>
                     </div>
-                    <div className="mt-10">
+                    
+                    {/* Mobile Auth Buttons */}
+                    {!username && (
+                      <div className="flex flex-col gap-3 mt-6 mb-6">
+                        <Button
+                          onClick={() => router.push("/login")}
+                          variant="outline"
+                          className="w-full"
+                        >
+                          Login
+                        </Button>
+                        <Button
+                          onClick={() => router.push("/signin")}
+                          className="w-full bg-red-500 hover:bg-red-600"
+                        >
+                          Register
+                        </Button>
+                      </div>
+                    )}
+
+                    <div className="mt-4">
                       {StudentLeftSideMenu.map((menu, index) => (
                         <Accordion
                           type="single"

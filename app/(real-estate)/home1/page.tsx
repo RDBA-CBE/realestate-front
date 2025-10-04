@@ -1,9 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
 // import Header from '@/components/common-components/Header';
-import HeroSection from '@/components/common-components/HeroSection';
+import BannerSection from '@/components/common-components/HeroSection';
 import ApartmentTypes from '@/components/common-components/ApartmentTypes';
 import HowItWorks from '@/components/common-components/HowItWorks';
 import FeaturedListings from '@/components/common-components/FeaturedListings';
@@ -15,7 +14,7 @@ import BlogSection from '@/components/common-components/BlogSection';
 import Footer from '@/components/common-components/Footer';
 
 // ---------------- PAGE ----------------
-export default function PropertyDetailPage() {
+export default function HomePage() {
   return (
     <div className='min-h-screen'>
       <motion.div
@@ -24,9 +23,10 @@ export default function PropertyDetailPage() {
         transition={{ duration: 0.6 }}
       >
         {/* Header + Gallery */}
+        {/* <Header /> */}
+        <BannerSection />
+        
         <div>
-          {/* <Header /> */}
-          <HeroSection />
           <ApartmentTypes />
           <HowItWorks />
           <FeaturedListings />
@@ -35,8 +35,9 @@ export default function PropertyDetailPage() {
           <PopularProperties />
           <Testimonials />
           <BlogSection />
-          <Footer />
         </div>
+        
+        <Footer />
       </motion.div>
     </div>
   );

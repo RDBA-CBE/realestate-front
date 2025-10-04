@@ -209,7 +209,7 @@ export function PropertyView(props: any) {
         {/* Properties section */}
         <section className='lg:col-span-3 space-y-6'>
           {/* Top bar */}
-          <div className='flex flex-wrap items-center justify-between gap-4 p-4 rounded-lg'>
+          <div className='flex flex-wrap items-center justify-between gap-4 p-4 bg-white rounded-lg border shadow-sm'>
             <span className='text-sm text-gray-600'>
               Showing 1-8 of 25 results
             </span>
@@ -217,10 +217,10 @@ export function PropertyView(props: any) {
               {/* Sort */}
               <div className='flex items-center gap-2'>
                 <span className='text-sm text-gray-600 whitespace-nowrap'>
-                  Sort by
+                  Sort by:
                 </span>
                 <Select defaultValue='newest'>
-                  <SelectTrigger className='w-[130px] border-0 shadow-none focus:ring-0 p-0 h-auto text-sm font-medium'>
+                  <SelectTrigger className='w-[140px] border-0 shadow-none focus:ring-0 p-0 h-auto text-sm font-medium text-gray-900'>
                     <SelectValue placeholder='Newest' />
                   </SelectTrigger>
                   <SelectContent>
@@ -231,18 +231,19 @@ export function PropertyView(props: any) {
                     <SelectItem value='price-high'>
                       Price: High to Low
                     </SelectItem>
+                    <SelectItem value='popular'>Most Popular</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Grid/List toggle */}
-              <div className='flex items-center gap-0 rounded-md overflow-hidden'>
+              <div className='flex items-center gap-0 rounded-lg overflow-hidden border'>
                 <Button
                   onClick={() => setView('grid')}
                   variant='ghost'
                   className={`px-4 py-2 h-9 rounded-none text-sm font-medium ${
                     view === 'grid'
-                      ? 'text-red-600'
+                      ? 'bg-red-50 text-red-600'
                       : 'text-gray-600 hover:text-red-500'
                   }`}
                 >
@@ -254,13 +255,23 @@ export function PropertyView(props: any) {
                   variant='ghost'
                   className={`px-4 py-2 h-9 rounded-none text-sm font-medium ${
                     view === 'list'
-                      ? 'text-red-600'
+                      ? 'bg-red-50 text-red-600'
                       : 'text-gray-600 hover:text-red-500'
                   }`}
                 >
                   List
                 </Button>
               </div>
+
+              {/* Advanced Filter Button */}
+              <Button
+                variant='outline'
+                onClick={() => setState({ isOpen: true })}
+                className='flex items-center gap-2 border-gray-300'
+              >
+                <SlidersHorizontal className='h-4 w-4' />
+                More Filter
+              </Button>
             </div>
           </div>
 
@@ -268,7 +279,7 @@ export function PropertyView(props: any) {
           <div
             className={
               view === 'grid'
-                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'
                 : 'flex flex-col gap-6'
             }
           >
@@ -278,18 +289,28 @@ export function PropertyView(props: any) {
           </div>
 
           {/* Pagination */}
-          <div className='flex justify-center items-center gap-2 pt-6'>
-            {[1, 2, 3, 5].map((page) => (
-              <Button
-                key={page}
-                variant={page === 1 ? 'default' : 'outline'}
-                className={`h-9 w-9 rounded-full ${
-                  page === 1 ? 'bg-red-500 hover:bg-red-600' : ''
-                }`}
-              >
-                {page}
-              </Button>
-            ))}
+          <div className='flex justify-center items-center gap-2 pt-8'>
+            <Button variant='outline' className='h-10 px-4 rounded-lg' disabled>
+              Previous
+            </Button>
+            <Button className='h-10 w-10 rounded-lg bg-red-500 hover:bg-red-600 text-white'>
+              1
+            </Button>
+            <Button variant='outline' className='h-10 w-10 rounded-lg'>
+              2
+            </Button>
+            <Button variant='outline' className='h-10 w-10 rounded-lg'>
+              3
+            </Button>
+            <span className='h-10 w-10 flex items-center justify-center text-gray-500'>
+              ...
+            </span>
+            <Button variant='outline' className='h-10 w-10 rounded-lg'>
+              8
+            </Button>
+            <Button variant='outline' className='h-10 px-4 rounded-lg'>
+              Next
+            </Button>
           </div>
         </section>
       </div>
