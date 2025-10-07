@@ -521,47 +521,45 @@ function ContactSection() {
   }
 
   return (
-    <div className='lg:col-span-1'>
-      <div className='sticky top-[150px] space-y-4'>
-        {/* Enquiry button for non-logged-in users */}
-        {!isLoggedIn && (
-          <Button
-            onClick={handleContactClick}
-            className='w-full bg-red-500 hover:bg-red-600 text-white'
-            size='lg'
-          >
-            Enquiry
-          </Button>
-        )}
+    <div className='space-y-4'>
+      {/* Enquiry button for non-logged-in users */}
+      {!isLoggedIn && (
+        <Button
+          onClick={handleContactClick}
+          className='w-full bg-red-500 hover:bg-red-600 text-white'
+          size='lg'
+        >
+          Enquiry
+        </Button>
+      )}
 
-        {/* Modal for login/contact */}
-        <Dialog open={isModalOpen} onOpenChange={handleCloseModal}>
-          <DialogContent className='sm:max-w-[425px]'>
-            <DialogHeader>
-              <DialogTitle>
-                {showLogin ? 'Enquiry' : 'Contact Agent'}
-              </DialogTitle>
-              <DialogDescription>
-                {showLogin
-                  ? 'Please login to contact the property agent'
-                  : "Fill out the form below and we'll get back to you soon"}
-              </DialogDescription>
-            </DialogHeader>
+      {/* Modal for login/contact */}
+      <Dialog open={isModalOpen} onOpenChange={handleCloseModal}>
+        <DialogContent className='sm:max-w-[425px]'>
+          <DialogHeader>
+            <DialogTitle>
+              {showLogin ? 'Enquiry' : 'Contact Agent'}
+            </DialogTitle>
+            <DialogDescription>
+              {showLogin
+                ? 'Please login to contact the property agent'
+                : "Fill out the form below and we'll get back to you soon"}
+            </DialogDescription>
+          </DialogHeader>
 
-            {showLogin ? (
-              <LoginForm
-                onSuccess={handleLoginSuccess}
-                onClose={handleCloseModal} // ensures modal closes
-              />
-            ) : (
-              <ContactAgentForm onSuccess={handleFormSuccess} />
-            )}
-          </DialogContent>
-        </Dialog>
+          {showLogin ? (
+            <LoginForm
+              onSuccess={handleLoginSuccess}
+              onClose={handleCloseModal}
+            />
+          ) : (
+            <ContactAgentForm onSuccess={handleFormSuccess} />
+          )}
+        </DialogContent>
+      </Dialog>
 
-        {/* Contact form for logged-in users */}
-        {isLoggedIn && <ContactAgentForm onSuccess={handleFormSuccess} />}
-      </div>
+      {/* Contact form for logged-in users */}
+      {isLoggedIn && <ContactAgentForm onSuccess={handleFormSuccess} />}
     </div>
   );
 }
@@ -579,7 +577,7 @@ export default function PropertyDetailPage() {
   ];
 
   return (
-    <div className='container mx-auto px-9 py-6 space-y-12'>
+    <div className="container mx-auto px-9 py-6">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -587,15 +585,18 @@ export default function PropertyDetailPage() {
       />
 
       {/* Header + Gallery */}
-      <PropertyHeader />
-      <Gallery images={images} />
+      <div className="space-y-6">
+        <PropertyHeader />
+        <Gallery images={images} />
+      </div>
 
-
+      {/* Property Tabs - Will only appear when overview section comes into view */}
       <PropertyTabs />
 
-      {/* Content sections */}
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-        <div className='lg:col-span-2 space-y-6'>
+      {/* Content sections with proper spacing for scroll detection */}
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12'>
+        <div className='lg:col-span-2 space-y-16'>
+          {/* Overview section - This triggers the tabs to appear when scrolled to */}
           <div id='overview'>
             <PropertyDetails />
           </div>
@@ -630,14 +631,16 @@ export default function PropertyDetailPage() {
 
         {/* Sticky Contact Section */}
         <div className='lg:col-span-1'>
-          <div className='sticky top-[150px]'>
+          <div className='sticky top-32'>
             <ContactSection />
           </div>
         </div>
       </div>
 
       {/* Similar Listings */}
-      <SimilarListings />
+      <div className="mt-16">
+        <SimilarListings />
+      </div>
     </div>
   );
 }

@@ -1220,3 +1220,7 @@ body {
 .bg-dark{
   background-color: #181A2A;
 }
+
+.top-32 {
+  top: 9rem;
+}

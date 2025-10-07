@@ -22,8 +22,25 @@ export default function PropertyTabs() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowTabs(window.scrollY > 10);
+      // Check if ANY section from overview to reviews is in view
+      const overviewEl = document.getElementById("overview");
+      const reviewsEl = document.getElementById("reviews");
+      
+      if (overviewEl && reviewsEl) {
+        const overviewRect = overviewEl.getBoundingClientRect();
+        const reviewsRect = reviewsEl.getBoundingClientRect();
+        
+        // Show tabs when overview enters viewport
+        const overviewInView = overviewRect.top <= 100;
+        
+        // Hide tabs only when we've scrolled past the entire reviews section
+        const reviewsFullyPassed = reviewsRect.bottom <= 0;
+        
+        // Show tabs from overview until we completely scroll past reviews
+        setShowTabs(overviewInView && !reviewsFullyPassed);
+      }
 
+      // Update active tab based on scroll position
       let current = "overview";
       sections.forEach((section) => {
         const el = document.getElementById(section.id);
@@ -37,24 +54,32 @@ export default function PropertyTabs() {
       setActive(current);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    
+    // Initial check
+    handleScroll();
+    
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
+      const offsetTop = el.offsetTop - 100;
       window.scrollTo({
-        top: el.offsetTop - 80,
+        top: offsetTop,
         behavior: "smooth",
       });
     }
   };
 
-  if (!showTabs) return null;
+  // Don't render anything if tabs shouldn't be shown
+  if (!showTabs) {
+    return null;
+  }
 
   return (
-    <div className="sticky top-20 z-40 bg-white shadow-md border-b">
+    <div className="sticky top-[60px] z-40 bg-white shadow-md border-b rounded-b-lg">
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex flex-wrap gap-x-8 gap-y-2 py-3">
           {sections.map((s) => (

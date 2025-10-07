@@ -90,7 +90,7 @@ const Header = () => {
           <div className=" container mx-auto flex items-center justify-between gap-20 ">
             {/* Logo */}
             <div className="flex justify-center">
-              <Link href="https://zenwellnesslounge.com/" target="_blank">
+              <Link href="home">
                 <Image
                   src="/assets/images/logo.png"
                   alt="logo"
@@ -259,8 +259,8 @@ const Header = () => {
                     </SheetHeader>
                     <div className="flex justify-center">
                       <Link
-                        href="https://zenwellnesslounge.com/"
-                        target="_blank"
+                        href="home"
+                       
                       >
                         <Image
                           src="/assets/images/logo.png"
