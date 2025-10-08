@@ -1,17 +1,17 @@
 import instance from "@/utils/axios.utils";
 
-const auth = {
-  login: (body: any) => {
+const virtualTour = {
+  list: (page) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `authentication/login/`;
+      let url = `virtual-tours?page=${page}`;
       instance()
-        .post(url, body)
+        .get(url)
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response?.data);
+            reject(error.response.message);
           } else {
             reject(error);
           }
@@ -20,17 +20,22 @@ const auth = {
     return promise;
   },
 
-  singup: (body: any) => {
+  create: (data: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `register/`;
+      let url = `virtual-tours/`;
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data; charset=utf-8;",
+        },
+      };
       instance()
-        .post(url, body)
+        .post(url, data, config)
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response?.data);
+            reject(error.response.data.message);
           } else {
             reject(error);
           }
@@ -39,17 +44,41 @@ const auth = {
     return promise;
   },
 
-  change_password: (body: any) => {
+  update: (data: any, id: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `register/`;
+      let url = `virtual-tours/${id}/`;
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data; charset=utf-8;",
+        },
+      };
       instance()
-        .post(url, body)
+        .patch(url, data, config)
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response?.data);
+            reject(error.response.data.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+  delete: (id: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `virtual-tours/${id}/`;
+
+      instance()
+        .delete(url)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.data.message);
           } else {
             reject(error);
           }
@@ -58,36 +87,18 @@ const auth = {
     return promise;
   },
 
-  forget_password: (body: any) => {
+  details: (id: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `register/`;
-      instance()
-        .post(url, body)
-        .then((res) => {
-          resolve(res.data);
-        })
-        .catch((error) => {
-          if (error.response) {
-            reject(error.response?.data);
-          } else {
-            reject(error);
-          }
-        });
-    });
-    return promise;
-  },
+      let url = `virtual-tours/${id}/`;
 
-  logout: (body: any) => {
-    let promise = new Promise((resolve, reject) => {
-      let url = `authentication/logout/`;
       instance()
-        .post(url, body)
+        .get(url)
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response?.data);
+            reject(error.response.data.message);
           } else {
             reject(error);
           }
@@ -97,4 +108,4 @@ const auth = {
   },
 };
 
-export default auth;
+export default virtualTour;

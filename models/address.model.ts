@@ -1,17 +1,17 @@
 import instance from "@/utils/axios.utils";
 
-const auth = {
-  login: (body: any) => {
+const address = {
+  list: (page) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `authentication/login/`;
+      let url = `addresses?page=${page}`;
       instance()
-        .post(url, body)
+        .get(url)
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response?.data);
+            reject(error.response.message);
           } else {
             reject(error);
           }
@@ -20,17 +20,22 @@ const auth = {
     return promise;
   },
 
-  singup: (body: any) => {
+  create: (data: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `register/`;
+      let url = `addresses/`;
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data; charset=utf-8;",
+        },
+      };
       instance()
-        .post(url, body)
+        .post(url, data, config)
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response?.data);
+            reject(error.response.data.message);
           } else {
             reject(error);
           }
@@ -39,17 +44,22 @@ const auth = {
     return promise;
   },
 
-  change_password: (body: any) => {
+  update: (data: any, id: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `register/`;
+      let url = `addresses/${id}/`;
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data; charset=utf-8;",
+        },
+      };
       instance()
-        .post(url, body)
+        .patch(url, data, config)
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response?.data);
+            reject(error.response.data.message);
           } else {
             reject(error);
           }
@@ -58,17 +68,18 @@ const auth = {
     return promise;
   },
 
-  forget_password: (body: any) => {
+  delete: (id: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `register/`;
+      let url = `addresses/${id}/`;
+
       instance()
-        .post(url, body)
+        .delete(url)
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response?.data);
+            reject(error.response.data.message);
           } else {
             reject(error);
           }
@@ -77,17 +88,18 @@ const auth = {
     return promise;
   },
 
-  logout: (body: any) => {
+  details: (id: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `authentication/logout/`;
+      let url = `addresses/${id}/`;
+
       instance()
-        .post(url, body)
+        .get(url)
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response?.data);
+            reject(error.response.data.message);
           } else {
             reject(error);
           }
@@ -95,6 +107,8 @@ const auth = {
     });
     return promise;
   },
+
+  
 };
 
-export default auth;
+export default address;

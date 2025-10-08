@@ -24,7 +24,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 export function PropertyView(props: any) {
   const { properties, title = 'List View' } = props;
 
-  const [view, setView] = useState<'grid' | 'list'>('list');
+  const [view, setView] = useState<'grid' | 'list'>('grid');
   const [state, setState] = useSetState({ isOpen: false });
 
   return (
@@ -37,7 +37,7 @@ export function PropertyView(props: any) {
       {/* Breadcrumb */}
       {/* <div className='text-sm text-gray-600 mb-2'>Find your home</div> */}
 
-      <h1 className='text-3xl font-bold mb-6'>{title}</h1>
+      {/* <h1 className='text-3xl font-bold mb-6'>{title}</h1> */}
 
       {/* Main layout */}
       <div className='grid grid-cols-1 lg:grid-cols-4 gap-8'>
@@ -211,7 +211,7 @@ export function PropertyView(props: any) {
           {/* Top bar */}
           <div className='flex flex-wrap items-center justify-between gap-4 p-4 bg-white rounded-lg border shadow-sm'>
             <span className='text-sm text-gray-600'>
-              Showing 1-8 of 25 results
+              {/* Showing 1-8 of 25 results */}
             </span>
             <div className='flex items-center gap-4'>
               {/* Sort */}
@@ -220,7 +220,7 @@ export function PropertyView(props: any) {
                   Sort by:
                 </span>
                 <Select defaultValue='newest'>
-                  <SelectTrigger className='w-[140px] border-0 shadow-none focus:ring-0 p-0 h-auto text-sm font-medium text-gray-900'>
+                  <SelectTrigger className=' border-0 shadow-none focus:ring-0 p-0 h-auto text-sm font-medium text-gray-900'>
                     <SelectValue placeholder='Newest' />
                   </SelectTrigger>
                   <SelectContent>
@@ -289,7 +289,7 @@ export function PropertyView(props: any) {
           </div>
 
           {/* Pagination */}
-          <div className='flex justify-center items-center gap-2 pt-8'>
+          {/* <div className='flex justify-center items-center gap-2 pt-8'>
             <Button variant='outline' className='h-10 px-4 rounded-lg' disabled>
               Previous
             </Button>
@@ -311,7 +311,7 @@ export function PropertyView(props: any) {
             <Button variant='outline' className='h-10 px-4 rounded-lg'>
               Next
             </Button>
-          </div>
+          </div> */}
         </section>
       </div>
 

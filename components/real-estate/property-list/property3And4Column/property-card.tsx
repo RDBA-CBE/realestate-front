@@ -3,19 +3,28 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Bed, Bath, Square, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
-
+import {
+  capitalizeFLetter,
+  formatNumber,
+  formattedNoDecimal,
+  formatToINR,
+} from "@/utils/function.utils";
 
 interface Property {
   id: string;
   title: string;
   location: string;
   price: number;
-  priceType: "rent" | "sale";
+  listing_type: "rent" | "sale" | "lease";
   bedrooms: number;
   bathrooms: number;
   squareFeet: number;
-  image: string;
+  primary_image: string;
   featured?: boolean;
+  total_area: string;
+  state: string;
+  city: string;
+  country: string;
 }
 
 interface PropertyCardProps {
@@ -24,35 +33,31 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property, view }: PropertyCardProps) {
-  const router=useRouter()
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
+  console.log("✌️property --->", property);
+  const router = useRouter();
 
   return (
     <Card
-      onClick={() => router.push("property-detail")}
+      onClick={() => router.push(`property-detail/${property?.id}`)}
       className={`overflow-hidden border shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer ${
         view === "list" ? "flex flex-row h-48" : ""
       }`}
     >
       {/* Image */}
       <div className={`relative ${view === "list" ? "w-2/5" : ""}`}>
+        {property?.primary_image &&
         <Image
-          src={property.image}
-          alt={property.title}
+          src={
+            property?.primary_image
+          }
+          alt={"property"}
           width={400}
           height={280}
           className={`object-cover ${
             view === "list" ? "h-full w-full" : "w-full h-64"
           }`}
         />
-
+      } 
         {property.featured && (
           <Badge className="absolute top-2 left-2 bg-red-500 text-white font-semibold px-2 py-0.5 text-xs">
             FEATURED
@@ -60,8 +65,8 @@ export function PropertyCard({ property, view }: PropertyCardProps) {
         )}
 
         <Badge className="absolute top-2 right-2 bg-white text-black font-bold px-2 py-1 text-sm shadow-md">
-          {formatPrice(property.price)}{" "}
-          {property.priceType === "rent" && "/ mo"}
+          {formatToINR(property.price)}{" "}
+          {property.listing_type === "rent" && "/ mo"}
         </Badge>
       </div>
 
@@ -81,7 +86,10 @@ export function PropertyCard({ property, view }: PropertyCardProps) {
           </h3>
           <div className="flex items-center text-gray-600 mb-2">
             <MapPin className="h-4 w-4 mr-1" />
-            <span className="text-sm">{property.location}</span>
+            {/* <span className="text-sm">{`${property.city} , ${property.state} , ${property.country}`}</span> */}
+            <span className="text-sm">{`${capitalizeFLetter(
+              property.city
+            )} , ${capitalizeFLetter(property.state)} `}</span>
           </div>
 
           <div className="flex items-center gap-4 text-gray-700 mb-2">
@@ -96,7 +104,7 @@ export function PropertyCard({ property, view }: PropertyCardProps) {
             <div className="flex items-center space-x-1">
               <Square className="h-4 w-4" />
               <span className="text-xs">
-                {property.squareFeet.toLocaleString()} sqft
+                {formattedNoDecimal(property.total_area)} sqft
               </span>
             </div>
           </div>
@@ -107,7 +115,11 @@ export function PropertyCard({ property, view }: PropertyCardProps) {
             variant="outline"
             className="border-blue-600 text-blue-600 px-3 py-1 text-xs font-semibold"
           >
-            {property.priceType === "rent" ? "FOR RENT" : "FOR SALE"}
+            {property.listing_type === "rent"
+              ? "FOR RENT"
+              : property.listing_type === "sale"
+              ? "FOR SALE"
+              : "FOR LEASE"}
           </Badge>
         </div>
       </CardContent>

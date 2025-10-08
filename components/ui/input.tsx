@@ -13,7 +13,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const isPassword = type === "password";
 
     return (
-      <div className="w-full">
+      <div className="w-full space-y-2">
         {title && <Label htmlFor={props.name}>{title}</Label>}
 
         <div className="relative">

@@ -1,7 +1,6 @@
 import moment from "moment";
 import { useState } from "react";
-import Swal from 'sweetalert2';
-
+import Swal from "sweetalert2";
 
 export const useSetState = (initialState: any) => {
   const [state, setState] = useState(initialState);
@@ -12,38 +11,36 @@ export const useSetState = (initialState: any) => {
   return [state, newSetState];
 };
 
-
 export const Success = (message: string) => {
-    const toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar:true,
-        // background:"red",
-       
-    });
+  const toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    // background:"red",
+  });
 
-    toast.fire({
-        icon: 'success',
-        title: message,
-        padding: '10px 20px',
-    });
+  toast.fire({
+    icon: "success",
+    title: message,
+    padding: "10px 20px",
+  });
 };
 
 export const Failure = (message: string) => {
-    const toast = Swal.mixin({
-        toast: true,
-        position: 'top',
-        showConfirmButton: false,
-        timer: 3000,
-    });
+  const toast = Swal.mixin({
+    toast: true,
+    position: "top",
+    showConfirmButton: false,
+    timer: 3000,
+  });
 
-    toast.fire({
-        icon: 'error',
-        title: message,
-        padding: '10px 20px',
-    });
+  toast.fire({
+    icon: "error",
+    title: message,
+    padding: "10px 20px",
+  });
 };
 
 export const objIsEmpty = (obj: object) => {
@@ -343,15 +340,25 @@ export const getTime = (startDate, startTime) => {
 
 export const extractTimeFromDateTime = (dateTimeString) => {
   if (!dateTimeString) return null;
-  
+
   const timeMatch = dateTimeString.match(/(\d{1,2}):(\d{2}):(\d{2})/);
   if (timeMatch) {
-    const [hours, minutes, seconds] = timeMatch[0].split(':').map(Number);
+    const [hours, minutes, seconds] = timeMatch[0].split(":").map(Number);
     const timeDate = new Date();
     timeDate.setHours(hours, minutes, seconds, 0);
     return timeDate;
   }
-  
+
   return null;
 };
 
+export const formatToINR = (amount) => {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0, // Remove decimal places
+  }).format(amount);
+};
+export const formattedNoDecimal = (number) => {
+  return Math.round(number).toLocaleString("en-IN");
+};

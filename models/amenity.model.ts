@@ -1,17 +1,25 @@
 import instance from "@/utils/axios.utils";
 
-const auth = {
-  login: (body: any) => {
+const amenity = {
+  list: (page, body) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `authentication/login/`;
+      let url = `amenities?page=${page}`;
+
+      if (body?.search) {
+        url += `&name=${encodeURIComponent(body.search)}`;
+      }
+
+       if (body?.pagination) {
+        url += `&pagination=${encodeURIComponent(false)}`;
+      }
       instance()
-        .post(url, body)
+        .get(url, body)
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response?.data);
+            reject(error.response.message);
           } else {
             reject(error);
           }
@@ -20,17 +28,17 @@ const auth = {
     return promise;
   },
 
-  singup: (body: any) => {
+  create: (data: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `register/`;
+      let url = `amenities/`;
       instance()
-        .post(url, body)
+        .post(url, data)
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response?.data);
+            reject(error.response.data.message);
           } else {
             reject(error);
           }
@@ -39,17 +47,18 @@ const auth = {
     return promise;
   },
 
-  change_password: (body: any) => {
+  update: (data: any, id: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `register/`;
+      let url = `amenities/${id}/`;
+
       instance()
-        .post(url, body)
+        .patch(url, data)
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response?.data);
+            reject(error.response.data.message);
           } else {
             reject(error);
           }
@@ -58,17 +67,18 @@ const auth = {
     return promise;
   },
 
-  forget_password: (body: any) => {
+  delete: (id: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `register/`;
+      let url = `amenities/${id}/`;
+
       instance()
-        .post(url, body)
+        .delete(url)
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response?.data);
+            reject(error.response.data.message);
           } else {
             reject(error);
           }
@@ -77,17 +87,17 @@ const auth = {
     return promise;
   },
 
-  logout: (body: any) => {
+  details: (id: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `authentication/logout/`;
+      let url = `amenities/${id}/`;
       instance()
-        .post(url, body)
+        .post(url)
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response?.data);
+            reject(error.response.data.message);
           } else {
             reject(error);
           }
@@ -97,4 +107,4 @@ const auth = {
   },
 };
 
-export default auth;
+export default amenity;
