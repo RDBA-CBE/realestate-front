@@ -321,12 +321,12 @@ export default function PropertyDetailPage() {
           <div id="nearby">
             <Nearby />
           </div>
-          {/* <div id="walkscore">
+          <div id="walkscore">
             <WalkScore />
           </div>
           <div id="reviews">
             <Reviews />
-          </div> */}
+          </div>
         </div>
 
         {/* Sticky Contact Section */}
