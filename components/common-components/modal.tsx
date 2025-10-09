@@ -29,8 +29,6 @@ export default function Modal({
   renderComponent,
   width,
 }: ModalProps) {
-  console.log("✌️width --->", width);
-
   const widthClasses: Record<string, string> = {
     "500px": "sm:max-w-[500px]",
     "700px": "sm:max-w-[700px]",

@@ -19,10 +19,19 @@ const details = [
   { label: "Property Status", value: "For Sale" },
 ];
 
-export default function PropertyDesc() {
-  const [expanded, setExpanded] = useState(false);
+export default function PropertyDesc(props: any) {
+  const { data } = props;
 
-  const shortText = description.slice(0, 200) + "...";
+  const [expanded, setExpanded] = useState(false);
+  const MAX_LENGTH = 300;
+
+  if (!data?.description) return null; // ✅ Avoid crash if undefined
+
+  const isLong = data.description.length > MAX_LENGTH;
+  const shortText = isLong
+    ? data.description.slice(0, MAX_LENGTH) + "..."
+    : data.description;
+
 
   return (
     <Card className="rounded-2xl shadow p-6 space-y-6">
@@ -30,18 +39,21 @@ export default function PropertyDesc() {
       <div>
         <h3 className="text-xl font-semibold mb-3">Property Description</h3>
         <p className="text-gray-700 leading-relaxed">
-          {expanded ? description : shortText}
-        </p>
+        {expanded ? data.description : shortText}
+      </p>
+
+      {isLong && ( // ✅ Show button only if text is long
         <button
           onClick={() => setExpanded(!expanded)}
           className="mt-2 font-semibold text-black hover:underline"
         >
           {expanded ? "Show less" : "Show more"}
         </button>
+      )}
       </div>
 
       {/* Property Details */}
-      <div>
+      {/* <div>
         <h3 className="text-xl font-semibold mb-6">Property Details</h3>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
           {details.map((item, idx) => (
@@ -54,7 +66,7 @@ export default function PropertyDesc() {
             </div>
           ))}
         </CardContent>
-      </div>
+      </div> */}
     </Card>
   );
 }

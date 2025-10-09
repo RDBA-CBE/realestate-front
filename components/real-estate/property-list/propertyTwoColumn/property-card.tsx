@@ -12,7 +12,7 @@ interface Property {
   bedrooms: number;
   bathrooms: number;
   squareFeet: number;
-  image: string;
+  primaryImage: string;
   featured?: boolean;
 }
 
@@ -40,7 +40,7 @@ export function PropertyCard({ property, view }: PropertyCardProps) {
       {/* Image */}
       <div className={`relative ${view === "list" ? "w-1/3" : ""}`}>
         <Image
-          src={property.image}
+          src={property.primaryImage}
           alt={property.title}
           width={400}
           height={280}
@@ -80,7 +80,7 @@ export function PropertyCard({ property, view }: PropertyCardProps) {
           <div className="flex items-center space-x-2">
             <Square className="h-4 w-4 text-gray-600" />
             <span className="text-sm">
-              {property.squareFeet.toLocaleString()} sqft
+              {/* {property.squareFeet.toLocaleString()} sqft */}
             </span>
           </div>
         </div>

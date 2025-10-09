@@ -362,3 +362,18 @@ export const formatToINR = (amount) => {
 export const formattedNoDecimal = (number) => {
   return Math.round(number).toLocaleString("en-IN");
 };
+
+
+export const TimeAgo = (dateString: string | Date) => {
+  const now = new Date();
+  const past = new Date(dateString);
+  const diff = (now.getTime() - past.getTime()) / 1000; // difference in seconds
+
+  if (diff < 10) return "Now";
+  if (diff < 60) return `${Math.floor(diff)} Sec ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)} Min ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)} Hour${Math.floor(diff / 3600) > 1 ? "s" : ""} ago`;
+  if (diff < 2592000) return `${Math.floor(diff / 86400)} Day${Math.floor(diff / 86400) > 1 ? "s" : ""} ago`;
+  if (diff < 31104000) return `${Math.floor(diff / 2592000)} Month${Math.floor(diff / 2592000) > 1 ? "s" : ""} ago`;
+  return `${Math.floor(diff / 31104000)} Year${Math.floor(diff / 31104000) > 1 ? "s" : ""} ago`;
+};

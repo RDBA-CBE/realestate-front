@@ -6,7 +6,7 @@ import Image from "next/image";
 import { SlideshowLightbox } from "lightbox.js-react";
 
 interface GalleryProps {
-  images: string[];
+  images: any[];
 }
 
 export default function Gallery({ images }: GalleryProps) {
@@ -29,7 +29,7 @@ export default function Gallery({ images }: GalleryProps) {
           onClick={() => handleOpen(0)}
         >
           <Image
-            src={images[0]}
+            src={images?.[0]?.image}
             alt="Gallery Image"
             fill
             className="object-cover"
@@ -43,7 +43,7 @@ export default function Gallery({ images }: GalleryProps) {
             onClick={() => handleOpen(0)}
           >
             <Image
-              src={images[0]}
+              src={images?.[0]?.image}
               alt="Main Gallery"
               fill
               className="object-cover"
@@ -69,7 +69,7 @@ export default function Gallery({ images }: GalleryProps) {
                 onClick={() => handleOpen(i + 1)}
               >
                 <Image
-                  src={img}
+                  src={img?.image}
                   alt={`Gallery ${i + 1}`}
                   fill
                   className="object-cover"
@@ -79,8 +79,6 @@ export default function Gallery({ images }: GalleryProps) {
           </div>
         </div>
       )}
-
-      
     </>
   );
 }

@@ -12,8 +12,8 @@ const sections = [
   { id: "video", label: "Video" },
   { id: "virtualtour", label: "Virtual Tour" },
   { id: "nearby", label: "Nearby" },
-  { id: "walkscore", label: "Walk Score" },
-  { id: "reviews", label: "Reviews" },
+  // { id: "walkscore", label: "Walk Score" },
+  // { id: "reviews", label: "Reviews" },
 ];
 
 export default function PropertyTabs() {
@@ -24,23 +24,19 @@ export default function PropertyTabs() {
     const handleScroll = () => {
       // Check if ANY section from overview to reviews is in view
       const overviewEl = document.getElementById("overview");
-      const reviewsEl = document.getElementById("reviews");
+      const reviewsEl = document.getElementById("nearby");
       
       if (overviewEl && reviewsEl) {
         const overviewRect = overviewEl.getBoundingClientRect();
         const reviewsRect = reviewsEl.getBoundingClientRect();
         
-        // Show tabs when overview enters viewport
         const overviewInView = overviewRect.top <= 100;
         
-        // Hide tabs only when we've scrolled past the entire reviews section
         const reviewsFullyPassed = reviewsRect.bottom <= 0;
         
-        // Show tabs from overview until we completely scroll past reviews
         setShowTabs(overviewInView && !reviewsFullyPassed);
       }
 
-      // Update active tab based on scroll position
       let current = "overview";
       sections.forEach((section) => {
         const el = document.getElementById(section.id);
@@ -56,7 +52,6 @@ export default function PropertyTabs() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     
-    // Initial check
     handleScroll();
     
     return () => window.removeEventListener("scroll", handleScroll);
@@ -73,7 +68,6 @@ export default function PropertyTabs() {
     }
   };
 
-  // Don't render anything if tabs shouldn't be shown
   if (!showTabs) {
     return null;
   }

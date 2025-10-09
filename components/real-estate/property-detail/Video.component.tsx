@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlayCircle, X } from "lucide-react";
 
-export default function Video() {
+export default function Video(props:any) {
+  const {data}=props
   const [open, setOpen] = useState(false);
 
   return (

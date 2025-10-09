@@ -6,8 +6,21 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Card, CardContent } from "@/components/ui/card";
-import { Bed, Bath, Square, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Bed,
+  Bath,
+  Square,
+  MapPin,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import {
+  capitalizeFLetter,
+  formattedNoDecimal,
+  formatToINR,
+} from "@/utils/function.utils";
+import { useRouter } from "next/navigation";
 
 const mockProperties = [
   {
@@ -108,14 +121,10 @@ const mockProperties = [
   },
 ];
 
-export default function FeaturedListings() {
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-    }).format(price);
+export default function FeaturedListings(props: any) {
+  const { data } = props;
 
+  const router = useRouter();
   return (
     <div className="space-y-4">
       {/* Header with navigation */}
@@ -155,26 +164,32 @@ export default function FeaturedListings() {
           1024: { slidesPerView: 3 },
         }}
       >
-        {mockProperties.map((property) => (
+        {data?.map((property) => (
           <SwiperSlide key={property.id}>
-            <Card className="overflow-hidden rounded-2xl border shadow-md hover:shadow-xl transition-all duration-300">
+            <Card
+              // onClick={() => router.push(`property-detail/${property?.id}`)}
+              onClick={() => router.push(`/property-detail/${property?.id}`)}
+              className="overflow-hidden cursor-pointer rounded-2xl border shadow-md hover:shadow-xl transition-all duration-300"
+            >
               {/* Image */}
               <div className="relative">
-                <Image
-                  src={property.image}
-                  alt={property.title}
-                  width={500}
-                  height={350}
-                  className="w-full h-72 object-cover"
-                />
+                {property?.primary_image && (
+                  <Image
+                    src={property?.primary_image}
+                    alt={"property"}
+                    width={500}
+                    height={350}
+                    className="w-full h-72 object-cover"
+                  />
+                )}
                 {property.featured && (
                   <Badge className="absolute top-2 left-2 bg-red-500 text-white font-semibold px-2 py-0.5 text-xs">
                     FEATURED
                   </Badge>
                 )}
                 <Badge className="absolute top-2 right-2 bg-white text-black font-bold px-2 py-1 text-sm shadow-md">
-                  {formatPrice(property.price)}{" "}
-                  {property.priceType === "rent" && "/ mo"}
+                  {formatToINR(property.price)}{" "}
+                  {property.listing_type === "rent" && "/ mo"}
                 </Badge>
               </div>
 
@@ -186,7 +201,9 @@ export default function FeaturedListings() {
                   </h3>
                   <div className="flex items-center text-gray-600 mb-3">
                     <MapPin className="h-4 w-4 mr-1" />
-                    <span className="text-sm">{property.location}</span>
+                    <span className="text-sm">{`${capitalizeFLetter(
+                      property.city
+                    )} , ${capitalizeFLetter(property.state)} `}</span>
                   </div>
 
                   <div className="flex items-center gap-6 text-gray-700">
@@ -201,7 +218,7 @@ export default function FeaturedListings() {
                     <div className="flex items-center space-x-1">
                       <Square className="h-4 w-4" />
                       <span className="text-sm">
-                        {property.squareFeet.toLocaleString()} sqft
+                        {formattedNoDecimal(property.total_area)} sqft
                       </span>
                     </div>
                   </div>
@@ -212,7 +229,11 @@ export default function FeaturedListings() {
                     variant="outline"
                     className="border-blue-600 text-blue-600 px-3 py-1 text-xs font-semibold"
                   >
-                    {property.priceType === "rent" ? "FOR RENT" : "FOR SALE"}
+                    {property.listing_type === "rent"
+                      ? "FOR RENT"
+                      : property.listing_type === "sale"
+                      ? "FOR SALE"
+                      : "FOR LEASE"}
                   </Badge>
                 </div>
               </CardContent>

@@ -100,7 +100,7 @@ export function PropertyCard({
               <div className="flex items-center space-x-1">
                 <Square className="h-4 w-4" />
                 <span className="text-xs">
-                  {property.squareFeet.toLocaleString()} sqft
+                  {/* {property.squareFeet.toLocaleString()} sqft */}
                 </span>
               </div>
             </div>

@@ -33,7 +33,6 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property, view }: PropertyCardProps) {
-  console.log("✌️property --->", property);
   const router = useRouter();
 
   return (
