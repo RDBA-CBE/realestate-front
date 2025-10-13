@@ -7,17 +7,17 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { RotateCcw, Search as SearchIcon, Loader } from 'lucide-react';
-import FilterDropdown from '../../FilterDropdown.component';
-import Modal from '@/components/common-components/modal';
-import { useSetState } from '@/utils/function.utils';
-import { Input } from '@/components/ui/input';
-import { Slider } from '@/components/ui/slider';
-import { Checkbox } from '@/components/ui/checkbox';
-import useDebounce from '@/components/common-components/useDebounce';
-import { PropertyCardSkeleton } from '../../../common-components/skeleton/PropertyCardSkeleton.componenet';
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { RotateCcw, Search as SearchIcon, Loader } from "lucide-react";
+import FilterDropdown from "../../FilterDropdown.component";
+import Modal from "@/components/common-components/modal";
+import { useSetState } from "@/utils/function.utils";
+import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
+import { Checkbox } from "@/components/ui/checkbox";
+import useDebounce from "@/components/common-components/useDebounce";
+import { PropertyCardSkeleton } from "@/components/common-components/skeleton/PropertyCardSkeleton.componenet";
 
 export function PropertyView(props: any) {
   const {
@@ -394,9 +394,20 @@ export function PropertyView(props: any) {
 
           {/* Properties */}
           {loading ? (
-            <div className='flex justify-center items-center w-full pt-40'>
-              <Loader size={60} />
-            </div>
+            <div
+            className={
+              state.view === "grid"
+                ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+                : "flex flex-col gap-6"
+            }
+          >
+            {Array.from({ length: skeletonCount }).map((_, index) => (
+              <PropertyCardSkeleton
+                key={`skeleton-${index}`}
+                view={state.view}
+              />
+            ))}
+          </div>
           ) : properties?.length == 0 ? (
             <div className='flex justify-center items-center w-full pt-40'>
               <div>No Property Found</div>
