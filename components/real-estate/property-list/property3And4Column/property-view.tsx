@@ -115,11 +115,11 @@ export function PropertyView(props: any) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className='max-w-[85rem] mx-auto p-6'
+      className='xl:max-w-[110rem] max-w-[85rem] mx-auto p-6'
     >
       <div className='grid grid-cols-1 lg:grid-cols-4 gap-8'>
-        <aside className='space-y-6 lg:col-span-1'>
-          <div className='p-4 border rounded-lg space-y-6 bg-white'>
+        <aside className='space-y-6 lg:col-span-1 '>
+          <div className='p-4 border rounded-lg space-y-6 bg-gray-100 border-none'>
             <div className='w-full flex justify-end'>
               <Button
                 onClick={() => resetFilter()}
@@ -340,7 +340,7 @@ export function PropertyView(props: any) {
         </aside>
 
         <section className='lg:col-span-3 space-y-6'>
-          <div className='flex flex-wrap items-center justify-between gap-4 p-4 bg-white rounded-lg border shadow-sm'>
+          <div className='flex flex-wrap items-center justify-between gap-4 p-4 bg-gray-100 border-none rounded-lg border shadow-sm'>
             <span className='text-sm text-gray-600'></span>
             <div className='flex items-center gap-4'>
               <div className='flex items-center gap-2'>

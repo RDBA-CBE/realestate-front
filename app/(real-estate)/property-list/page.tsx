@@ -1,5 +1,7 @@
 "use client";
 import { PropertyView } from "@/components/real-estate/property-list/property3And4Column/property-view";
+import { PropertyView1 } from "@/components/real-estate/property-list/property3And4Column/property-view1";
+import { PropertyView2 } from "@/components/real-estate/property-list/property3And4Column/property-view2";
 import Models from "@/imports/models.import";
 import { PROPERTY_LIST_PAGE } from "@/utils/constant.utils";
 import { useSetState } from "@/utils/function.utils";

@@ -1,9 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import React from "react";
+import { motion } from 'framer-motion';
 
 type Property = {
   id: string;
@@ -31,198 +29,295 @@ type Property = {
   };
 };
 
-const properties: Property[] = [
-  {
-    id: "1",
-    title: "Home in Metric Way",
-    price: "$14,000 / mo",
-    location: "California City, CA, USA",
-    image: "/assets/images/real-estate/compare1.png",
-    type: "Apartment",
-    address: "Quincy St",
-    city: "New York",
-    state: "New York",
-    zip: "10013",
-    country: "United States",
-    size: "2560 Sq Ft",
-    propertyId: "R43",
-    bedrooms: 3,
-    bathrooms: 1,
-    garage: 1,
-    amenities: {
-      airConditioning: true,
-      barbeque: false,
-      gym: true,
-      pool: true,
-      cable: true,
+// The full data structure, now including a 'group' property for organization
+const comparisonData = {
+  properties: [
+    {
+      id: "1",
+      title: "Home in Metric Way",
+      price: "$14,000 / mo",
+      location: "California City, CA, USA",
+      image: "/assets/images/real-estate/compare1.png",
+      type: "Apartment",
+      address: "Quincy St",
+      city: "New York",
+      state: "New York",
+      zip: "10013",
+      country: "United States",
+      size: "2560 Sq Ft",
+      propertyId: "R43",
+      bedrooms: 3,
+      bathrooms: 1,
+      garage: 1,
+      amenities: {
+        airConditioning: true,
+        barbeque: false,
+        gym: true,
+        pool: true,
+        cable: true,
+      },
     },
-  },
-  {
-    id: "2",
-    title: "Villa on Hollywood Boulevard",
-    price: "$14,000 / mo",
-    location: "California City, CA, USA",
-    image: "/assets/images/real-estate/compare2.png",
-    type: "Studio",
-    address: "8100 S Ashland Ave",
-    city: "Chicago",
-    state: "New York",
-    zip: "10013",
-    country: "United States",
-    size: "2560 Sq Ft",
-    propertyId: "R43",
-    bedrooms: 2,
-    bathrooms: 4,
-    garage: 4,
-    amenities: {
-      airConditioning: true,
-      barbeque: false,
-      gym: true,
-      pool: true,
-      cable: true,
+    {
+      id: "2",
+      title: "Villa on Hollywood Boulevard",
+      price: "$14,000 / mo",
+      location: "California City, CA, USA",
+      image: "/assets/images/real-estate/compare2.png",
+      type: "Studio",
+      address: "8100 S Ashland Ave",
+      city: "Chicago",
+      state: "New York",
+      zip: "10013",
+      country: "United States",
+      size: "2560 Sq Ft",
+      propertyId: "R43",
+      bedrooms: 2,
+      bathrooms: 4,
+      garage: 4,
+      amenities: {
+        airConditioning: true,
+        barbeque: false,
+        gym: true,
+        pool: true,
+        cable: true,
+      },
     },
-  },
-  {
-    id: "3",
-    title: "Explore Old Barcelona",
-    price: "$14,000 / mo",
-    location: "California City, CA, USA",
-    image: "/assets/images/real-estate/compare3.png",
-    type: "Villa",
-    address: "194 Mercer Street",
-    city: "New York",
-    state: "New York",
-    zip: "10013",
-    country: "United States",
-    size: "2560 Sq Ft",
-    propertyId: "R43",
-    bedrooms: 5,
-    bathrooms: 3,
-    garage: 3,
-    amenities: {
-      airConditioning: true,
-      barbeque: false,
-      gym: true,
-      pool: true,
-      cable: true,
+    {
+      id: "3",
+      title: "Explore Old Barcelona",
+      price: "$14,000 / mo",
+      location: "California City, CA, USA",
+      image: "/assets/images/real-estate/compare3.png",
+      type: "Villa",
+      address: "194 Mercer Street",
+      city: "New York",
+      state: "New York",
+      zip: "10013",
+      country: "United States",
+      size: "2560 Sq Ft",
+      propertyId: "R43",
+      bedrooms: 5,
+      bathrooms: 3,
+      garage: 3,
+      amenities: {
+        airConditioning: true,
+        barbeque: false,
+        gym: true,
+        pool: true,
+        cable: true,
+      },
     },
-  },
-];
+    {
+      id: "4",
+      title: "Explore Old Barcelona",
+      price: "$14,000 / mo",
+      location: "California City, CA, USA",
+      image: "/assets/images/real-estate/compare3.png",
+      type: "Villa",
+      address: "194 Mercer Street",
+      city: "New York",
+      state: "New York",
+      zip: "10013",
+      country: "United States",
+      size: "2560 Sq Ft",
+      propertyId: "R43",
+      bedrooms: 5,
+      bathrooms: 3,
+      garage: 3,
+      amenities: {
+        airConditioning: true,
+        barbeque: false,
+        gym: true,
+        pool: true,
+        cable: true,
+      },
+    },
+    {
+      id: "5",
+      title: "Explore Old Barcelona",
+      price: "$14,000 / mo",
+      location: "California City, CA, USA",
+      image: "/assets/images/real-estate/compare3.png",
+      type: "Villa",
+      address: "194 Mercer Street",
+      city: "New York",
+      state: "New York",
+      zip: "10013",
+      country: "United States",
+      size: "2560 Sq Ft",
+      propertyId: "R43",
+      bedrooms: 5,
+      bathrooms: 3,
+      garage: 3,
+      amenities: {
+        airConditioning: true,
+        barbeque: false,
+        gym: true,
+        pool: true,
+        cable: true,
+      },
+    },
+  ],
 
-const attributes = [
-  { label: "Property Type", key: "type" },
-  { label: "Address", key: "address" },
-  { label: "City", key: "city" },
-  { label: "State/county", key: "state" },
-  { label: "Zip/Postal Code", key: "zip" },
-  { label: "Country", key: "country" },
-  { label: "Property Size", key: "size" },
-  { label: "Property ID", key: "propertyId" },
-  { label: "Bedrooms", key: "bedrooms" },
-  { label: "Bathrooms", key: "bathrooms" },
-  { label: "Garage", key: "garage" },
-];
+  // Attributes grouped by category
+  attributeGroups: [
+    {
+      group: "Property Infomation",
+      attributes: [
+        { label: "Price / Rent", key: "price", highlight: true },
+        { label: "Location", key: "location" },
+        { label: "Property Type", key: "type" },
+      ],
+    },
+    {
+      group: "AMENITIES & STATS",
+      attributes: [
+        { label: "Bedrooms", key: "bedrooms" },
+        { label: "Bathrooms", key: "bathrooms" },
+        { label: "Size", key: "size" },
+        { label: "Year Built", key: "year" },
+      ],
+    },
+    {
+      group: "ADDRESS",
+      attributes: [
+        { label: "Street Address", key: "address" },
+        { label: "City", key: "city" },
+        { label: "State/County", key: "state" },
+      ],
+    },
+  ],
+};
 
-const amenities = [
-  { label: "Air Conditioning", key: "airConditioning" },
-  { label: "Barbeque", key: "barbeque" },
-  { label: "Gym", key: "gym" },
-  { label: "Swimming Pool", key: "pool" },
-  { label: "TV Cable", key: "cable" },
-];
+const PropertyComparisonGrid = () => {
+  const { properties, attributeGroups } = comparisonData;
 
-export default function ComparePage() {
+  const handleRemove = (id) => {
+    console.log(`Property ${id} removed from comparison.`);
+    // Logic to filter properties would go here
+  };
+
   return (
-    <motion.div
+     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="max-w-7xl mx-auto p-6 space-y-6"
+      transition={{ duration: 0.6 }}
+      className='max-w-[85rem] mx-auto '
     >
-      {/* Header Tabs */}
-      <div className="grid grid-cols-3 bg-gray-50 rounded-lg overflow-hidden text-center">
-        {properties.map((property) => (
-          <div
-            key={property.id}
-            className="p-4 font-medium border-r last:border-r-0"
-          >
-            {property.title}
-          </div>
-        ))}
-      </div>
+    <div className=" min-h-screen py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-2xl font-extrabold text-gray-900 text-center mb-12">
+          Compare Properties
+        </h1>
 
-      {/* Property Images */}
-      <div className="grid grid-cols-3 gap-6">
-        {properties.map((property) => (
-          <Card
-            key={property.id}
-            className="rounded-xl overflow-hidden shadow"
-          >
-            <Image
-              src={property.image}
-              alt={property.title}
-              width={400}
-              height={250}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4 text-center">
-              <h4 className="text-lg font-semibold">{property.price}</h4>
-              <p className="text-gray-500 text-sm">{property.location}</p>
+        <div className="relative overflow-x-auto  rounded-xl  border border-gray scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+          <div className="sticky top-0 z-20  border-b border-gray-200 ">
+            <div className="flex">
+              <div className="sticky left-0 w-64 bg-white flex-shrink-0  p-4 flex items-center justify-start border-r border-gray-200 z-10">
+                <span className="text-sm font-extrabold text-black uppercase">
+                  Property
+                </span>
+              </div>
+
+              {properties.map((property) => (
+                <div
+                  key={property.id}
+                  className="relative flex-grow min-w-[280px] border-l border-gray-100 p-4 py-[40px]"
+                >
+                  <button
+                    className="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition "
+                    title="Remove property"
+                    onClick={() => handleRemove(property.id)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                  <div className="relative overflow-hidden rounded-lg shadow-md mb-2">
+                    <img
+                      src={property.image}
+                      alt={property.title}
+                      className="w-full h-28 object-cover"
+                    />
+                  </div>
+                  <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">
+                    {property.title}
+                  </h3>
+                  <p className="text-xs text-red-600 font-bold mt-1">
+                    {property.price}
+                  </p>
+                </div>
+              ))}
             </div>
-          </Card>
-        ))}
+          </div>
+
+          <div className="divide-y divide-gray-200">
+            {attributeGroups.map((groupData, groupIndex) => (
+              <React.Fragment key={groupIndex}>
+                {/* Group Header (e.g., PRICE BREAKUP) */}
+                <div className="flex  sticky left-0 z-10 bg-white">
+                  <div className="sticky left-0 w-64 bg-white flex-shrink-0 p-3 flex items-center justify-start ">
+                    <span className="text-sm font-extrabold text-black uppercase  bg-white">
+                      {groupData.group}
+                    </span>
+                  </div>
+
+                  {properties.map((property) => (
+                    <div
+                      key={property.id}
+                      className="flex-grow min-w-[280px]  bg-white"
+                    ></div>
+                  ))}
+                </div>
+
+                {groupData.attributes.map((attr, i) => (
+                  <div
+                    key={attr.key}
+                    className={`flex  transition duration-150`}
+                  >
+                    <div
+                      className={`sticky left-0 w-64 flex-shrink-0 p-3 border-r border-gray-200 flex items-center z-10 
+                           bg-white`}
+                    >
+                      <span className="text-sm">{attr.label}</span>
+                    </div>
+
+                    {properties.map((property) => (
+                      <div
+                        key={property.id}
+                        className="flex-grow min-w-[280px] p-3 text-center border-l border-gray-100 flex items-center justify-center"
+                      >
+                        <span
+                          className={`${
+                            attr.highlight
+                              ? "text-lg font-extrabold text-red-600"
+                              : "text-gray-800 text-sm"
+                          }`}
+                        >
+                          {property[attr.key]? property[attr.key] : "-"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
       </div>
-
-      {/* Attribute Rows */}
-    {/* Attribute Rows + Amenities */}
-<div className="border rounded-lg overflow-hidden">
-  {/* Attributes */}
-  {attributes.map((attr, index) => (
-    <div
-      key={attr.key}
-      className={cn(
-        "grid grid-cols-[200px_repeat(3,1fr)] p-4 text-sm items-center",
-        index % 2 === 0 ? "bg-gray-50" : "bg-white"
-      )}
-    >
-      {/* Label column */}
-      <div className="font-semibold">{attr.label}</div>
-
-      {/* Property values */}
-      {properties.map((property) => (
-        <div key={property.id} className="text-center">
-          {property[attr.key ]}
-        </div>
-      ))}
     </div>
-  ))}
-
-  {/* Amenities */}
-  {amenities.map((amenity, index) => (
-    <div
-      key={amenity.key}
-      className={cn(
-        "grid grid-cols-[200px_repeat(3,1fr)] p-4 text-sm items-center",
-        index % 2 === 0 ? "bg-gray-50" : "bg-white"
-      )}
-    >
-      {/* Label column */}
-      <div className="font-semibold">{amenity.label}</div>
-
-      {/* Amenity values */}
-      {properties.map((property) => (
-        <div key={property.id} className="flex items-center justify-center">
-          {property.amenities[amenity.key as keyof typeof property.amenities] ? (
-            <span className="text-green-500">✔</span>
-          ) : (
-            <span className="text-red-500">✘</span>
-          )}
-        </div>
-      ))}
-    </div>
-  ))}
-</div>
 
     </motion.div>
   );
-}
+};
+
+export default PropertyComparisonGrid;

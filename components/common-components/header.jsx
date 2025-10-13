@@ -110,9 +110,9 @@ const Header = () => {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="bg-white shadow-md sticky top-0 z-[10]"
+        className="bg-white shadow-md sticky top-0 z-[50]"
       >
-        <div className=" border-b border-gray-200">
+        <div className=" border-b border-gray-200 ">
           <div className=" container mx-auto flex items-center justify-between gap-20 ">
             {/* Logo */}
             <div className="flex justify-center">

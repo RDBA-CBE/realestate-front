@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
   return (
     <Provider store={store}>
       <html lang="en" className={`${poppins.variable} ${roboto.variable}`}>
-        <body className="font-sans antialiased bg-[#f7f7f7]">
+        <body className="font-sans antialiased bg-[#fff]">
           <Suspense fallback={<div>Loading...</div>}>
             <div className="flex flex-col w-full min-h-screen">
               <Header />
