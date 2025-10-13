@@ -261,13 +261,15 @@ const Header = () => {
                           height={80}
                         />
                       </Link>
-                      <Button
-                        onClick={() => router.push("/login")}
-                        variant="outline"
-                        // className="w-full"
-                      >
-                        Login
-                      </Button>
+                      {!state.token && (
+                        <Button
+                          onClick={() => router.push("/login")}
+                          variant="outline"
+                          // className="w-full"
+                        >
+                          Login
+                        </Button>
+                      )}
                     </div>
 
                     {/* Mobile Auth Buttons */}
