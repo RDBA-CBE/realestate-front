@@ -53,7 +53,8 @@ export default function AuthPage() {
         localStorage.setItem("group", res?.groups?.[0]?.name);
         localStorage.setItem("groupId", res?.groups?.[0]?.id);
       }
-      router.push("/property-list")
+      window.location.href = "/property-list";
+      // router.push("/property-list")
 
       setState({ loading: false });
     } catch (error) {

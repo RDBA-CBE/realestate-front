@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
@@ -14,8 +14,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "../ui/avatar";
-import { Loader, LogIn, MenuIcon, User2Icon, UserPlus } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import {
+  Loader,
+  LogIn,
+  LogOut,
+  MenuIcon,
+  Settings,
+  User,
+  User2,
+  User2Icon,
+  UserPlus,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -32,6 +42,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useSetState } from "@/utils/function.utils";
+import Models from "@/imports/models.import";
 
 const Header = () => {
   const username = useSelector((state) => state.auth.username);
@@ -39,6 +50,7 @@ const Header = () => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [clickedMenu, setClickedMenu] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const router = useRouter();
 
   const [state, setState] = useSetState({
@@ -48,13 +60,25 @@ const Header = () => {
     logoutLoading: false,
   });
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    setState({ token });
+  }, []);
+
   const handleLogout = async () => {
     try {
       setState({ logoutLoading: true });
+      const refresh = localStorage.getItem("refresh");
+      const res = await Models.auth.logout({ refresh });
+      setState({ logoutLoading: true });
       setDialogOpen(false);
-      router.push("/login");
+      window.location.href = "/login";
     } catch (error) {
       localStorage.clear();
+
+      window.location.href = "/login";
+
       setState({ logoutLoading: false });
     }
   };
@@ -77,6 +101,8 @@ const Header = () => {
       url: "/profile",
     },
   ];
+
+  console.log("{state?.token ", state?.token);
 
   return (
     <>
@@ -158,10 +184,185 @@ const Header = () => {
               ))}
             </nav>
 
+            <div className="flex items-center gap-3">
+              {
+                state.token ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="flex items-center space-x-2 focus:outline-none">
+                        <Avatar className="h-9 w-9">
+                          {/* <AvatarImage src="/images/user-avatar.png" alt="User" /> */}
+                          <AvatarFallback>
+                            <User2 />
+                          </AvatarFallback>
+                        </Avatar>
+                      </button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent className="w-[280px]" align="end">
+                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => router.push("/profile")}>
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => router.push("/settings")}
+                      >
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Settings</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={handleLogout}
+                        className="text-red-500 focus:text-red-600"
+                      >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Logout</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  // !username && (
+                  <div className="hidden lg:flex items-center gap-3">
+                    <Button
+                      onClick={() => router.push("/login")}
+                      variant="outline"
+                      className="border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900"
+                    >
+                      Login
+                    </Button>
+                    <Button
+                      onClick={() => router.push("/signin")}
+                      className="bg-red-500 hover:bg-red-600 text-white"
+                    >
+                      Register
+                    </Button>
+                  </div>
+                )
+                // )
+              }
+
+              <div className="block lg:hidden">
+                <Sheet open={open} onOpenChange={setOpen}>
+                  <SheetTrigger asChild>
+                    <MenuIcon />
+                  </SheetTrigger>
+                  <SheetContent>
+                    <SheetHeader>
+                      <SheetTitle></SheetTitle>
+                    </SheetHeader>
+                    <div className="flex justify-between items-center mt-5">
+                      <Link href="home">
+                        <Image
+                          src="/assets/images/logo.png"
+                          alt="logo"
+                          width={60}
+                          height={80}
+                        />
+                      </Link>
+                      {!state.token && (
+                        <Button
+                          onClick={() => router.push("/login")}
+                          variant="outline"
+                          // className="w-full"
+                        >
+                          Login
+                        </Button>
+                      )}
+                    </div>
+
+                    {/* Mobile Auth Buttons */}
+                    {/* {!username && ( */}
+                    {/* <div className="flex flex-col gap-3 mt-6 mb-6">
+                      <Button
+                        onClick={() => router.push("/login")}
+                        variant="outline"
+                        className="w-full"
+                      >
+                        Login
+                      </Button>
+                      <Button
+                        onClick={() => router.push("/signin")}
+                        className="w-full bg-red-500 hover:bg-red-600"
+                      >
+                        Register
+                      </Button> */}
+                    {/* </div> */}
+                    {/* )} */}
+
+                    <div className="mt-4">
+                      {StudentLeftSideMenu.map((menu, index) => (
+                        <Accordion
+                          type="single"
+                          collapsible
+                          className="w-full"
+                          key={index}
+                        >
+                          <AccordionItem value={`item-${index + 1}`}>
+                            <AccordionTrigger
+                              className={`no-underline hover:no-underline uppercase text-sm ${
+                                menu.items?.length > 0 ? "" : "[&>svg]:hidden"
+                              }`}
+                              onClick={() => {
+                                if (!menu.items?.length) {
+                                  router.push(menu.url);
+                                  setOpen(false);
+                                }
+                              }}
+                            >
+                              {menu.title}
+                            </AccordionTrigger>
+                            {menu.items?.length > 0 && (
+                              <AccordionContent>
+                                {menu.items ? (
+                                  <motion.ul
+                                    initial={{ opacity: 0, y: -5 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -5 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="pl-5 uppercase"
+                                  >
+                                    {menu.items.map((item, itemIndex) => (
+                                      <motion.li
+                                        key={itemIndex}
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{
+                                          duration: 0.2,
+                                          delay: itemIndex * 0.05,
+                                        }}
+                                        className="pb-2 text-sm"
+                                      >
+                                        <a
+                                          href={item.url}
+                                          onClick={() => setOpen(false)}
+                                        >
+                                          {item.title}
+                                        </a>
+                                      </motion.li>
+                                    ))}
+                                  </motion.ul>
+                                ) : (
+                                  <p className="uppercase">
+                                    <a href={menu.url}>{menu.title}</a>
+                                  </p>
+                                )}
+                              </AccordionContent>
+                            )}
+                          </AccordionItem>
+                        </Accordion>
+                      ))}
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              </div>
+            </div>
+
             {/* User Avatar Dropdown and Auth Buttons */}
-            <div className="flex items-center gap-4">
-              {/* Login and Register Buttons (Visible when not logged in) */}
-              {!username && (
+            {/* <div className="flex items-center gap-4"> */}
+            {/* Login and Register Buttons (Visible when not logged in) */}
+            {/* {!username && (
                 <div className="hidden lg:flex items-center gap-3">
                   <Button
                     onClick={() => router.push("/login")}
@@ -177,10 +378,10 @@ const Header = () => {
                     Register
                   </Button>
                 </div>
-              )}
+              )} */}
 
-              {/* User Avatar Dropdown */}
-              {/* <div className="flex items-center">
+            {/* User Avatar Dropdown */}
+            {/* <div className="flex items-center">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Avatar className="h-10 w-10 rounded cursor-pointer">
@@ -247,99 +448,9 @@ const Header = () => {
                 </DropdownMenu>
               </div> */}
 
-              {/* Mobile Sheet Menu */}
-              <div className="block lg:hidden">
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <MenuIcon />
-                  </SheetTrigger>
-                  <SheetContent>
-                    <SheetHeader>
-                      <SheetTitle></SheetTitle>
-                    </SheetHeader>
-                    <div className="flex justify-center">
-                      <Link
-                        href="home"
-                       
-                      >
-                        <Image
-                          src="/assets/images/logo.png"
-                          alt="logo"
-                          width={200}
-                          height={80}
-                        />
-                      </Link>
-                    </div>
-                    
-                    {/* Mobile Auth Buttons */}
-                    {!username && (
-                      <div className="flex flex-col gap-3 mt-6 mb-6">
-                        <Button
-                          onClick={() => router.push("/login")}
-                          variant="outline"
-                          className="w-full"
-                        >
-                          Login
-                        </Button>
-                        <Button
-                          onClick={() => router.push("/signin")}
-                          className="w-full bg-red-500 hover:bg-red-600"
-                        >
-                          Register
-                        </Button>
-                      </div>
-                    )}
+            {/* Mobile Sheet Menu */}
 
-                    <div className="mt-4">
-                      {StudentLeftSideMenu.map((menu, index) => (
-                        <Accordion
-                          type="single"
-                          collapsible
-                          className="w-full"
-                          key={index}
-                        >
-                          <AccordionItem value={`item-${index + 1}`}>
-                            <AccordionTrigger className="no-underline hover:no-underline uppercase text-sm">
-                              {menu.title}
-                            </AccordionTrigger>
-                            <AccordionContent>
-                              {menu.items ? (
-                                <motion.ul
-                                  initial={{ opacity: 0, y: -5 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -5 }}
-                                  transition={{ duration: 0.3 }}
-                                  className="pl-5 uppercase"
-                                >
-                                  {menu.items.map((item, itemIndex) => (
-                                    <motion.li
-                                      key={itemIndex}
-                                      initial={{ opacity: 0, x: -10 }}
-                                      animate={{ opacity: 1, x: 0 }}
-                                      transition={{
-                                        duration: 0.2,
-                                        delay: itemIndex * 0.05,
-                                      }}
-                                      className="pb-2 text-sm"
-                                    >
-                                      <a href={item.url}>{item.title}</a>
-                                    </motion.li>
-                                  ))}
-                                </motion.ul>
-                              ) : (
-                                <p className="uppercase">
-                                  <a href={menu.url}>{menu.title}</a>
-                                </p>
-                              )}
-                            </AccordionContent>
-                          </AccordionItem>
-                        </Accordion>
-                      ))}
-                    </div>
-                  </SheetContent>
-                </Sheet>
-              </div>
-            </div>
+            {/* </div> */}
 
             {/* Logout Confirmation Dialog */}
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

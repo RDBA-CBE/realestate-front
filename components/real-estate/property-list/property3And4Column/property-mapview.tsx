@@ -19,6 +19,45 @@ import { SlidersHorizontal, X, SearchIcon, RotateCcw } from 'lucide-react';
 export function MapView({ properties = [], title = 'Property Listings' }) {
   const [viewType, setViewType] = useState('grid');
   const [showFilter, setShowFilter] = useState(false);
+  
+  // Add state for price range
+  const [priceRange, setPriceRange] = useState({
+    minPrice: 0,
+    maxPrice: 50000000
+  });
+
+  // Add handleChange function
+  const handleChange = (field: string, value: number | number[]) => {
+    if (field === "priceRange") {
+      // Handle slider change (array of [min, max])
+      if (Array.isArray(value)) {
+        setPriceRange({
+          minPrice: value[0],
+          maxPrice: value[1]
+        });
+      }
+    } else if (field === "minPrice") {
+      // Handle min input change
+      setPriceRange(prev => ({
+        ...prev,
+        minPrice: Math.min(value as number, prev.maxPrice)
+      }));
+    } else if (field === "maxPrice") {
+      // Handle max input change
+      setPriceRange(prev => ({
+        ...prev,
+        maxPrice: Math.max(value as number, prev.minPrice)
+      }));
+    }
+  };
+
+  // Reset all filters function
+  const resetFilters = () => {
+    setPriceRange({
+      minPrice: 0,
+      maxPrice: 50000000
+    });
+  };
 
   return (
     <div className='min-h-screen bg-gray-50'>
@@ -239,16 +278,43 @@ export function MapView({ properties = [], title = 'Property Listings' }) {
                       </div>
                     </div>
 
-                    {/* Price Range */}
+                    {/* Price Range - FIXED */}
                     <div>
                       <div className='mb-3 font-semibold text-gray-900'>
                         Price Range
                       </div>
-                      <Slider max={6000000} step={1000} className='mb-4' />
+                      
+                      {/* Labels row */}
+                      <div className="flex justify-between text-xs text-gray-500 mb-2 px-1">
+                        <span>0</span>
+                        <span>1Cr</span>
+                        <span>2Cr</span>
+                        <span>3Cr</span>
+                        <span>4Cr</span>
+                        <span>5Cr+</span>
+                      </div>
+                      
+                      {/* Slider with two thumbs */}
+                      <Slider 
+                        max={50000000} 
+                        step={10000000} 
+                        value={[priceRange.minPrice, priceRange.maxPrice]}
+                        onValueChange={(value) => handleChange("priceRange", value)}
+                        className='mb-4' 
+                      />
+                      
                       <div className='flex gap-3'>
-                        <Input placeholder='Min.' />
+                        <Input 
+                          placeholder='Min.' 
+                          value={priceRange.minPrice}
+                          onChange={(e) => handleChange("minPrice", Number(e.target.value) || 0)}
+                        />
                         <span className='flex items-center'>-</span>
-                        <Input placeholder='Max' />
+                        <Input 
+                          placeholder='Max' 
+                          value={priceRange.maxPrice}
+                          onChange={(e) => handleChange("maxPrice", Number(e.target.value) || 0)}
+                        />
                       </div>
                     </div>
 
@@ -346,6 +412,7 @@ export function MapView({ properties = [], title = 'Property Listings' }) {
                       <Button
                         variant='outline'
                         className='flex items-center justify-center gap-2'
+                        onClick={resetFilters}
                       >
                         <RotateCcw className='h-4 w-4' />
                         Reset
