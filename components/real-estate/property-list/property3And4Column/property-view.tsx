@@ -35,9 +35,9 @@ export function PropertyView(props: any) {
     search: '',
     listingStatus: '',
     propertyType: [],
-    priceRange: [0, 50000000], // Changed to match your slider max
+    priceRange: [0, 0], // Changed to match your slider max
     minPrice: 0, // Add initial minPrice
-    maxPrice: 50000000, // Add initial maxPrice
+    maxPrice: 0, // Add initial maxPrice
     bedrooms: '',
     bathrooms: '',
     location: '',

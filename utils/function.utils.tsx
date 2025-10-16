@@ -377,3 +377,20 @@ export const TimeAgo = (dateString: string | Date) => {
   if (diff < 31104000) return `${Math.floor(diff / 2592000)} Month${Math.floor(diff / 2592000) > 1 ? "s" : ""} ago`;
   return `${Math.floor(diff / 31104000)} Year${Math.floor(diff / 31104000) > 1 ? "s" : ""} ago`;
 };
+
+
+export const formatPhoneNumber = (phone) => {
+  if (!phone) return "";
+
+  const cleaned = phone.toString().replace(/\D/g, "");
+
+  if (cleaned.startsWith("91") && cleaned.length === 12) {
+    return `+91 ${cleaned.slice(2, 7)} ${cleaned.slice(7)}`;
+  }
+
+  if (cleaned.length === 10) {
+    return `+91 ${cleaned.slice(0, 5)} ${cleaned.slice(5)}`;
+  }
+
+  return phone;
+};

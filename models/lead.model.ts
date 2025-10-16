@@ -1,60 +1,17 @@
 import instance from "@/utils/axios.utils";
 
-const properties = {
+const lead = {
   list: (page, body) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `properties?page=${page}`;
-
-      if (body?.property_type) {
-        url += `&property_type=${encodeURIComponent(body?.property_type)}`;
+      let url = `leads/?page=${page}`;
+      if (body?.group) {
+        url += `&group=${encodeURIComponent(body.group)}`;
       }
-
-      if (body?.page_size) {
-        url += `&page_size=${encodeURIComponent(body?.page_size)}`;
+       if (body?.search) {
+        url += `&search=${encodeURIComponent(body.search)}`;
       }
-
-      if (body?.search) {
-        url += `&search=${encodeURIComponent(body?.search)}`;
-      }
-
-      if (body?.minPrice) {
-        url += `&min_price=${encodeURIComponent(body?.minPrice)}`;
-      }
-
-      if (body?.maxPrice) {
-        url += `&max_price=${encodeURIComponent(body?.maxPrice)}`;
-      }
-
-      if (body?.bedrooms) {
-        url += `&bedrooms=${encodeURIComponent(body?.bedrooms)}`;
-      }
-      if (body?.bathrooms) {
-        url += `&bathrooms=${encodeURIComponent(body?.bathrooms)}`;
-      }
-      if (body?.location) {
-        url += `&city=${encodeURIComponent(body?.location)}`;
-      }
-      if (body?.sqftMin) {
-        url += `&min_area=${encodeURIComponent(body?.sqftMin)}`;
-      }
-      if (body?.sqftMax) {
-        url += `&max_area=${encodeURIComponent(body?.sqftMax)}`;
-      }
-      if (body?.yearBuiltMin) {
-        url += `&yearBuiltMin=${encodeURIComponent(body?.yearBuiltMin)}`;
-      }
-      if (body?.yearBuiltMax) {
-        url += `&yearBuiltMax=${encodeURIComponent(body?.yearBuiltMax)}`;
-      }
-
-      if (body?.is_approved) {
-        url += `&is_approved=${encodeURIComponent(true)}`;
-      }
-
-      
-
       instance()
-        .get(url, body)
+        .get(url)
         .then((res) => {
           resolve(res.data);
         })
@@ -71,20 +28,15 @@ const properties = {
 
   create: (data: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `properties/`;
-      const config = {
-        headers: {
-          "Content-Type": "multipart/form-data; charset=utf-8;",
-        },
-      };
+      let url = `leads/`;
       instance()
-        .post(url, data, config)
+        .post(url, data)
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response.data.message);
+            reject(error.response.data);
           } else {
             reject(error);
           }
@@ -95,20 +47,16 @@ const properties = {
 
   update: (data: any, id: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `properties/${id}/`;
-      const config = {
-        headers: {
-          "Content-Type": "multipart/form-data; charset=utf-8;",
-        },
-      };
+      let url = `leads/${id}/`;
+
       instance()
-        .patch(url, data, config)
+        .patch(url, data)
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response.data.message);
+            reject(error.response.data);
           } else {
             reject(error);
           }
@@ -119,7 +67,7 @@ const properties = {
 
   delete: (id: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `properties/${id}/`;
+      let url = `leads/${id}/`;
 
       instance()
         .delete(url)
@@ -139,8 +87,7 @@ const properties = {
 
   details: (id: any) => {
     let promise = new Promise((resolve, reject) => {
-      let url = `properties/${id}/`;
-
+      let url = `leads/${id}/`;
       instance()
         .get(url)
         .then((res) => {
@@ -184,4 +131,4 @@ const properties = {
   },
 };
 
-export default properties;
+export default lead;

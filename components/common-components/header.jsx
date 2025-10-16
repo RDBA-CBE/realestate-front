@@ -73,6 +73,8 @@ const Header = () => {
       const res = await Models.auth.logout({ refresh });
       setState({ logoutLoading: true });
       setDialogOpen(false);
+      localStorage.clear();
+
       window.location.href = "/login";
     } catch (error) {
       localStorage.clear();

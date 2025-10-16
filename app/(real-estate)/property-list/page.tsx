@@ -114,6 +114,7 @@ export default function Page() {
     }
 
     body.page_size = PROPERTY_LIST_PAGE;
+    body.is_approved = "Yes"
     return body;
   };
 

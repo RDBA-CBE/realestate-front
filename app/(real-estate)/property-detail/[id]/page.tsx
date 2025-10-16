@@ -184,13 +184,14 @@ function ContactSection() {
               onClose={handleCloseModal}
             />
           ) : (
-            <ContactAgentForm onSuccess={handleFormSuccess} />
+            <></>
+            // <ContactAgentForm  />
           )}
         </DialogContent>
       </Dialog>
 
       {/* Contact form for logged-in users */}
-      {isLoggedIn && <ContactAgentForm onSuccess={handleFormSuccess} />}
+      {/* {isLoggedIn && <ContactAgentForm  />} */}
     </div>
   );
 }
@@ -202,6 +203,7 @@ export default function PropertyDetailPage() {
     isActive: false,
     detail: {},
     similarProperty: [],
+    token: null,
   });
 
   const images = [
@@ -247,9 +249,10 @@ export default function PropertyDetailPage() {
 
   const getDetails = async () => {
     try {
+      const token = localStorage.getItem("token");
       const res: any = await Models.property.details(params?.id);
       console.log("✌️res --->", res);
-      setState({ detail: res });
+      setState({ detail: res, token });
       similarProperty(res?.property_type?.id);
     } catch (error) {
       console.log("✌️error --->", error);
@@ -305,7 +308,7 @@ export default function PropertyDetailPage() {
             <Amenities data={state.detail?.amenities} />
           </div>
           <div id="floorplans">
-            <FloorPlans />
+            <FloorPlans data={state.detail?.floor_plans} />
           </div>
           {state.detail?.videos?.length > 0 && (
             <div id="video">
@@ -339,7 +342,7 @@ export default function PropertyDetailPage() {
           <div
             className={`sticky ${state.isActive ? "top-[8rem]" : "top-[6rem]"}`}
           >
-            <ContactAgentForm />
+            <ContactAgentForm data={state.detail} token={state.token} />
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import { Bed, Bath, Calendar, Car, Maximize2, Home } from "lucide-react";
 import { useState } from "react";
 
 export default function PropertyDetails({ data }: any) {
+console.log('✌️data --->', data);
 
 
     const [expanded, setExpanded] = useState(false);
