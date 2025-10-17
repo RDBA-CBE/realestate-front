@@ -4,7 +4,12 @@ import { PropertyView1 } from "@/components/real-estate/property-list/property3A
 import { PropertyView2 } from "@/components/real-estate/property-list/property3And4Column/property-view2";
 import Models from "@/imports/models.import";
 import { PROPERTY_LIST_PAGE } from "@/utils/constant.utils";
-import { useSetState } from "@/utils/function.utils";
+import {
+  Dropdown,
+  formatNumber,
+  removePlus,
+  useSetState,
+} from "@/utils/function.utils";
 import { useEffect, useCallback } from "react";
 
 export default function Page() {
@@ -14,10 +19,14 @@ export default function Page() {
     handNext: null,
     page: 1,
     isLoadingMore: false,
+    categoryList: [],
+    minPrice: 0,
+    maxPrice: 1000000,
   });
 
   useEffect(() => {
     propertyList();
+    categoryList();
   }, []);
 
   const propertyList = async (page = 1, append = false) => {
@@ -32,6 +41,8 @@ export default function Page() {
         page_size: PROPERTY_LIST_PAGE,
       };
       const res: any = await Models.property.list(page, body);
+      const minPrice = formatNumber(res?.min_price);
+      const maxPrice = formatNumber(res?.max_price);
 
       setState({
         propertyList: append
@@ -41,12 +52,26 @@ export default function Page() {
         page: page,
         loading: false,
         isLoadingMore: false,
+        minPrice,
+        maxPrice,
       });
     } catch (error) {
       setState({
         loading: false,
         isLoadingMore: false,
       });
+      console.log("✌️error --->", error);
+    }
+  };
+
+  const categoryList = async () => {
+    try {
+      const res: any = await Models.category.list(1, {});
+      const dropdown = Dropdown(res?.results, "name");
+      setState({
+        categoryList: dropdown,
+      });
+    } catch (error) {
       console.log("✌️error --->", error);
     }
   };
@@ -79,23 +104,40 @@ export default function Page() {
   const bodyData = (data) => {
     let body: any = {};
 
+    if (data?.listingStatus) {
+      if (data?.listingStatus != "All") {
+        body.listing_type = [data?.listingStatus.toLowerCase()];
+      }
+    }
+    if (data?.propertyType?.length > 0) {
+      body.property_type = data?.propertyType?.[0]?.value;
+    }
+
+    if (data?.furnishing?.length > 0) {
+      body.furnishing = data?.furnishing?.[0]?.value;
+    }
+
     if (data?.search) {
       body.search = data?.search;
     }
 
-    if (data?.minPrice) {
-      body.minPrice = data?.minPrice;
+    if (data?.priceRange?.length > 0) {
+      body.minPrice = data?.priceRange[0];
     }
 
-    if (data?.maxPrice) {
-      body.maxPrice = data?.maxPrice;
+    if (data?.priceRange?.length >= 1) {
+      body.maxPrice = data?.priceRange[1];
     }
 
     if (data?.bedrooms) {
-      body.bedrooms = data?.bedrooms;
+      if (data?.bedrooms != "Any") {
+        body.bedrooms = removePlus(data?.bedrooms);
+      }
     }
     if (data?.bathrooms) {
-      body.bathrooms = data?.bathrooms;
+      if (data?.bathrooms != "Any") {
+        body.bathrooms = removePlus(data?.bathrooms);
+      }
     }
     if (data?.location) {
       body.location = data?.location;
@@ -106,23 +148,29 @@ export default function Page() {
     if (data?.sqftMax) {
       body.sqftMax = data?.sqftMax;
     }
-    if (data?.yearBuiltMin) {
+    if (data?.yearBuiltMin != "") {
       body.yearBuiltMin = data?.yearBuiltMin;
     }
-    if (data?.yearBuiltMax) {
+    if (data?.yearBuiltMax != "") {
       body.yearBuiltMax = data?.yearBuiltMax;
+    }
+    if (data?.sort) {
+      body.sort_by = data?.sort;
     }
 
     body.page_size = PROPERTY_LIST_PAGE;
-    body.is_approved = "Yes"
+    body.is_approved = "Yes";
     return body;
   };
 
   return (
     <div>
       <PropertyView
+        minPrice={state.minPrice}
+        maxPrice={state.maxPrice}
         properties={state.propertyList}
-        filters={(data) => filterList(1,false,data)}
+        categoryList={state.categoryList}
+        filters={(data) => filterList(1, false, data)}
         loading={state.loading}
         isLoadingMore={state.isLoadingMore}
         handNext={state.handNext}

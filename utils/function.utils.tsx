@@ -394,3 +394,7 @@ export const formatPhoneNumber = (phone) => {
 
   return phone;
 };
+
+export const removePlus=(data)=>{
+  return data.replaceAll("+", "")
+}

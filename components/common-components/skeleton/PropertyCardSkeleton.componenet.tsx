@@ -1,9 +1,10 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function PropertyCardSkeleton({ view = "grid" }) {
+export function PropertyCardSkeleton(props) {
+  const { view = "grid", row } = props;
   if (view === "list") {
-    return (
-      <div className="flex gap-6 p-6 border rounded-lg bg-white">
+    return Array.from({ length: row ?? 2 }).map((_, i) => (
+      <div className="flex gap-6 p-6 border rounded-lg bg-white" key={i}>
         <Skeleton className="h-48 w-64 rounded-lg" />
         <div className="flex-1 space-y-4">
           <Skeleton className="h-6 w-3/4" />
@@ -19,11 +20,11 @@ export function PropertyCardSkeleton({ view = "grid" }) {
           </div>
         </div>
       </div>
-    );
+    ));
   }
 
-  return (
-    <div className="border rounded-lg overflow-hidden bg-white">
+  return Array.from({ length: row ?? 2 }).map((_, i) => (
+    <div className="border rounded-lg overflow-hidden bg-white" key={i}>
       <Skeleton className="h-48 w-full" />
       <div className="p-4 space-y-4">
         <Skeleton className="h-6 w-3/4" />
@@ -38,5 +39,5 @@ export function PropertyCardSkeleton({ view = "grid" }) {
         </div>
       </div>
     </div>
-  );
+  ));
 }

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { SlidersHorizontal, X, SearchIcon, RotateCcw } from "lucide-react";
+import { PropertyCard } from "./property-card";
 import {
   Select,
   SelectTrigger,
@@ -12,80 +13,135 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Slider } from "@/components/ui/slider";
-import { SlidersHorizontal, X, SearchIcon, RotateCcw } from "lucide-react";
-import { PropertyCard } from "./property-card";
 import { useSetState } from "@/utils/function.utils";
+import PriceRangeSlider from "@/components/common-components/priceRange";
+import { FURNISHING_TYPE } from "@/utils/constant.utils";
+import { TextInput } from "@/components/common-components/textInput";
+import { PropertyMapCardSkeleton } from "@/components/common-components/skeleton/PropertyMapCardSkeleton.component";
 
 export function MapView(props) {
-  const { properties = [], title = "Property Listings", filters } = props;
+  const {
+    properties = [],
+    title = "List View",
+    filters,
+    loading,
+    isLoadingMore,
+    handNext,
+    loadMore,
+    categoryList,
+    minPrice,
+    maxPrice,
+  } = props;
 
   const [state, setState] = useSetState({
-    view:"grid"
-  });
-  const [viewType, setViewType] = useState("grid");
-  const [showFilter, setShowFilter] = useState(false);
-
-  // Add state for price range
-  const [priceRange, setPriceRange] = useState({
+    view: "grid",
+    search: "",
+    listingStatus: "",
+    propertyType: [],
+    furnishing: [],
+    priceRange: [0, 0],
     minPrice: 0,
-    maxPrice: 50000000,
+    maxPrice: 0,
+    bedrooms: "",
+    bathrooms: "",
+    location: "",
+    sqftMin: "",
+    sqftMax: "",
+    yearBuiltMin: "",
+    yearBuiltMax: "",
+    sort: null,
+    isOpen: false,
   });
 
-  // Add handleChange function
-  const handleChange = (field: string, value: number | number[]) => {
-    if (field === "priceRange") {
-      // Handle slider change (array of [min, max])
-      if (Array.isArray(value)) {
-        setPriceRange({
-          minPrice: value[0],
-          maxPrice: value[1],
-        });
-      }
-    } else if (field === "minPrice") {
-      // Handle min input change
-      setPriceRange((prev) => ({
-        ...prev,
-        minPrice: Math.min(value as number, prev.maxPrice),
-      }));
-    } else if (field === "maxPrice") {
-      // Handle max input change
-      setPriceRange((prev) => ({
-        ...prev,
-        maxPrice: Math.max(value as number, prev.minPrice),
-      }));
-    }
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastPropertyElementRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (isLoadingMore) return;
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && handNext) {
+          loadMore(state);
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [isLoadingMore, handNext, loadMore, state]
+  );
+
+  const resetFilters = () => {
+    setState({
+      search: "",
+      listingStatus: "",
+      propertyType: [],
+      priceRange: [minPrice, maxPrice],
+      minPrice: "",
+      maxPrice: "",
+      bedrooms: "",
+      bathrooms: "",
+      location: "",
+      sqftMin: "",
+      sqftMax: "",
+      yearBuiltMin: "",
+      yearBuiltMax: "",
+      isOpen: false,
+    });
+    filters({});
   };
 
-  // Reset all filters function
-  const resetFilters = () => {
-    setPriceRange({
-      minPrice: 0,
-      maxPrice: 50000000,
-    });
+  useEffect(() => {
+    setState({ minPrice, maxPrice, priceRange: [minPrice, maxPrice] });
+  }, [minPrice, maxPrice]);
+
+  useEffect(() => {
+    filters(state);
+  }, [state.sort]);
+
+  useEffect(() => {
+    if (properties.length > 0 && !isLoadingMore) {
+      const lastElement = document.querySelector(
+        ".property-item:last-child"
+      ) as HTMLElement | null;
+      if (lastElement) lastPropertyElementRef(lastElement);
+    }
+  }, [properties, isLoadingMore, lastPropertyElementRef]);
+
+  const skeletonCount = state.view === "grid" ? 2 : 1;
+
+  const handleChange = (name: string, value: any) => {
+    setState({ [name]: value });
+  };
+
+  const formatINR = (value: number) => {
+    if (isNaN(value)) return "";
+    return value.toLocaleString("en-IN");
+  };
+
+  const parseINR = (value: string) => Number(value.replace(/,/g, ""));
+
+  const handleFilter = () => {
+    filters(state);
+    setState({ isOpen: false });
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* GRID WRAPPER */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-        {/* LEFT SIDE - Property Listings */}
-        <div className="xl:col-span-5 p-6 lg:p-8 overflow-y-auto h-[calc(100vh-80px)]">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
+        <div className="xl:col-span-5 p-6 lg:p-8 overflow-y-auto h-[calc(100vh-80px)] flex flex-col items-start">
+          <div className="flex items-center justify-between mb-6 w-full">
             <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-1">
                 {title}
               </h2>
               <p className="text-sm text-gray-500">
-                Showing 1–{properties.length} of {properties.length} results
+                Showing 1–{properties?.length} of {properties?.length} results
               </p>
             </div>
 
-            {/* Filter Toggle Button */}
             <Button
-              onClick={() => setShowFilter(true)}
+              onClick={() => setState({ isOpen: true })}
               variant="outline"
               className="rounded-full text-gray-800 px-4 py-2 border shadow-sm hover:bg-gray-50 flex items-center gap-2"
             >
@@ -93,25 +149,44 @@ export function MapView(props) {
             </Button>
           </div>
 
-          {/* Sort + View Controls */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Sort by</span>
-              <Select>
-                <SelectTrigger className="w-[120px] h-8 text-sm">
+          <div className="flex items-center justify-between mb-6 w-full">
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-gray-600 whitespace-nowrap">
+                Sort by:
+              </span>
+              <Select
+                defaultValue="default"
+                onValueChange={(value) => {
+                  let sortValue = "new";
+                  switch (value) {
+                    case "price-low":
+                      sortValue = "price";
+                      break;
+                    case "price-high":
+                      sortValue = "-price";
+                      break;
+                    case "default":
+                      sortValue = "";
+                      break;
+                    case "newest":
+                      sortValue = "created_at";
+                      break;
+                  }
+                  handleChange("sort", sortValue);
+                }}
+              >
+                <SelectTrigger className="border-0 shadow-none focus:ring-0 p-0 h-auto text-sm font-medium text-gray-900">
                   <SelectValue placeholder="Newest" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="default">Default</SelectItem>
                   <SelectItem value="newest">Newest</SelectItem>
-                  <SelectItem value="bestseller">Best Seller</SelectItem>
-                  <SelectItem value="bestmatch">Best Match</SelectItem>
-                  <SelectItem value="pricelow">Price Low</SelectItem>
-                  <SelectItem value="pricehigh">Price High</SelectItem>
+                  <SelectItem value="price-low">Price: Low to High</SelectItem>
+                  <SelectItem value="price-high">Price: High to Low</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Grid/List Toggle with Text */}
             <div className="flex items-center gap-0 rounded-lg overflow-hidden border">
               <Button
                 onClick={() => setState({ view: "grid" })}
@@ -139,52 +214,71 @@ export function MapView(props) {
             </div>
           </div>
 
-          {/* Property Cards */}
-          <div
-            className={`grid gap-6 ${
-              state.view === "grid" ? "sm:grid-cols-2" : "grid-cols-1"
-            }`}
-          >
-            {properties.map((p, i) => (
-              <div key={i}>
-                <PropertyCard property={p} view={state.view} />
+          {loading ? (
+            <div
+              className={
+                state.view === "grid"
+                  ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6"
+                  : "flex flex-col gap-6"
+              }
+            >
+              {Array.from({ length: skeletonCount }).map((_, index) => (
+                <PropertyMapCardSkeleton
+                  key={`skeleton-${index}`}
+                  view={state.view}
+                  row={2}
+                />
+              ))}
+            </div>
+          ) : properties?.length === 0 ? (
+            <div className="flex justify-center items-center w-full pt-40">
+              <div>No Property Found</div>
+            </div>
+          ) : (
+            <>
+              <div
+                className={
+                  state.view === "grid"
+                    ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 w-full"
+                    : "flex flex-col gap-6 w-full"
+                }
+              >
+                {properties?.map((property: any, index: number) => (
+                  <div
+                    key={index}
+                    className="property-item"
+                    ref={
+                      index === properties.length - 1
+                        ? lastPropertyElementRef
+                        : null
+                    }
+                  >
+                    <PropertyCard property={property} view={state.view} />
+                  </div>
+                ))}
               </div>
-              // <Card
-              //   key={p.id}
-              //   className='overflow-hidden border rounded-xl shadow-sm hover:shadow-md transition-all duration-200'
-              // >
-              //   <img
-              //     src={p.image}
-              //     alt={p.title}
-              //     className='w-full h-40 object-cover'
-              //   />
-              //   <CardContent className='p-4 space-y-2'>
-              //     <div className='flex gap-2 flex-wrap'>
-              //       {p.featured && (
-              //         <Badge className='bg-red-500 hover:bg-red-600 text-white text-xs'>
-              //           FEATURED
-              //         </Badge>
-              //       )}
-              //       <Badge className='bg-black hover:bg-gray-800 text-white text-xs'>
-              //         FOR {p.priceType === 'rent' ? 'RENT' : 'SALE'}
-              //       </Badge>
-              //     </div>
-              //     <h3 className='font-semibold text-gray-900 text-sm truncate'>
-              //       {p.title}
-              //     </h3>
-              //     <p className='text-sm text-gray-500'>{p.location}</p>
-              //     <p className='text-red-600 font-bold text-sm'>
-              //       {p.priceType === 'rent'
-              //         ? `$${p.price.toLocaleString()} / mo`
-              //         : `$${p.price.toLocaleString()}`}
-              //     </p>
-              //   </CardContent>
-              // </Card>
-            ))}
-          </div>
+
+              {isLoadingMore && (
+                <div
+                  className={
+                    state.view === "grid"
+                      ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6"
+                      : "flex flex-col gap-6"
+                  }
+                >
+                  {Array.from({ length: skeletonCount }).map((_, index) => (
+                    <PropertyMapCardSkeleton
+                      key={`skeleton-load-${index}`}
+                      view={state.view}
+                      row={1}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
         </div>
 
-        {/* RIGHT SIDE - Google Map */}
         <div className="xl:col-span-7 relative h-[calc(100vh-80px)] bg-gray-200">
           <iframe
             title="Map"
@@ -194,22 +288,18 @@ export function MapView(props) {
           ></iframe>
         </div>
       </div>
-
-      {/* Filter Popup Modal - Centered Popup Style */}
       <AnimatePresence>
-        {showFilter && (
+        {state.isOpen && (
           <>
-            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
               className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
-              onClick={() => setShowFilter(false)}
+              onClick={() => setState({ isOpen: false })}
             />
 
-            {/* Centered Modal */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -223,42 +313,72 @@ export function MapView(props) {
                   <h3 className="text-xl font-semibold text-gray-900">
                     Filters
                   </h3>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setShowFilter(false)}
-                    className="h-8 w-8 rounded-full hover:bg-gray-100"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
+
+                  <div className="flex items-center gap-3">
+                    <Button
+                      className="bg-[#F35C48] hover:bg-[#d94d3c] flex items-center justify-center gap-2"
+                      onClick={() => {
+                        handleFilter();
+                      }}
+                    >
+                      <SearchIcon className="h-4 w-4" />
+                      Search
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      className="flex items-center justify-center gap-2"
+                      onClick={resetFilters}
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                      Reset
+                    </Button>
+
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setState({ isOpen: false })}
+                      className="h-8 w-8 rounded-full hover:bg-gray-100"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
 
                 <div className="overflow-y-auto max-h-[calc(90vh-80px)] p-6">
                   <div className="space-y-6">
-                    {/* Search */}
-                    <div>
-                      <div className="font-semibold text-gray-900 mb-2">
-                        Find your home
+                    <div className=" font-semibold text-gray-900">
+                      Search Property
+                      <div className="mt-3">
+                        <TextInput
+                          placeholder="What are you looking for?"
+                          value={state.search}
+                          onChange={(e) =>
+                            handleChange("search", e.target.value)
+                          }
+                        />
                       </div>
-                      <Input placeholder="What are you looking for?" />
                     </div>
 
-                    {/* Listing Status */}
                     <div>
-                      <div className="mb-3 font-semibold text-gray-900">
+                      <div className="mb-2 font-semibold text-gray-900">
                         Listing Status
                       </div>
-                      <div className="flex gap-4">
-                        {["All", "Buy", "Rent"].map((option) => (
+
+                      <div className="flex items-center justify-start gap-6">
+                        {["All", "Sale", "Rent", "Lease"].map((option) => (
                           <label
                             key={option}
                             className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
                           >
                             <input
                               type="radio"
-                              name="listing-status"
-                              value={option}
-                              className="h-4 w-4 border-gray-300 text-red-500 focus:ring-red-500"
+                              name="listingStatus"
+                              checked={state.listingStatus === option}
+                              onChange={() =>
+                                handleChange("listingStatus", option)
+                              }
+                              className="accent-blue-600 cursor-pointer"
                             />
                             {option}
                           </label>
@@ -266,95 +386,115 @@ export function MapView(props) {
                       </div>
                     </div>
 
-                    {/* Property Type */}
                     <div>
-                      <div className="mb-3 font-semibold text-gray-900">
+                      <div className="mb-2 font-semibold text-gray-900">
                         Property Type
                       </div>
-                      <div className="flex gap-4">
-                        {["Houses", "Apartments"].map((option) => (
+                      <div className="flex items-center justify-start gap-6">
+                        {categoryList?.map((option) => (
                           <label
-                            key={option}
+                            key={option?.value}
                             className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
                           >
                             <input
                               type="checkbox"
-                              value={option}
-                              className="h-4 w-4 border-gray-300 text-red-500 focus:ring-red-500"
+                              className="cursor-pointer"
+                              checked={state.propertyType.some(
+                                (t) => t.value === option.value
+                              )}
+                              onChange={(e) => {
+                                let updated;
+                                if (e.target.checked) {
+                                  updated = [option];
+                                } else {
+                                  updated = [];
+                                }
+                                handleChange("propertyType", updated);
+                              }}
                             />
-                            {option}
+                            <span>{option?.label}</span>
                           </label>
                         ))}
                       </div>
                     </div>
 
-                    {/* Price Range - FIXED */}
                     <div>
-                      <div className="mb-3 font-semibold text-gray-900">
-                        Price Range
-                      </div>
-
-                      {/* Labels row */}
-                      <div className="flex justify-between text-xs text-gray-500 mb-2 px-1">
-                        <span>0</span>
-                        <span>1Cr</span>
-                        <span>2Cr</span>
-                        <span>3Cr</span>
-                        <span>4Cr</span>
-                        <span>5Cr+</span>
-                      </div>
-
-                      {/* Slider with two thumbs */}
-                      <Slider
+                      <PriceRangeSlider
+                        min={0}
                         max={50000000}
-                        step={10000000}
-                        value={[priceRange.minPrice, priceRange.maxPrice]}
-                        onValueChange={(value) =>
-                          handleChange("priceRange", value)
-                        }
-                        className="mb-4"
+                        value={state.priceRange}
+                        onChange={(val) => {
+                          setState({ priceRange: val });
+                          handleChange("minPrice", val[0]);
+                          handleChange("maxPrice", val[1]);
+                        }}
                       />
 
-                      <div className="flex gap-3">
-                        <Input
-                          placeholder="Min."
-                          value={priceRange.minPrice}
-                          onChange={(e) =>
-                            handleChange(
-                              "minPrice",
-                              Number(e.target.value) || 0
-                            )
-                          }
-                        />
+                      <div className="flex gap-3 mt-4 items-center">
+                        <div className="relative w-full">
+                          <span className="absolute left-3 top-2 text-gray-600">
+                            ₹
+                          </span>
+                          <Input
+                            type="text"
+                            className="pl-6 pr-0"
+                            placeholder="Min."
+                            value={formatINR(state.priceRange?.[0] ?? 0)}
+                            onChange={(e) => {
+                              const newMin = parseINR(e.target.value);
+                              const newMax = Math.max(
+                                newMin,
+                                state.priceRange?.[1] ?? 0
+                              );
+                              const updated = [newMin, newMax];
+                              handleChange("priceRange", updated);
+                              setState({ priceRange: updated });
+                            }}
+                          />
+                        </div>
+
                         <span className="flex items-center">-</span>
-                        <Input
-                          placeholder="Max"
-                          value={priceRange.maxPrice}
-                          onChange={(e) =>
-                            handleChange(
-                              "maxPrice",
-                              Number(e.target.value) || 0
-                            )
-                          }
-                        />
+
+                        <div className="relative w-full">
+                          <span className="absolute left-3 top-2 text-gray-600">
+                            ₹
+                          </span>
+                          <Input
+                            type="text"
+                            className="pl-6 pr-0"
+                            placeholder="Max."
+                            value={formatINR(state.priceRange?.[1] ?? 0)}
+                            onChange={(e) => {
+                              const newMax = parseINR(e.target.value);
+                              const newMin = Math.min(
+                                newMax,
+                                state.priceRange?.[0] ?? 0
+                              );
+                              const updated = [newMin, newMax];
+                              handleChange("priceRange", updated);
+                              setState({ priceRange: updated });
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
 
-                    {/* Bedrooms */}
                     <div>
-                      <div className="mb-3 font-semibold text-gray-900">
+                      <div className="mb-2 font-semibold text-gray-900">
                         Bedrooms
                       </div>
+
                       <div className="flex flex-wrap gap-2">
                         {["Any", "2+", "3+", "4+", "5+"].map((option) => (
-                          <label key={option} className="cursor-pointer">
+                          <label key={option}>
                             <input
                               type="radio"
                               name="bedrooms"
-                              value={option}
+                              checked={state.bedrooms === option}
+                              onChange={() => handleChange("bedrooms", option)}
                               className="peer hidden"
                             />
-                            <span className="flex items-center justify-center px-4 py-2 border rounded-lg text-sm text-gray-700 hover:border-red-400 peer-checked:border-red-500 peer-checked:bg-red-50 peer-checked:text-red-600">
+                            <span className="flex items-center justify-center px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:border-red-400 peer-checked:border-red-500">
                               {option}
                             </span>
                           </label>
@@ -362,21 +502,21 @@ export function MapView(props) {
                       </div>
                     </div>
 
-                    {/* Bathrooms */}
                     <div>
-                      <div className="mb-3 font-semibold text-gray-900">
+                      <div className="mb-2 font-semibold text-gray-900">
                         Bathrooms
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        {["Any", "1+", "2+", "3+", "4+", "5+"].map((option) => (
-                          <label key={option} className="cursor-pointer">
+                        {["Any", "2+", "3+", "4+", "5+"].map((option) => (
+                          <label key={option}>
                             <input
                               type="radio"
                               name="bathrooms"
-                              value={option}
+                              checked={state.bathrooms === option}
+                              onChange={() => handleChange("bathrooms", option)}
                               className="peer hidden"
                             />
-                            <span className="flex items-center justify-center px-4 py-2 border rounded-lg text-sm text-gray-700 hover:border-red-400 peer-checked:border-red-500 peer-checked:bg-red-50 peer-checked:text-red-600">
+                            <span className="flex items-center justify-center px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:border-red-400 peer-checked:border-red-500">
                               {option}
                             </span>
                           </label>
@@ -384,61 +524,85 @@ export function MapView(props) {
                       </div>
                     </div>
 
-                    {/* Location */}
                     <div>
-                      <div className="mb-3 font-semibold text-gray-900">
-                        Location
+                      <div className="mb-2 font-semibold text-gray-900">
+                        Furnishing
                       </div>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="All Cities" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="ny">New York</SelectItem>
-                          <SelectItem value="la">Los Angeles</SelectItem>
-                          <SelectItem value="chicago">Chicago</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <div className="flex items-center justify-start gap-6">
+                        {FURNISHING_TYPE?.map((option) => (
+                          <label
+                            key={option?.value}
+                            className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
+                          >
+                            <input
+                              type="checkbox"
+                              className="cursor-pointer"
+                              checked={state.furnishing.some(
+                                (t) => t.value === option.value
+                              )}
+                              onChange={(e) => {
+                                let updated;
+                                if (e.target.checked) {
+                                  updated = [option];
+                                } else {
+                                  updated = [];
+                                }
+                                handleChange("furnishing", updated);
+                              }}
+                            />
+                            <span>{option?.label}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
 
-                    {/* Square Feet */}
                     <div>
-                      <div className="mb-3 font-semibold text-gray-900">
+                      <div className="mb-2 font-semibold text-gray-900">
                         Square Feet
                       </div>
                       <div className="flex gap-3">
-                        <Input placeholder="Min." />
+                        <Input
+                          type="number"
+                          placeholder="Min."
+                          value={state.sqftMin}
+                          onChange={(e) =>
+                            handleChange("sqftMin", e.target.value)
+                          }
+                        />
                         <span className="flex items-center">-</span>
-                        <Input placeholder="Max" />
+                        <Input
+                          type="number"
+                          placeholder="Max."
+                          value={state.sqftMax}
+                          onChange={(e) =>
+                            handleChange("sqftMax", e.target.value)
+                          }
+                        />
                       </div>
                     </div>
 
-                    {/* Year Built */}
                     <div>
-                      <div className="mb-3 font-semibold text-gray-900">
+                      <div className="mb-2 font-semibold text-gray-900">
                         Year Built
                       </div>
                       <div className="flex gap-3">
-                        <Input placeholder="From" />
-                        <span className="flex items-center">-</span>
-                        <Input placeholder="To" />
+                        <Input
+                          type="number"
+                          placeholder=""
+                          value={state.yearBuiltMin}
+                          onChange={(e) =>
+                            handleChange("yearBuiltMin", e.target.value)
+                          }
+                        />
+                        <Input
+                          type="number"
+                          placeholder=""
+                          value={state.yearBuiltMax}
+                          onChange={(e) =>
+                            handleChange("yearBuiltMax", e.target.value)
+                          }
+                        />
                       </div>
-                    </div>
-
-                    {/* Buttons */}
-                    <div className="flex gap-3 pt-4">
-                      <Button className="flex-1 bg-[#F35C48] hover:bg-[#d94d3c] flex items-center justify-center gap-2">
-                        <SearchIcon className="h-4 w-4" />
-                        Search
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className="flex items-center justify-center gap-2"
-                        onClick={resetFilters}
-                      >
-                        <RotateCcw className="h-4 w-4" />
-                        Reset
-                      </Button>
                     </div>
                   </div>
                 </div>

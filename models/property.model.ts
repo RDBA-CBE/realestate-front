@@ -2,11 +2,20 @@ import instance from "@/utils/axios.utils";
 
 const properties = {
   list: (page, body) => {
+    console.log("✌️body --->", body);
     let promise = new Promise((resolve, reject) => {
       let url = `properties?page=${page}`;
 
+      if (body?.listing_type) {
+        url += `&listing_type=${encodeURIComponent(body?.listing_type)}`;
+      }
+
       if (body?.property_type) {
         url += `&property_type=${encodeURIComponent(body?.property_type)}`;
+      }
+
+      if (body?.furnishing) {
+        url += `&furnishing=${encodeURIComponent(body?.furnishing)}`;
       }
 
       if (body?.page_size) {
@@ -47,11 +56,12 @@ const properties = {
         url += `&yearBuiltMax=${encodeURIComponent(body?.yearBuiltMax)}`;
       }
 
-      if (body?.is_approved) {
+      if (body?.sort) {
         url += `&is_approved=${encodeURIComponent(true)}`;
       }
-
-      
+      if (body?.sort_by) {
+        url += `&sort_by=${encodeURIComponent(body?.sort_by)}`;
+      }
 
       instance()
         .get(url, body)

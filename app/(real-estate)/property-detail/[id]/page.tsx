@@ -301,9 +301,9 @@ export default function PropertyDetailPage() {
           <div id="desc">
             <PropertyDesc data={state.detail} />
           </div>
-          <div id="map">
+          {/* <div id="map">
             <MapSection data={state.detail} />
-          </div>
+          </div> */}
           <div id="amenities">
             <Amenities data={state.detail?.amenities} />
           </div>
