@@ -17,6 +17,7 @@ import { motion } from "framer-motion";
 
 import {
   capitalizeFLetter,
+  Failure,
   formatNumber,
   formattedNoDecimal,
   formatToINR,
@@ -82,6 +83,9 @@ export function PropertyCard({
   const handleWishList = async () => {
     try {
 
+      const token=localStorage.getItem('token')
+      if(token){
+
       if (!property?.user_wishlists) {
         const getWishlist = await Models.wishlist.add_property({
           property_id: property?.id,
@@ -115,6 +119,9 @@ export function PropertyCard({
           Success("Removed from your wishlist !");
         }
       }
+    }else{
+      Failure("Please log in to add properties to your wishlist!")
+    }
     } catch (error) {
       console.log("✌️error --->", error);
     }
