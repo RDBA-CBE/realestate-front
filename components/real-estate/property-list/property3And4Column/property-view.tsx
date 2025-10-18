@@ -35,6 +35,7 @@ export function PropertyView(props: any) {
     categoryList,
     minPrice,
     maxPrice,
+    updateList
   } = props;
 
   const [state, setState] = useSetState({
@@ -523,7 +524,12 @@ export function PropertyView(props: any) {
                         : null
                     }
                   >
-                    <PropertyCard property={property} view={state.view} />
+                    <PropertyCard
+                      property={property}
+                      view={state.view}
+                      list={properties}
+                      updateList={(data) => updateList(data)}
+                    />
                   </div>
                 ))}
               </div>

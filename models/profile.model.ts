@@ -1,6 +1,26 @@
 import instance from '@/utils/axios.utils';
 
 const profile = {
+
+    buyer_profile: (id) => {
+        let promise = new Promise((resolve, reject) => {
+            let url = `buyer-profiles/${id}/`;
+            instance()
+                .get(url)
+                .then((res) => {
+                    resolve(res.data);
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        reject(error.response.message);
+                    } else {
+                        reject(error);
+                    }
+                });
+        });
+        return promise;
+    },
+
     seller_profile: (id) => {
         let promise = new Promise((resolve, reject) => {
             let url = `seller-profiles/${id}/`;

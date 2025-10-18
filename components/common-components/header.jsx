@@ -17,6 +17,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   GitCompareArrowsIcon,
+  Heart,
   Loader,
   LogIn,
   LogOut,
@@ -209,6 +210,15 @@ const Header = () => {
                         <User className="mr-2 h-4 w-4" />
                         <span>Profile</span>
                       </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        onClick={() => router.push("/wishlist")}
+                      >
+                        <Heart className="mr-2 h-4 w-4" />
+                        <span>Wishlist</span>
+                      </DropdownMenuItem>
+
+
                       <DropdownMenuItem
                         onClick={() => router.push("/compare")}
                       >
