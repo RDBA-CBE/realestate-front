@@ -35,10 +35,10 @@ export default function Page() {
         setState({ loading: true });
       }
 
-      const body = {
+      const bodys = {
         page_size: PROPERTY_LIST_PAGE,
       };
-      const res: any = await Models.property.list(page, body);
+      const res: any = await Models.property.list(page, bodys);
       const minPrice = formatNumber(res?.min_price);
       const maxPrice = formatNumber(res?.max_price);
 
@@ -104,7 +104,7 @@ export default function Page() {
   };
 
   const bodyData = (data) => {
-    let body: any = {};
+    const body: any = {};
 
     if (data?.listingStatus) {
       if (data?.listingStatus != "All") {

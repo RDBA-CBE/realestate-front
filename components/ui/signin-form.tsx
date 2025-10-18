@@ -12,6 +12,7 @@ import { Success, useSetState } from "@/utils/function.utils";
 import Utils from "@/imports/utils.import";
 import * as Yup from "yup";
 import Models from "@/imports/models.import";
+import { TextInput } from "../common-components/textInput";
 
 // Define types
 
@@ -41,14 +42,18 @@ export default function SignInForm() {
       const body = {
         email: state.email,
         password: state.password,
+        first_name:state.first_name,
+        last_name:state.last_name,
+        terms_accepted:true
+
       };
       console.log("✌️body --->", body);
 
       await Utils.Validation.signin.validate(body, { abortEarly: false });
 
-      // const res = await Models.auth.registration(body);
-      // console.log("✌️res --->", res);
-      Success("Hello");
+      const res:any = await Models.auth.singup(body);
+      console.log("✌️res --->", res);
+      Success(res?.message);
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};
@@ -59,7 +64,7 @@ export default function SignInForm() {
 
         setState({ error: validationErrors, submitLoading: false });
       } else {
-        setState({ submitLoading: false });
+        if (error) setState({ submitLoading: false });
       }
       console.log("✌️error --->", error);
     }
@@ -123,7 +128,7 @@ export default function SignInForm() {
             </div>
 
             {/* Role Selector */}
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label>Select Role</Label>
               <div className="grid grid-cols-2 gap-3">
                 {ROLES.map((r) => (
@@ -139,7 +144,7 @@ export default function SignInForm() {
                   </Button>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             {/* Dynamic Fields */}
             {/* <AnimatePresence mode="wait">
@@ -175,7 +180,16 @@ export default function SignInForm() {
             {/* Email & Password */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Input
+                <TextInput
+                  title="First Name"
+                  type="text"
+                  name="first_name"
+                  placeholder="First Name"
+                  value={state.first_name}
+                  error={state.error?.first_name}
+                  onChange={handleInputChange}
+                />
+                <TextInput
                   title="Email"
                   id="email"
                   type="text"
@@ -187,7 +201,17 @@ export default function SignInForm() {
                 />
               </div>
               <div className="space-y-2">
-                <Input
+                <TextInput
+                  title="Last Name"
+                  type="text"
+                  name="last_name"
+                  placeholder="Last Name"
+                  value={state.last_name}
+                  error={state.error?.last_name}
+                  onChange={handleInputChange}
+                />
+
+                <TextInput
                   title="Password"
                   id="password"
                   type="password"

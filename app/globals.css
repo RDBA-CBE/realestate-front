@@ -155,6 +155,44 @@ h6 {
   }
 }
 
+@layer components {
+  .custom-success-toast {
+    @apply bg-black text-white rounded-lg shadow-lg;
+  }
+  
+  .custom-success-title {
+    @apply text-white ml-2 font-medium;
+  }
+  
+  .custom-success-icon {
+    @apply text-green-500 border-green-500;
+  }
+  
+  .swal2-timer-progress-bar {
+    @apply bg-green-500;
+  }
+}
+
+.swal2-title {
+  color: #fff !important;
+  font-weight: 500 !important;
+}
+
+.custom-success-toast {
+  background-color: #000 !important;
+  color: #fff !important;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.custom-success-icon {
+  color: #22c55e !important; /* Tailwind green-500 */
+}
+
+.swal2-timer-progress-bar {
+  background-color: #22c55e !important;
+}
+
 /* App.css */
 .calendar-wrapper {
   text-align: center;

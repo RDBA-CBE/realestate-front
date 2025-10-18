@@ -3,6 +3,9 @@ export const BASEURL = "http://31.97.206.165/api/";
 export const CLIENT_ID =
   "625052261407-4p8ihs05c67d778mr5d91lqjvnvpkd8k.apps.googleusercontent.com";
 
+export const KEY="AIzaSyB70Z-zjsu-TbF0F8ex3GgymPoR0IdPN6U"
+
+
 export const PROPERTY_LIST_PAGE = 12;
 
 export const dayNames = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
@@ -519,4 +522,13 @@ export const properties = [
     amenities: [17, 8, 9, 10, 13],
   },
   // Add more mock data for diversity if needed
+];
+
+export const FURNISHING_TYPE = [
+  { value: "furnished", label: "Furnished" },
+  {
+    value: "semi_furnished",
+    label: "Semi-Furnished",
+  },
+  { value: "unfurnished", label: "Unfurnished" },
 ];

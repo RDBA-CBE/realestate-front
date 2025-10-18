@@ -16,6 +16,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
+  GitCompareArrowsIcon,
   Loader,
   LogIn,
   LogOut,
@@ -209,10 +210,10 @@ const Header = () => {
                         <span>Profile</span>
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        onClick={() => router.push("/settings")}
+                        onClick={() => router.push("/compare")}
                       >
-                        <Settings className="mr-2 h-4 w-4" />
-                        <span>Settings</span>
+                        <GitCompareArrowsIcon className="mr-2 h-4 w-4" />
+                        <span>Compare</span>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem

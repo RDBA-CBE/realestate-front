@@ -20,8 +20,11 @@ import {
   formatNumber,
   formattedNoDecimal,
   formatToINR,
+  Success,
+  useSetState,
 } from "@/utils/function.utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Models from "@/imports/models.import";
 
 interface Property {
   id: string;
@@ -38,6 +41,8 @@ interface Property {
   state: string;
   city: string;
   country: string;
+  is_compare: string;
+  user_wishlists: boolean;
 }
 
 interface PropertyCardProps {
@@ -49,6 +54,84 @@ export function PropertyCard({ property, view }: PropertyCardProps) {
   const router = useRouter();
 
   const [hover, setHover] = useState(false);
+
+  const [state, setState] = useSetState({
+    is_compare: false,
+    is_liked:false
+  });
+
+  const handleIconClick = (index: number, e: React.MouseEvent) => {
+    e.stopPropagation(); // ✅ prevent card click
+    console.log("✌️index --->", index);
+    if (index == 0) {
+      handleWishList();
+    } else if (index == 1) {
+      handleCompareList();
+    } else {
+      handleShare();
+    }
+  };
+
+
+
+  const handleWishList = async () => {
+    try {
+
+
+      const getWishlist=await Models.wishlist.details(property?.id)
+console.log('✌️getWishlist --->', getWishlist);
+      // const body = {
+      //   properties: [property?.id],
+      // };
+      // if (state.is_liked || property?.user_wishlists){
+      // const res = await Models.wishlist.delete(property?.id);
+      // setState({is_liked:false})
+
+      // }else{
+      //   const res = await Models.wishlist.create(body);
+      //   console.log("✌️res --->", res);
+      //   setState({is_liked:true})
+      // }
+
+   
+    } catch (error) {
+      console.log("✌️error --->", error);
+    }
+  };
+
+  const handleCompareList = () => {
+    try {
+      const propertyId = property?.id;
+      const compareList = JSON.parse(localStorage.getItem("compare") || "[]");
+
+      let updatedList = [];
+      if (compareList.includes(propertyId)) {
+        updatedList = compareList.filter((id: string) => id !== propertyId);
+        Success("Removed from your compare list !");
+      } else {
+        Success("Added to your compare list !");
+
+        updatedList = [...compareList, propertyId];
+      }
+
+      localStorage.setItem("compare", JSON.stringify(updatedList));
+
+      const compares = localStorage.getItem("compare");
+      if (compares?.length > 0) {
+        const is_compared = compares?.includes(property?.id);
+        setState({ is_compare: is_compared });
+      }
+    } catch (error) {
+      console.log("✌️error --->", error);
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+    } catch (error) {
+      console.log("✌️error --->", error);
+    }
+  };
 
   return (
     <motion.div
@@ -65,17 +148,6 @@ export function PropertyCard({ property, view }: PropertyCardProps) {
         {/* Image */}
         <div className={`relative ${view === "list" ? "w-2/5" : ""}`}>
           {property?.primary_image && (
-            // <Image
-            //   src={
-            //     property?.primary_image
-            //   }
-            //   alt={"property"}
-            //   width={400}
-            //   height={280}
-            //   className={`object-cover ${
-            //     view === "list" ? "h-full w-full" : "w-full h-40"
-            //   }`}
-            // />
             <Image
               src={property?.primary_image}
               alt={"property"}
@@ -101,11 +173,6 @@ export function PropertyCard({ property, view }: PropertyCardProps) {
               For {property.listing_type}
             </Badge>
           )}
-          {property.featured && (
-            <Badge className="absolute top-2 left-2 bg-red-500 text-white font-semibold px-2 py-0.5 text-xs">
-              FEATURED
-            </Badge>
-          )}
 
           {hover && (
             <motion.div
@@ -114,21 +181,39 @@ export function PropertyCard({ property, view }: PropertyCardProps) {
               exit={{ opacity: 0, y: 20 }}
               className="absolute bottom-2 right-2 flex gap-2"
             >
-              {[Heart, GitCompareArrowsIcon, Share].map((Icon, i) => (
-                <button
-                  key={i}
-                  className="bg-white rounded-full p-2 shadow hover:bg-gray-100"
-                >
-                  <Icon size={16} />
-                </button>
-              ))}
+              {[Heart, GitCompareArrowsIcon, Share].map((Icon, i) => {
+                const isCompareIcon = Icon === GitCompareArrowsIcon;
+                const like = Icon === Heart;
+
+                return (
+                  <button
+                    key={i}
+                    className={`rounded-full p-2 shadow hover:bg-gray-100 transition-colors ${
+                      isCompareIcon
+                        ? state.is_compare || property?.is_compare
+                          ? "bg-green-500 text-white hover:bg-green-500 hover:text-white" // added to compare list
+                          : "bg-white text-black" // default for compare icon
+                        :  like
+                        ? state.is_liked || property?.user_wishlists
+                          ? "bg-red-500 text-white hover:bg-red-500 hover:text-white" // liked
+                          : "bg-white text-black" // not liked
+                        : "bg-white text-black" // default for other icons
+                    }`}
+                    onClick={(e) => {
+                      handleIconClick(i, e);
+                    }}
+                  >
+                    <Icon size={16} />
+                  </button>
+                );
+              })}
             </motion.div>
           )}
 
-          <Badge className='absolute top-2 right-2 bg-white text-black font-bold px-2 py-1 text-sm shadow-md'>
-          {formatToINR(property.price)}{' '}
-          {property.listing_type === 'rent' && '/ mo'}
-        </Badge>
+          <Badge className="absolute top-2 right-2 bg-white text-black font-bold px-2 py-1 text-sm shadow-md">
+            {formatToINR(property.price)}{" "}
+            {property.listing_type === "rent" && "/ mo"}
+          </Badge>
         </div>
 
         {/* Content */}

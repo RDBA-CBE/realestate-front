@@ -14,6 +14,7 @@ import test from "@/models/test.model";
 import user from "@/models/user.model";
 import video from "@/models/video.model";
 import virtualTour from "@/models/virtual_tour.model";
+import wishlist from "@/models/wishlist.model";
 
 
 export const Models = {
@@ -30,7 +31,8 @@ export const Models = {
   image,
   video,
   virtualTour,
-  lead
+  lead,
+  wishlist
   
 };
 

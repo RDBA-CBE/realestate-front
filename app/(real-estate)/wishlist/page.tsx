@@ -1,5 +1,5 @@
-"use client"
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertCircle } from "lucide-react";
@@ -8,18 +8,29 @@ import { PropertyCard } from "@/components/real-estate/property-list/property3An
 import { PropertyCardSkeleton } from "@/components/common-components/skeleton/PropertyCardSkeleton.componenet";
 import { useSetState } from "@/utils/function.utils";
 import { properties } from "@/utils/constant.utils";
+import Models from "@/imports/models.import";
 
 // (Assuming PropertyCard is in a separate file, or defined above)
 // import PropertyCard from './PropertyCard';
 
- const Favorites = () => {
+const Favorites = () => {
+  const [state, setState] = useSetState({
+    view: "list",
+    page: 1,
+  });
 
-    const [state, setState] = useSetState({
-      view:"grid"
-    })
-  
+  useEffect(() => {
+    wishlist(1);
+  }, []);
 
- 
+  const wishlist = async (page) => {
+    try {
+      const res = await Models.wishlist.list(page, {});
+      console.log("✌️res --->", res);
+    } catch (error) {
+      console.log("✌️error --->", error);
+    }
+  };
 
   return (
     <motion.div
@@ -31,43 +42,32 @@ import { properties } from "@/utils/constant.utils";
       <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <h1 className="text-2xl font-extrabold text-gray-900 mb-2">
-          Your Wishlist
+          My Wishlist
         </h1>
-        <p className="text-lg text-gray-500 mb-8">
+        {/* <p className="text-lg text-gray-500 mb-8">
           {properties.length} properties saved for later.
-        </p>
+        </p> */}
 
-        
+        <div
+          className={
+            state.view === "grid"
+              ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+              : "flex flex-col gap-6"
+          }
+        >
+          {properties.map((property: any, index: number) => (
+            <div key={index}>
+              <PropertyCard property={property} view={state.view} />
+            </div>
+          ))}
+        </div>
 
-          {/* Tab Content - Commercial */}
-         
-          
-           
-                <div
-                  className={
-                    state.view === "grid"
-                      ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
-                      : "flex flex-col gap-6"
-                  }
-                >
-                  {properties.map((property: any, index: number) => (
-                    <div
-                      key={index}
-                      
-                    >
-                      <PropertyCard property={property} view={state.view} />
-                    </div>
-                  ))}
-                </div>
-              
-              {/* {getFilteredProperties("Commercial").map((property) => (
+        {/* {getFilteredProperties("Commercial").map((property) => (
               <PropertyCard key={property.id} {...property} />
             ))} */}
-           
-          
       </div>
     </motion.div>
   );
 };
 
-export default Favorites
+export default Favorites;

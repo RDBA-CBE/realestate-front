@@ -1,6 +1,6 @@
 import moment from "moment";
 import { useState } from "react";
-import Swal from "sweetalert2";
+import Swal, { SweetAlertPosition } from "sweetalert2";
 
 export const useSetState = (initialState: any) => {
   const [state, setState] = useState(initialState);
@@ -11,20 +11,31 @@ export const useSetState = (initialState: any) => {
   return [state, newSetState];
 };
 
-export const Success = (message: string) => {
+export const Success = (message: string, positions?: SweetAlertPosition) => {
   const toast = Swal.mixin({
     toast: true,
-    position: "top-end",
+    position: positions || "top-end",
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
-    // background:"red",
+    background: "#000000",
+    customClass: {
+      popup: "custom-success-toast",
+      title: "custom-success-title",
+      icon: "custom-success-icon",
+    },
+    didOpen: (toast) => {
+      // Ensure text is white and medium font weight
+      const title = toast.querySelector(".swal2-title");
+      if (title) {
+        title.classList.add("text-white", "font-medium");
+      }
+    },
   });
 
   toast.fire({
     icon: "success",
     title: message,
-    padding: "10px 20px",
   });
 };
 
@@ -363,7 +374,6 @@ export const formattedNoDecimal = (number) => {
   return Math.round(number).toLocaleString("en-IN");
 };
 
-
 export const TimeAgo = (dateString: string | Date) => {
   const now = new Date();
   const past = new Date(dateString);
@@ -372,12 +382,22 @@ export const TimeAgo = (dateString: string | Date) => {
   if (diff < 10) return "Now";
   if (diff < 60) return `${Math.floor(diff)} Sec ago`;
   if (diff < 3600) return `${Math.floor(diff / 60)} Min ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)} Hour${Math.floor(diff / 3600) > 1 ? "s" : ""} ago`;
-  if (diff < 2592000) return `${Math.floor(diff / 86400)} Day${Math.floor(diff / 86400) > 1 ? "s" : ""} ago`;
-  if (diff < 31104000) return `${Math.floor(diff / 2592000)} Month${Math.floor(diff / 2592000) > 1 ? "s" : ""} ago`;
-  return `${Math.floor(diff / 31104000)} Year${Math.floor(diff / 31104000) > 1 ? "s" : ""} ago`;
+  if (diff < 86400)
+    return `${Math.floor(diff / 3600)} Hour${
+      Math.floor(diff / 3600) > 1 ? "s" : ""
+    } ago`;
+  if (diff < 2592000)
+    return `${Math.floor(diff / 86400)} Day${
+      Math.floor(diff / 86400) > 1 ? "s" : ""
+    } ago`;
+  if (diff < 31104000)
+    return `${Math.floor(diff / 2592000)} Month${
+      Math.floor(diff / 2592000) > 1 ? "s" : ""
+    } ago`;
+  return `${Math.floor(diff / 31104000)} Year${
+    Math.floor(diff / 31104000) > 1 ? "s" : ""
+  } ago`;
 };
-
 
 export const formatPhoneNumber = (phone) => {
   if (!phone) return "";
@@ -395,6 +415,6 @@ export const formatPhoneNumber = (phone) => {
   return phone;
 };
 
-export const removePlus=(data)=>{
-  return data.replaceAll("+", "")
-}
+export const removePlus = (data) => {
+  return data.replaceAll("+", "");
+};

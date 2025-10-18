@@ -29,6 +29,8 @@ export default function Page() {
     categoryList();
   }, []);
 
+console.log('✌️propertyList --->', state.propertyList);
+
   const propertyList = async (page = 1, append = false) => {
     try {
       if (append) {
@@ -37,17 +39,27 @@ export default function Page() {
         setState({ loading: true });
       }
 
-      const body = {
+      const bodys = {
         page_size: PROPERTY_LIST_PAGE,
       };
-      const res: any = await Models.property.list(page, body);
+      const res: any = await Models.property.list(page, bodys);
+
+      const compareList: string[] = JSON.parse(
+        localStorage.getItem("compare") || "[]"
+      );
+
+      const resultsWithCompare = res?.results.map((item: any) => ({
+        ...item,
+        is_compare: compareList.includes(item.id),
+      }));
+
       const minPrice = formatNumber(res?.min_price);
       const maxPrice = formatNumber(res?.max_price);
 
       setState({
         propertyList: append
-          ? [...state.propertyList, ...res?.results]
-          : res?.results,
+          ? [...state.propertyList, ...resultsWithCompare]
+          : resultsWithCompare,
         handNext: res?.next,
         page: page,
         loading: false,
@@ -84,13 +96,22 @@ export default function Page() {
         setState({ loading: true });
       }
 
-      const body = bodyData(data);
-      const res: any = await Models.property.list(page, body);
+      const bodys = bodyData(data);
+      const res: any = await Models.property.list(page, bodys);
+
+      const compareList: string[] = JSON.parse(
+        localStorage.getItem("compare") || "[]"
+      );
+
+      const resultsWithCompare = res?.results.map((item: any) => ({
+        ...item,
+        is_compare: compareList.includes(item.id),
+      }));
 
       setState({
         propertyList: append
-          ? [...state.propertyList, ...res?.results]
-          : res?.results,
+          ? [...state.propertyList, ...resultsWithCompare]
+          : resultsWithCompare,
         handNext: res?.next,
         page: page,
         loading: false,
@@ -102,65 +123,65 @@ export default function Page() {
   };
 
   const bodyData = (data) => {
-    let body: any = {};
+    const bodyData: any = {};
 
     if (data?.listingStatus) {
       if (data?.listingStatus != "All") {
-        body.listing_type = [data?.listingStatus.toLowerCase()];
+        bodyData.listing_type = [data?.listingStatus.toLowerCase()];
       }
     }
     if (data?.propertyType?.length > 0) {
-      body.property_type = data?.propertyType?.[0]?.value;
+      bodyData.property_type = data?.propertyType?.[0]?.value;
     }
 
     if (data?.furnishing?.length > 0) {
-      body.furnishing = data?.furnishing?.[0]?.value;
+      bodyData.furnishing = data?.furnishing?.[0]?.value;
     }
 
     if (data?.search) {
-      body.search = data?.search;
+      bodyData.search = data?.search;
     }
 
     if (data?.priceRange?.length > 0) {
-      body.minPrice = data?.priceRange[0];
+      bodyData.minPrice = data?.priceRange[0];
     }
 
     if (data?.priceRange?.length >= 1) {
-      body.maxPrice = data?.priceRange[1];
+      bodyData.maxPrice = data?.priceRange[1];
     }
 
     if (data?.bedrooms) {
       if (data?.bedrooms != "Any") {
-        body.bedrooms = removePlus(data?.bedrooms);
+        bodyData.bedrooms = removePlus(data?.bedrooms);
       }
     }
     if (data?.bathrooms) {
       if (data?.bathrooms != "Any") {
-        body.bathrooms = removePlus(data?.bathrooms);
+        bodyData.bathrooms = removePlus(data?.bathrooms);
       }
     }
     if (data?.location) {
-      body.location = data?.location;
+      bodyData.location = data?.location;
     }
     if (data?.sqftMin) {
-      body.sqftMin = data?.sqftMin;
+      bodyData.sqftMin = data?.sqftMin;
     }
     if (data?.sqftMax) {
-      body.sqftMax = data?.sqftMax;
+      bodyData.sqftMax = data?.sqftMax;
     }
     if (data?.yearBuiltMin != "") {
-      body.yearBuiltMin = data?.yearBuiltMin;
+      bodyData.yearBuiltMin = data?.yearBuiltMin;
     }
     if (data?.yearBuiltMax != "") {
-      body.yearBuiltMax = data?.yearBuiltMax;
+      bodyData.yearBuiltMax = data?.yearBuiltMax;
     }
     if (data?.sort) {
-      body.sort_by = data?.sort;
+      bodyData.sort_by = data?.sort;
     }
 
-    body.page_size = PROPERTY_LIST_PAGE;
-    body.is_approved = "Yes";
-    return body;
+    bodyData.page_size = PROPERTY_LIST_PAGE;
+    bodyData.is_approved = "Yes";
+    return bodyData;
   };
 
   return (
