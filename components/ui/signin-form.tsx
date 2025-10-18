@@ -8,15 +8,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { Chrome } from "lucide-react";
 import { ROLES } from "@/utils/constant.utils";
-import { Success, useSetState } from "@/utils/function.utils";
+import { Failure, Success, useSetState } from "@/utils/function.utils";
 import Utils from "@/imports/utils.import";
 import * as Yup from "yup";
 import Models from "@/imports/models.import";
 import { TextInput } from "../common-components/textInput";
+import { useRouter } from "next/navigation";
 
 // Define types
 
 export default function SignInForm() {
+
+  const router=useRouter()
+
   const [state, setState] = useSetState({
     password: "",
     email: "",
@@ -42,18 +46,19 @@ export default function SignInForm() {
       const body = {
         email: state.email,
         password: state.password,
-        first_name:state.first_name,
-        last_name:state.last_name,
-        terms_accepted:true
-
+        first_name: state.first_name,
+        last_name: state.last_name,
+        terms_accepted: true,
+        user_type: "buyer",
       };
       console.log("✌️body --->", body);
 
-      await Utils.Validation.signin.validate(body, { abortEarly: false });
+      await Utils.Validation.signup.validate(body, { abortEarly: false });
 
-      const res:any = await Models.auth.singup(body);
+      const res: any = await Models.auth.singup(body);
       console.log("✌️res --->", res);
       Success(res?.message);
+      router.push("/login")
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};
@@ -64,6 +69,12 @@ export default function SignInForm() {
 
         setState({ error: validationErrors, submitLoading: false });
       } else {
+        if (error?.email?.length > 0) {
+          console.log("✌️error?.email --->", error?.email[0]);
+          Failure(error?.email[0]);
+        } else if (error?.password?.length > 0) {
+          Failure(error?.password[0]);
+        }
         if (error) setState({ submitLoading: false });
       }
       console.log("✌️error --->", error);

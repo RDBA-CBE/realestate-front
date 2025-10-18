@@ -39,14 +39,27 @@ export const Success = (message: string, positions?: SweetAlertPosition) => {
   });
 };
 
-export const Failure = (message: string) => {
+export const Failure = (message: string, positions?: SweetAlertPosition) => {
   const toast = Swal.mixin({
     toast: true,
-    position: "top",
+    position: positions || "top-end",
     showConfirmButton: false,
     timer: 3000,
+    timerProgressBar: true,
+    background: "#000000",
+    customClass: {
+      popup: "custom-success-toast",
+      title: "custom-success-title",
+      icon: "custom-success-icon",
+    },
+    didOpen: (toast) => {
+      // Ensure text is white and medium font weight
+      const title = toast.querySelector(".swal2-title");
+      if (title) {
+        title.classList.add("text-white", "font-medium");
+      }
+    },
   });
-
   toast.fire({
     icon: "error",
     title: message,
