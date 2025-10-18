@@ -43,7 +43,6 @@ export default function AuthPage() {
         abortEarly: false,
       });
       const res = await Models.auth.login(body);
-      console.log("✌️res --->", res);
       Success("Login Successfully");
       localStorage.setItem("token", res?.access);
       localStorage.setItem("refresh", res?.refresh);
