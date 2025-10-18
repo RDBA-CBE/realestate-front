@@ -287,7 +287,7 @@ export default function PropertyDetailPage() {
 
       {/* Header + Gallery */}
       <div className="space-y-6">
-        <PropertyHeader data={state.detail} />
+        <PropertyHeader data={state.detail} updateList={() => getDetails()} />
         <Gallery images={state.detail?.images} />
       </div>
 
@@ -301,15 +301,17 @@ export default function PropertyDetailPage() {
           <div id="desc">
             <PropertyDesc data={state.detail} />
           </div>
-          {/* <div id="map">
+          <div id="map">
             <MapSection data={state.detail} />
-          </div> */}
+          </div>
           <div id="amenities">
             <Amenities data={state.detail?.amenities} />
           </div>
-          <div id="floorplans">
-            <FloorPlans data={state.detail?.floor_plans} />
-          </div>
+          {state.detail?.floor_plans?.length > 0 && (
+            <div id="floorplans">
+              <FloorPlans data={state.detail?.floor_plans} />
+            </div>
+          )}
           {state.detail?.videos?.length > 0 && (
             <div id="video">
               <Video data={state.detail?.videos?.[0]} />

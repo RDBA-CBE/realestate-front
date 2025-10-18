@@ -48,16 +48,23 @@ interface Property {
 interface PropertyCardProps {
   property: Property;
   view: "grid" | "list";
+  updateList?: any;
+  list?: any;
 }
 
-export function PropertyCard({ property, view }: PropertyCardProps) {
+export function PropertyCard({
+  property,
+  view,
+  list,
+  updateList,
+}: PropertyCardProps) {
   const router = useRouter();
 
   const [hover, setHover] = useState(false);
 
   const [state, setState] = useSetState({
     is_compare: false,
-    is_liked:false
+    is_liked: false,
   });
 
   const handleIconClick = (index: number, e: React.MouseEvent) => {
@@ -72,28 +79,42 @@ export function PropertyCard({ property, view }: PropertyCardProps) {
     }
   };
 
-
-
   const handleWishList = async () => {
     try {
 
+      if (!property?.user_wishlists) {
+        const getWishlist = await Models.wishlist.add_property({
+          property_id: property?.id,
+        });
 
-      const getWishlist=await Models.wishlist.details(property?.id)
-console.log('✌️getWishlist --->', getWishlist);
-      // const body = {
-      //   properties: [property?.id],
-      // };
-      // if (state.is_liked || property?.user_wishlists){
-      // const res = await Models.wishlist.delete(property?.id);
-      // setState({is_liked:false})
+        const propertyIndex = list.findIndex(
+          (item) => item.id === property?.id
+        );
 
-      // }else{
-      //   const res = await Models.wishlist.create(body);
-      //   console.log("✌️res --->", res);
-      //   setState({is_liked:true})
-      // }
+        if (propertyIndex !== -1) {
+          const updatedLists = list.map((item, index) =>
+            index === propertyIndex ? { ...item, user_wishlists: true } : item
+          );
+          updateList(updatedLists);
+          Success("Added to your wishlist !");
+        }
+      } else {
+        const getWishlist = await Models.wishlist.remove_property({
+          property_id: property?.id,
+        });
 
-   
+        const propertyIndex = list.findIndex(
+          (item) => item.id === property?.id
+        );
+
+        if (propertyIndex !== -1) {
+          const updatedLists = list.map((item, index) =>
+            index === propertyIndex ? { ...item, user_wishlists: false } : item
+          );
+          updateList(updatedLists);
+          Success("Removed from your wishlist !");
+        }
+      }
     } catch (error) {
       console.log("✌️error --->", error);
     }
@@ -193,8 +214,8 @@ console.log('✌️getWishlist --->', getWishlist);
                         ? state.is_compare || property?.is_compare
                           ? "bg-green-500 text-white hover:bg-green-500 hover:text-white" // added to compare list
                           : "bg-white text-black" // default for compare icon
-                        :  like
-                        ? state.is_liked || property?.user_wishlists
+                        : like
+                        ? property?.user_wishlists
                           ? "bg-red-500 text-white hover:bg-red-500 hover:text-white" // liked
                           : "bg-white text-black" // not liked
                         : "bg-white text-black" // default for other icons

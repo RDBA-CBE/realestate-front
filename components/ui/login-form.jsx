@@ -49,6 +49,9 @@ export default function AuthPage() {
       localStorage.setItem("refresh", res?.refresh);
       localStorage.setItem("userId", res?.user_id);
       localStorage.setItem("name", res?.name);
+      localStorage.setItem("wishlist_id", res?.wishlist_id);
+      localStorage.setItem("profile_id", res?.profile_id);
+
       if (res?.groups?.length > 0) {
         localStorage.setItem("group", res?.groups?.[0]?.name);
         localStorage.setItem("groupId", res?.groups?.[0]?.id);
