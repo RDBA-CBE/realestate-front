@@ -106,7 +106,6 @@ const Header = () => {
     },
   ];
 
-  console.log("{state?.token ", state?.token);
 
   return (
     <>

@@ -33,6 +33,7 @@ export function MapView(props) {
     categoryList,
     minPrice,
     maxPrice,
+    updateList,
   } = props;
 
   const [state, setState] = useSetState({
@@ -276,6 +277,8 @@ export function MapView(props) {
 
                         setState({ selectedProperty: property?.id });
                       }}
+                      list={properties}
+                      updateList={(data) => updateList(data)}
                     />
                   </div>
                 ))}

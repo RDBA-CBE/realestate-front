@@ -7,7 +7,7 @@ import {
   Marker,
   InfoWindow,
 } from "@react-google-maps/api";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -37,8 +37,8 @@ interface Property {
     image_url: string;
     is_primary: boolean;
   }>;
-  lat?:any;
-  lng?:any
+  lat?: number;
+  lng?: number;
 }
 
 interface GoogleMapsProps {
@@ -50,15 +50,40 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
   
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [hoveredProperty, setHoveredProperty] = useState<Property | null>(null);
+  // Default center set to India
+  const [mapCenter, setMapCenter] = useState({ lat: 20.5937, lng: 78.9629 });
+  const mapRef = useRef<google.maps.Map | null>(null);
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: KEY,
     libraries: ["places"],
   });
 
+  // Calculate center based on properties
+  const calculateCenter = useCallback((properties: Property[]) => {
+    if (properties.length === 0) {
+      return { lat: 20.5937, lng: 78.9629 }; // Default India center
+    }
+
+    const validProperties = properties.filter(property => {
+      const lat = parseFloat(property.latitude);
+      const lng = parseFloat(property.longitude);
+      return !isNaN(lat) && !isNaN(lng) && property.is_approved && property.status === 'available';
+    });
+
+    if (validProperties.length === 0) {
+      return { lat: 20.5937, lng: 78.9629 }; // Default India center
+    }
+
+    const avgLat = validProperties.reduce((sum, prop) => sum + parseFloat(prop.latitude), 0) / validProperties.length;
+    const avgLng = validProperties.reduce((sum, prop) => sum + parseFloat(prop.longitude), 0) / validProperties.length;
+
+    return { lat: avgLat, lng: avgLng };
+  }, []);
+
   // Use useMemo to prevent recalculating on every render
   const propertiesWithCoords = useMemo(() => {
-    return properties
+    const processedProperties = properties
       .filter(property => {
         const lat = parseFloat(property.latitude);
         const lng = parseFloat(property.longitude);
@@ -70,59 +95,98 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
         lat: parseFloat(property.latitude),
         lng: parseFloat(property.longitude)
       }));
-  }, [properties]);
 
-  // Generate property logo with first letters
-  const getPropertyLogo = (title: string, listingType: string) => {
-    const letters = title
-      .split(' ')
-      .map(word => word.charAt(0))
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
+    // Update center when properties change
+    if (processedProperties.length > 0) {
+      const newCenter = calculateCenter(properties);
+      setMapCenter(newCenter);
+    }
 
+    return processedProperties;
+  }, [properties, calculateCenter]);
+
+  // Get property image URL - fixed to use images array
+  const getPropertyImageUrl = (property: Property): string => {
+    // First try images array with primary image
+    if (property.images && property.images.length > 0) {
+      const primaryImage = property.images.find(img => img.is_primary);
+      if (primaryImage) return primaryImage.image_url;
+      return property.images[0].image_url;
+    }
+    
+    // Then try primary_image field
+    if (property.primary_image) {
+      return property.primary_image;
+    }
+    
+    // Fallback - return empty string
+    return '';
+  };
+
+  // Create circular image marker - FIXED: Using proper google.maps.Icon interface
+  const createCircularImageMarker = (imageUrl: string, listingType: string): google.maps.Icon => {
     const colors: Record<string, string> = {
       sale: '#EF4444', // red
       rent: '#3B82F6', // blue
       lease: '#10B981' // green
     };
 
-    const color = colors[listingType] || '#6B7280'; // gray as fallback
+    const color = colors[listingType] || '#6B7280';
+    const size = 50;
 
-    // Create SVG for custom marker
-    const svg = `
-      <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-        <!-- Outer circle with shadow -->
-        <circle cx="25" cy="25" r="24" fill="white" stroke="${color}" stroke-width="2"/>
-        <!-- Inner colored circle -->
-        <circle cx="25" cy="25" r="18" fill="${color}"/>
-        <!-- Text -->
-        <text x="25" y="30" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14" font-weight="bold">${letters}</text>
-      </svg>
-    `;
+    if (!imageUrl) {
+      // Create a simple colored circle when no image is available
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const context = canvas.getContext('2d');
+      
+      if (context) {
+        // Outer circle
+        context.beginPath();
+        context.arc(size/2, size/2, size/2 - 2, 0, 2 * Math.PI);
+        context.fillStyle = 'white';
+        context.fill();
+        context.strokeStyle = color;
+        context.lineWidth = 2;
+        context.stroke();
+        
+        // Inner circle
+        context.beginPath();
+        context.arc(size/2, size/2, size/2 - 6, 0, 2 * Math.PI);
+        context.fillStyle = color;
+        context.fill();
+      }
+      
+      return {
+        url: canvas.toDataURL(),
+        scaledSize: new google.maps.Size(size, size),
+        anchor: new google.maps.Point(size/2, size/2),
+      };
+    }
 
-    return `data:image/svg+xml;base64,${btoa(svg)}`;
-  };
-
-  // Get marker icon based on listing type with property logo
-  const getPropertyMarkerIcon = (property: Property) => {
-    const imageUrl = getPropertyLogo(property.title, property.listing_type);
-    
+    // For image URLs, use the standard Icon interface
     return {
       url: imageUrl,
-      scaledSize: new window.google.maps.Size(50, 50),
-      anchor: new window.google.maps.Point(25, 25),
+      scaledSize: new google.maps.Size(size, size),
+      anchor: new google.maps.Point(size/2, size/2),
     };
+  };
+
+  // Get marker icon with property image
+  const getPropertyMarkerIcon = (property: Property) => {
+    const imageUrl = getPropertyImageUrl(property);
+    return createCircularImageMarker(imageUrl, property.listing_type);
   };
 
   // Format price for display
   const formatPrice = (price: string, listingType: string) => {
     const numericPrice = parseFloat(price);
+    if (isNaN(numericPrice)) return 'Price not available';
+
     if (numericPrice >= 10000000) {
-      // Convert to Crores
       return `₹${(numericPrice / 10000000).toFixed(2)} Cr`;
     } else if (numericPrice >= 100000) {
-      // Convert to Lakhs
       return `₹${(numericPrice / 100000).toFixed(2)} L`;
     } else {
       const formatter = new Intl.NumberFormat('en-IN', {
@@ -152,6 +216,21 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
     }
   };
 
+  // Handle map load
+  const onMapLoad = useCallback((map: google.maps.Map) => {
+    mapRef.current = map;
+    
+    // Fit bounds to show all markers if we have properties
+    if (propertiesWithCoords.length > 0) {
+      const bounds = new google.maps.LatLngBounds();
+      propertiesWithCoords.forEach(property => {
+        bounds.extend(new google.maps.LatLng(property.lat!, property.lng!));
+      });
+      
+      map.fitBounds(bounds, 50);
+    }
+  }, [propertiesWithCoords]);
+
   if (loadError) {
     return (
       <Card className="p-4">
@@ -174,8 +253,8 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
     <Card className="w-full">
       <div className="relative w-full h-[700px]">
         <GoogleMap
-          zoom={6}
-          center={{ lat: 20.5937, lng: 78.9629 }}
+          zoom={propertiesWithCoords.length === 1 ? 12 : 8}
+          center={mapCenter}
           mapContainerStyle={{
             width: "100%",
             height: "100%",
@@ -186,16 +265,17 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
             mapTypeControl: true,
             fullscreenControl: true,
             mapTypeControlOptions: {
-              position: window.google?.maps?.ControlPosition?.TOP_RIGHT,
+              position: google.maps.ControlPosition.TOP_RIGHT,
             },
           }}
+          onLoad={onMapLoad}
           onClick={() => setSelectedProperty(null)}
         >
           {/* Property markers */}
           {propertiesWithCoords.map((property) => (
             <Marker
               key={property.id}
-              position={{ lat: property.lat, lng: property.lng }}
+              position={{ lat: property.lat!, lng: property.lng! }}
               icon={getPropertyMarkerIcon(property)}
               onClick={() => setSelectedProperty(property)}
               onMouseOver={() => setHoveredProperty(property)}
@@ -207,29 +287,51 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
           {hoveredProperty && !selectedProperty && (
             <InfoWindow
               position={{
-                lat: hoveredProperty.lat,
-                lng: hoveredProperty.lng
+                lat: hoveredProperty.lat!,
+                lng: hoveredProperty.lng!
               }}
               options={{
                 disableAutoPan: true,
-                pixelOffset: new window.google.maps.Size(0, -60),
+                pixelOffset: new google.maps.Size(0, -70),
               }}
             >
               <div className={`bg-white rounded-lg shadow-lg border-2 ${getListingTypeBorderColor(hoveredProperty.listing_type)} p-3 max-w-xs`}>
-                <div className="text-sm font-semibold text-gray-900 mb-1">
-                  {hoveredProperty.title}
-                </div>
-                <div className="text-xs text-gray-600 mb-1">
-                  {hoveredProperty.city}, {hoveredProperty.state}
-                </div>
-                <div className="text-sm font-bold text-gray-900">
-                  {formatPrice(hoveredProperty.price, hoveredProperty.listing_type)}
-                  {hoveredProperty.listing_type === 'rent' && '/mo'}
-                </div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {hoveredProperty.bedrooms > 0 && `${hoveredProperty.bedrooms} Beds • `}
-                  {hoveredProperty.bathrooms > 0 && `${hoveredProperty.bathrooms} Baths • `}
-                  {hoveredProperty.total_area} sqft
+                <div className="flex items-start gap-3">
+                  {/* Property thumbnail */}
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full overflow-hidden bg-gray-200 border-2 border-gray-300">
+                    <img 
+                      src={getPropertyImageUrl(hoveredProperty)} 
+                      alt={hoveredProperty.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        target.parentElement!.innerHTML = `
+                          <div class="w-full h-full flex items-center justify-center bg-gray-200 rounded-full">
+                            <span class="text-lg">🏠</span>
+                          </div>
+                        `;
+                      }}
+                    />
+                  </div>
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-gray-900 mb-1 line-clamp-1">
+                      {hoveredProperty.title}
+                    </div>
+                    <div className="text-xs text-gray-600 mb-1 line-clamp-1">
+                      {hoveredProperty.city}, {hoveredProperty.state}
+                    </div>
+                    <div className="text-sm font-bold text-gray-900">
+                      {formatPrice(hoveredProperty.price, hoveredProperty.listing_type)}
+                      {hoveredProperty.listing_type === 'rent' && '/mo'}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {hoveredProperty.bedrooms > 0 && `${hoveredProperty.bedrooms} Beds • `}
+                      {hoveredProperty.bathrooms > 0 && `${hoveredProperty.bathrooms} Baths • `}
+                      {hoveredProperty.total_area} sqft
+                    </div>
+                  </div>
                 </div>
               </div>
             </InfoWindow>
@@ -239,28 +341,31 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
           {selectedProperty && (
             <InfoWindow
               position={{
-                lat: selectedProperty.lat,
-                lng: selectedProperty.lng
+                lat: selectedProperty.lat!,
+                lng: selectedProperty.lng!
               }}
               onCloseClick={() => setSelectedProperty(null)}
             >
               <div className="w-80 bg-white rounded-lg shadow-xl overflow-hidden">
                 {/* Property Image */}
                 <div className="relative h-48 bg-gray-200">
-                  {selectedProperty.primary_image || (selectedProperty.images && selectedProperty.images[0]?.image_url) ? (
-                    <img 
-                      src={selectedProperty.primary_image || selectedProperty.images![0].image_url} 
-                      alt={selectedProperty.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
-                      <div className="text-gray-400 text-center">
-                        <div className="text-2xl mb-2">🏠</div>
-                        <div className="text-sm">No Image Available</div>
-                      </div>
-                    </div>
-                  )}
+                  <img 
+                    src={getPropertyImageUrl(selectedProperty)} 
+                    alt={selectedProperty.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      target.parentElement!.innerHTML = `
+                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
+                          <div class="text-gray-400 text-center">
+                            <div class="text-4xl mb-2">🏠</div>
+                            <div class="text-sm">No Image Available</div>
+                          </div>
+                        </div>
+                      `;
+                    }}
+                  />
                   
                   {/* Price Badge */}
                   <div className="absolute top-3 left-3">

@@ -81,8 +81,8 @@ interface PropertyDetail {
 interface PropertyDetailInlineProps {
   id: string;
   handleClick?: () => void;
-  data: PropertyDetail;
-  updateList: () => void;
+  data?: PropertyDetail;
+  updateList?: () => void;
 }
 
 // ---------------- AUTH HOOK ----------------
@@ -105,13 +105,13 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
     const compareList = localStorage.getItem("compare");
     if (compareList && compareList.length > 0) {
       const compareArray = JSON.parse(compareList);
-      if (compareArray.includes(data?.id)) {
+      if (compareArray.includes(id)) {
         setState({ is_compare: true });
       } else {
         setState({ is_compare: false });
       }
     }
-  }, [data]);
+  }, [id]);
 
   const handleWishList = async () => {
     try {
@@ -563,11 +563,9 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
                             </div>
                           </div>
                         )}
-
                       </div>
 
                       <CardContent className="p-5 space-y-4">
-
                         <div className="space-y-2">
                           <h3 className="font-bold text-gray-900 text-xl leading-tight">
                             {property.title}

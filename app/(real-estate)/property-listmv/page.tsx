@@ -198,6 +198,7 @@ export default function Page() {
         loadMore={(data) => {
           filterList(state.page + 1, true, data);
         }}
+        updateList={(data)=>setState({propertyList:data})}
       />
     </div>
   );
