@@ -1,28 +1,30 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { SlidersHorizontal, X, SearchIcon, RotateCcw } from 'lucide-react';
-import { PropertyCard } from './property-card';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { SlidersHorizontal, X, SearchIcon, RotateCcw } from "lucide-react";
+import { PropertyCard } from "./property-card";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select';
-import { useSetState } from '@/utils/function.utils';
-import PriceRangeSlider from '@/components/common-components/priceRange';
-import { FURNISHING_TYPE } from '@/utils/constant.utils';
-import { TextInput } from '@/components/common-components/textInput';
-import { PropertyMapCardSkeleton } from '@/components/common-components/skeleton/PropertyMapCardSkeleton.component';
+} from "@/components/ui/select";
+import { useSetState } from "@/utils/function.utils";
+import PriceRangeSlider from "@/components/common-components/priceRange";
+import { FURNISHING_TYPE } from "@/utils/constant.utils";
+import { TextInput } from "@/components/common-components/textInput";
+import { PropertyMapCardSkeleton } from "@/components/common-components/skeleton/PropertyMapCardSkeleton.component";
+import GoogleMapPropertyList from "../../property-detail/gooleMapPropertyList.component";
+import PropertyDetailInline from "../../property-detail/PropertyDetailInline.component";
 
 export function MapView(props) {
   const {
     properties = [],
-    title = 'List View',
+    title = "List View",
     filters,
     loading,
     isLoadingMore,
@@ -34,21 +36,21 @@ export function MapView(props) {
   } = props;
 
   const [state, setState] = useSetState({
-    view: 'grid',
-    search: '',
-    listingStatus: '',
+    view: "grid",
+    search: "",
+    listingStatus: "",
     propertyType: [],
     furnishing: [],
     priceRange: [0, 0],
     minPrice: 0,
     maxPrice: 0,
-    bedrooms: '',
-    bathrooms: '',
-    location: '',
-    sqftMin: '',
-    sqftMax: '',
-    yearBuiltMin: '',
-    yearBuiltMax: '',
+    bedrooms: "",
+    bathrooms: "",
+    location: "",
+    sqftMin: "",
+    sqftMax: "",
+    yearBuiltMin: "",
+    yearBuiltMax: "",
     sort: null,
     isOpen: false,
   });
@@ -73,19 +75,19 @@ export function MapView(props) {
 
   const resetFilters = () => {
     setState({
-      search: '',
-      listingStatus: '',
+      search: "",
+      listingStatus: "",
       propertyType: [],
       priceRange: [minPrice, maxPrice],
-      minPrice: '',
-      maxPrice: '',
-      bedrooms: '',
-      bathrooms: '',
-      location: '',
-      sqftMin: '',
-      sqftMax: '',
-      yearBuiltMin: '',
-      yearBuiltMax: '',
+      minPrice: "",
+      maxPrice: "",
+      bedrooms: "",
+      bathrooms: "",
+      location: "",
+      sqftMin: "",
+      sqftMax: "",
+      yearBuiltMin: "",
+      yearBuiltMax: "",
       isOpen: false,
     });
     filters({});
@@ -102,24 +104,24 @@ export function MapView(props) {
   useEffect(() => {
     if (properties.length > 0 && !isLoadingMore) {
       const lastElement = document.querySelector(
-        '.property-item:last-child'
+        ".property-item:last-child"
       ) as HTMLElement | null;
       if (lastElement) lastPropertyElementRef(lastElement);
     }
   }, [properties, isLoadingMore, lastPropertyElementRef]);
 
-  const skeletonCount = state.view === 'grid' ? 2 : 1;
+  const skeletonCount = state.view === "grid" ? 2 : 1;
 
   const handleChange = (name: string, value: any) => {
     setState({ [name]: value });
   };
 
   const formatINR = (value: number) => {
-    if (isNaN(value)) return '';
-    return value.toLocaleString('en-IN');
+    if (isNaN(value)) return "";
+    return value.toLocaleString("en-IN");
   };
 
-  const parseINR = (value: string) => Number(value.replace(/,/g, ''));
+  const parseINR = (value: string) => Number(value.replace(/,/g, ""));
 
   const handleFilter = () => {
     filters(state);
@@ -127,94 +129,97 @@ export function MapView(props) {
   };
 
   return (
-    <div className='min-h-screen bg-gray-50'>
-      <div className='grid grid-cols-1 xl:grid-cols-12 gap-6'>
-        <div className='xl:col-span-5 p-6 lg:p-8 overflow-y-auto h-[calc(100vh-80px)] flex flex-col items-start'>
+    <div className="min-h-screen bg-gray-50">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+        <div className=" xl:col-span-5 p-6 lg:p-8 overflow-y-auto h-[calc(100vh-98px)] flex flex-col items-start">
           {/* First sticky header */}
-          <div className='sticky top-0 z-10 w-full p-5 rounded-lg mb-7'  style={{ backgroundColor: '#f3f4f6' }}>
+          <div
+            className="sticky top-0 z-10 w-full p-5 rounded-lg mb-7"
+            style={{ backgroundColor: "#f3f4f6" }}
+          >
             {/* First sticky header */}
-            <div className='flex items-center justify-between mb-6 w-full'>
+            <div className="flex items-center justify-between mb-6 w-full">
               <div>
-                <h2 className='text-xl font-semibold text-gray-900 mb-1'>
+                <h2 className="text-xl font-semibold text-gray-900 mb-1">
                   {title}
                 </h2>
-                <p className='text-sm text-gray-500'>
+                <p className="text-sm text-gray-500">
                   Showing 1–{properties?.length} of {properties?.length} results
                 </p>
               </div>
 
               <Button
                 onClick={() => setState({ isOpen: true })}
-                variant='outline'
-                className='rounded-full text-gray-800 px-4 py-2 border shadow-sm hover:bg-gray-50 flex items-center gap-2'
+                variant="outline"
+                className="rounded-full text-gray-800 px-4 py-2 border shadow-sm hover:bg-gray-50 flex items-center gap-2"
               >
-                <SlidersHorizontal className='h-4 w-4' /> More Filter
+                <SlidersHorizontal className="h-4 w-4" /> More Filter
               </Button>
             </div>
 
             {/* Second sticky header */}
-            <div className='flex items-center justify-between mb-6 w-full'>
-              <div className='flex items-center gap-4'>
-                <span className='text-sm text-gray-600 whitespace-nowrap'>
+            <div className="flex items-center justify-between mb-6 w-full">
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-gray-600 whitespace-nowrap">
                   Sort by:
                 </span>
                 <Select
-                  defaultValue='default'
+                  defaultValue="default"
                   onValueChange={(value) => {
-                    let sortValue = 'new';
+                    let sortValue = "new";
                     switch (value) {
-                      case 'price-low':
-                        sortValue = 'price';
+                      case "price-low":
+                        sortValue = "price";
                         break;
-                      case 'price-high':
-                        sortValue = '-price';
+                      case "price-high":
+                        sortValue = "-price";
                         break;
-                      case 'default':
-                        sortValue = '';
+                      case "default":
+                        sortValue = "";
                         break;
-                      case 'newest':
-                        sortValue = 'created_at';
+                      case "newest":
+                        sortValue = "created_at";
                         break;
                     }
-                    handleChange('sort', sortValue);
+                    handleChange("sort", sortValue);
                   }}
                 >
-                  <SelectTrigger className='border-0 shadow-none focus:ring-0 p-0 h-auto text-sm font-medium text-gray-900'>
-                    <SelectValue placeholder='Newest' />
+                  <SelectTrigger className="border-0 shadow-none focus:ring-0 p-0 h-auto text-sm font-medium text-gray-900">
+                    <SelectValue placeholder="Newest" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='default'>Default</SelectItem>
-                    <SelectItem value='newest'>Newest</SelectItem>
-                    <SelectItem value='price-low'>
+                    <SelectItem value="default">Default</SelectItem>
+                    <SelectItem value="newest">Newest</SelectItem>
+                    <SelectItem value="price-low">
                       Price: Low to High
                     </SelectItem>
-                    <SelectItem value='price-high'>
+                    <SelectItem value="price-high">
                       Price: High to Low
                     </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className='flex items-center gap-0 rounded-lg overflow-hidden border'>
+              <div className="flex items-center gap-0 rounded-lg overflow-hidden border">
                 <Button
-                  onClick={() => setState({ view: 'grid' })}
-                  variant='ghost'
+                  onClick={() => setState({ view: "grid" })}
+                  variant="ghost"
                   className={`px-4 py-2 h-9 rounded-none text-sm font-medium ${
-                    state.view === 'grid'
-                      ? 'bg-red-50 text-red-600'
-                      : 'text-gray-600 hover:text-red-500'
+                    state.view === "grid"
+                      ? "bg-red-50 text-red-600"
+                      : "text-gray-600 hover:text-red-500"
                   }`}
                 >
                   Grid
                 </Button>
-                <div className='h-4 w-px bg-gray-300'></div>
+                <div className="h-4 w-px bg-gray-300"></div>
                 <Button
-                  onClick={() => setState({ view: 'list' })}
-                  variant='ghost'
+                  onClick={() => setState({ view: "list" })}
+                  variant="ghost"
                   className={`px-4 py-2 h-9 rounded-none text-sm font-medium ${
-                    state.view === 'list'
-                      ? 'bg-red-50 text-red-600'
-                      : 'text-gray-600 hover:text-red-500'
+                    state.view === "list"
+                      ? "bg-red-50 text-red-600"
+                      : "text-gray-600 hover:text-red-500"
                   }`}
                 >
                   List
@@ -227,9 +232,9 @@ export function MapView(props) {
           {loading ? (
             <div
               className={
-                state.view === 'grid'
-                  ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6'
-                  : 'flex flex-col gap-6'
+                state.view === "grid"
+                  ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6"
+                  : "flex flex-col gap-6"
               }
             >
               {Array.from({ length: skeletonCount }).map((_, index) => (
@@ -241,29 +246,37 @@ export function MapView(props) {
               ))}
             </div>
           ) : properties?.length === 0 ? (
-            <div className='flex justify-center items-center w-full pt-40'>
+            <div className="flex justify-center items-center w-full pt-40">
               <div>No Property Found</div>
             </div>
           ) : (
             <>
               <div
                 className={
-                  state.view === 'grid'
-                    ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 w-full'
-                    : 'flex flex-col gap-6 w-full'
+                  state.view === "grid"
+                    ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 w-full"
+                    : "flex flex-col gap-6 w-full"
                 }
               >
                 {properties?.map((property: any, index: number) => (
                   <div
                     key={index}
-                    className='property-item'
+                    className="property-item"
                     ref={
                       index === properties.length - 1
                         ? lastPropertyElementRef
                         : null
                     }
                   >
-                    <PropertyCard property={property} view={state.view} />
+                    <PropertyCard
+                      property={property}
+                      view={state.view}
+                      handleClick={() => {
+                        console.log("✌️property --->", property?.id);
+
+                        setState({ selectedProperty: property?.id });
+                      }}
+                    />
                   </div>
                 ))}
               </div>
@@ -271,9 +284,9 @@ export function MapView(props) {
               {isLoadingMore && (
                 <div
                   className={
-                    state.view === 'grid'
-                      ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6'
-                      : 'flex flex-col gap-6'
+                    state.view === "grid"
+                      ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6"
+                      : "flex flex-col gap-6"
                   }
                 >
                   {Array.from({ length: skeletonCount }).map((_, index) => (
@@ -289,14 +302,28 @@ export function MapView(props) {
           )}
         </div>
 
+        {state.selectedProperty && (
+          <div className="xl:col-span-4 h-[calc(100vh-98px)] overflow-y-auto">
+            <PropertyDetailInline
+              id={state.selectedProperty}
+              handleClick={() => setState({ selectedProperty: null })}
+            />
+          </div>
+        )}
+
         {/* Map section remains the same */}
-        <div className='xl:col-span-7 relative h-[calc(100vh-80px)] bg-gray-200'>
-          <iframe
+        <div
+          className={`${
+            state.selectedProperty ? "xl:col-span-3" : "xl:col-span-7 "
+          } relative h-full bg-gray-200`}
+        >
+          {/* <iframe
             title='Map'
             className='w-full h-full'
             src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31510.7524969315!2d-118.343!3d34.052!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c0!2sLos%20Angeles!5e0!3m2!1sen!2sus!4v1700000000000'
             loading='lazy'
-          ></iframe>
+          ></iframe> */}
+          <GoogleMapPropertyList properties={properties} />
         </div>
       </div>
 
@@ -309,7 +336,7 @@ export function MapView(props) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className='fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4'
+              className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
               onClick={() => setState({ isOpen: false })}
             />
 
@@ -317,81 +344,81 @@ export function MapView(props) {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className='fixed inset-0 z-50 flex items-center justify-center p-4'
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className='bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden'>
-                <div className='flex items-center justify-between p-6 border-b'>
-                  <h3 className='text-xl font-semibold text-gray-900'>
+              <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+                <div className="flex items-center justify-between p-6 border-b">
+                  <h3 className="text-xl font-semibold text-gray-900">
                     Filters
                   </h3>
 
-                  <div className='flex items-center gap-3'>
+                  <div className="flex items-center gap-3">
                     <Button
-                      className='bg-[#F35C48] hover:bg-[#d94d3c] flex items-center justify-center gap-2'
+                      className="bg-[#F35C48] hover:bg-[#d94d3c] flex items-center justify-center gap-2"
                       onClick={() => {
                         handleFilter();
                       }}
                     >
-                      <SearchIcon className='h-4 w-4' />
+                      <SearchIcon className="h-4 w-4" />
                       Search
                     </Button>
 
                     <Button
-                      variant='outline'
-                      className='flex items-center justify-center gap-2'
+                      variant="outline"
+                      className="flex items-center justify-center gap-2"
                       onClick={resetFilters}
                     >
-                      <RotateCcw className='h-4 w-4' />
+                      <RotateCcw className="h-4 w-4" />
                       Reset
                     </Button>
 
                     <Button
-                      variant='ghost'
-                      size='icon'
+                      variant="ghost"
+                      size="icon"
                       onClick={() => setState({ isOpen: false })}
-                      className='h-8 w-8 rounded-full hover:bg-gray-100'
+                      className="h-8 w-8 rounded-full hover:bg-gray-100"
                     >
-                      <X className='h-4 w-4' />
+                      <X className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
 
-                <div className='overflow-y-auto max-h-[calc(90vh-80px)] p-6'>
-                  <div className='space-y-6'>
-                    <div className=' font-semibold text-gray-900'>
+                <div className="overflow-y-auto max-h-[calc(90vh-80px)] p-6">
+                  <div className="space-y-6">
+                    <div className=" font-semibold text-gray-900">
                       Search Property
-                      <div className='mt-3'>
+                      <div className="mt-3">
                         <TextInput
-                          placeholder='What are you looking for?'
+                          placeholder="What are you looking for?"
                           value={state.search}
                           onChange={(e) =>
-                            handleChange('search', e.target.value)
+                            handleChange("search", e.target.value)
                           }
                         />
                       </div>
                     </div>
 
                     <div>
-                      <div className='mb-2 font-semibold text-gray-900'>
+                      <div className="mb-2 font-semibold text-gray-900">
                         Listing Status
                       </div>
 
-                      <div className='flex items-center justify-start gap-6'>
-                        {['All', 'Sale', 'Rent', 'Lease'].map((option) => (
+                      <div className="flex items-center justify-start gap-6">
+                        {["All", "Sale", "Rent", "Lease"].map((option) => (
                           <label
                             key={option}
-                            className='flex items-center gap-2 text-sm text-gray-700 cursor-pointer'
+                            className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
                           >
                             <input
-                              type='radio'
-                              name='listingStatus'
+                              type="radio"
+                              name="listingStatus"
                               checked={state.listingStatus === option}
                               onChange={() =>
-                                handleChange('listingStatus', option)
+                                handleChange("listingStatus", option)
                               }
-                              className='accent-blue-600 cursor-pointer'
+                              className="accent-blue-600 cursor-pointer"
                             />
                             {option}
                           </label>
@@ -400,18 +427,18 @@ export function MapView(props) {
                     </div>
 
                     <div>
-                      <div className='mb-2 font-semibold text-gray-900'>
+                      <div className="mb-2 font-semibold text-gray-900">
                         Property Type
                       </div>
-                      <div className='flex items-center justify-start gap-6'>
+                      <div className="flex items-center justify-start gap-6">
                         {categoryList?.map((option) => (
                           <label
                             key={option?.value}
-                            className='flex items-center gap-2 text-sm text-gray-700 cursor-pointer'
+                            className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
                           >
                             <input
-                              type='checkbox'
-                              className='cursor-pointer'
+                              type="checkbox"
+                              className="cursor-pointer"
                               checked={state.propertyType.some(
                                 (t) => t.value === option.value
                               )}
@@ -422,7 +449,7 @@ export function MapView(props) {
                                 } else {
                                   updated = [];
                                 }
-                                handleChange('propertyType', updated);
+                                handleChange("propertyType", updated);
                               }}
                             />
                             <span>{option?.label}</span>
@@ -438,20 +465,20 @@ export function MapView(props) {
                         value={state.priceRange}
                         onChange={(val) => {
                           setState({ priceRange: val });
-                          handleChange('minPrice', val[0]);
-                          handleChange('maxPrice', val[1]);
+                          handleChange("minPrice", val[0]);
+                          handleChange("maxPrice", val[1]);
                         }}
                       />
 
-                      <div className='flex gap-3 mt-4 items-center'>
-                        <div className='relative w-full'>
-                          <span className='absolute left-3 top-2 text-gray-600'>
+                      <div className="flex gap-3 mt-4 items-center">
+                        <div className="relative w-full">
+                          <span className="absolute left-3 top-2 text-gray-600">
                             ₹
                           </span>
                           <Input
-                            type='text'
-                            className='pl-6 pr-0'
-                            placeholder='Min.'
+                            type="text"
+                            className="pl-6 pr-0"
+                            placeholder="Min."
                             value={formatINR(state.priceRange?.[0] ?? 0)}
                             onChange={(e) => {
                               const newMin = parseINR(e.target.value);
@@ -460,22 +487,22 @@ export function MapView(props) {
                                 state.priceRange?.[1] ?? 0
                               );
                               const updated = [newMin, newMax];
-                              handleChange('priceRange', updated);
+                              handleChange("priceRange", updated);
                               setState({ priceRange: updated });
                             }}
                           />
                         </div>
 
-                        <span className='flex items-center'>-</span>
+                        <span className="flex items-center">-</span>
 
-                        <div className='relative w-full'>
-                          <span className='absolute left-3 top-2 text-gray-600'>
+                        <div className="relative w-full">
+                          <span className="absolute left-3 top-2 text-gray-600">
                             ₹
                           </span>
                           <Input
-                            type='text'
-                            className='pl-6 pr-0'
-                            placeholder='Max.'
+                            type="text"
+                            className="pl-6 pr-0"
+                            placeholder="Max."
                             value={formatINR(state.priceRange?.[1] ?? 0)}
                             onChange={(e) => {
                               const newMax = parseINR(e.target.value);
@@ -484,7 +511,7 @@ export function MapView(props) {
                                 state.priceRange?.[0] ?? 0
                               );
                               const updated = [newMin, newMax];
-                              handleChange('priceRange', updated);
+                              handleChange("priceRange", updated);
                               setState({ priceRange: updated });
                             }}
                           />
@@ -493,21 +520,21 @@ export function MapView(props) {
                     </div>
 
                     <div>
-                      <div className='mb-2 font-semibold text-gray-900'>
+                      <div className="mb-2 font-semibold text-gray-900">
                         Bedrooms
                       </div>
 
-                      <div className='flex flex-wrap gap-2'>
-                        {['Any', '2+', '3+', '4+', '5+'].map((option) => (
+                      <div className="flex flex-wrap gap-2">
+                        {["Any", "2+", "3+", "4+", "5+"].map((option) => (
                           <label key={option}>
                             <input
-                              type='radio'
-                              name='bedrooms'
+                              type="radio"
+                              name="bedrooms"
                               checked={state.bedrooms === option}
-                              onChange={() => handleChange('bedrooms', option)}
-                              className='peer hidden'
+                              onChange={() => handleChange("bedrooms", option)}
+                              className="peer hidden"
                             />
-                            <span className='flex items-center justify-center px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:border-red-400 peer-checked:border-red-500'>
+                            <span className="flex items-center justify-center px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:border-red-400 peer-checked:border-red-500">
                               {option}
                             </span>
                           </label>
@@ -516,20 +543,20 @@ export function MapView(props) {
                     </div>
 
                     <div>
-                      <div className='mb-2 font-semibold text-gray-900'>
+                      <div className="mb-2 font-semibold text-gray-900">
                         Bathrooms
                       </div>
-                      <div className='flex flex-wrap gap-2'>
-                        {['Any', '2+', '3+', '4+', '5+'].map((option) => (
+                      <div className="flex flex-wrap gap-2">
+                        {["Any", "2+", "3+", "4+", "5+"].map((option) => (
                           <label key={option}>
                             <input
-                              type='radio'
-                              name='bathrooms'
+                              type="radio"
+                              name="bathrooms"
                               checked={state.bathrooms === option}
-                              onChange={() => handleChange('bathrooms', option)}
-                              className='peer hidden'
+                              onChange={() => handleChange("bathrooms", option)}
+                              className="peer hidden"
                             />
-                            <span className='flex items-center justify-center px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:border-red-400 peer-checked:border-red-500'>
+                            <span className="flex items-center justify-center px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:border-red-400 peer-checked:border-red-500">
                               {option}
                             </span>
                           </label>
@@ -538,18 +565,18 @@ export function MapView(props) {
                     </div>
 
                     <div>
-                      <div className='mb-2 font-semibold text-gray-900'>
+                      <div className="mb-2 font-semibold text-gray-900">
                         Furnishing
                       </div>
-                      <div className='flex items-center justify-start gap-6'>
+                      <div className="flex items-center justify-start gap-6">
                         {FURNISHING_TYPE?.map((option) => (
                           <label
                             key={option?.value}
-                            className='flex items-center gap-2 text-sm text-gray-700 cursor-pointer'
+                            className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
                           >
                             <input
-                              type='checkbox'
-                              className='cursor-pointer'
+                              type="checkbox"
+                              className="cursor-pointer"
                               checked={state.furnishing.some(
                                 (t) => t.value === option.value
                               )}
@@ -560,7 +587,7 @@ export function MapView(props) {
                                 } else {
                                   updated = [];
                                 }
-                                handleChange('furnishing', updated);
+                                handleChange("furnishing", updated);
                               }}
                             />
                             <span>{option?.label}</span>
@@ -570,49 +597,49 @@ export function MapView(props) {
                     </div>
 
                     <div>
-                      <div className='mb-2 font-semibold text-gray-900'>
+                      <div className="mb-2 font-semibold text-gray-900">
                         Square Feet
                       </div>
-                      <div className='flex gap-3'>
+                      <div className="flex gap-3">
                         <Input
-                          type='number'
-                          placeholder='Min.'
+                          type="number"
+                          placeholder="Min."
                           value={state.sqftMin}
                           onChange={(e) =>
-                            handleChange('sqftMin', e.target.value)
+                            handleChange("sqftMin", e.target.value)
                           }
                         />
-                        <span className='flex items-center'>-</span>
+                        <span className="flex items-center">-</span>
                         <Input
-                          type='number'
-                          placeholder='Max.'
+                          type="number"
+                          placeholder="Max."
                           value={state.sqftMax}
                           onChange={(e) =>
-                            handleChange('sqftMax', e.target.value)
+                            handleChange("sqftMax", e.target.value)
                           }
                         />
                       </div>
                     </div>
 
                     <div>
-                      <div className='mb-2 font-semibold text-gray-900'>
+                      <div className="mb-2 font-semibold text-gray-900">
                         Year Built
                       </div>
-                      <div className='flex gap-3'>
+                      <div className="flex gap-3">
                         <Input
-                          type='number'
-                          placeholder=''
+                          type="number"
+                          placeholder=""
                           value={state.yearBuiltMin}
                           onChange={(e) =>
-                            handleChange('yearBuiltMin', e.target.value)
+                            handleChange("yearBuiltMin", e.target.value)
                           }
                         />
                         <Input
-                          type='number'
-                          placeholder=''
+                          type="number"
+                          placeholder=""
                           value={state.yearBuiltMax}
                           onChange={(e) =>
-                            handleChange('yearBuiltMax', e.target.value)
+                            handleChange("yearBuiltMax", e.target.value)
                           }
                         />
                       </div>

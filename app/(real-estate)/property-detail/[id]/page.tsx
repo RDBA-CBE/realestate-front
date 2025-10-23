@@ -206,15 +206,6 @@ export default function PropertyDetailPage() {
     token: null,
   });
 
-  const images = [
-    "/assets/images/real-estate/01.png",
-    "/assets/images/real-estate/02.png",
-    "/assets/images/real-estate/03.png",
-    "/assets/images/real-estate/04.png",
-    "/assets/images/real-estate/05.png",
-    "/assets/images/real-estate/6.png",
-    "/assets/images/real-estate/7.png",
-  ];
 
   useEffect(() => {
     const handleScroll = () => {
