@@ -151,7 +151,7 @@ export function PropertyView(props: any) {
       className='xl:max-w-[110rem] max-w-[85rem] mx-auto p-6'
     >
       <div className='grid grid-cols-1 lg:grid-cols-4 gap-8 items-start min-h-screen'>
-        <aside className='space-y-6 lg:col-span-1 sticky top-16 h-fit'>
+        <aside className='space-y-6 lg:col-span-1 lg:sticky md:top-16 lg:top-16 h-fit'>
           <div className='p-4 border rounded-lg space-y-6 bg-gray-100 border-none'>
             <div className='w-full flex justify-end'>
               <Button
