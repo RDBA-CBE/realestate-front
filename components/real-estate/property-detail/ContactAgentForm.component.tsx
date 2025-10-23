@@ -10,6 +10,7 @@ import {
   capitalizeFLetter,
   Failure,
   formatPhoneNumber,
+  Success,
   useSetState,
 } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
@@ -48,6 +49,7 @@ export default function ContactAgentForm({
 
       const res = await Models.lead.create(body);
       console.log("✌️res --->", res);
+      Success("Enquiry sent ! ")
       setState({ btnLoading: false });
     } catch (error) {
       if (error?.email?.length > 0) {

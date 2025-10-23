@@ -39,13 +39,23 @@ export default function Page() {
         page_size: PROPERTY_LIST_PAGE,
       };
       const res: any = await Models.property.list(page, bodys);
+
+      const compareList: string[] = JSON.parse(
+        localStorage.getItem("compare") || "[]"
+      );
+
+      const resultsWithCompare = res?.results.map((item: any) => ({
+        ...item,
+        is_compare: compareList.includes(item.id),
+      }));
+
       const minPrice = formatNumber(res?.min_price);
       const maxPrice = formatNumber(res?.max_price);
 
       setState({
         propertyList: append
-          ? [...state.propertyList, ...res?.results]
-          : res?.results,
+          ? [...state.propertyList, ...resultsWithCompare]
+          : resultsWithCompare,
         handNext: res?.next,
         page: page,
         loading: false,
@@ -86,13 +96,22 @@ export default function Page() {
         setState({ loading: true });
       }
 
-      const body = bodyData(data);
-      const res: any = await Models.property.list(page, body);
+      const bodys = bodyData(data);
+      const res: any = await Models.property.list(page, bodys);
+
+      const compareList: string[] = JSON.parse(
+        localStorage.getItem("compare") || "[]"
+      );
+
+      const resultsWithCompare = res?.results.map((item: any) => ({
+        ...item,
+        is_compare: compareList.includes(item.id),
+      }));
 
       setState({
         propertyList: append
-          ? [...state.propertyList, ...res?.results]
-          : res?.results,
+          ? [...state.propertyList, ...resultsWithCompare]
+          : resultsWithCompare,
         handNext: res?.next,
         page: page,
         loading: false,
