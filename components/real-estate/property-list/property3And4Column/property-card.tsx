@@ -204,10 +204,11 @@ export function PropertyCard({
       whileHover={{ scale: 1.02 }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      className="h-full"
     >
       <Card
         onClick={() => onClick()}
-        className={`bg-gray-100 border-none overflow-hidden p-3 border shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer ${
+        className={`bg-gray-100 border-none overflow-hidden p-3 border shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer h-full flex flex-col ${
           view === "list" ? "flex flex-row h-48" : ""
         }`}
       >

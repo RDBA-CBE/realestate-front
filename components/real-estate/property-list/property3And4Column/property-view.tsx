@@ -487,21 +487,36 @@ export function PropertyView(props: any) {
           </div>
 
           {loading ? (
-            <div
-              className={
-                state.view === 'grid'
-                  ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'
-                  : 'flex flex-col gap-6'
-              }
-            >
-              {Array.from({ length: skeletonCount }).map((_, index) => (
-                <PropertyCardSkeleton
-                  key={`skeleton-${index}`}
-                  view={state.view}
-                  row={3}
-                />
-              ))}
-            </div>
+           <div
+  className={
+    state.view === 'grid'
+      ? 'flex flex-wrap gap-6'
+      : 'flex flex-col gap-6'
+  }
+>
+  {properties?.map((property: any, index: number) => (
+    <div
+      key={index}
+      className={
+        state.view === 'grid' 
+          ? 'flex-1 min-w-[300px] md:min-w-[calc(33.333%-1rem)]' 
+          : 'w-full'
+      }
+      ref={
+        index === properties.length - 1
+          ? lastPropertyElementRef
+          : null
+      }
+    >
+      <PropertyCard
+        property={property}
+        view={state.view}
+        list={properties}
+        updateList={(data) => updateList(data)}
+      />
+    </div>
+  ))}
+</div>
           ) : properties?.length == 0 ? (
            <div className="flex flex-col justify-center items-center w-full ">
               <img
