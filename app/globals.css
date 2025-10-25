@@ -3,35 +3,35 @@
 @tailwind utilities;
 
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 p {
-  font-family: "Marcellus", serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 h1 {
-  font-family: "Marcellus", serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 h2 {
-  font-family: "Marcellus", serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 h3 {
-  font-family: "Marcellus", serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 h4 {
-  font-family: "Marcellus", serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 h5 {
-  font-family: "Marcellus", serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 h6 {
-  font-family: "Marcellus", serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 .font-marce {
@@ -186,7 +186,7 @@ h6 {
 }
 
 .custom-success-icon {
-  color: #22c55e !important; /* Tailwind green-500 */
+  color: #22c55e !important; /*Tailwind green-500 */
 }
 
 .swal2-timer-progress-bar {
