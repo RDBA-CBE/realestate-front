@@ -7,31 +7,31 @@ body {
 }
 
 p {
-  font-family: "Poppins ", sans-serif;
+  font-family: "Marcellus", serif;
 }
 
 h1 {
-  font-family: "Poppins ", sans-serif;
+  font-family: "Marcellus", serif;
 }
 
 h2 {
-  font-family: "Poppins ", sans-serif;
+  font-family: "Marcellus", serif;
 }
 
 h3 {
-  font-family: "Poppins ", sans-serif;
+  font-family: "Marcellus", serif;
 }
 
 h4 {
-  font-family: "Poppins ", sans-serif;
+  font-family: "Marcellus", serif;
 }
 
 h5 {
-  font-family: "Poppins ", sans-serif;
+  font-family: "Marcellus", serif;
 }
 
 h6 {
-  font-family: "Poppins ", sans-serif;
+  font-family: "Marcellus", serif;
 }
 
 .font-marce {
@@ -1279,4 +1279,15 @@ body {
 
 ::-webkit-scrollbar-track {
   background: transparent;
+}
+
+.equal-height-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  grid-auto-rows: 1fr;
+}
+
+.equal-height-grid > * {
+  height: 100%;
 }
