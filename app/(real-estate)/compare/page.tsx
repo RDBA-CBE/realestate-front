@@ -3,11 +3,13 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
+  formatPriceRange,
   formatToINR,
   Success,
   useSetState,
 } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
+import Image from "next/image";
 
 const PropertyComparisonGrid = () => {
   const [state, setState] = useSetState({
@@ -39,9 +41,10 @@ const PropertyComparisonGrid = () => {
           return response;
         })
       );
+
       setState({
         propertyList: totalList,
-        loading: false
+        loading: false,
       });
     } catch (error) {
       setState({ loading: false });
@@ -138,9 +141,7 @@ const PropertyComparisonGrid = () => {
     },
     {
       group: "Features",
-      attributes: [
-        { label: "Furnishing", key: "furnishing" },
-      ],
+      attributes: [{ label: "Furnishing", key: "furnishing" }],
     },
   ];
 
@@ -190,7 +191,10 @@ const PropertyComparisonGrid = () => {
               <div className="h-4 bg-gray-300 rounded w-1/2"></div>
             </th>
             {[1, 2, 3].map((item) => (
-              <th key={item} className="min-w-[280px] border-l border-gray-100 p-4 py-[40px] text-left">
+              <th
+                key={item}
+                className="min-w-[280px] border-l border-gray-100 p-4 py-[40px] text-left"
+              >
                 <div className="relative">
                   <div className="w-4 h-4 bg-gray-300 rounded absolute top-0 right-0"></div>
                   <div className="w-full h-28 bg-gray-300 rounded-lg mb-2"></div>
@@ -216,7 +220,10 @@ const PropertyComparisonGrid = () => {
                     <div className="h-3 bg-gray-300 rounded w-2/3"></div>
                   </td>
                   {[1, 2, 3].map((propertyIndex) => (
-                    <td key={propertyIndex} className="min-w-[280px] p-3 border-l border-gray-100 text-center">
+                    <td
+                      key={propertyIndex}
+                      className="min-w-[280px] p-3 border-l border-gray-100 text-center"
+                    >
                       <div className="h-3 bg-gray-300 rounded w-1/2 mx-auto"></div>
                     </td>
                   ))}
@@ -233,7 +240,10 @@ const PropertyComparisonGrid = () => {
     <div className="lg:hidden mb-6 animate-pulse">
       <div className="flex space-x-1 overflow-x-auto scrollbar-hide">
         {[1, 2, 3, 4, 5].map((item) => (
-          <div key={item} className="px-4 py-2 bg-gray-300 rounded-lg w-32 h-10"></div>
+          <div
+            key={item}
+            className="px-4 py-2 bg-gray-300 rounded-lg w-32 h-10"
+          ></div>
         ))}
       </div>
     </div>
@@ -241,25 +251,33 @@ const PropertyComparisonGrid = () => {
 
   const renderMobileTabContent = () => {
     const currentGroup = attributeGroups[activeTab];
-    
+
     return (
       <div className="lg:hidden space-y-4">
         {state.propertyList.map((property: any) => (
-          <div key={property.id} className="bg-white rounded-lg border border-gray-200 p-4">
+          <div
+            key={property.id}
+            className="bg-white rounded-lg border border-gray-200 p-4"
+          >
             <div className="flex justify-between items-start mb-4">
               <div className="flex-1">
                 <div className="relative overflow-hidden rounded-lg shadow-md mb-2">
-                  <img
+                  <Image
                     src={property?.primary_image?.image}
                     alt={property.title}
                     className="w-full h-32 object-cover"
+                    width={100}
+                    height={32}
                   />
                 </div>
                 <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">
                   {property.title}
                 </h3>
                 <p className="text-xs text-red-600 font-bold mt-1">
-                  {formatToINR(property.price)}
+                  {formatPriceRange(
+                    property?.price_range?.minimum_price,
+                    property?.price_range?.maximum_price
+                  )}{" "}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
                   {property.city}, {property.state}
@@ -290,9 +308,20 @@ const PropertyComparisonGrid = () => {
                 {currentGroup.group}
               </h4>
               {currentGroup.attributes.map((attr) => (
-                <div key={attr.key} className="flex justify-between items-center text-sm">
-                  <span className="text-gray-600 font-medium">{attr.label}:</span>
-                  <span className={`${attr.highlight ? "text-red-600 font-bold" : "text-gray-900"}`}>
+                <div
+                  key={attr.key}
+                  className="flex justify-between items-center text-sm"
+                >
+                  <span className="text-gray-600 font-medium">
+                    {attr.label}:
+                  </span>
+                  <span
+                    className={`${
+                      attr.highlight
+                        ? "text-red-600 font-bold"
+                        : "text-gray-900"
+                    }`}
+                  >
                     {getDisplayValue(property, attr)}
                   </span>
                 </div>
@@ -315,7 +344,10 @@ const PropertyComparisonGrid = () => {
               </span>
             </th>
             {state.propertyList?.map((property: any) => (
-              <th key={property.id} className="min-w-[280px] border-l border-gray-100 p-4 py-[40px] text-left">
+              <th
+                key={property.id}
+                className="min-w-[280px] border-l border-gray-100 p-4 py-[40px] text-left"
+              >
                 <div className="relative">
                   <button
                     className="absolute top-0 right-0 text-gray-400 hover:text-red-500 transition"
@@ -346,7 +378,10 @@ const PropertyComparisonGrid = () => {
                     {property.title}
                   </h3>
                   <p className="text-xs text-red-600 font-bold mt-1">
-                    {formatToINR(property.price)}
+                    {formatPriceRange(
+                    property?.price_range?.minimum_price,
+                    property?.price_range?.maximum_price
+                  )}{" "}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
                     {property.city}, {property.state}
@@ -367,17 +402,25 @@ const PropertyComparisonGrid = () => {
                 </td>
               </tr>
               {groupData.attributes.map((attr, i) => (
-                <tr key={attr.key} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+                <tr
+                  key={attr.key}
+                  className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+                >
                   <td className="sticky left-0 w-64 bg-white p-3 border-r border-gray-200 text-sm font-medium text-gray-900 z-10">
                     {attr.label}
                   </td>
                   {state.propertyList.map((property: any) => (
-                    <td key={property.id} className="min-w-[280px] p-3 border-l border-gray-100 text-center">
-                      <span className={`${
-                        attr.highlight
-                          ? "text-lg font-extrabold text-red-600"
-                          : "text-gray-800 text-sm"
-                      }`}>
+                    <td
+                      key={property.id}
+                      className="min-w-[280px] p-3 border-l border-gray-100 text-center"
+                    >
+                      <span
+                        className={`${
+                          attr.highlight
+                            ? "text-lg font-extrabold text-red-600"
+                            : "text-gray-800 text-sm"
+                        }`}
+                      >
                         {getDisplayValue(property, attr)}
                       </span>
                     </td>
