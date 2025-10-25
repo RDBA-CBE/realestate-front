@@ -59,6 +59,12 @@ const properties = {
       if (body?.sort) {
         url += `&is_approved=${encodeURIComponent(true)}`;
       }
+
+       if (body?.is_approved == "Yes") {
+        url += `&is_approved=${encodeURIComponent(true)}`;
+      }
+
+
       if (body?.sort_by) {
         url += `&sort_by=${encodeURIComponent(body?.sort_by)}`;
       }

@@ -135,8 +135,8 @@ export function MapView(props) {
         <div className=" xl:col-span-5 p-6 lg:p-8 overflow-y-auto h-[calc(100vh-98px)] flex flex-col items-start">
           {/* First sticky header */}
           <div
-            className='sticky top-0 lg:-top-8 z-10 w-full p-5 rounded-lg mb-7'
-            style={{ backgroundColor: '#f3f4f6' }}
+            className="sticky top-0 lg:-top-8 z-10 w-full p-5 rounded-lg mb-7"
+            style={{ backgroundColor: "#f3f4f6" }}
           >
             {/* First sticky header */}
             <div className="flex items-center justify-between mb-6 w-full">
@@ -247,8 +247,13 @@ export function MapView(props) {
               ))}
             </div>
           ) : properties?.length === 0 ? (
-            <div className="flex justify-center items-center w-full pt-40">
-              <div>No Property Found</div>
+            <div className="flex flex-col justify-center items-center w-full ">
+              <img
+                src="/assets/images/not_founds.jpg"
+                alt="No Property Found"
+                className="w-80 h-auto mb-4"
+              />
+             
             </div>
           ) : (
             <>
@@ -273,9 +278,7 @@ export function MapView(props) {
                       property={property}
                       view={state.view}
                       handleClick={() => {
-                        console.log("✌️property --->", property?.id);
-
-                        setState({ selectedProperty: property?.id });
+                        setState({ selectedProperty: property });
                       }}
                       list={properties}
                       updateList={(data) => updateList(data)}
@@ -308,7 +311,7 @@ export function MapView(props) {
         {state.selectedProperty && (
           <div className="xl:col-span-4 h-[calc(100vh-98px)] overflow-y-auto">
             <PropertyDetailInline
-              id={state.selectedProperty}
+              id={state.selectedProperty?.id}
               handleClick={() => setState({ selectedProperty: null })}
             />
           </div>
@@ -326,7 +329,10 @@ export function MapView(props) {
             src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31510.7524969315!2d-118.343!3d34.052!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c0!2sLos%20Angeles!5e0!3m2!1sen!2sus!4v1700000000000'
             loading='lazy'
           ></iframe> */}
-          <GoogleMapPropertyList properties={properties} />
+          <GoogleMapPropertyList
+            properties={properties}
+            selectedProperties={state.selectedProperty}
+          />
         </div>
       </div>
 

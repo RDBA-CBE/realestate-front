@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import {
   capitalizeFLetter,
   Failure,
+  formatPriceRange,
   formattedNoDecimal,
   formatToINR,
   Success,
@@ -51,6 +52,7 @@ interface Property {
   is_compare: string;
   user_wishlists: boolean;
   images?: PropertyImage[];
+  price_range?:any
 }
 
 interface PropertyCardProps {
@@ -321,7 +323,7 @@ export function PropertyCard({
 
             {/* Price Badge */}
             <Badge className="absolute top-2 right-2 bg-white text-black font-bold px-2 py-1 text-sm shadow-md">
-              {formatToINR(property.price)}{" "}
+              {formatPriceRange(property?.price_range?.minimum_price,property?.price_range?.maximum_price)}{" "}
               {property.listing_type === "rent" && "/ mo"}
             </Badge>
           </div>

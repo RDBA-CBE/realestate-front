@@ -6,12 +6,14 @@ import {
   useLoadScript,
   Marker,
   InfoWindow,
+  Autocomplete,
 } from "@react-google-maps/api";
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search, X, MapPin } from "lucide-react";
 
-// Property interface matching your data structure
 interface Property {
   id: number;
   title: string;
@@ -43,193 +45,454 @@ interface Property {
 
 interface GoogleMapsProps {
   properties?: Property[];
+  selectedProperties?: any;
 }
 
+// Calculate distance between two coordinates in kilometers
+const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+  const R = 6371; // Earth's radius in kilometers
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+};
+
 const GoogleMapPropertyList = (props: GoogleMapsProps) => {
-  const { properties = [] } = props;
-  
-  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const { properties = [], selectedProperties } = props;
+
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(
+    null
+  );
   const [hoveredProperty, setHoveredProperty] = useState<Property | null>(null);
-  // Default center set to India
   const [mapCenter, setMapCenter] = useState({ lat: 20.5937, lng: 78.9629 });
+  const [currentZoom, setCurrentZoom] = useState(5);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchLocation, setSearchLocation] = useState<{ 
+    lat: number; 
+    lng: number; 
+    address: string;
+    bounds?: google.maps.LatLngBounds;
+  } | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchRadius, setSearchRadius] = useState<number>(50); // Default 50km radius
+  
   const mapRef = useRef<google.maps.Map | null>(null);
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: KEY,
     libraries: ["places"],
   });
 
-  // Calculate center based on properties
-  const calculateCenter = useCallback((properties: Property[]) => {
-    if (properties.length === 0) {
-      return { lat: 20.5937, lng: 78.9629 }; // Default India center
-    }
+  const isInIndia = (lat: number, lng: number): boolean => {
+    return (
+      lat >= 6.0 &&
+      lat <= 36.0 &&
+      lng >= 68.0 &&
+      lng <= 98.0
+    );
+  };
 
-    const validProperties = properties.filter(property => {
+  const calculateCenter = useCallback((properties: Property[]) => {
+    const validProperties = properties.filter((property) => {
       const lat = parseFloat(property.latitude);
       const lng = parseFloat(property.longitude);
-      return !isNaN(lat) && !isNaN(lng) && property.is_approved && property.status === 'available';
+      return (
+        !isNaN(lat) &&
+        !isNaN(lng) &&
+        property.is_approved &&
+        property.status === "available"
+      );
     });
 
-    if (validProperties.length === 0) {
-      return { lat: 20.5937, lng: 78.9629 }; // Default India center
+    const indianProperties = validProperties.filter((property) =>
+      isInIndia(parseFloat(property.latitude), parseFloat(property.longitude))
+    );
+
+    if (indianProperties.length > 0) {
+      const avgLat =
+        indianProperties.reduce(
+          (sum, prop) => sum + parseFloat(prop.latitude),
+          0
+        ) / indianProperties.length;
+      const avgLng =
+        indianProperties.reduce(
+          (sum, prop) => sum + parseFloat(prop.longitude),
+          0
+        ) / indianProperties.length;
+      return { lat: avgLat, lng: avgLng };
     }
 
-    const avgLat = validProperties.reduce((sum, prop) => sum + parseFloat(prop.latitude), 0) / validProperties.length;
-    const avgLng = validProperties.reduce((sum, prop) => sum + parseFloat(prop.longitude), 0) / validProperties.length;
+    if (validProperties.length > 0) {
+      const avgLat =
+        validProperties.reduce(
+          (sum, prop) => sum + parseFloat(prop.latitude),
+          0
+        ) / validProperties.length;
+      const avgLng =
+        validProperties.reduce(
+          (sum, prop) => sum + parseFloat(prop.longitude),
+          0
+        ) / validProperties.length;
+      return { lat: avgLat, lng: avgLng };
+    }
 
-    return { lat: avgLat, lng: avgLng };
+    return { lat: 20.5937, lng: 78.9629 };
   }, []);
 
-  // Use useMemo to prevent recalculating on every render
   const propertiesWithCoords = useMemo(() => {
     const processedProperties = properties
-      .filter(property => {
+      .filter((property) => {
         const lat = parseFloat(property.latitude);
         const lng = parseFloat(property.longitude);
-        const isValid = !isNaN(lat) && !isNaN(lng) && property.is_approved && property.status === 'available';
+        const isValid =
+          !isNaN(lat) &&
+          !isNaN(lng) &&
+          property.is_approved &&
+          property.status === "available";
         return isValid;
       })
-      .map(property => ({
+      .map((property) => ({
         ...property,
         lat: parseFloat(property.latitude),
-        lng: parseFloat(property.longitude)
+        lng: parseFloat(property.longitude),
+        isIndian: isInIndia(
+          parseFloat(property.latitude),
+          parseFloat(property.longitude)
+        ),
       }));
 
-    // Update center when properties change
-    if (processedProperties.length > 0) {
-      const newCenter = calculateCenter(properties);
-      setMapCenter(newCenter);
+    return processedProperties;
+  }, [properties]);
+
+  // Filter properties based on geographic proximity
+  const filteredProperties = useMemo(() => {
+    if (!searchLocation) {
+      return propertiesWithCoords;
     }
 
-    return processedProperties;
-  }, [properties, calculateCenter]);
+    return propertiesWithCoords.filter((property) => {
+      const distance = calculateDistance(
+        searchLocation.lat,
+        searchLocation.lng,
+        property.lat!,
+        property.lng!
+      );
+      
+      // Return properties within the search radius (in kilometers)
+      return distance <= searchRadius;
+    });
+  }, [propertiesWithCoords, searchLocation, searchRadius]);
 
-  // Get property image URL - fixed to use images array
-  const getPropertyImageUrl = (property: Property): string => {
-    // First try images array with primary image
+  const selectedPropertyWithCoords = useMemo(() => {
+    if (
+      !selectedProperties ||
+      !selectedProperties.latitude ||
+      !selectedProperties.longitude
+    ) {
+      return null;
+    }
+
+    const lat = parseFloat(selectedProperties.latitude);
+    const lng = parseFloat(selectedProperties.longitude);
+
+    if (isNaN(lat) || isNaN(lng)) {
+      return null;
+    }
+
+    return {
+      ...selectedProperties,
+      lat: lat,
+      lng: lng,
+      isIndian: isInIndia(lat, lng),
+    };
+  }, [selectedProperties]);
+
+  // Update center when properties or selected property changes
+  useEffect(() => {
+    if (selectedPropertyWithCoords) {
+      setMapCenter({
+        lat: selectedPropertyWithCoords.lat!,
+        lng: selectedPropertyWithCoords.lng!,
+      });
+      setCurrentZoom(15);
+    } else if (filteredProperties.length > 0 && searchLocation) {
+      // Center on search location when filtering
+      setMapCenter({
+        lat: searchLocation.lat,
+        lng: searchLocation.lng,
+      });
+      setCurrentZoom(11);
+    } else if (filteredProperties.length > 0) {
+      const newCenter = calculateCenter(filteredProperties);
+      setMapCenter(newCenter);
+
+      if (filteredProperties.length === 1) {
+        setCurrentZoom(12);
+      } else {
+        setCurrentZoom(8);
+      }
+    }
+  }, [
+    filteredProperties,
+    selectedPropertyWithCoords,
+    calculateCenter,
+    searchLocation,
+  ]);
+
+  useEffect(() => {
+    if (mapRef.current && selectedPropertyWithCoords) {
+      const newPosition = {
+        lat: selectedPropertyWithCoords.lat!,
+        lng: selectedPropertyWithCoords.lng!,
+      };
+
+      mapRef.current.panTo(newPosition);
+      mapRef.current.setZoom(15);
+    }
+  }, [selectedPropertyWithCoords]);
+
+  // Initialize autocomplete
+  const onAutocompleteLoad = (autocomplete: google.maps.places.Autocomplete) => {
+    autocompleteRef.current = autocomplete;
+    autocomplete.setOptions({
+      types: ['(cities)', '(regions)'],
+      componentRestrictions: { country: 'in' }
+    });
+  };
+
+  // Handle place selection
+  const onPlaceChanged = () => {
+    if (autocompleteRef.current) {
+      const place = autocompleteRef.current.getPlace();
+      
+      if (place.geometry && place.geometry.location) {
+        const location = {
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng(),
+          address: place.formatted_address || place.name || '',
+          bounds: place.geometry.viewport || undefined
+        };
+        
+        setSearchLocation(location);
+        setSearchQuery(place.formatted_address || place.name || '');
+        setIsSearching(true);
+        
+        // Center map on searched location
+        if (mapRef.current) {
+          mapRef.current.panTo({ lat: location.lat, lng: location.lng });
+          mapRef.current.setZoom(11);
+        }
+      }
+    }
+  };
+
+  // Clear search
+  const clearSearch = () => {
+    setSearchQuery("");
+    setSearchLocation(null);
+    setIsSearching(false);
+    setSelectedProperty(null);
+    
+    // Reset to show all properties
+    if (mapRef.current && propertiesWithCoords.length > 0) {
+      const newCenter = calculateCenter(propertiesWithCoords);
+      mapRef.current.panTo(newCenter);
+      
+      if (propertiesWithCoords.length === 1) {
+        mapRef.current.setZoom(12);
+      } else {
+        mapRef.current.setZoom(8);
+      }
+    }
+  };
+
+  // Update search radius
+  const updateSearchRadius = (radius: number) => {
+    setSearchRadius(radius);
+  };
+
+  const getPropertyImageUrl = (property: any): string => {
     if (property.images && property.images.length > 0) {
-      const primaryImage = property.images.find(img => img.is_primary);
+      const primaryImage = property.images.find((img: any) => img.is_primary);
       if (primaryImage) return primaryImage.image_url;
       return property.images[0].image_url;
     }
-    
-    // Then try primary_image field
+
     if (property.primary_image) {
       return property.primary_image;
     }
-    
-    // Fallback - return empty string
-    return '';
+
+    return "";
   };
 
-  // Create circular image marker - FIXED: Using proper google.maps.Icon interface
-  const createCircularImageMarker = (imageUrl: string, listingType: string): google.maps.Icon => {
+  // Create circular image marker
+  const createCircularImageMarker = (
+    imageUrl: string,
+    listingType: string,
+    isSelected: boolean = false
+  ): google.maps.Icon => {
     const colors: Record<string, string> = {
-      sale: '#EF4444', // red
-      rent: '#3B82F6', // blue
-      lease: '#10B981' // green
+      sale: "#EF4444",
+      rent: "#3B82F6",
+      lease: "#10B981",
     };
 
-    const color = colors[listingType] || '#6B7280';
-    const size = 50;
+    const selectedColors: Record<string, string> = {
+      sale: "#DC2626",
+      rent: "#1D4ED8",
+      lease: "#047857",
+    };
+
+    const color = isSelected
+      ? selectedColors[listingType]
+      : colors[listingType] || "#6B7280";
+    const size = isSelected ? 60 : 50;
+    const borderWidth = isSelected ? 4 : 2;
 
     if (!imageUrl) {
-      // Create a simple colored circle when no image is available
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = size;
       canvas.height = size;
-      const context = canvas.getContext('2d');
-      
+      const context = canvas.getContext("2d");
+
       if (context) {
-        // Outer circle
         context.beginPath();
-        context.arc(size/2, size/2, size/2 - 2, 0, 2 * Math.PI);
-        context.fillStyle = 'white';
+        context.arc(size / 2, size / 2, size / 2 - 2, 0, 2 * Math.PI);
+        context.fillStyle = "white";
         context.fill();
         context.strokeStyle = color;
-        context.lineWidth = 2;
+        context.lineWidth = borderWidth;
         context.stroke();
-        
-        // Inner circle
+
         context.beginPath();
-        context.arc(size/2, size/2, size/2 - 6, 0, 2 * Math.PI);
+        context.arc(size / 2, size / 2, size / 2 - 6, 0, 2 * Math.PI);
         context.fillStyle = color;
         context.fill();
+
+        if (isSelected) {
+          context.beginPath();
+          context.arc(size / 2, size / 2, size / 2 + 2, 0, 2 * Math.PI);
+          context.strokeStyle = color + "80";
+          context.lineWidth = 2;
+          context.stroke();
+        }
       }
-      
+
       return {
         url: canvas.toDataURL(),
         scaledSize: new google.maps.Size(size, size),
-        anchor: new google.maps.Point(size/2, size/2),
+        anchor: new google.maps.Point(size / 2, size / 2),
       };
     }
 
-    // For image URLs, use the standard Icon interface
     return {
       url: imageUrl,
       scaledSize: new google.maps.Size(size, size),
-      anchor: new google.maps.Point(size/2, size/2),
+      anchor: new google.maps.Point(size / 2, size / 2),
     };
   };
 
-  // Get marker icon with property image
-  const getPropertyMarkerIcon = (property: Property) => {
+  const getPropertyMarkerIcon = (
+    property: any,
+    isSelected: boolean = false
+  ) => {
     const imageUrl = getPropertyImageUrl(property);
-    return createCircularImageMarker(imageUrl, property.listing_type);
+    return createCircularImageMarker(
+      imageUrl,
+      property.listing_type,
+      isSelected
+    );
   };
 
-  // Format price for display
   const formatPrice = (price: string, listingType: string) => {
     const numericPrice = parseFloat(price);
-    if (isNaN(numericPrice)) return 'Price not available';
+    if (isNaN(numericPrice)) return "Price not available";
 
     if (numericPrice >= 10000000) {
       return `₹${(numericPrice / 10000000).toFixed(2)} Cr`;
     } else if (numericPrice >= 100000) {
       return `₹${(numericPrice / 100000).toFixed(2)} L`;
     } else {
-      const formatter = new Intl.NumberFormat('en-IN', {
+      const formatter = new Intl.NumberFormat("en-IN", {
         maximumFractionDigits: 0,
       });
       return `₹${formatter.format(numericPrice)}`;
     }
   };
 
-  // Get listing type badge color
   const getListingTypeColor = (listingType: string) => {
     switch (listingType) {
-      case 'sale': return 'bg-red-100 text-red-800 border-red-200';
-      case 'rent': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'lease': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case "sale":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "rent":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      case "lease":
+        return "bg-green-100 text-green-800 border-green-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
-  // Get listing type color for hover tooltip
   const getListingTypeBorderColor = (listingType: string) => {
     switch (listingType) {
-      case 'sale': return 'border-red-500';
-      case 'rent': return 'border-blue-500';
-      case 'lease': return 'border-green-500';
-      default: return 'border-gray-500';
+      case "sale":
+        return "border-red-500";
+      case "rent":
+        return "border-blue-500";
+      case "lease":
+        return "border-green-500";
+      default:
+        return "border-gray-500";
     }
   };
 
   // Handle map load
-  const onMapLoad = useCallback((map: google.maps.Map) => {
-    mapRef.current = map;
-    
-    // Fit bounds to show all markers if we have properties
-    if (propertiesWithCoords.length > 0) {
-      const bounds = new google.maps.LatLngBounds();
-      propertiesWithCoords.forEach(property => {
-        bounds.extend(new google.maps.LatLng(property.lat!, property.lng!));
-      });
-      
-      map.fitBounds(bounds, 50);
-    }
-  }, [propertiesWithCoords]);
+  const onMapLoad = useCallback(
+    (map: google.maps.Map) => {
+      mapRef.current = map;
+
+      if (filteredProperties.length > 0 && !selectedPropertyWithCoords) {
+        if (searchLocation && searchLocation.bounds) {
+          // Use the bounds from the searched place
+          map.fitBounds(searchLocation.bounds);
+        } else {
+          const indianProperties = filteredProperties.filter((property) =>
+            isInIndia(property.lat!, property.lng!)
+          );
+
+          if (indianProperties.length > 0) {
+            const bounds = new google.maps.LatLngBounds();
+            indianProperties.forEach((property) => {
+              bounds.extend(new google.maps.LatLng(property.lat!, property.lng!));
+            });
+            map.fitBounds(bounds, 50);
+          }
+        }
+      }
+
+      if (selectedPropertyWithCoords) {
+        map.panTo({
+          lat: selectedPropertyWithCoords.lat!,
+          lng: selectedPropertyWithCoords.lng!,
+        });
+        map.setZoom(15);
+      }
+    },
+    [filteredProperties, selectedPropertyWithCoords, searchLocation]
+  );
+
+  const handleMarkerClick = (property: Property) => {
+    setSelectedProperty(property);
+  };
+
+  const displayProperties = filteredProperties.filter((property) =>
+    isInIndia(property.lat!, property.lng!)
+  );
 
   if (loadError) {
     return (
@@ -252,8 +515,84 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
   return (
     <Card className="w-full">
       <div className="relative w-full h-[700px]">
+        {/* Search Bar */}
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 w-80">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Autocomplete
+              onLoad={onAutocompleteLoad}
+              onPlaceChanged={onPlaceChanged}
+            >
+              <Input
+                type="text"
+                placeholder="Search for a city or region in India..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-10 bg-white/95 backdrop-blur-sm border-gray-300 focus:border-blue-500"
+              />
+            </Autocomplete>
+            {searchQuery && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+          
+          {/* Search Results Info */}
+          {isSearching && (
+            <div className="mt-2 bg-white rounded-lg shadow-lg p-3">
+              <div className="flex items-start gap-3 mb-3">
+                <MapPin className="h-4 w-4 text-blue-500 mt-0.5" />
+                <div className="flex-1">
+                  <div className="text-sm font-semibold text-gray-900">
+                    {searchLocation?.address}
+                  </div>
+                  <div className="text-xs text-gray-600">
+                    {displayProperties.length} properties within {searchRadius}km
+                  </div>
+                </div>
+              </div>
+              
+              {/* Radius Selector */}
+              <div className="space-y-2">
+                <div className="text-xs font-medium text-gray-700">Search Radius:</div>
+                <div className="flex gap-2">
+                  {[10, 25, 50, 100].map((radius) => (
+                    <Button
+                      key={radius}
+                      size="sm"
+                      variant={searchRadius === radius ? "default" : "outline"}
+                      onClick={() => updateSearchRadius(radius)}
+                      className="text-xs h-7"
+                    >
+                      {radius}km
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="flex justify-between items-center mt-3">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={clearSearch}
+                  className="text-xs"
+                >
+                  Clear Search
+                </Button>
+                <div className="text-xs text-gray-500">
+                  Showing properties in this area
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
         <GoogleMap
-          zoom={propertiesWithCoords.length === 1 ? 12 : 8}
+          zoom={currentZoom}
           center={mapCenter}
           mapContainerStyle={{
             width: "100%",
@@ -271,41 +610,79 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
           onLoad={onMapLoad}
           onClick={() => setSelectedProperty(null)}
         >
-          {/* Property markers */}
-          {propertiesWithCoords.map((property) => (
+          {displayProperties.map((property) => (
             <Marker
               key={property.id}
               position={{ lat: property.lat!, lng: property.lng! }}
-              icon={getPropertyMarkerIcon(property)}
-              onClick={() => setSelectedProperty(property)}
+              icon={getPropertyMarkerIcon(property, false)}
+              onClick={() => handleMarkerClick(property)}
               onMouseOver={() => setHoveredProperty(property)}
               onMouseOut={() => setHoveredProperty(null)}
             />
           ))}
 
-          {/* Hover Tooltip */}
+          {selectedPropertyWithCoords && (
+            <Marker
+              key={`selected-${selectedPropertyWithCoords.id}`}
+              position={{
+                lat: selectedPropertyWithCoords.lat!,
+                lng: selectedPropertyWithCoords.lng!,
+              }}
+              icon={getPropertyMarkerIcon(selectedPropertyWithCoords, true)}
+              onClick={() => handleMarkerClick(selectedPropertyWithCoords)}
+              onMouseOver={() => setHoveredProperty(selectedPropertyWithCoords)}
+              onMouseOut={() => setHoveredProperty(null)}
+              zIndex={1000}
+            />
+          )}
+
+          {/* Search Location Marker */}
+          {searchLocation && (
+            <Marker
+              position={{
+                lat: searchLocation.lat,
+                lng: searchLocation.lng,
+              }}
+              icon={{
+                url: "data:image/svg+xml;base64," + btoa(`
+                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="16" cy="16" r="16" fill="#3B82F6" fill-opacity="0.2"/>
+                    <circle cx="16" cy="16" r="8" fill="#3B82F6"/>
+                    <circle cx="16" cy="16" r="4" fill="white"/>
+                  </svg>
+                `),
+                scaledSize: new google.maps.Size(32, 32),
+                anchor: new google.maps.Point(16, 16),
+              }}
+              zIndex={500}
+            />
+          )}
+
           {hoveredProperty && !selectedProperty && (
             <InfoWindow
               position={{
                 lat: hoveredProperty.lat!,
-                lng: hoveredProperty.lng!
+                lng: hoveredProperty.lng!,
               }}
               options={{
                 disableAutoPan: true,
                 pixelOffset: new google.maps.Size(0, -70),
               }}
             >
-              <div className={`bg-white rounded-lg shadow-lg border-2 ${getListingTypeBorderColor(hoveredProperty.listing_type)} p-3 max-w-xs`}>
+              <div
+                className={`bg-white rounded-lg shadow-lg border-2 ${getListingTypeBorderColor(
+                  hoveredProperty.listing_type
+                )} p-3 max-w-xs`}
+              >
                 <div className="flex items-start gap-3">
-                  {/* Property thumbnail */}
                   <div className="flex-shrink-0 w-12 h-12 rounded-full overflow-hidden bg-gray-200 border-2 border-gray-300">
-                    <img 
-                      src={getPropertyImageUrl(hoveredProperty)} 
+                    <img
+                      src={getPropertyImageUrl(hoveredProperty)}
                       alt={hoveredProperty.title}
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
+                        target.style.display = "none";
                         target.parentElement!.innerHTML = `
                           <div class="w-full h-full flex items-center justify-center bg-gray-200 rounded-full">
                             <span class="text-lg">🏠</span>
@@ -314,7 +691,7 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                       }}
                     />
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-semibold text-gray-900 mb-1 line-clamp-1">
                       {hoveredProperty.title}
@@ -323,41 +700,62 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                       {hoveredProperty.city}, {hoveredProperty.state}
                     </div>
                     <div className="text-sm font-bold text-gray-900">
-                      {formatPrice(hoveredProperty.price, hoveredProperty.listing_type)}
-                      {hoveredProperty.listing_type === 'rent' && '/mo'}
+                      {formatPrice(
+                        hoveredProperty.price,
+                        hoveredProperty.listing_type
+                      )}
+                      {hoveredProperty.listing_type === "rent" && "/mo"}
                     </div>
                     <div className="text-xs text-gray-500 mt-1">
-                      {hoveredProperty.bedrooms > 0 && `${hoveredProperty.bedrooms} Beds • `}
-                      {hoveredProperty.bathrooms > 0 && `${hoveredProperty.bathrooms} Baths • `}
+                      {hoveredProperty.bedrooms > 0 &&
+                        `${hoveredProperty.bedrooms} Beds • `}
+                      {hoveredProperty.bathrooms > 0 &&
+                        `${hoveredProperty.bathrooms} Baths • `}
                       {hoveredProperty.total_area} sqft
                     </div>
+                    {searchLocation && (
+                      <div className="text-xs text-blue-600 mt-1">
+                        {calculateDistance(
+                          searchLocation.lat,
+                          searchLocation.lng,
+                          hoveredProperty.lat!,
+                          hoveredProperty.lng!
+                        ).toFixed(1)}km from search location
+                      </div>
+                    )}
+                    {selectedPropertyWithCoords &&
+                      selectedPropertyWithCoords.id === hoveredProperty.id && (
+                        <div className="mt-1">
+                          <Badge className="bg-yellow-100 text-yellow-800 text-xs">
+                            Selected
+                          </Badge>
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>
             </InfoWindow>
           )}
 
-          {/* Property Info Window */}
           {selectedProperty && (
             <InfoWindow
               position={{
                 lat: selectedProperty.lat!,
-                lng: selectedProperty.lng!
+                lng: selectedProperty.lng!,
               }}
               onCloseClick={() => setSelectedProperty(null)}
             >
               <div className="w-80 bg-white rounded-lg shadow-xl overflow-hidden">
-                {/* Property Image */}
                 <div className="relative h-48 bg-gray-200">
-                  <img 
-                    src={getPropertyImageUrl(selectedProperty)} 
+                  <img
+                    src={getPropertyImageUrl(selectedProperty)}
                     alt={selectedProperty.title}
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
+                      target.style.display = "none";
                       target.parentElement!.innerHTML = `
-                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
+                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100 rounded-lg">
                           <div class="text-gray-400 text-center">
                             <div class="text-4xl mb-2">🏠</div>
                             <div class="text-sm">No Image Available</div>
@@ -366,29 +764,45 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                       `;
                     }}
                   />
-                  
-                  {/* Price Badge */}
+
                   <div className="absolute top-3 left-3">
-                    <Badge className={`px-3 py-1.5 text-sm font-semibold ${getListingTypeColor(selectedProperty.listing_type)}`}>
-                      {formatPrice(selectedProperty.price, selectedProperty.listing_type)}
-                      {selectedProperty.listing_type === 'rent' && '/mo'}
+                    <Badge
+                      className={`px-3 py-1.5 text-sm font-semibold ${getListingTypeColor(
+                        selectedProperty.listing_type
+                      )}`}
+                    >
+                      {formatPrice(
+                        selectedProperty.price,
+                        selectedProperty.listing_type
+                      )}
+                      {selectedProperty.listing_type === "rent" && "/mo"}
                     </Badge>
                   </div>
-                  
-                  {/* Listing Type Badge */}
+
                   <div className="absolute top-3 right-3">
-                    <Badge variant="outline" className="bg-white/90 backdrop-blur-sm px-2 py-1 text-xs font-medium">
+                    <Badge
+                      variant="outline"
+                      className="bg-white/90 backdrop-blur-sm px-2 py-1 text-xs font-medium"
+                    >
                       For {selectedProperty.listing_type}
                     </Badge>
                   </div>
+
+                  {selectedPropertyWithCoords &&
+                    selectedPropertyWithCoords.id === selectedProperty.id && (
+                      <div className="absolute bottom-3 left-3">
+                        <Badge className="bg-yellow-500 text-white px-2 py-1 text-xs font-semibold">
+                          ★ Selected Property
+                        </Badge>
+                      </div>
+                    )}
                 </div>
 
-                {/* Property Details */}
                 <div className="p-4">
                   <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
                     {selectedProperty.title}
                   </h3>
-                  
+
                   <div className="flex items-center text-sm text-gray-600 mb-3">
                     <span className="mr-2">📍</span>
                     <span className="line-clamp-1">
@@ -396,7 +810,18 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                     </span>
                   </div>
 
-                  {/* Property Features */}
+                  {searchLocation && (
+                    <div className="text-xs text-blue-600 mb-3">
+                      <MapPin className="h-3 w-3 inline mr-1" />
+                      {calculateDistance(
+                        searchLocation.lat,
+                        searchLocation.lng,
+                        selectedProperty.lat!,
+                        selectedProperty.lng!
+                      ).toFixed(1)}km from {searchLocation.address.split(',')[0]}
+                    </div>
+                  )}
+
                   <div className="flex items-center justify-between mb-4 text-sm text-gray-700">
                     {selectedProperty.bedrooms > 0 && (
                       <div className="flex items-center">
@@ -416,40 +841,38 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                     </div>
                   </div>
 
-                  {/* Price per sqft */}
                   {selectedProperty.price_per_sqft && (
                     <div className="text-sm text-gray-600 mb-3">
-                      <strong>₹{parseFloat(selectedProperty.price_per_sqft).toLocaleString()}</strong> per sqft
+                      <strong>
+                        ₹
+                        {parseFloat(
+                          selectedProperty.price_per_sqft
+                        ).toLocaleString()}
+                      </strong>{" "}
+                      per sqft
                     </div>
                   )}
 
-                  {/* Property Type */}
                   {selectedProperty.property_type && (
                     <div className="text-xs text-gray-500 mb-3">
                       Type: {selectedProperty.property_type.name}
                     </div>
                   )}
 
-                  {/* Description */}
                   {selectedProperty.description && (
                     <div className="text-sm text-gray-600 mb-4 line-clamp-2">
                       {selectedProperty.description}
                     </div>
                   )}
 
-                  {/* Action Buttons */}
                   <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
                     >
                       View Details
                     </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      className="flex-1"
-                    >
+                    <Button size="sm" variant="outline" className="flex-1">
                       Contact
                     </Button>
                   </div>
@@ -459,34 +882,10 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
           )}
         </GoogleMap>
 
-        {/* Properties Summary */}
-        <div className="absolute top-4 left-4 bg-white rounded-xl shadow-lg px-4 py-3 min-w-[200px]">
-          <div className="text-sm font-semibold text-gray-900 mb-2">
-            Properties Overview
-          </div>
-          <div className="space-y-1 text-xs text-gray-600">
-            <div className="flex justify-between">
-              <span>Total Properties:</span>
-              <span className="font-semibold">{propertiesWithCoords.length}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>For Sale:</span>
-              <span className="font-semibold text-red-600">
-                {propertiesWithCoords.filter(p => p.listing_type === 'sale').length}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span>For Rent:</span>
-              <span className="font-semibold text-blue-600">
-                {propertiesWithCoords.filter(p => p.listing_type === 'rent').length}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Enhanced Legend */}
         <div className="absolute bottom-4 left-4 bg-white rounded-xl shadow-lg px-4 py-3">
-          <div className="text-sm font-semibold text-gray-900 mb-3">Property Types</div>
+          <div className="text-sm font-semibold text-gray-900 mb-3">
+            Property Types
+          </div>
           <div className="space-y-2">
             <div className="flex items-center text-xs">
               <div className="w-4 h-4 bg-red-500 rounded-full mr-3 flex items-center justify-center">
@@ -506,21 +905,40 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
               </div>
               <span className="font-medium">For Lease</span>
             </div>
+            {selectedPropertyWithCoords && (
+              <div className="flex items-center text-xs">
+                <div className="w-4 h-4 bg-yellow-500 rounded-full mr-3 flex items-center justify-center">
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+                <span className="font-medium">Selected Property</span>
+              </div>
+            )}
+            {searchLocation && (
+              <div className="flex items-center text-xs">
+                <div className="w-4 h-4 bg-blue-500 rounded-full mr-3 flex items-center justify-center">
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+                <span className="font-medium">Search Center</span>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Quick Stats */}
-        {propertiesWithCoords.length > 0 && (
-          <div className="absolute top-4 right-4 bg-white rounded-xl shadow-lg px-4 py-3">
-            <div className="text-sm font-semibold text-gray-900 mb-2">Market Stats</div>
-            <div className="text-xs text-gray-600">
-              <div>Cities: {new Set(propertiesWithCoords.map(p => p.city)).size}</div>
-              <div>Avg Price: ₹{
-                (propertiesWithCoords.reduce((sum, p) => sum + parseFloat(p.price), 0) / propertiesWithCoords.length / 100000).toFixed(1)
-              }L</div>
-            </div>
+        {/* Properties Count */}
+        <div className="absolute top-4 right-4 bg-white rounded-xl shadow-lg px-4 py-3">
+          <div className="text-sm font-semibold text-gray-900 mb-2">
+            Properties
           </div>
-        )}
+          <div className="text-xs text-gray-600">
+            <div>Showing: {displayProperties.length}</div>
+            <div>Total: {propertiesWithCoords.length}</div>
+            {isSearching && (
+              <div className="text-green-600 font-semibold mt-1">
+                Within {searchRadius}km radius
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </Card>
   );

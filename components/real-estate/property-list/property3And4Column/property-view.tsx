@@ -503,8 +503,13 @@ export function PropertyView(props: any) {
               ))}
             </div>
           ) : properties?.length == 0 ? (
-            <div className='flex justify-center items-center w-full pt-40'>
-              <div>No Property Found</div>
+           <div className="flex flex-col justify-center items-center w-full ">
+              <img
+                src="/assets/images/not_founds.jpg"
+                alt="No Property Found"
+                className="w-65 h-auto mb-4"
+              />
+             
             </div>
           ) : (
             <>

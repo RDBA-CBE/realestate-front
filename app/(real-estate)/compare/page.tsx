@@ -1,16 +1,14 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Dropdown,
-  formatNumber,
+  formatPriceRange,
   formatToINR,
   Success,
   useSetState,
 } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
-import Image from "next/image";
 
 const PropertyComparisonGrid = () => {
   const [state, setState] = useSetState({
@@ -24,7 +22,7 @@ const PropertyComparisonGrid = () => {
     maxPrice: 1000000,
   });
 
-  console.log("✌️propertyList --->", state.propertyList);
+  const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
     compareList();
@@ -32,6 +30,7 @@ const PropertyComparisonGrid = () => {
 
   const compareList = async () => {
     try {
+      setState({ loading: true });
       const ids = localStorage.getItem("compare");
       const idArray = JSON.parse(ids || "[]");
 
@@ -43,8 +42,10 @@ const PropertyComparisonGrid = () => {
       );
       setState({
         propertyList: totalList,
+        loading: false,
       });
     } catch (error) {
+      setState({ loading: false });
       console.log("✌️error --->", error);
     }
   };
@@ -68,7 +69,6 @@ const PropertyComparisonGrid = () => {
     {
       group: "Property Information",
       attributes: [
-        // { label: "Price", key: "price", format: (value: any) => formatToINR(value) },
         { label: "Location", key: "city" },
         {
           label: "Property Type",
@@ -139,11 +139,7 @@ const PropertyComparisonGrid = () => {
     },
     {
       group: "Features",
-      attributes: [
-        { label: "Furnishing", key: "furnishing" },
-        // { label: "Parking", key: "parking" },
-        // { label: "Parking Spaces", key: "parking_spaces" },
-      ],
+      attributes: [{ label: "Furnishing", key: "furnishing" }],
     },
   ];
 
@@ -160,6 +156,190 @@ const PropertyComparisonGrid = () => {
 
     return value;
   };
+
+  const renderMobileTabContent = () => {
+    const currentGroup = attributeGroups[activeTab];
+
+    return (
+      <div className="lg:hidden space-y-4">
+        {state.propertyList.map((property: any) => (
+          <div
+            key={property.id}
+            className="bg-white rounded-lg border border-gray-200 p-4"
+          >
+            <div className="flex justify-between items-start mb-4">
+              <div className="flex-1">
+                <div className="relative overflow-hidden rounded-lg shadow-md mb-2">
+                  <img
+                    src={property?.primary_image?.image}
+                    alt={property.title}
+                    className="w-full h-32 object-cover"
+                  />
+                </div>
+                <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">
+                  {property.title}
+                </h3>
+                <p className="text-xs text-red-600 font-bold mt-1">
+                 {formatPriceRange(
+                      property?.price_range?.minimum_price,
+                      property?.price_range?.maximum_price
+                    )}{" "}
+                  
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {property.city}, {property.state}
+                </p>
+              </div>
+              <button
+                className="text-gray-400 hover:text-red-500 transition ml-2"
+                title="Remove property"
+                onClick={() => handleRemove(property.id)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-gray-900 border-b pb-1">
+                {currentGroup.group}
+              </h4>
+              {currentGroup.attributes.map((attr) => (
+                <div
+                  key={attr.key}
+                  className="flex justify-between items-center text-sm"
+                >
+                  <span className="text-gray-600 font-medium">
+                    {attr.label}:
+                  </span>
+                  <span
+                    className={`${
+                      attr.highlight
+                        ? "text-red-600 font-bold"
+                        : "text-gray-900"
+                    }`}
+                  >
+                    {getDisplayValue(property, attr)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderDesktopTable = () => (
+    <div className="hidden lg:block relative overflow-x-auto rounded-xl border border-gray-200 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+      <table className="w-full border-collapse">
+        <thead>
+          <tr className="border-b border-gray-200 bg-white">
+            <th className="sticky left-0 w-64 bg-white flex-shrink-0 p-4 text-left border-r border-gray-200 z-10">
+              <span className="text-sm font-extrabold text-black uppercase">
+                Property
+              </span>
+            </th>
+            {state.propertyList?.map((property: any) => (
+              <th
+                key={property.id}
+                className="min-w-[280px] border-l border-gray-100 p-4 py-[40px] text-left"
+              >
+                <div className="relative">
+                  <button
+                    className="absolute top-0 right-0 text-gray-400 hover:text-red-500 transition"
+                    title="Remove property"
+                    onClick={() => handleRemove(property.id)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                  <div className="relative overflow-hidden rounded-lg shadow-md mb-2">
+                    <img
+                      src={property?.primary_image?.image}
+                      alt={property.title}
+                      className="w-full h-28 object-cover"
+                    />
+                  </div>
+                  <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">
+                    {property.title}
+                  </h3>
+                  <p className="text-xs text-red-600 font-bold mt-1">
+                    {formatPriceRange(
+                      property?.price_range?.minimum_price,
+                      property?.price_range?.maximum_price
+                    )}{" "}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {property.city}, {property.state}
+                  </p>
+                </div>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {attributeGroups.map((groupData, groupIndex) => (
+            <React.Fragment key={groupIndex}>
+              <tr className="bg-gray-50">
+                <td colSpan={state.propertyList.length + 1} className="p-3">
+                  <span className="text-sm font-extrabold text-black uppercase">
+                    {groupData.group}
+                  </span>
+                </td>
+              </tr>
+              {groupData.attributes.map((attr, i) => (
+                <tr
+                  key={attr.key}
+                  className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+                >
+                  <td className="sticky left-0 w-64 bg-white p-3 border-r border-gray-200 text-sm font-medium text-gray-900 z-10">
+                    {attr.label}
+                  </td>
+                  {state.propertyList.map((property: any) => (
+                    <td
+                      key={property.id}
+                      className="min-w-[280px] p-3 border-l border-gray-100 text-center"
+                    >
+                      <span
+                        className={`${
+                          attr.highlight
+                            ? "text-lg font-extrabold text-red-600"
+                            : "text-gray-800 text-sm"
+                        }`}
+                      >
+                        {getDisplayValue(property, attr)}
+                      </span>
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </React.Fragment>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 
   return (
     <motion.div
@@ -181,111 +361,30 @@ const PropertyComparisonGrid = () => {
               </p>
             </div>
           ) : (
-            <div className="relative overflow-x-auto rounded-xl border border-gray-200 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
-              <div className="sticky top-0 z-20 border-b border-gray-200 bg-white">
-                <div className="flex">
-                  <div className="sticky left-0 w-64 bg-white flex-shrink-0 p-4 flex items-center justify-start border-r border-gray-200 z-10">
-                    <span className="text-sm font-extrabold text-black uppercase">
-                      Property
-                    </span>
-                  </div>
-
-                  {state.propertyList?.map((property: any) => (
-                    <div
-                      key={property.id}
-                      className="relative flex-grow min-w-[280px] border-l border-gray-100 p-4 py-[40px]"
+            <>
+              {/* Mobile Tabs Navigation */}
+              <div className="lg:hidden mb-6">
+                <div className="flex space-x-1 overflow-x-auto scrollbar-hide">
+                  {attributeGroups.map((group, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setActiveTab(index)}
+                      className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
+                        activeTab === index
+                          ? "bg-red-600 text-white"
+                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      }`}
                     >
-                      <button
-                        className="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition"
-                        title="Remove property"
-                        onClick={() => handleRemove(property.id)}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </button>
-                      <div className="relative overflow-hidden rounded-lg shadow-md mb-2">
-                        <img
-                          src={property?.primary_image?.image}
-                          alt={property.title}
-                          className="w-full h-28 object-cover"
-                        />
-                      </div>
-                      <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">
-                        {property.title}
-                      </h3>
-                      <p className="text-xs text-red-600 font-bold mt-1">
-                        {formatToINR(property.price)}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {property.city}, {property.state}
-                      </p>
-                    </div>
+                      {group.group}
+                    </button>
                   ))}
                 </div>
               </div>
 
-              <div className="divide-y divide-gray-200">
-                {attributeGroups.map((groupData, groupIndex) => (
-                  <React.Fragment key={groupIndex}>
-                    {/* Group Header */}
-                    <div className="flex sticky left-0 z-10 bg-white">
-                      <div className="sticky left-0 w-64 bg-white flex-shrink-0 p-3 flex items-center justify-start">
-                        <span className="text-sm font-extrabold text-black uppercase bg-white">
-                          {groupData.group}
-                        </span>
-                      </div>
+              {renderMobileTabContent()}
 
-                      {state.propertyList.map((property: any) => (
-                        <div
-                          key={property.id}
-                          className="flex-grow min-w-[280px] bg-white"
-                        ></div>
-                      ))}
-                    </div>
-
-                    {groupData.attributes.map((attr, i) => (
-                      <div
-                        key={attr.key}
-                        className={`flex transition duration-150`}
-                      >
-                        <div
-                          className={`sticky left-0 w-64 flex-shrink-0 p-3 border-r border-gray-200 flex items-center z-10 bg-white`}
-                        >
-                          <span className="text-sm">{attr.label}</span>
-                        </div>
-
-                        {state.propertyList.map((property: any) => (
-                          <div
-                            key={property.id}
-                            className="flex-grow min-w-[280px] p-3 text-center border-l border-gray-100 flex items-center justify-center"
-                          >
-                            <span
-                              className={`${
-                                attr.highlight
-                                  ? "text-lg font-extrabold text-red-600"
-                                  : "text-gray-800 text-sm"
-                              }`}
-                            >
-                              {getDisplayValue(property, attr)}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    ))}
-                  </React.Fragment>
-                ))}
-              </div>
-            </div>
+              {renderDesktopTable()}
+            </>
           )}
         </div>
       </div>

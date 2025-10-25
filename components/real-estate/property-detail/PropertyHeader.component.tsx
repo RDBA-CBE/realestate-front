@@ -15,6 +15,7 @@ import {
   capitalizeFLetter,
   Failure,
   formatNumber,
+  formatPriceRange,
   formattedNoDecimal,
   formatToINR,
   Success,
@@ -164,7 +165,12 @@ export default function PropertyHeader(props: any) {
           </Button> */}
         </div>
         <div>
-          <p className="text-2xl font-bold">{formatToINR(data?.price)}</p>
+          <p className="text-2xl font-bold">
+            {formatPriceRange(
+              data?.price_range?.minimum_price,
+              data?.price_range?.maximum_price
+            )}{" "}
+          </p>
           <p className="text-sm text-gray-600">
             {formatToINR(data?.price_per_sqft)}/sq ft
           </p>

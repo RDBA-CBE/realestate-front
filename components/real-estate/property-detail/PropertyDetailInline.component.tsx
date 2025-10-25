@@ -193,7 +193,6 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
     try {
       const token = localStorage.getItem("token");
       const res: any = await Models.property.details(id);
-      console.log("✌️res --->", res);
       setState({ detail: res, token });
       if (res?.property_type?.id) {
         similarProperty(res.property_type.id);
@@ -209,11 +208,9 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
         property_type: id,
       };
       const res: any = await Models.property.list(1, body);
-      console.log("✌️res --->", res);
       const filter = res?.results?.filter(
         (item: any) => Number(item?.id) !== Number(id)
       );
-      console.log("✌️filter --->", filter);
       setState({ similarProperty: filter || [] });
     } catch (error) {
       console.log("✌️error --->", error);
