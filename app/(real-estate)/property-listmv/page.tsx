@@ -19,11 +19,11 @@ export default function Page() {
     isLoadingMore: false,
     categoryList: [],
     minPrice: 0,
-    maxPrice: 1000000,
+    maxPrice: 0,
   });
 
   useEffect(() => {
-    propertyList();
+    // propertyList();
     categoryList();
   }, []);
 
@@ -35,9 +35,8 @@ export default function Page() {
         setState({ loading: true });
       }
 
-      const bodys = {
-        page_size: PROPERTY_LIST_PAGE,
-      };
+      const bodys = bodyData(null);
+
       const res: any = await Models.property.list(page, bodys);
 
       const compareList: string[] = JSON.parse(
@@ -97,6 +96,7 @@ export default function Page() {
       }
 
       const bodys = bodyData(data);
+      console.log("✌️bodys --->", bodys);
       const res: any = await Models.property.list(page, bodys);
 
       const compareList: string[] = JSON.parse(
@@ -108,6 +108,9 @@ export default function Page() {
         is_compare: compareList.includes(item.id),
       }));
 
+      const minPrice = formatNumber(res?.min_price);
+      const maxPrice = formatNumber(res?.max_price);
+
       setState({
         propertyList: append
           ? [...state.propertyList, ...resultsWithCompare]
@@ -116,6 +119,8 @@ export default function Page() {
         page: page,
         loading: false,
         isLoadingMore: false,
+        minPrice,
+        maxPrice,
       });
     } catch (error) {
       setState({ loading: false });
@@ -175,8 +180,14 @@ export default function Page() {
     if (data?.yearBuiltMax != "") {
       body.yearBuiltMax = data?.yearBuiltMax;
     }
-    if (data?.sort) {
-      body.sort_by = data?.sort;
+   if (data?.sort) {
+      if (data?.sort == "price") {
+        body.sort_by = "minimum_price";
+      } else if (data?.sort == "-price") {
+        body.sort_by = "-minimum_price";
+      } else {
+        body.sort_by = data?.sort;
+      }
     }
 
     body.page_size = PROPERTY_LIST_PAGE;
@@ -198,7 +209,8 @@ export default function Page() {
         loadMore={(data) => {
           filterList(state.page + 1, true, data);
         }}
-        updateList={(data)=>setState({propertyList:data})}
+        updateList={(data) => setState({ propertyList: data })}
+        clearFilter={()=>propertyList()}
       />
     </div>
   );

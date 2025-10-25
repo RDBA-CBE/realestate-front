@@ -34,6 +34,7 @@ export function MapView(props) {
     minPrice,
     maxPrice,
     updateList,
+    clearFilter
   } = props;
 
   const [state, setState] = useSetState({
@@ -55,6 +56,11 @@ export function MapView(props) {
     sort: null,
     isOpen: false,
   });
+
+    const initialLoadRef = useRef(true);
+  const filterTimeoutRef = useRef(null);
+  const previousFiltersRef = useRef({});
+
 
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -93,11 +99,23 @@ export function MapView(props) {
       yearBuiltMax: "",
       isOpen: false,
     });
-    filters({});
+    previousFiltersRef.current = {};
+
+    // Call parent clear filter
+    if (clearFilter) {
+      clearFilter();
+    }
   };
 
-  useEffect(() => {
-    setState({ minPrice, maxPrice, priceRange: [minPrice, maxPrice] });
+ useEffect(() => {
+    if (initialLoadRef.current && minPrice > 0 && maxPrice > 0) {
+      setState({
+        minPrice,
+        maxPrice,
+        priceRange: [minPrice, maxPrice],
+      });
+      initialLoadRef.current = false;
+    }
   }, [minPrice, maxPrice]);
 
   useEffect(() => {

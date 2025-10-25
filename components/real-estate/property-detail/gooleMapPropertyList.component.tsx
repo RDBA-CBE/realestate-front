@@ -313,40 +313,58 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
   };
 
   // Handle place selection - IMPROVED
-  const onPlaceChanged = () => {
-    if (autocompleteRef.current) {
-      const place = autocompleteRef.current.getPlace();
+  // Handle place selection - IMPROVED
+const onPlaceChanged = () => {
+  if (autocompleteRef.current) {
+    const place = autocompleteRef.current.getPlace();
 
-      console.log("Place found:", place);
+    console.log("Place found:", place);
 
-      if (place.geometry && place.geometry.location) {
-        const location = {
-          lat: place.geometry.location.lat(),
-          lng: place.geometry.location.lng(),
-          address: place.formatted_address || place.name || "",
-          bounds: place.geometry.viewport || undefined,
-        };
+    // ✅ FIX: Add proper null/undefined checks for place object
+    if (!place) {
+      console.log("No place selected or place is undefined");
+      return;
+    }
 
-        console.log("Search location:", location);
-        console.log("Total properties available:", propertiesWithCoords.length);
+    // ✅ FIX: Check if place has geometry property before accessing it
+    if (place.geometry && place.geometry.location) {
+      const location = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng(),
+        address: place.formatted_address || place.name || "",
+        bounds: place.geometry.viewport || undefined,
+      };
 
-        setSearchLocation(location);
+      console.log("Search location:", location);
+      console.log("Total properties available:", propertiesWithCoords.length);
+
+      setSearchLocation(location);
+      setSearchQuery(place.formatted_address || place.name || "");
+      setIsSearching(true);
+
+      // Center map on searched location
+      if (mapRef.current) {
+        mapRef.current.panTo({ lat: location.lat, lng: location.lng });
+        // Don't set zoom here - let the bounds calculation handle it
+      }
+
+      // Debug filtered properties
+      setTimeout(() => {
+        console.log("Properties after search filter:", filteredProperties);
+      }, 500);
+    } else {
+      // ✅ FIX: Handle cases where place doesn't have geometry
+      console.warn("Selected place has no geometry data:", place);
+      
+      // You might want to show a user-friendly message here
+      if (place.formatted_address || place.name) {
         setSearchQuery(place.formatted_address || place.name || "");
-        setIsSearching(true);
-
-        // Center map on searched location
-        if (mapRef.current) {
-          mapRef.current.panTo({ lat: location.lat, lng: location.lng });
-          // Don't set zoom here - let the bounds calculation handle it
-        }
-
-        // Debug filtered properties
-        setTimeout(() => {
-          console.log("Properties after search filter:", filteredProperties);
-        }, 500);
+        // Optionally show an error message to the user
+        console.error("The selected location doesn't have precise coordinates. Please try a different location.");
       }
     }
-  };
+  }
+};
 
   // Clear search
   const clearSearch = () => {

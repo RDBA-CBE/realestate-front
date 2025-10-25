@@ -1,7 +1,5 @@
 "use client";
 import { PropertyView } from "@/components/real-estate/property-list/property3And4Column/property-view";
-import { PropertyView1 } from "@/components/real-estate/property-list/property3And4Column/property-view1";
-import { PropertyView2 } from "@/components/real-estate/property-list/property3And4Column/property-view2";
 import Models from "@/imports/models.import";
 import { PROPERTY_LIST_PAGE } from "@/utils/constant.utils";
 import {
@@ -10,7 +8,7 @@ import {
   removePlus,
   useSetState,
 } from "@/utils/function.utils";
-import { useEffect, useCallback } from "react";
+import { useEffect, useRef } from "react";
 
 export default function Page() {
   const [state, setState] = useSetState({
@@ -21,17 +19,20 @@ export default function Page() {
     isLoadingMore: false,
     categoryList: [],
     minPrice: 0,
-    maxPrice: 1000000,
+    maxPrice: 0,
   });
+
+
+  const initialLoadRef = useRef(true);
+  const filterTimeoutRef = useRef(null);
 
   useEffect(() => {
     propertyList();
     categoryList();
   }, []);
+console.log('✌️propertyList --->',state.propertyList );
 
-console.log('✌️propertyList --->', state.propertyList);
-
-  const propertyList = async (page = 1, append = false) => {
+  const propertyList = async (page = 1, append = false, filterData = null) => {
     try {
       if (append) {
         setState({ isLoadingMore: true });
@@ -39,9 +40,10 @@ console.log('✌️propertyList --->', state.propertyList);
         setState({ loading: true });
       }
 
-      const bodys = {
-        page_size: PROPERTY_LIST_PAGE,
-      };
+      const bodys = filterData
+        ? bodyData(filterData)
+        : { page_size: PROPERTY_LIST_PAGE };
+
       const res: any = await Models.property.list(page, bodys);
 
       const compareList: string[] = JSON.parse(
@@ -64,8 +66,8 @@ console.log('✌️propertyList --->', state.propertyList);
         page: page,
         loading: false,
         isLoadingMore: false,
-        minPrice,
-        maxPrice,
+        minPrice: filterData ? state.minPrice : minPrice,
+        maxPrice: filterData ? state.maxPrice : maxPrice,
       });
     } catch (error) {
       setState({
@@ -88,38 +90,49 @@ console.log('✌️propertyList --->', state.propertyList);
     }
   };
 
-  const filterList = async (page = 1, append = false, data) => {
-    try {
-      if (append) {
-        setState({ isLoadingMore: true });
-      } else {
-        setState({ loading: true });
-      }
+  const filterList = async (page = 1, append = false, data = null) => {
+console.log('✌️filterList --->', );
 
-      const bodys = bodyData(data);
-      const res: any = await Models.property.list(page, bodys);
-
-      const compareList: string[] = JSON.parse(
-        localStorage.getItem("compare") || "[]"
-      );
-
-      const resultsWithCompare = res?.results.map((item: any) => ({
-        ...item,
-        is_compare: compareList.includes(item.id),
-      }));
-
-      setState({
-        propertyList: append
-          ? [...state.propertyList, ...resultsWithCompare]
-          : resultsWithCompare,
-        handNext: res?.next,
-        page: page,
-        loading: false,
-        isLoadingMore: false,
-      });
-    } catch (error) {
-      setState({ loading: false });
+    if (filterTimeoutRef.current) {
+      clearTimeout(filterTimeoutRef.current);
     }
+
+    filterTimeoutRef.current = setTimeout(async () => {
+      try {
+        if (append) {
+          setState({ isLoadingMore: true });
+        } else {
+          setState({ loading: true });
+        }
+
+        const bodys = bodyData(data);
+        const res: any = await Models.property.list(page, bodys);
+
+        const compareList: string[] = JSON.parse(
+          localStorage.getItem("compare") || "[]"
+        );
+
+        const resultsWithCompare = res?.results.map((item: any) => ({
+          ...item,
+          is_compare: compareList.includes(item.id),
+        }));
+
+        setState({
+          propertyList: append
+            ? [...state.propertyList, ...resultsWithCompare]
+            : resultsWithCompare,
+          handNext: res?.next,
+          page: page,
+          loading: false,
+          isLoadingMore: false,
+        });
+      } catch (error) {
+        setState({
+          loading: false,
+          isLoadingMore: false,
+        });
+      }
+    }, 300); // 300ms debounce
   };
 
   const bodyData = (data) => {
@@ -176,12 +189,22 @@ console.log('✌️propertyList --->', state.propertyList);
       bodyData.yearBuiltMax = data?.yearBuiltMax;
     }
     if (data?.sort) {
-      bodyData.sort_by = data?.sort;
+      if (data?.sort == "price") {
+        bodyData.sort_by = "minimum_price";
+      } else if (data?.sort == "-price") {
+        bodyData.sort_by = "-minimum_price";
+      } else {
+        bodyData.sort_by = data?.sort;
+      }
     }
 
     bodyData.page_size = PROPERTY_LIST_PAGE;
     bodyData.is_approved = "Yes";
     return bodyData;
+  };
+
+  const clearAllFilters = () => {
+    propertyList(); // Reset to initial load without filters
   };
 
   return (
@@ -198,7 +221,8 @@ console.log('✌️propertyList --->', state.propertyList);
         loadMore={(data) => {
           filterList(state.page + 1, true, data);
         }}
-        updateList={(data)=>setState({propertyList:data})}
+        updateList={(data) => setState({ propertyList: data })}
+        clearFilter={clearAllFilters}
       />
     </div>
   );
