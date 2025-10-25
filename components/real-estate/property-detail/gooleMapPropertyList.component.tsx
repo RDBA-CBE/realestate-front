@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, X, MapPin } from "lucide-react";
+import { formatPriceRange } from "@/utils/function.utils";
 
 interface Property {
   id: number;
@@ -41,6 +42,7 @@ interface Property {
   }>;
   lat?: number;
   lng?: number;
+  price_range?: any;
 }
 
 interface GoogleMapsProps {
@@ -49,15 +51,22 @@ interface GoogleMapsProps {
 }
 
 // Calculate distance between two coordinates in kilometers
-const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+const calculateDistance = (
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number => {
   const R = 6371; // Earth's radius in kilometers
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 };
 
@@ -71,15 +80,15 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
   const [mapCenter, setMapCenter] = useState({ lat: 20.5937, lng: 78.9629 });
   const [currentZoom, setCurrentZoom] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchLocation, setSearchLocation] = useState<{ 
-    lat: number; 
-    lng: number; 
+  const [searchLocation, setSearchLocation] = useState<{
+    lat: number;
+    lng: number;
     address: string;
     bounds?: google.maps.LatLngBounds;
   } | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [searchRadius, setSearchRadius] = useState<number>(50); // Default 50km radius
-  
+
   const mapRef = useRef<google.maps.Map | null>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
@@ -89,12 +98,7 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
   });
 
   const isInIndia = (lat: number, lng: number): boolean => {
-    return (
-      lat >= 6.0 &&
-      lat <= 36.0 &&
-      lng >= 68.0 &&
-      lng <= 98.0
-    );
+    return lat >= 6.0 && lat <= 36.0 && lng >= 68.0 && lng <= 98.0;
   };
 
   const calculateCenter = useCallback((properties: Property[]) => {
@@ -166,26 +170,53 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
         ),
       }));
 
+    console.log("Properties with coordinates:", processedProperties.length);
     return processedProperties;
   }, [properties]);
 
-  // Filter properties based on geographic proximity
+  // Filter properties based on geographic proximity - IMPROVED
   const filteredProperties = useMemo(() => {
     if (!searchLocation) {
       return propertiesWithCoords;
     }
 
-    return propertiesWithCoords.filter((property) => {
+    const filtered = propertiesWithCoords.filter((property) => {
+      // Check if property has valid coordinates
+      if (!property.lat || !property.lng) return false;
+
       const distance = calculateDistance(
         searchLocation.lat,
         searchLocation.lng,
-        property.lat!,
-        property.lng!
+        property.lat,
+        property.lng
       );
-      
-      // Return properties within the search radius (in kilometers)
+
+      // Return properties within the search radius
       return distance <= searchRadius;
     });
+
+    console.log(
+      `Found ${filtered.length} properties within ${searchRadius}km of ${searchLocation.address}`
+    );
+
+    // Debug: Log distances for first few properties
+    if (filtered.length > 0) {
+      filtered.slice(0, 5).forEach((prop, index) => {
+        const distance = calculateDistance(
+          searchLocation.lat,
+          searchLocation.lng,
+          prop.lat!,
+          prop.lng!
+        );
+        console.log(
+          `Property ${index + 1}: "${prop.title}" in ${
+            prop.city
+          } - ${distance.toFixed(2)}km`
+        );
+      });
+    }
+
+    return filtered;
   }, [propertiesWithCoords, searchLocation, searchRadius]);
 
   const selectedPropertyWithCoords = useMemo(() => {
@@ -212,7 +243,7 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
     };
   }, [selectedProperties]);
 
-  // Update center when properties or selected property changes
+  // Update center when properties or selected property changes - IMPROVED
   useEffect(() => {
     if (selectedPropertyWithCoords) {
       setMapCenter({
@@ -221,12 +252,26 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
       });
       setCurrentZoom(15);
     } else if (filteredProperties.length > 0 && searchLocation) {
-      // Center on search location when filtering
-      setMapCenter({
-        lat: searchLocation.lat,
-        lng: searchLocation.lng,
-      });
-      setCurrentZoom(11);
+      // Fit bounds to show all properties around search location
+      if (mapRef.current) {
+        const bounds = new google.maps.LatLngBounds();
+
+        // Add search location
+        bounds.extend(
+          new google.maps.LatLng(searchLocation.lat, searchLocation.lng)
+        );
+
+        // Add all filtered properties
+        filteredProperties.forEach((property) => {
+          if (property.lat && property.lng) {
+            bounds.extend(new google.maps.LatLng(property.lat, property.lng));
+          }
+        });
+
+        if (!bounds.isEmpty()) {
+          mapRef.current.fitBounds(bounds, 50);
+        }
+      }
     } else if (filteredProperties.length > 0) {
       const newCenter = calculateCenter(filteredProperties);
       setMapCenter(newCenter);
@@ -256,37 +301,49 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
     }
   }, [selectedPropertyWithCoords]);
 
-  // Initialize autocomplete
-  const onAutocompleteLoad = (autocomplete: google.maps.places.Autocomplete) => {
+  // Initialize autocomplete - FIXED
+  const onAutocompleteLoad = (
+    autocomplete: google.maps.places.Autocomplete
+  ) => {
     autocompleteRef.current = autocomplete;
     autocomplete.setOptions({
-      types: ['(cities)', '(regions)'],
-      componentRestrictions: { country: 'in' }
+      types: ["(regions)"], // ✅ Fixed: Using only one type
+      componentRestrictions: { country: "in" },
     });
   };
 
-  // Handle place selection
+  // Handle place selection - IMPROVED
   const onPlaceChanged = () => {
     if (autocompleteRef.current) {
       const place = autocompleteRef.current.getPlace();
-      
+
+      console.log("Place found:", place);
+
       if (place.geometry && place.geometry.location) {
         const location = {
           lat: place.geometry.location.lat(),
           lng: place.geometry.location.lng(),
-          address: place.formatted_address || place.name || '',
-          bounds: place.geometry.viewport || undefined
+          address: place.formatted_address || place.name || "",
+          bounds: place.geometry.viewport || undefined,
         };
-        
+
+        console.log("Search location:", location);
+        console.log("Total properties available:", propertiesWithCoords.length);
+
         setSearchLocation(location);
-        setSearchQuery(place.formatted_address || place.name || '');
+        setSearchQuery(place.formatted_address || place.name || "");
         setIsSearching(true);
-        
+
         // Center map on searched location
         if (mapRef.current) {
           mapRef.current.panTo({ lat: location.lat, lng: location.lng });
-          mapRef.current.setZoom(11);
+          // Don't set zoom here - let the bounds calculation handle it
         }
+
+        // Debug filtered properties
+        setTimeout(() => {
+          console.log("Properties after search filter:", filteredProperties);
+        }, 500);
       }
     }
   };
@@ -297,16 +354,18 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
     setSearchLocation(null);
     setIsSearching(false);
     setSelectedProperty(null);
-    
+
     // Reset to show all properties
     if (mapRef.current && propertiesWithCoords.length > 0) {
-      const newCenter = calculateCenter(propertiesWithCoords);
-      mapRef.current.panTo(newCenter);
-      
-      if (propertiesWithCoords.length === 1) {
-        mapRef.current.setZoom(12);
-      } else {
-        mapRef.current.setZoom(8);
+      const bounds = new google.maps.LatLngBounds();
+      propertiesWithCoords.forEach((property) => {
+        if (property.lat && property.lng) {
+          bounds.extend(new google.maps.LatLng(property.lat, property.lng));
+        }
+      });
+
+      if (!bounds.isEmpty()) {
+        mapRef.current.fitBounds(bounds, 50);
       }
     }
   };
@@ -451,27 +510,22 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
     }
   };
 
-  // Handle map load
+  // Handle map load - IMPROVED
   const onMapLoad = useCallback(
     (map: google.maps.Map) => {
       mapRef.current = map;
 
-      if (filteredProperties.length > 0 && !selectedPropertyWithCoords) {
-        if (searchLocation && searchLocation.bounds) {
-          // Use the bounds from the searched place
-          map.fitBounds(searchLocation.bounds);
-        } else {
-          const indianProperties = filteredProperties.filter((property) =>
-            isInIndia(property.lat!, property.lng!)
-          );
-
-          if (indianProperties.length > 0) {
-            const bounds = new google.maps.LatLngBounds();
-            indianProperties.forEach((property) => {
-              bounds.extend(new google.maps.LatLng(property.lat!, property.lng!));
-            });
-            map.fitBounds(bounds, 50);
+      // Always fit bounds to show all available properties initially
+      if (propertiesWithCoords.length > 0) {
+        const bounds = new google.maps.LatLngBounds();
+        propertiesWithCoords.forEach((property) => {
+          if (property.lat && property.lng) {
+            bounds.extend(new google.maps.LatLng(property.lat, property.lng));
           }
+        });
+
+        if (!bounds.isEmpty()) {
+          map.fitBounds(bounds, 50);
         }
       }
 
@@ -483,7 +537,7 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
         map.setZoom(15);
       }
     },
-    [filteredProperties, selectedPropertyWithCoords, searchLocation]
+    [propertiesWithCoords, selectedPropertyWithCoords]
   );
 
   const handleMarkerClick = (property: Property) => {
@@ -516,9 +570,11 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
     <Card className="w-full">
       <div className="relative w-full h-[700px]">
         {/* Search Bar */}
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 w-80">
+        <div
+          className={`absolute top-4 left-1/2 transform -translate-x-1/2 z-10 w-80`}
+        >
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 z-10 pointer-events-none" />
             <Autocomplete
               onLoad={onAutocompleteLoad}
               onPlaceChanged={onPlaceChanged}
@@ -528,19 +584,19 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                 placeholder="Search for a city or region in India..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-10 bg-white/95 backdrop-blur-sm border-gray-300 focus:border-blue-500"
+                className="pl-10 pr-10 bg-white/95 backdrop-blur-sm border-gray-300 focus:border-blue-500 rounded-xl w-full"
               />
             </Autocomplete>
             {searchQuery && (
               <button
                 onClick={clearSearch}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 z-10"
               >
                 <X className="h-4 w-4" />
               </button>
             )}
           </div>
-          
+
           {/* Search Results Info */}
           {isSearching && (
             <div className="mt-2 bg-white rounded-lg shadow-lg p-3">
@@ -551,16 +607,29 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                     {searchLocation?.address}
                   </div>
                   <div className="text-xs text-gray-600">
-                    {displayProperties.length} properties within {searchRadius}km
+                    {displayProperties.length} properties within {searchRadius}
+                    km
+                    {displayProperties.length > 0 && (
+                      <span className="text-green-600 font-semibold ml-2">
+                        ✓ Showing {displayProperties.length} properties
+                      </span>
+                    )}
+                    {displayProperties.length === 0 && (
+                      <span className="text-red-600 font-semibold ml-2">
+                        ✗ No properties found in this area
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
-              
+
               {/* Radius Selector */}
               <div className="space-y-2">
-                <div className="text-xs font-medium text-gray-700">Search Radius:</div>
-                <div className="flex gap-2">
-                  {[10, 25, 50, 100].map((radius) => (
+                <div className="text-xs font-medium text-gray-700">
+                  Search Radius:
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  {[10, 25, 50, 100, 200].map((radius) => (
                     <Button
                       key={radius}
                       size="sm"
@@ -571,20 +640,6 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                       {radius}km
                     </Button>
                   ))}
-                </div>
-              </div>
-              
-              <div className="flex justify-between items-center mt-3">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={clearSearch}
-                  className="text-xs"
-                >
-                  Clear Search
-                </Button>
-                <div className="text-xs text-gray-500">
-                  Showing properties in this area
                 </div>
               </div>
             </div>
@@ -644,7 +699,9 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                 lng: searchLocation.lng,
               }}
               icon={{
-                url: "data:image/svg+xml;base64," + btoa(`
+                url:
+                  "data:image/svg+xml;base64," +
+                  btoa(`
                   <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="16" cy="16" r="16" fill="#3B82F6" fill-opacity="0.2"/>
                     <circle cx="16" cy="16" r="8" fill="#3B82F6"/>
@@ -700,9 +757,9 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                       {hoveredProperty.city}, {hoveredProperty.state}
                     </div>
                     <div className="text-sm font-bold text-gray-900">
-                      {formatPrice(
-                        hoveredProperty.price,
-                        hoveredProperty.listing_type
+                      {formatPriceRange(
+                        hoveredProperty?.price_range?.minimum_price,
+                        hoveredProperty?.price_range?.maximum_price
                       )}
                       {hoveredProperty.listing_type === "rent" && "/mo"}
                     </div>
@@ -720,7 +777,8 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                           searchLocation.lng,
                           hoveredProperty.lat!,
                           hoveredProperty.lng!
-                        ).toFixed(1)}km from search location
+                        ).toFixed(1)}
+                        km from search location
                       </div>
                     )}
                     {selectedPropertyWithCoords &&
@@ -771,10 +829,10 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                         selectedProperty.listing_type
                       )}`}
                     >
-                      {formatPrice(
-                        selectedProperty.price,
-                        selectedProperty.listing_type
-                      )}
+                      {formatPriceRange(
+                        selectedProperty?.price_range?.minimum_price,
+                        selectedProperty?.price_range?.maximum_price
+                      )}{" "}
                       {selectedProperty.listing_type === "rent" && "/mo"}
                     </Badge>
                   </div>
@@ -787,21 +845,17 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                       For {selectedProperty.listing_type}
                     </Badge>
                   </div>
-
-                  {selectedPropertyWithCoords &&
-                    selectedPropertyWithCoords.id === selectedProperty.id && (
-                      <div className="absolute bottom-3 left-3">
-                        <Badge className="bg-yellow-500 text-white px-2 py-1 text-xs font-semibold">
-                          ★ Selected Property
-                        </Badge>
-                      </div>
-                    )}
                 </div>
 
                 <div className="p-4">
                   <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
                     {selectedProperty.title}
                   </h3>
+                  {selectedProperty.property_type && (
+                    <div className="text-xs text-gray-500 mb-3">
+                      Type: {selectedProperty.property_type.name}
+                    </div>
+                  )}
 
                   <div className="flex items-center text-sm text-gray-600 mb-3">
                     <span className="mr-2">📍</span>
@@ -818,7 +872,8 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                         searchLocation.lng,
                         selectedProperty.lat!,
                         selectedProperty.lng!
-                      ).toFixed(1)}km from {searchLocation.address.split(',')[0]}
+                      ).toFixed(1)}
+                      km from {searchLocation.address.split(",")[0]}
                     </div>
                   )}
 
@@ -853,12 +908,6 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                     </div>
                   )}
 
-                  {selectedProperty.property_type && (
-                    <div className="text-xs text-gray-500 mb-3">
-                      Type: {selectedProperty.property_type.name}
-                    </div>
-                  )}
-
                   {selectedProperty.description && (
                     <div className="text-sm text-gray-600 mb-4 line-clamp-2">
                       {selectedProperty.description}
@@ -871,9 +920,6 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                       className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
                     >
                       View Details
-                    </Button>
-                    <Button size="sm" variant="outline" className="flex-1">
-                      Contact
                     </Button>
                   </div>
                 </div>
@@ -919,22 +965,6 @@ const GoogleMapPropertyList = (props: GoogleMapsProps) => {
                   <div className="w-2 h-2 bg-white rounded-full"></div>
                 </div>
                 <span className="font-medium">Search Center</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Properties Count */}
-        <div className="absolute top-4 right-4 bg-white rounded-xl shadow-lg px-4 py-3">
-          <div className="text-sm font-semibold text-gray-900 mb-2">
-            Properties
-          </div>
-          <div className="text-xs text-gray-600">
-            <div>Showing: {displayProperties.length}</div>
-            <div>Total: {propertiesWithCoords.length}</div>
-            {isSearching && (
-              <div className="text-green-600 font-semibold mt-1">
-                Within {searchRadius}km radius
               </div>
             )}
           </div>

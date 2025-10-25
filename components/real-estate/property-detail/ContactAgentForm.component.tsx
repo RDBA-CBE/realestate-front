@@ -48,8 +48,7 @@ export default function ContactAgentForm({
       };
 
       const res = await Models.lead.create(body);
-      console.log("✌️res --->", res);
-      Success("Enquiry sent ! ")
+      Success("Enquiry sent ! ");
       setState({ btnLoading: false });
     } catch (error) {
       if (error?.email?.length > 0) {
@@ -78,11 +77,11 @@ export default function ContactAgentForm({
         status: "new",
         requirements: "New Requirements",
       };
-      console.log("✌️body --->", body);
 
       const res = await Models.lead.create(body);
-      console.log("✌️res --->", res);
+
       setState({ btnLoading: false });
+      Success("Enquiry sent ! ");
     } catch (error) {
       if (error?.email?.length > 0) {
         Failure(error?.email[0]);

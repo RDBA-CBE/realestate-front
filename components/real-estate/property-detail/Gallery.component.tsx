@@ -4,20 +4,31 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import { SlideshowLightbox } from "lightbox.js-react";
+import LightboxGallery from "@/components/common-components/Lightbox.component";
 
 interface GalleryProps {
   images: any[];
 }
 
 export default function Gallery({ images }: GalleryProps) {
-  const [lightboxOpen, setLightboxOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
+
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [clickedImageIndex, setClickedImageIndex] = useState(0);
+console.log('✌️clickedImageIndex --->', clickedImageIndex);
+
+  const openLightbox = (index: number) => {
+    setClickedImageIndex(index);
+    setLightboxOpen(true);
+  };
 
   if (!images || images.length === 0) return null;
 
   const handleOpen = (index: number) => {
     setStartIndex(index);
     setLightboxOpen(true);
+    setClickedImageIndex(index);
+
   };
 
   return (
@@ -79,6 +90,15 @@ export default function Gallery({ images }: GalleryProps) {
           </div>
         </div>
       )}
+      <div className="h-full wi-full">
+        <LightboxGallery
+          images={images}
+          initialIndex={clickedImageIndex}
+          isOpen={lightboxOpen}
+          onClose={() => setLightboxOpen(false)}
+          autoSlide={false}
+        />
+      </div>
     </>
   );
 }

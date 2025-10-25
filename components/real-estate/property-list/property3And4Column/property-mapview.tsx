@@ -58,6 +58,8 @@ export function MapView(props) {
 
   const observer = useRef<IntersectionObserver | null>(null);
 
+  const propertyDetailRef = useRef<HTMLDivElement>(null);
+
   const lastPropertyElementRef = useCallback(
     (node: HTMLElement | null) => {
       if (isLoadingMore) return;
@@ -101,6 +103,15 @@ export function MapView(props) {
   useEffect(() => {
     filters(state);
   }, [state.sort]);
+
+  useEffect(() => {
+    if (state.selectedProperty && propertyDetailRef.current) {
+      propertyDetailRef.current.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  }, [state.selectedProperty]);
 
   useEffect(() => {
     if (properties.length > 0 && !isLoadingMore) {
@@ -253,7 +264,6 @@ export function MapView(props) {
                 alt="No Property Found"
                 className="w-80 h-auto mb-4"
               />
-             
             </div>
           ) : (
             <>
@@ -309,10 +319,16 @@ export function MapView(props) {
         </div>
 
         {state.selectedProperty && (
-          <div className="xl:col-span-4 h-[calc(100vh-98px)] overflow-y-auto">
+          <div
+            className="xl:col-span-4 h-[calc(100vh-98px)] overflow-y-auto"
+            ref={propertyDetailRef}
+          >
             <PropertyDetailInline
               id={state.selectedProperty?.id}
               handleClick={() => setState({ selectedProperty: null })}
+              clickSimilarProperty={(data) =>
+                setState({ selectedProperty: data })
+              }
             />
           </div>
         )}

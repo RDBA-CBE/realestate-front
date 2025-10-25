@@ -17,6 +17,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import {
   capitalizeFLetter,
+  formatPriceRange,
   formattedNoDecimal,
   formatToINR,
 } from "@/utils/function.utils";
@@ -33,9 +34,9 @@ export default function FeaturedListings(props: any) {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Discover Our Featured Listings</h2>
-          <p className="text-gray-600 text-sm">
+          {/* <p className="text-gray-600 text-sm">
             Aliquam lacinia diam quis lacus euismod
-          </p>
+          </p> */}
         </div>
 
         {/* Custom Navigation */}
@@ -84,13 +85,12 @@ export default function FeaturedListings(props: any) {
                     className="w-full h-72 object-cover"
                   />
                 )}
-                {property.featured && (
-                  <Badge className="absolute top-2 left-2 bg-red-500 text-white font-semibold px-2 py-0.5 text-xs">
-                    FEATURED
-                  </Badge>
-                )}
+               
                 <Badge className="absolute top-2 right-2 bg-white text-black font-bold px-2 py-1 text-sm shadow-md">
-                  {formatToINR(property.price)}{" "}
+                  {formatPriceRange(
+                                property?.price_range?.minimum_price,
+                                property?.price_range?.maximum_price
+                              )}{" "}
                   {property.listing_type === "rent" && "/ mo"}
                 </Badge>
               </div>

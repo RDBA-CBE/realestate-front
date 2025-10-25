@@ -24,6 +24,7 @@ import {
   capitalizeFLetter,
   Failure,
   formatNumber,
+  formatPriceRange,
   formattedNoDecimal,
   formatToINR,
   Success,
@@ -31,7 +32,7 @@ import {
   useSetState,
 } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -83,12 +84,15 @@ interface PropertyDetailInlineProps {
   handleClick?: () => void;
   data?: PropertyDetail;
   updateList?: () => void;
+  clickSimilarProperty?: any;
 }
 
 // ---------------- AUTH HOOK ----------------
 
 export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
-  const { id, handleClick, data, updateList } = props;
+  const { id, handleClick, data, updateList, clickSimilarProperty } = props;
+
+  const router = useRouter();
 
   const MAX_LENGTH = 300;
 
@@ -250,10 +254,25 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
     // { icon: Home, label: "Property Type", value: data?.property_type?.name ?? "-" },
   ];
 
+  const handleclick = (data) => {
+    clickSimilarProperty(data);
+    scrollToTop();
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  };
+
   const isLong = state.detail?.description?.length > MAX_LENGTH;
   const shortText = isLong
     ? state.detail?.description?.slice(0, MAX_LENGTH) + "..."
     : state.detail?.description;
+
+  const handleRedirect = () => {
+    router.push(`/property-detail/${state.detail?.id}`);
+  };
 
   return (
     <div className="mx-auto px-2 py-6">
@@ -274,234 +293,259 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
 
       {/* Header + Gallery */}
       <div className="space-y-4">
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold">
-              {state.detail?.title || "Property Title"}
-            </h1>
-            <div className="flex items-center flex-wrap gap-3 text-sm text-gray-600">
-              <span>{`${capitalizeFLetter(
-                state.detail?.city || ""
-              )} , ${capitalizeFLetter(state.detail?.state || "")} `}</span>
-              <span className="flex items-center gap-1 text-red-500 font-medium">
-                ● For {capitalizeFLetter(state.detail?.listing_type || "")}
-              </span>
-              <span className="flex items-center gap-1">
-                ⏱ {TimeAgo(state.detail?.created_at || "")}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-6 text-gray-700 mt-2">
-              <div className="flex items-center gap-1">
-                <Bed size={18} /> <span>{state.detail?.bedrooms || 0} bed</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Bath size={18} />{" "}
-                <span>{state.detail?.bathrooms || 0} bath</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Square size={18} />{" "}
-                <span>
-                  {formatNumber(state.detail?.built_up_area || 0)} sqft
+        <div className="space-y-4 cursor-pointer">
+          <div
+            className="flex flex-col md:flex-row md:items-start md:justify-between gap-4"
+            onClick={() => handleRedirect()}
+          >
+            <div className="space-y-2">
+              <h1 className="text-3xl font-bold cursor-pointer">
+                {state.detail?.title || "Property Title"}
+              </h1>
+              <div className="flex items-center flex-wrap gap-3 text-sm text-gray-600">
+                <span>{`${capitalizeFLetter(
+                  state.detail?.city || ""
+                )} , ${capitalizeFLetter(state.detail?.state || "")} `}</span>
+                <span className="flex items-center gap-1 text-red-500 font-medium">
+                  ● For {capitalizeFLetter(state.detail?.listing_type || "")}
+                </span>
+                <span className="flex items-center gap-1">
+                  ⏱ {TimeAgo(state.detail?.created_at || "")}
                 </span>
               </div>
+
+              <div className="flex items-center gap-6 text-gray-700 mt-2">
+                <div className="flex items-center gap-1">
+                  <Bed size={18} />{" "}
+                  <span>{state.detail?.bedrooms || 0} bed</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Bath size={18} />{" "}
+                  <span>{state.detail?.bathrooms || 0} bath</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Square size={18} />{" "}
+                  <span>
+                    {formatNumber(state.detail?.built_up_area || 0)} sqft
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="flex justify-between items-center items-end gap-3">
-          <div>
-            <p className="text-2xl font-bold">
-              {formatToINR(state.detail?.price || 0)}
-            </p>
-            <p className="text-sm text-gray-600">
-              {formatToINR(state.detail?.price_per_sqft || 0)}/sq ft
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={() => handleWishList()}
-              size="icon"
-              variant="outline"
-              className={`rounded-full ${
-                state.detail?.user_wishlists
-                  ? "bg-red-500 border-red-500 text-white hover:bg-red-600 hover:border-red-600"
-                  : "bg-white text-black"
-              }`}
-            >
-              <Heart
-                size={18}
-                fill={state.detail?.user_wishlists ? "currentColor" : "none"}
-              />
-            </Button>
-
-            <Button
-              onClick={() => handleCompareList()}
-              size="icon"
-              variant="outline"
-              className={`rounded-full ${
-                state?.is_compare
-                  ? "bg-green-500 border-green-500 text-white hover:bg-green-600 hover:border-green-600"
-                  : "bg-white text-black"
-              }`}
-            >
-              <GitCompareArrowsIcon size={18} />
-            </Button>
-            <Button size="icon" variant="outline" className="rounded-full">
-              <Share2 size={18} />
-            </Button>
-          </div>
-        </div>
-
-        <div className="relative">
-          {state.detail?.images && state.detail.images.length > 0 ? (
-            <div className="relative h-[300px] rounded-2xl overflow-hidden shadow-lg">
-              <Card className="h-full w-full relative">
-                <Image
-                  src={getImageUrl(
-                    state.detail.images[state.currentImageIndex]
-                  )}
-                  alt={`Property image ${state.currentImageIndex + 1}`}
-                  fill
-                  className="object-cover"
-                  priority
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = "/default-property-image.jpg";
-                  }}
-                />
-              </Card>
-
-              {state.detail.images.length > 1 && (
-                <>
-                  <Button
-                    onClick={() => {
-                      setState({
-                        currentImageIndex:
-                          state.currentImageIndex === 0
-                            ? state.detail.images!.length - 1
-                            : state.currentImageIndex - 1,
-                      });
-                    }}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-10 h-10"
-                    size="icon"
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </Button>
-
-                  <Button
-                    onClick={() => {
-                      setState({
-                        currentImageIndex:
-                          state.currentImageIndex ===
-                          state.detail.images!.length - 1
-                            ? 0
-                            : state.currentImageIndex + 1,
-                      });
-                    }}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-10 h-10"
-                    size="icon"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </Button>
-                </>
-              )}
-
-              <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                {state.currentImageIndex + 1} / {state.detail.images.length}
-              </div>
-
-              {state.detail.images.length > 1 && (
-                <div className="absolute bottom-4 right-4 left-4 flex justify-center">
-                  <div className="flex space-x-2 overflow-x-auto max-w-full pb-2">
-                    {state.detail.images?.map((img, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setState({ currentImageIndex: index })}
-                        className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 ${
-                          state.currentImageIndex === index
-                            ? "border-blue-500"
-                            : "border-transparent"
-                        }`}
-                      >
-                        <Image
-                          src={getImageUrl(img)}
-                          alt={`Thumbnail ${index + 1}`}
-                          width={64}
-                          height={64}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = "/default-property-image.jpg";
-                          }}
-                        />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+          <div
+            className="flex justify-between items-center items-end gap-3"
+            onClick={() => handleRedirect()}
+          >
+            <div>
+              <p className="text-2xl font-bold">
+                {/* {formatToINR(state.detail?.price || 0)} */}
+                {formatPriceRange(
+                  state.detail?.price_range?.minimum_price,
+                  state.detail?.price_range?.maximum_price
+                )}{" "}
+              </p>
+              <p className="text-sm text-gray-600">
+                {formatToINR(state.detail?.price_per_sqft || 0)}/sq ft
+              </p>
             </div>
-          ) : (
-            <Card className="h-[500px] rounded-2xl shadow-lg flex items-center justify-center bg-gray-100">
-              <div className="text-center text-gray-500">
-                <div className="text-4xl mb-2">🏠</div>
-                <p>No images available</p>
-              </div>
-            </Card>
-          )}
-        </div>
-
-        <Card className="rounded-2xl shadow p-4">
-          <h3 className="text-xl font-semibold mb-6">Overview</h3>
-          <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6">
-            {details?.map((item, idx) => (
-              <div key={idx} className="flex items-center gap-4">
-                <div className="p-3 rounded-xl border w-12 h-12 flex items-center justify-center">
-                  <item.icon className="w-6 h-6 text-gray-700" />
-                </div>
-                <div>
-                  <h4 className="font-medium text-gray-900">{item?.label}</h4>
-                  {item?.value && (
-                    <p className="text-gray-600 text-sm">{item?.value}</p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl shadow p-6 space-y-6">
-          <div>
-            <h3 className="text-xl font-semibold mb-3">Property Description</h3>
-            <p className="text-gray-700 leading-relaxed">
-              {state.expanded ? state.detail?.description : shortText}
-            </p>
-
-            {state.isLong && (
-              <button
-                onClick={() => setState({ expanded: !state.expanded })}
-                className="mt-2 font-semibold text-black hover:underline"
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={() => handleWishList()}
+                size="icon"
+                variant="outline"
+                className={`rounded-full ${
+                  state.detail?.user_wishlists
+                    ? "bg-red-500 border-red-500 text-white hover:bg-red-600 hover:border-red-600"
+                    : "bg-white text-black"
+                }`}
               >
-                {state.expanded ? "Show less" : "Show more"}
-              </button>
+                <Heart
+                  size={18}
+                  fill={state.detail?.user_wishlists ? "currentColor" : "none"}
+                />
+              </Button>
+
+              <Button
+                onClick={() => handleCompareList()}
+                size="icon"
+                variant="outline"
+                className={`rounded-full ${
+                  state?.is_compare
+                    ? "bg-green-500 border-green-500 text-white hover:bg-green-600 hover:border-green-600"
+                    : "bg-white text-black"
+                }`}
+              >
+                <GitCompareArrowsIcon size={18} />
+              </Button>
+              <Button size="icon" variant="outline" className="rounded-full">
+                <Share2 size={18} />
+              </Button>
+            </div>
+          </div>
+
+          <div className="relative">
+            {state.detail?.images && state.detail.images.length > 0 ? (
+              <div className="relative h-[300px] rounded-2xl overflow-hidden shadow-lg">
+                <Card className="h-full w-full relative">
+                  <Image
+                    src={getImageUrl(
+                      state.detail.images[state.currentImageIndex]
+                    )}
+                    alt={`Property image ${state.currentImageIndex + 1}`}
+                    fill
+                    className="object-cover"
+                    priority
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "/default-property-image.jpg";
+                    }}
+                  />
+                </Card>
+
+                {state.detail.images.length > 1 && (
+                  <>
+                    <Button
+                      onClick={() => {
+                        setState({
+                          currentImageIndex:
+                            state.currentImageIndex === 0
+                              ? state.detail.images!.length - 1
+                              : state.currentImageIndex - 1,
+                        });
+                      }}
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-10 h-10"
+                      size="icon"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </Button>
+
+                    <Button
+                      onClick={() => {
+                        setState({
+                          currentImageIndex:
+                            state.currentImageIndex ===
+                            state.detail.images!.length - 1
+                              ? 0
+                              : state.currentImageIndex + 1,
+                        });
+                      }}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-10 h-10"
+                      size="icon"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </Button>
+                  </>
+                )}
+
+                <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                  {state.currentImageIndex + 1} / {state.detail.images.length}
+                </div>
+
+                {state.detail.images.length > 1 && (
+                  <div className="absolute bottom-4 right-4 left-4 flex justify-center">
+                    <div className="flex space-x-2 overflow-x-auto max-w-full pb-2">
+                      {state.detail.images?.map((img, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setState({ currentImageIndex: index })}
+                          className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 ${
+                            state.currentImageIndex === index
+                              ? "border-blue-500"
+                              : "border-transparent"
+                          }`}
+                        >
+                          <Image
+                            src={getImageUrl(img)}
+                            alt={`Thumbnail ${index + 1}`}
+                            width={64}
+                            height={64}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = "/default-property-image.jpg";
+                            }}
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Card className="h-[500px] rounded-2xl shadow-lg flex items-center justify-center bg-gray-100">
+                <div className="text-center text-gray-500">
+                  <div className="text-4xl mb-2">🏠</div>
+                  <p>No images available</p>
+                </div>
+              </Card>
             )}
           </div>
-        </Card>
 
-        <Card className="rounded-2xl shadow p-6">
-          <h3 className="text-xl font-semibold mb-6">Features & Amenities</h3>
-
-          <CardContent>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 ">
-              {state.detail?.amenities?.map((item, i) => (
-                <li key={i} className="text-gray-800 flex items-start">
-                  <span className="text-gray-500 mr-2">•</span>
-                  {item?.name}
-                </li>
+          <Card
+            className="rounded-2xl shadow p-4"
+            onClick={() => handleRedirect()}
+          >
+            <h3 className="text-xl font-semibold mb-6">Overview</h3>
+            <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6">
+              {details?.map((item, idx) => (
+                <div key={idx} className="flex items-center gap-4">
+                  <div className="p-3 rounded-xl border w-12 h-12 flex items-center justify-center">
+                    <item.icon className="w-6 h-6 text-gray-700" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-gray-900">{item?.label}</h4>
+                    {item?.value && (
+                      <p className="text-gray-600 text-sm">{item?.value}</p>
+                    )}
+                  </div>
+                </div>
               ))}
-            </ul>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+
+          <Card
+            className="rounded-2xl shadow p-6 space-y-6"
+            onClick={() => handleRedirect()}
+          >
+            <div>
+              <h3 className="text-xl font-semibold mb-3">
+                Property Description
+              </h3>
+              <p className="text-gray-700 leading-relaxed">
+                {state.expanded ? state.detail?.description : shortText}
+              </p>
+
+              {state.isLong && (
+                <button
+                  onClick={() => setState({ expanded: !state.expanded })}
+                  className="mt-2 font-semibold text-black hover:underline"
+                >
+                  {state.expanded ? "Show less" : "Show more"}
+                </button>
+              )}
+            </div>
+          </Card>
+
+          <Card
+            className="rounded-2xl shadow p-6"
+            onClick={() => handleRedirect()}
+          >
+            <h3 className="text-xl font-semibold mb-6">Features & Amenities</h3>
+
+            <CardContent>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 ">
+                {state.detail?.amenities?.map((item, i) => (
+                  <li key={i} className="text-gray-800 flex items-start">
+                    <span className="text-gray-500 mr-2">•</span>
+                    {item?.name}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
+
         <Card className="space-y-6 relative overflow-x-hidden p-6">
           <div>
             <h2 className="text-xl font-semibold  text-gray-900 mb-2">
@@ -541,7 +585,10 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
               className="!overflow-visible"
             >
               {state.similarProperty?.map((property) => (
-                <SwiperSlide key={property.id}>
+                <SwiperSlide
+                  key={property.id}
+                  onClick={() => handleclick(property)}
+                >
                   <div className="flex justify-center">
                     <Card className="overflow-hidden cursor-pointer rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 w-full max-w-lg">
                       <div className="relative h-48 bg-gray-100">
@@ -579,7 +626,11 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
 
                         <div className="space-y-1">
                           <p className="text-2xl font-bold text-gray-900">
-                            {formatToINR(property?.price)}
+                            {/* {formatToINR(property?.price)} */}
+                            {formatPriceRange(
+                              property?.price_range?.minimum_price,
+                              property?.price_range?.maximum_price
+                            )}{" "}
                             {property.listing_type == "rent" && (
                               <span className="text-lg font-normal"> / mo</span>
                             )}
@@ -604,7 +655,7 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
                               ? `${property.bedrooms} BHK`
                               : "1 BHK"}
                             {property.property_type &&
-                              ` ${property.property_type}`}
+                              ` ${property.property_type?.name}`}
                           </div>
                         </div>
 
