@@ -61,6 +61,13 @@ interface Property {
   }>;
   developer_name?: string;
   broker_name?: string;
+  // Additional price fields
+  deposit?: number;
+  maintenance_charges?: number;
+  price_per_sqft?: number;
+  booking_amount?: number;
+  highlights?: string[];
+  possession_date?: string; // Add possession date
 }
 
 interface PropertyCardProps {
@@ -90,9 +97,64 @@ const getInitials = (name: string): string => {
     .slice(0, 2);
 };
 
+// Helper function to calculate average price per sqft from plot sizes
+const calculateAveragePricePerSqft = (
+  plot_sizes: Array<{ size: string; price: string }>
+) => {
+  if (!plot_sizes || plot_sizes.length === 0) return 'Price on request';
+
+  let totalPrice = 0;
+  let totalArea = 0;
+  let validEntries = 0;
+
+  plot_sizes.forEach((plot) => {
+    try {
+      // Extract numeric values from price string (e.g., "₹21.4 L" -> 21.4)
+      const priceStr = plot.price.replace(/[^0-9.]/g, '');
+      const priceNum = parseFloat(priceStr);
+
+      if (isNaN(priceNum)) return;
+
+      // Convert to actual price based on denomination
+      let actualPrice = priceNum;
+      if (plot.price.includes('Cr')) {
+        actualPrice = priceNum * 10000000;
+      } else if (plot.price.includes('L')) {
+        actualPrice = priceNum * 100000;
+      } else if (plot.price.includes('K')) {
+        actualPrice = priceNum * 1000;
+      }
+
+      // Extract area
+      const areaNum = parseFloat(plot.size.replace(/[^0-9.]/g, ''));
+      if (isNaN(areaNum)) return;
+
+      totalPrice += actualPrice;
+      totalArea += areaNum;
+      validEntries++;
+    } catch (error) {
+      console.error('Error calculating price for plot:', plot, error);
+    }
+  });
+
+  if (validEntries === 0 || totalArea === 0) return 'Price on request';
+
+  const avgPricePerSqft = Math.round(totalPrice / totalArea);
+
+  // Format the average price
+  if (avgPricePerSqft >= 10000000) {
+    return `₹${(avgPricePerSqft / 10000000).toFixed(2)} Cr`;
+  } else if (avgPricePerSqft >= 100000) {
+    return `₹${(avgPricePerSqft / 100000).toFixed(2)} L`;
+  } else if (avgPricePerSqft >= 1000) {
+    return `₹${(avgPricePerSqft / 1000).toFixed(2)} K`;
+  }
+  return `₹${avgPricePerSqft}`;
+};
+
 // Consistent image dimensions
 const GRID_IMAGE_HEIGHT = 180;
-const LIST_IMAGE_HEIGHT = 210;
+const LIST_IMAGE_HEIGHT = 300;
 
 export function PropertyCard({
   property,
@@ -230,7 +292,26 @@ export function PropertyCard({
     }
   };
 
-  // GRID VIEW
+  // Helper function to format price
+  const formatPrice = (price: number) => {
+    if (price >= 10000000) {
+      return `₹${(price / 10000000).toFixed(2)} Cr`;
+    } else if (price >= 100000) {
+      return `₹${(price / 100000).toFixed(2)} L`;
+    } else if (price >= 1000) {
+      return `₹${(price / 1000).toFixed(2)} K`;
+    }
+    return `₹${price}`;
+  };
+
+  // Helper function to format price range
+  const formatPriceRange = (minPrice: number, maxPrice: number) => {
+    if (!minPrice && !maxPrice) return 'Price on request';
+    if (minPrice === maxPrice) return formatPrice(minPrice);
+    return `${formatPrice(minPrice)} - ${formatPrice(maxPrice)}`;
+  };
+
+  // GRID VIEW - UNCHANGED
   if (view === 'grid') {
     return (
       <motion.div
@@ -400,7 +481,7 @@ export function PropertyCard({
     );
   }
 
-  // LIST VIEW
+  // LIST VIEW - ENHANCED SALE PROPERTIES DISPLAY
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
@@ -526,8 +607,7 @@ export function PropertyCard({
               {formatPriceRange(
                 property?.price_range?.minimum_price,
                 property?.price_range?.maximum_price
-              )}{' '}
-              {property.listing_type === 'rent' && '/ mo'}
+              )}
             </Badge>
           </div>
         </div>
@@ -546,6 +626,122 @@ export function PropertyCard({
                 )}, ${capitalizeFLetter(property.state)}`}</span>
               </div>
 
+              {/* Enhanced Sale Property Display */}
+
+              {property.listing_type === 'sale' ? (
+                <div className='mb-3'>
+                  {/* Plot Sizes and Prices Table */}
+                  {property.plot_sizes && property.plot_sizes.length > 0 && (
+                    <div className='mb-4'>
+                      {/* Table Header */}
+                      <div className='grid grid-cols-2 gap-4 mb-3'>
+                        <div className='text-sm font-semibold text-gray-900'>
+                          Plot Size
+                        </div>
+                        <div className='text-sm font-semibold text-gray-900 text-right'>
+                          Price
+                        </div>
+                      </div>
+
+                      {/* Table Rows */}
+                      <div className='space-y-2 mb-3'>
+                        {property.plot_sizes.map((plot, index) => (
+                          <div key={index} className='grid grid-cols-2 gap-4'>
+                            <div className='text-sm text-gray-600'>
+                              {plot.size} sq.ft
+                            </div>
+                            <div className='text-sm font-semibold text-gray-900 text-right'>
+                              {plot.price}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Average Price and Possession Info */}
+                      <div className='flex items-center justify-between text-xs text-gray-600 border-t border-gray-200 pt-2'>
+                        <div className='flex items-center space-x-4'>
+                          <span>
+                            Avg. Price:{' '}
+                            {calculateAveragePricePerSqft(property.plot_sizes)}
+                            /sq.ft
+                          </span>
+                          <span>•</span>
+                          <span>
+                            Possession: {property.possession_date || 'Dec 2024'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* For properties without plot sizes, show regular price display */}
+                  {(!property.plot_sizes ||
+                    property.plot_sizes.length === 0) && (
+                    <div className='mb-3'>
+                      <div className='flex items-baseline gap-2 mb-1'>
+                        <span className='text-2xl font-bold text-gray-900'>
+                          {formatPriceRange(
+                            property?.price_range?.minimum_price,
+                            property?.price_range?.maximum_price
+                          )}
+                        </span>
+                        {property.price_per_sqft && (
+                          <span className='text-sm text-gray-600'>
+                            ({formatPrice(property.price_per_sqft)}/sq.ft)
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Built-up Area */}
+                      {/* {property.total_area && (
+                        <div className='flex items-center text-sm text-gray-600 mb-1'>
+                          <Square className='h-4 w-4 mr-1' />
+                          <span>
+                            Built-up area:{' '}
+                            {formattedNoDecimal(property.total_area)} sq.ft
+                          </span>
+                        </div>
+                      )} */}
+
+                      {/* Price Breakup Link */}
+                      {/* <div className='text-sm text-blue-600 font-medium cursor-pointer hover:underline'>
+                        See price breakup ›
+                      </div> */}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                // ... rest of your code for rent and lease
+                // Rent and Lease Properties - Keep existing display
+                <div className='mb-3'>
+                  <div className='flex items-baseline gap-2 mb-1'>
+                    <span className='text-2xl font-bold text-gray-900'>
+                      {formatPriceRange(
+                        property?.price_range?.minimum_price,
+                        property?.price_range?.maximum_price
+                      )}
+                    </span>
+                    <span className='text-gray-600'>
+                      {property.listing_type === 'rent' && '/month'}
+                      {property.listing_type === 'lease' && '/month'}
+                    </span>
+                  </div>
+
+                  {property.listing_type === 'rent' && property.deposit && (
+                    <div className='text-sm text-gray-600'>
+                      Security deposit: {formatPrice(property.deposit)}
+                    </div>
+                  )}
+
+                  {/* {property.listing_type === 'lease' && (
+                    <div className='text-sm text-gray-600'>
+                      Lease • Long term rental
+                    </div>
+                  )} */}
+                </div>
+              )}
+
+              {/* Property Features */}
               <div className='flex items-center gap-4 text-gray-500 mb-2 flex-wrap text-md'>
                 <div className='flex items-center space-x-1'>
                   <Bed className='h-5 w-5' />
@@ -561,36 +757,12 @@ export function PropertyCard({
                 </div>
               </div>
 
-              {/* Plot Sizes Grid */}
-              {property.plot_sizes && property.plot_sizes.length > 0 && (
-                <div className='mb-4'>
-                  <div
-                    className={`grid gap-2 mb-2 ${getGridColumnsClass(
-                      property.plot_sizes.length
-                    )}`}
-                  >
-                    {property.plot_sizes.map((plot, index) => (
-                      <div
-                        key={index}
-                        className='text-center text-xs text-gray-600'
-                      >
-                        {plot.size} sq.ft Plot
-                      </div>
-                    ))}
-                  </div>
-                  <div
-                    className={`grid gap-2 ${getGridColumnsClass(
-                      property.plot_sizes.length
-                    )}`}
-                  >
-                    {property.plot_sizes.map((plot, index) => (
-                      <div
-                        key={index}
-                        className='text-center font-semibold text-gray-900'
-                      >
-                        {plot.price}
-                      </div>
-                    ))}
+              {/* Highlights */}
+              {property.highlights && property.highlights.length > 0 && (
+                <div className='mb-3'>
+                  <div className='text-sm text-gray-600 line-clamp-2'>
+                    <strong>Highlights:</strong>{' '}
+                    {property.highlights.join(' • ')}
                   </div>
                 </div>
               )}
@@ -616,7 +788,10 @@ export function PropertyCard({
                     {property.developer_name
                       ? 'Developer'
                       : property.broker_name
-                      ? 'Seller'
+                      ? property.listing_type === 'rent' ||
+                        property.listing_type === 'lease'
+                        ? 'Agent'
+                        : 'Seller'
                       : 'Owner'}
                   </div>
                 </div>
