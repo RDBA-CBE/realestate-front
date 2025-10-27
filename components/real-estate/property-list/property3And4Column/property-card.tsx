@@ -59,6 +59,11 @@ interface Property {
     size: string;
     price: string;
   }>;
+  bhk_configurations?: Array<{ // Add BHK configurations
+    bhk: string;
+    price: string;
+    area?: string;
+  }>;
   developer_name?: string;
   broker_name?: string;
   // Additional price fields
@@ -67,7 +72,7 @@ interface Property {
   price_per_sqft?: number;
   booking_amount?: number;
   highlights?: string[];
-  possession_date?: string; // Add possession date
+  possession_date?: string;
 }
 
 interface PropertyCardProps {
@@ -482,334 +487,323 @@ export function PropertyCard({
   }
 
   // LIST VIEW - ENHANCED SALE PROPERTIES DISPLAY
-  return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      className='h-full'
+return (
+  <motion.div
+    whileHover={{ scale: 1.02 }}
+    onMouseEnter={() => setHover(true)}
+    onMouseLeave={() => setHover(false)}
+    className='h-full'
+  >
+    <Card
+      onClick={() => onClick()}
+      className='bg-white border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer h-full flex flex-row'
     >
-      <Card
-        onClick={() => onClick()}
-        className='bg-white border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer h-full flex flex-row'
-      >
-        {/* Image Slider - Fixed Height */}
-        <div className='relative w-2/5 flex-shrink-0'>
-          <div
-            className='relative overflow-hidden h-full'
-            style={{ height: LIST_IMAGE_HEIGHT }}
-          >
-            {displayImages.length > 0 && (
-              <div
-                key={displayImages[currentImageIndex]?.image_url}
-                className='w-full h-full absolute'
-              >
-                <Image
-                  src={displayImages[currentImageIndex]?.image_url}
-                  alt={property.title}
-                  width={400}
-                  height={LIST_IMAGE_HEIGHT}
-                  className='object-cover w-full h-full'
-                />
-              </div>
-            )}
-
-            {/* Left Arrow */}
-            {displayImages.length > 1 && (
-              <button
-                onClick={handlePrev}
-                className='absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1.5 transition'
-              >
-                <ChevronLeft size={16} />
-              </button>
-            )}
-
-            {/* Right Arrow */}
-            {displayImages.length > 1 && (
-              <button
-                onClick={handleNext}
-                className='absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1.5 transition'
-              >
-                <ChevronRight size={16} />
-              </button>
-            )}
-
-            {/* Image Dots */}
-            {displayImages.length > 1 && (
-              <div className='absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1.5'>
-                {displayImages.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setCurrentImageIndex(index);
-                    }}
-                    className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                      index === currentImageIndex ? 'bg-white' : 'bg-white/50'
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Listing Type Badge */}
-            <Badge
-              className={`absolute top-3 left-3 text-white font-semibold capitalize border-none rounded-full px-4 py-1.5 ${
-                property.listing_type === 'sale'
-                  ? 'bg-green-500'
-                  : property.listing_type === 'lease'
-                  ? 'bg-blue-500'
-                  : property.listing_type === 'rent'
-                  ? 'bg-orange-500'
-                  : 'bg-gray-500'
-              }`}
+      {/* Image Slider - Fixed Height */}
+      <div className='relative w-2/5 flex-shrink-0'>
+        <div
+          className='relative overflow-hidden h-full'
+          style={{ height: LIST_IMAGE_HEIGHT }}
+        >
+          {displayImages.length > 0 && (
+            <div
+              key={displayImages[currentImageIndex]?.image_url}
+              className='w-full h-full absolute'
             >
-              For {property.listing_type}
-            </Badge>
+              <Image
+                src={displayImages[currentImageIndex]?.image_url}
+                alt={property.title}
+                width={400}
+                height={LIST_IMAGE_HEIGHT}
+                className='object-cover w-full h-full'
+              />
+            </div>
+          )}
 
-            {/* Action Buttons */}
-            {hover && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                className='absolute bottom-3 right-3 flex gap-2'
-              >
-                {[Heart, GitCompareArrowsIcon, Share].map((Icon, i) => {
-                  const isCompareIcon = Icon === GitCompareArrowsIcon;
-                  const like = Icon === Heart;
+          {/* Left Arrow */}
+          {displayImages.length > 1 && (
+            <button
+              onClick={handlePrev}
+              className='absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1.5 transition'
+            >
+              <ChevronLeft size={16} />
+            </button>
+          )}
 
-                  return (
-                    <button
-                      key={i}
-                      className={`rounded-full p-2 shadow hover:bg-gray-100 transition-colors ${
-                        isCompareIcon
-                          ? state.is_compare || property?.is_compare
-                            ? 'bg-green-500 text-white'
-                            : 'bg-white text-black'
-                          : like
-                          ? property?.user_wishlists
-                            ? 'bg-red-500 text-white'
-                            : 'bg-white text-black'
+          {/* Right Arrow */}
+          {displayImages.length > 1 && (
+            <button
+              onClick={handleNext}
+              className='absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1.5 transition'
+            >
+              <ChevronRight size={16} />
+            </button>
+          )}
+
+          {/* Image Dots */}
+          {displayImages.length > 1 && (
+            <div className='absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1.5'>
+              {displayImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentImageIndex(index);
+                  }}
+                  className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                    index === currentImageIndex ? 'bg-white' : 'bg-white/50'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Listing Type Badge */}
+          <Badge
+            className={`absolute top-3 left-3 text-white font-semibold capitalize border-none rounded-full px-4 py-1.5 ${
+              property.listing_type === 'sale'
+                ? 'bg-green-500'
+                : property.listing_type === 'lease'
+                ? 'bg-blue-500'
+                : property.listing_type === 'rent'
+                ? 'bg-orange-500'
+                : 'bg-gray-500'
+            }`}
+          >
+            For {property.listing_type}
+          </Badge>
+
+          {/* Action Buttons */}
+          {hover && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className='absolute bottom-3 right-3 flex gap-2'
+            >
+              {[Heart, GitCompareArrowsIcon, Share].map((Icon, i) => {
+                const isCompareIcon = Icon === GitCompareArrowsIcon;
+                const like = Icon === Heart;
+
+                return (
+                  <button
+                    key={i}
+                    className={`rounded-full p-2 shadow hover:bg-gray-100 transition-colors ${
+                      isCompareIcon
+                        ? state.is_compare || property?.is_compare
+                          ? 'bg-green-500 text-white'
                           : 'bg-white text-black'
-                      }`}
-                      onClick={(e) => handleIconClick(i, e)}
-                    >
-                      <Icon size={16} />
-                    </button>
-                  );
-                })}
-              </motion.div>
+                        : like
+                        ? property?.user_wishlists
+                          ? 'bg-red-500 text-white'
+                          : 'bg-white text-black'
+                        : 'bg-white text-black'
+                    }`}
+                    onClick={(e) => handleIconClick(i, e)}
+                  >
+                    <Icon size={16} />
+                  </button>
+                );
+              })}
+            </motion.div>
+          )}
+
+          {/* Price Badge */}
+          <Badge className='absolute top-2 right-2 bg-white text-black font-bold px-2 py-1 text-sm shadow-md'>
+            {formatPriceRange(
+              property?.price_range?.minimum_price,
+              property?.price_range?.maximum_price
             )}
-
-            {/* Price Badge */}
-            <Badge className='absolute top-2 right-2 bg-white text-black font-bold px-2 py-1 text-sm shadow-md'>
-              {formatPriceRange(
-                property?.price_range?.minimum_price,
-                property?.price_range?.maximum_price
-              )}
-            </Badge>
-          </div>
+          </Badge>
         </div>
+      </div>
 
-        {/* Property Content */}
-        <CardContent className='flex flex-col flex-grow p-4 w-3/5'>
-          <div className='flex flex-col h-full'>
-            <div className='flex-grow'>
-              <h3 className='text-gray-900 pb-1 text-xl mb-2 line-clamp-2'>
-                {property.title}
-              </h3>
-              <div className='flex items-center text-gray-600 mb-4'>
-                <MapPin className='h-5 w-5 mr-1 flex-shrink-0' />
-                <span className='text-md line-clamp-1'>{`${capitalizeFLetter(
-                  property.city
-                )}, ${capitalizeFLetter(property.state)}`}</span>
-              </div>
+      {/* Property Content */}
+      <CardContent className='flex flex-col flex-grow p-4 w-3/5'>
+        <div className='flex flex-col h-full'>
+          <div className='flex-grow'>
+            <h3 className='text-gray-900 pb-1 text-xl mb-2 line-clamp-2'>
+              {property.title}
+            </h3>
+            <div className='flex items-center text-gray-600 mb-4'>
+              <MapPin className='h-5 w-5 mr-1 flex-shrink-0' />
+              <span className='text-md line-clamp-1'>{`${capitalizeFLetter(
+                property.city
+              )}, ${capitalizeFLetter(property.state)}`}</span>
+            </div>
 
-              {/* Enhanced Sale Property Display */}
-
-              {property.listing_type === 'sale' ? (
-                <div className='mb-3'>
-                  {/* Plot Sizes and Prices Table */}
-                  {property.plot_sizes && property.plot_sizes.length > 0 && (
-                    <div className='mb-4'>
-                      {/* Table Header */}
-                      <div className='grid grid-cols-2 gap-4 mb-3'>
-                        <div className='text-sm font-semibold text-gray-900'>
-                          Plot Size
-                        </div>
-                        <div className='text-sm font-semibold text-gray-900 text-right'>
-                          Price
-                        </div>
-                      </div>
-
-                      {/* Table Rows */}
-                      <div className='space-y-2 mb-3'>
-                        {property.plot_sizes.map((plot, index) => (
-                          <div key={index} className='grid grid-cols-2 gap-4'>
-                            <div className='text-sm text-gray-600'>
+            {/* Enhanced Sale Property Display */}
+            {property.listing_type === 'sale' ? (
+              <div className='mb-3'>
+                {/* Check if we have either plot sizes or BHK configurations */}
+                {(property.plot_sizes && property.plot_sizes.length > 0) || 
+                 (property.bhk_configurations && property.bhk_configurations.length > 0) ? (
+                  <>
+                    {/* Plot Sizes Table */}
+                    {property.plot_sizes && property.plot_sizes.length > 0 && (
+                      <div className='mb-4'>
+                        <div className='grid grid-cols-5 gap-2 mb-2'>
+                          {property.plot_sizes.map((plot, index) => (
+                            <div key={index} className='text-center text-sm text-gray-600'>
                               {plot.size} sq.ft
                             </div>
-                            <div className='text-sm font-semibold text-gray-900 text-right'>
+                          ))}
+                        </div>
+                        <div className='grid grid-cols-5 gap-2 mb-3'>
+                          {property.plot_sizes.map((plot, index) => (
+                            <div key={index} className='text-center font-semibold text-gray-900 text-sm'>
                               {plot.price}
                             </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Average Price and Possession Info */}
-                      <div className='flex items-center justify-between text-xs text-gray-600 border-t border-gray-200 pt-2'>
-                        <div className='flex items-center space-x-4'>
-                          <span>
-                            Avg. Price:{' '}
-                            {calculateAveragePricePerSqft(property.plot_sizes)}
-                            /sq.ft
-                          </span>
-                          <span>•</span>
-                          <span>
-                            Possession: {property.possession_date || 'Dec 2024'}
-                          </span>
+                          ))}
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {/* For properties without plot sizes, show regular price display */}
-                  {(!property.plot_sizes ||
-                    property.plot_sizes.length === 0) && (
-                    <div className='mb-3'>
-                      <div className='flex items-baseline gap-2 mb-1'>
-                        <span className='text-2xl font-bold text-gray-900'>
-                          {formatPriceRange(
-                            property?.price_range?.minimum_price,
-                            property?.price_range?.maximum_price
-                          )}
-                        </span>
-                        {property.price_per_sqft && (
-                          <span className='text-sm text-gray-600'>
-                            ({formatPrice(property.price_per_sqft)}/sq.ft)
-                          </span>
+                    {/* BHK Configurations Table */}
+                    {property.bhk_configurations && property.bhk_configurations.length > 0 && (
+                      <div className='mb-4'>
+                        <div className='grid grid-cols-5 gap-2 mb-2'>
+                          {property.bhk_configurations.map((config, index) => (
+                            <div key={index} className='text-center text-sm text-gray-600'>
+                              {config.bhk}
+                              {config.area && ` (${config.area} sq.ft)`}
+                            </div>
+                          ))}
+                        </div>
+                        <div className='grid grid-cols-5 gap-2 mb-3'>
+                          {property.bhk_configurations.map((config, index) => (
+                            <div key={index} className='text-center font-semibold text-gray-900 text-sm'>
+                              {config.price}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Common Info for both */}
+                    <div className='flex items-center justify-between text-xs text-gray-600 border-t border-gray-200 pt-2'>
+                      <div className='flex items-center space-x-4'>
+                        <span>Starting Price: {
+                          property.plot_sizes?.[0]?.price || 
+                          property.bhk_configurations?.[0]?.price || 
+                          'Price on request'
+                        }</span>
+                        <span>•</span>
+                        <span>Possession: {property.possession_date || 'Dec 2024'}</span>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  // Fallback to regular price display
+                  <div className='mb-3'>
+                    <div className='flex items-baseline gap-2 mb-1'>
+                      <span className='text-l font-bold text-gray-900'>
+                        {formatPriceRange(
+                          property?.price_range?.minimum_price,
+                          property?.price_range?.maximum_price
                         )}
-                      </div>
-
-                      {/* Built-up Area */}
-                      {/* {property.total_area && (
-                        <div className='flex items-center text-sm text-gray-600 mb-1'>
-                          <Square className='h-4 w-4 mr-1' />
-                          <span>
-                            Built-up area:{' '}
-                            {formattedNoDecimal(property.total_area)} sq.ft
-                          </span>
-                        </div>
-                      )} */}
-
-                      {/* Price Breakup Link */}
-                      {/* <div className='text-sm text-blue-600 font-medium cursor-pointer hover:underline'>
-                        See price breakup ›
-                      </div> */}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                // ... rest of your code for rent and lease
-                // Rent and Lease Properties - Keep existing display
-                <div className='mb-3'>
-                  <div className='flex items-baseline gap-2 mb-1'>
-                    <span className='text-2xl font-bold text-gray-900'>
-                      {formatPriceRange(
-                        property?.price_range?.minimum_price,
-                        property?.price_range?.maximum_price
+                      </span>
+                      {property.price_per_sqft && (
+                        <span className='text-sm text-gray-600'>
+                          ({formatPrice(property.price_per_sqft)}/sq.ft)
+                        </span>
                       )}
-                    </span>
-                    <span className='text-gray-600'>
-                      {property.listing_type === 'rent' && '/month'}
-                      {property.listing_type === 'lease' && '/month'}
-                    </span>
+                    </div>
                   </div>
-
-                  {property.listing_type === 'rent' && property.deposit && (
-                    <div className='text-sm text-gray-600'>
-                      Security deposit: {formatPrice(property.deposit)}
-                    </div>
-                  )}
-
-                  {/* {property.listing_type === 'lease' && (
-                    <div className='text-sm text-gray-600'>
-                      Lease • Long term rental
-                    </div>
-                  )} */}
-                </div>
-              )}
-
-              {/* Property Features */}
-              <div className='flex items-center gap-4 text-gray-500 mb-2 flex-wrap text-md'>
-                <div className='flex items-center space-x-1'>
-                  <Bed className='h-5 w-5' />
-                  <span>{property.bedrooms} bed</span>
-                </div>
-                <div className='flex items-center space-x-1'>
-                  <Bath className='h-5 w-5' />
-                  <span>{property.bathrooms} bath</span>
-                </div>
-                <div className='flex items-center space-x-1'>
-                  <Square className='h-5 w-5' />
-                  <span>{formattedNoDecimal(property.total_area)} sqft</span>
-                </div>
+                )}
               </div>
-
-              {/* Highlights */}
-              {property.highlights && property.highlights.length > 0 && (
-                <div className='mb-3'>
-                  <div className='text-sm text-gray-600 line-clamp-2'>
-                    <strong>Highlights:</strong>{' '}
-                    {property.highlights.join(' • ')}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Developer/Broker Info */}
-            <div className='flex items-center justify-between pt-3 border-t border-gray-200 mt-4'>
-              <div className='flex items-center gap-2'>
-                <div className='w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center'>
-                  <span className='text-xs font-semibold text-gray-600'>
-                    {getInitials(
-                      property.developer_name || property.broker_name || ''
+            ) : (
+              // Rent and Lease Properties - Keep existing display
+              <div className='mb-3'>
+                <div className='flex items-baseline gap-2 mb-1'>
+                  <span className='text-l font-bold text-gray-900'>
+                    {formatPriceRange(
+                      property?.price_range?.minimum_price,
+                      property?.price_range?.maximum_price
                     )}
                   </span>
+                  <span className='text-gray-600'>
+                    {property.listing_type === 'rent' && '/month'}
+                    {property.listing_type === 'lease' && '/month'}
+                  </span>
                 </div>
-                <div>
-                  <div className='text-sm font-semibold text-gray-900'>
-                    {property.developer_name ||
-                      property.broker_name ||
-                      'Property Owner'}
+
+                {property.listing_type === 'rent' && property.deposit && (
+                  <div className='text-sm text-gray-600'>
+                    Security deposit: {formatPrice(property.deposit)}
                   </div>
-                  <div className='text-xs text-gray-500'>
-                    {property.developer_name
-                      ? 'Developer'
-                      : property.broker_name
-                      ? property.listing_type === 'rent' ||
-                        property.listing_type === 'lease'
-                        ? 'Agent'
-                        : 'Seller'
-                      : 'Owner'}
-                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Property Features */}
+            <div className='flex items-center gap-4 text-gray-500 mb-2 flex-wrap text-md'>
+              <div className='flex items-center space-x-1'>
+                <Bed className='h-5 w-5' />
+                <span>{property.bedrooms} bed</span>
+              </div>
+              <div className='flex items-center space-x-1'>
+                <Bath className='h-5 w-5' />
+                <span>{property.bathrooms} bath</span>
+              </div>
+              <div className='flex items-center space-x-1'>
+                <Square className='h-5 w-5' />
+                <span>{formattedNoDecimal(property.total_area)} sqft</span>
+              </div>
+            </div>
+
+            {/* Highlights */}
+            {property.highlights && property.highlights.length > 0 && (
+              <div className='mb-3'>
+                <div className='text-sm text-gray-600 line-clamp-2'>
+                  <strong>Highlights:</strong>{' '}
+                  {property.highlights.join(' • ')}
                 </div>
               </div>
-
-              <Button
-                className='bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm font-medium'
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // Handle contact action
-                }}
-              >
-                Contact
-              </Button>
-            </div>
+            )}
           </div>
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
+
+          {/* Developer/Broker Info */}
+          <div className='flex items-center justify-between pt-3 border-t border-gray-200 mt-4'>
+            <div className='flex items-center gap-2'>
+              <div className='w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center'>
+                <span className='text-xs font-semibold text-gray-600'>
+                  {getInitials(
+                    property.developer_name || property.broker_name || ''
+                  )}
+                </span>
+              </div>
+              <div>
+                <div className='text-sm font-semibold text-gray-900'>
+                  {property.developer_name ||
+                    property.broker_name ||
+                    'Property Owner'}
+                </div>
+                <div className='text-xs text-gray-500'>
+                  {property.developer_name
+                    ? 'Developer'
+                    : property.broker_name
+                    ? property.listing_type === 'rent' ||
+                      property.listing_type === 'lease'
+                      ? 'Agent'
+                      : 'Seller'
+                    : 'Owner'}
+                </div>
+              </div>
+            </div>
+
+            <Button
+              className='bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm font-medium'
+              onClick={(e) => {
+                e.stopPropagation();
+                // Handle contact action
+              }}
+            >
+              Contact
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  </motion.div>
+);
 }
