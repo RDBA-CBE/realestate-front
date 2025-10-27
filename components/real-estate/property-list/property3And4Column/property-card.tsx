@@ -696,7 +696,7 @@ return (
                   // Fallback to regular price display
                   <div className='mb-3'>
                     <div className='flex items-baseline gap-2 mb-1'>
-                      <span className='text-l font-bold text-gray-900'>
+                      <span className='text-l text-gray-900'>
                         {formatPriceRange(
                           property?.price_range?.minimum_price,
                           property?.price_range?.maximum_price
@@ -715,7 +715,7 @@ return (
               // Rent and Lease Properties - Keep existing display
               <div className='mb-3'>
                 <div className='flex items-baseline gap-2 mb-1'>
-                  <span className='text-l font-bold text-gray-900'>
+                  <span className='text-l text-gray-900'>
                     {formatPriceRange(
                       property?.price_range?.minimum_price,
                       property?.price_range?.maximum_price
