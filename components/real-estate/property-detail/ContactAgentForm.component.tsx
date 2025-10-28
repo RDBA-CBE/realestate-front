@@ -14,6 +14,7 @@ import {
   useSetState,
 } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
+import TextArea from "@/components/common-components/textArea";
 
 interface ContactAgentFormProps {
   data: any;
@@ -30,7 +31,10 @@ export default function ContactAgentForm({
     email: "",
     contactAgreement: false,
     btnLoading: false,
+    inquiry: "",
   });
+
+  console.log("state.inquiry", state.inquiry);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,12 +48,20 @@ export default function ContactAgentForm({
         interested_property: data?.id,
         lead_source: "website",
         status: "new",
-        requirements: "New Requirements",
+        requirements: state.inquiry ? state.inquiry : "New Requirements",
       };
+
+      console.log("body", body);
 
       const res = await Models.lead.create(body);
       Success("Enquiry sent ! ");
-      setState({ btnLoading: false });
+      setState({
+        btnLoading: false,
+        name: "",
+        phone: "",
+        email: "",
+        inquiry: "",
+      });
     } catch (error) {
       if (error?.email?.length > 0) {
         Failure(error?.email[0]);
@@ -75,12 +87,15 @@ export default function ContactAgentForm({
         interested_property: data?.id,
         lead_source: "website",
         status: "new",
-        requirements: "New Requirements",
+        requirements: state.inquiry ? state.inquiry : "New Requirements",
       };
 
       const res = await Models.lead.create(body);
 
-      setState({ btnLoading: false });
+      setState({ btnLoading: false, name: "",
+        phone: "",
+        email: "",
+        inquiry: "", });
       Success("Enquiry sent ! ");
     } catch (error) {
       if (error?.email?.length > 0) {
@@ -101,7 +116,7 @@ export default function ContactAgentForm({
   };
 
   return (
-    <Card className="rounded-2xl shadow-lg border border-gray-200 max-w-md mx-auto">
+    <Card className="rounded-2xl shadow-lg border border-gray-200 max-w-md mx-auto me-0">
       <CardContent className="p-6 space-y-6">
         <div className="flex items-center gap-4 border-b border-gray-200 pb-4">
           <div className="flex-shrink-0">
@@ -179,6 +194,14 @@ export default function ContactAgentForm({
                 className="border-gray-300 rounded-lg py-2"
                 required
                 error={state.errors?.email}
+              />
+
+              <TextArea
+                title="Inquiry"
+                placeholder="Write Your Inquiry"
+                value={state.inquiry}
+                onChange={(e) => setState({ inquiry: e.target.value })}
+                className="border-gray-300 rounded-lg py-2"
               />
             </div>
 

@@ -31,7 +31,7 @@ export default function TextArea(props) {
     disabled
   } = props;
   return (
-    <div className="grid">
+    <div className="w-full space-y-2">
       {title && (
         <label className="block text-sm font-bold text-gray-700">
           {title} {required && <span className="text-red-500">*</span>}

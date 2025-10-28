@@ -160,7 +160,7 @@ const calculateAveragePricePerSqft = (
 
 // Consistent image dimensions
 const GRID_IMAGE_HEIGHT = 180;
-// const LIST_IMAGE_HEIGHT = 300;
+const LIST_IMAGE_HEIGHT = 300;
 
 export function PropertyCard({
   property,
@@ -333,7 +333,7 @@ export function PropertyCard({
           {/* Image Slider - Fixed Height */}
           <div className='relative'>
             <div
-              className='relative overflow-hidden rounded-lg'
+              className='relative overflow-hidden rounded-lg h-full'
               style={{ height: GRID_IMAGE_HEIGHT }}
             >
               {displayImages.length > 0 && (
@@ -501,7 +501,9 @@ export function PropertyCard({
       >
         {/* Image Slider - Auto Height */}
         <div className='relative w-2/5 flex-shrink-0'>
-          <div className='relative overflow-hidden h-full'>
+          <div className='relative overflow-hidden h-full'
+          style={{height:LIST_IMAGE_HEIGHT}}
+         >
             {displayImages.length > 0 && (
               <div
                 key={displayImages[currentImageIndex]?.image_url}

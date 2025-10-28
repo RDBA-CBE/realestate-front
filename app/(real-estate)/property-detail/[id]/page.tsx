@@ -269,7 +269,7 @@ export default function PropertyDetailPage() {
   };
 
   return (
-    <div className=" mx-auto px-9 py-6">
+    <div className=" xl:max-w-[110rem] max-w-[85rem] mx-auto p-6">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}

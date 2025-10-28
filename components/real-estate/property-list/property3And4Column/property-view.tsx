@@ -10,7 +10,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, Search as SearchIcon, Loader } from "lucide-react";
+import {
+  RotateCcw,
+  Search as SearchIcon,
+  Loader,
+  Filter,
+  Grid,
+  List,
+  SlidersHorizontal,
+  MapPinHouseIcon,
+} from "lucide-react";
 import FilterDropdown from "../../FilterDropdown.component";
 import Modal from "@/components/common-components/modal";
 import { useSetState } from "@/utils/function.utils";
@@ -22,6 +31,14 @@ import { PropertyCardSkeleton } from "@/components/common-components/skeleton/Pr
 import PriceRangeSlider from "@/components/common-components/priceRange";
 import { FURNISHING_TYPE } from "@/utils/constant.utils";
 import { TextInput } from "@/components/common-components/textInput";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { SidebarContent } from "../../SidebarContent.components";
 
 export function PropertyView(props: any) {
   const {
@@ -82,7 +99,6 @@ export function PropertyView(props: any) {
     },
     [isLoadingMore, handNext, loadMore]
   );
-
 
   useEffect(() => {
     if (initialLoadRef.current && minPrice > 0 && maxPrice > 0) {
@@ -204,6 +220,13 @@ export function PropertyView(props: any) {
     setState({ [name]: value });
   };
 
+//   const handleChange = (name: string, value: any) => {
+//   setState((prev) => ({
+//     ...prev,
+//     [name]: value,
+//   }));
+// };
+
   const resetFilter = () => {
     setState({
       search: "",
@@ -244,8 +267,8 @@ export function PropertyView(props: any) {
       transition={{ duration: 0.6 }}
       className="xl:max-w-[110rem] max-w-[85rem] mx-auto p-6"
     >
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start min-h-screen">
-        <aside className="space-y-6 lg:col-span-1 lg:sticky md:top-16 lg:top-16 h-fit">
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-8 items-start min-h-screen">
+        <aside className="space-y-6 lg:col-span-1 xl:sticky md:top-16 lg:top-16 h-fit hidden xl:block">
           <div className="p-4 border rounded-lg space-y-6 bg-gray-100 border-none">
             <div className="w-full flex justify-end">
               <Button
@@ -338,7 +361,7 @@ export function PropertyView(props: any) {
                   <span className="absolute left-3 top-2 text-gray-600">₹</span>
                   <Input
                     type="text"
-                    className="pl-6 pr-0"
+                    className="pl-6 pr-0 bg-white"
                     placeholder="Min."
                     value={formatINR(state.priceRange?.[0] ?? 0)}
                     onChange={(e) => {
@@ -361,7 +384,7 @@ export function PropertyView(props: any) {
                   <span className="absolute left-3 top-2 text-gray-600">₹</span>
                   <Input
                     type="text"
-                    className="pl-6 pr-0"
+                    className="pl-6 pr-0 bg-white"
                     placeholder="Max."
                     value={formatINR(state.priceRange?.[1] ?? 0)}
                     onChange={(e) => {
@@ -458,6 +481,7 @@ export function PropertyView(props: any) {
               </div>
               <div className="flex gap-3">
                 <Input
+                className="bg-white"
                   type="number"
                   placeholder="Min."
                   value={state.sqftMin}
@@ -465,6 +489,7 @@ export function PropertyView(props: any) {
                 />
                 <span className="flex items-center">-</span>
                 <Input
+                className="bg-white"
                   type="number"
                   placeholder="Max."
                   value={state.sqftMax}
@@ -477,12 +502,14 @@ export function PropertyView(props: any) {
               <div className="mb-2 font-semibold text-gray-900">Year Built</div>
               <div className="flex gap-3">
                 <Input
+                className="bg-white"
                   type="number"
                   placeholder=""
                   value={state.yearBuiltMin}
                   onChange={(e) => handleChange("yearBuiltMin", e.target.value)}
                 />
                 <Input
+                className="bg-white"
                   type="number"
                   placeholder=""
                   value={state.yearBuiltMax}
@@ -493,22 +520,72 @@ export function PropertyView(props: any) {
           </div>
         </aside>
 
-        <section className="lg:col-span-3 space-y-6">
+        <section className="xl:col-span-3 space-y-6">
           <div className="sticky top-16 z-10">
-            <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-gray-100 border-none rounded-lg border shadow-sm">
-              <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-1 md:gap-4 p-4 bg-gray-100 border-none rounded-lg border shadow-sm">
+              <div className="flex items-center justify-between md:justify-normal gap-4 w-full md:w-auto">
+                {/* --------responsive filter sidebar start---------- */}
+
+                <div className="xl:hidden">
+                  <Sheet
+                    open={state.sidebarOpen}
+                    onOpenChange={(open) => setState({ sidebarOpen: open })}
+                  >
+                    <SheetTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="flex items-center gap-2 border-none bg-transparent shadow-none px-0 "
+                      >
+                        <SlidersHorizontal className="h-4 w-4" />
+                        Filters
+                      </Button>
+                    </SheetTrigger>
+
+                    <SheetContent
+                      side="left"
+                      className="w-100 p-4 overflow-y-auto bg-gray-100 "
+                    >
+                      <SheetHeader className="flex items-center justify-between">
+                        <SheetTitle>{""}</SheetTitle>
+                      </SheetHeader>
+
+                      <div className="mt-4 space-y-6">
+                        <SidebarContent
+                          state={state}
+                          handleChange={handleChange}
+                          resetFilter={() => {
+                            resetFilter();
+                           setState((prev) => ({ ...prev, sidebarOpen: true }));
+                          }}
+                          categoryList={categoryList}
+                          parseINR={parseINR}
+                          formatINR={formatINR}
+                        />
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+                </div>
+
+                {/* --------responsive filter sidebar end---------- */}
+
                 <Link href="/property-listmv" className="no-underline">
                   <Button
-                    variant="ghost"
-                    className="px-4 py-2 h-9 rounded-lg text-sm font-medium text-gray-600 hover:text-red-500 border border-gray-300 hover:border-red-200"
+                    variant="outline"
+                    className="px-4 py-2 h-9 rounded-lg text-sm font-medium text-gray-600 hover:text-red-500 
+                      border-none 
+                      md:border 
+                      md:border-gray-300 
+                      hover:border-red-200 bg-transparent md:bg-white px-0 md:px-3 shadow-none md:shadow-sm"
+                      
                   >
+                    <MapPinHouseIcon />
                     Map View
                   </Button>
                 </Link>
-                <span className="text-sm text-gray-600"></span>
+                {/* <span className="text-sm text-gray-600"></span> */}
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 justify-between md:justify-normal  w-full md:w-auto">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600 whitespace-nowrap">
                     Sort by:
@@ -551,31 +628,35 @@ export function PropertyView(props: any) {
                   </Select>
                 </div>
 
-                <div className="flex items-center gap-0 rounded-lg overflow-hidden border">
+                <div className="flex items-center gap-0 rounded-md overflow-hidden md:bg-white/70 md:shadow-sm">
                   <Button
                     onClick={() => setState({ view: "grid" })}
                     variant="ghost"
-                    className={`px-4 py-2 h-9 rounded-none text-sm font-medium ${
+                    className={`px-2 md:px-3 py-2 text-sm font-medium flex items-center gap-1 transition-colors ${
                       state.view === "grid"
-                        ? "bg-red-50 text-red-600"
-                        : "text-gray-600 hover:text-red-500"
+                        ? "text-red-600 hover:text-red-600 hover:bg-transparent"
+                        : "text-gray-600  hover:text-red-600 hover:bg-transparent"
                     }`}
                   >
+                    <Grid className="w-4 h-4" />
                     Grid
                   </Button>
-                  <div className="h-4 w-px bg-gray-300"></div>
+                  <div className="h-6 w-px bg-gray-300"></div>
                   <Button
                     onClick={() => setState({ view: "list" })}
                     variant="ghost"
-                    className={`px-4 py-2 h-9 rounded-none text-sm font-medium ${
+                    className={`pe-0 px-2 md:px-3 py-2 text-sm font-medium flex items-center gap-1 transition-colors ${
                       state.view === "list"
-                        ? "bg-red-50 text-red-600"
-                        : "text-gray-600 hover:text-red-500"
+                        ? " text-red-600 hover:text-red-600 hover:bg-transparent"
+                        : "text-gray-600  hover:text-red-600 hover:bg-transparent"
                     }`}
                   >
+                    <List className="w-4 h-4" />
                     List
                   </Button>
                 </div>
+
+               
               </div>
             </div>
           </div>
@@ -624,7 +705,7 @@ export function PropertyView(props: any) {
               <div
                 className={
                   state.view === "grid"
-                    ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+                    ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 gap-6"
                     : "flex flex-col gap-6"
                 }
               >

@@ -8,13 +8,18 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, error, type = "text", title, ...props }, ref) => {
+  ({ className, error, type = "text", title, required, ...props }, ref) => {
     const [showPassword, setShowPassword] = React.useState(false);
     const isPassword = type === "password";
 
     return (
       <div className="w-full space-y-2">
-        {title && <Label htmlFor={props.name}>{title}</Label>}
+        {title && (
+          <>
+            <Label htmlFor={props.name}>{title}</Label>
+            {required && <span className="text-red-500 ml-1">*</span>}
+          </>
+        )}
 
         <div className="relative">
           <input

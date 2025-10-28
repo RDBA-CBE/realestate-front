@@ -44,6 +44,7 @@ export function PropertyView1(props: any) {
     isLoadingMore,
     handNext,
     loadMore,
+    categoryList,
   } = props;
 
   const [state, setState] = useSetState({
@@ -127,6 +128,16 @@ export function PropertyView1(props: any) {
     });
   };
 
+    const formatINR = (value: number) => {
+    if (isNaN(value)) return "";
+    return value.toLocaleString("en-IN");
+  };
+
+  const parseINR = (value: string) => {
+    return Number(value.replace(/,/g, ""));
+  };
+
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -141,6 +152,9 @@ export function PropertyView1(props: any) {
             state={state}
             handleChange={handleChange}
             resetFilter={resetFilter}
+            categoryList={categoryList}
+            parseINR={parseINR}
+            formatINR={formatINR}
           />
         </aside>
 
@@ -172,6 +186,9 @@ export function PropertyView1(props: any) {
                         resetFilter();
                        setState({sidebarOpen:true})
                       }}
+                       categoryList={categoryList}
+                      parseINR={parseINR}
+                      formatINR={formatINR}
                     />
                   </div>
                 </SheetContent>

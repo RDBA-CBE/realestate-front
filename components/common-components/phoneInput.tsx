@@ -38,7 +38,13 @@ const CustomPhoneInput: React.FC<PhoneInputProps> = (props) => {
 
   
     <div className="w-full space-y-2">
-     {title && <Label htmlFor={props.name}>{title}</Label>}
+     
+     {title && (
+          <>
+            <Label htmlFor={props.name}>{title}</Label>
+            {required && <span className="text-red-500 ml-1">*</span>}
+          </>
+        )}
       
       <div className="w-full">
         <PhoneInput

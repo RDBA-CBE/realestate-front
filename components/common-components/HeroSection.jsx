@@ -32,8 +32,8 @@ const BannerSection = () => {
           We’ve more than 745,000 apartments, places & plots.
         </p>
 
-        {/* Search Card */}
-        <div className="bg-white shadow-2xl rounded-2xl overflow-hidden max-w-4xl mx-auto">
+        {/* Search Card */} 
+        <div className="bg-[#ffffff2b] shadow-2xl rounded-2xl overflow-hidden max-w-4xl mx-auto">
           {/* Tabs */}
           <div className="flex border-b">
             {["Buy", "Rent", "Sold"].map((tab) => (
@@ -42,8 +42,8 @@ const BannerSection = () => {
                 onClick={() => setActiveTab(tab)}
                 className={`flex-1 py-3 font-semibold text-sm md:text-base transition-colors ${
                   activeTab === tab
-                    ? "border-b-2 border-red-600 text-red-600"
-                    : "text-gray-700 hover:text-red-600"
+                    ? "border-b-2 border-[#a9a7a7] text-white"
+                    : "text-[#131212fa] hover:text-white"
                 }`}
               >
                 {tab}
@@ -52,12 +52,12 @@ const BannerSection = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="flex flex-col md:flex-row items-center gap-3 p-4 md:p-5">
+          <div className="flex flex-col md:flex-row items-center gap-3 p-4 md:p-10">
             <div className="flex-1 w-full">
               <input
                 type="text"
                 placeholder={placeholderText}
-                className="w-full px-5 py-3 rounded-lg border border-gray-200 text-gray-700 placeholder-gray-500 focus:outline-none focus:border-red-500"
+                className="w-full px-5 py-3 rounded-lg bg-transparent border border-[#a9a7a7] text-white placeholder-white focus:outline-none focus:border-red-500"
               />
             </div>
 

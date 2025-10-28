@@ -1,41 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+
 body {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Cabin", sans-serif;
+  font-optical-sizing: auto;
 }
 
 p {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Cabin", sans-serif;
+  font-optical-sizing: auto;
 }
 
 h1 {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Cabin", sans-serif;
+  font-optical-sizing: auto;
 }
 
 h2 {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Cabin", sans-serif;
+  font-optical-sizing: auto;
 }
 
 h3 {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Cabin", sans-serif;
+  font-optical-sizing: auto;
 }
 
 h4 {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Cabin", sans-serif;
+  font-optical-sizing: auto;
 }
 
 h5 {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Cabin", sans-serif;
+  font-optical-sizing: auto;
 }
 
 h6 {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Cabin", sans-serif;
+  font-optical-sizing: auto;
 }
 
 .font-marce {
   font-family: "Marcellus";
+}
+
+.font-sans{
+  font-family: "Cabin", sans-serif;
+  font-optical-sizing: auto;
 }
 
 @layer base {
