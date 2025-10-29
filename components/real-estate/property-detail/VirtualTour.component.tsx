@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function VirtualTour() {
   return (
-    <Card className="rounded-2xl shadow p-6">
+    <Card className="border-none shadow-none bg-transparent">
       <h3 className="text-lg font-semibold mb-4">360° Virtual Tour</h3>
       <CardContent className="space-y-4">
         <div className="relative w-full h-56 md:h-80 rounded-lg overflow-hidden">

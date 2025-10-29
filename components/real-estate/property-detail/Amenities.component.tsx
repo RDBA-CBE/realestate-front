@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 export default function Amenities(props) {
   const { data } = props;
   return (
-    <Card className="rounded-2xl shadow p-6">
+    <Card className="border-none shadow-none bg-transparent">
       <h3 className="text-xl font-semibold mb-6">Features & Amenities</h3>
 
       <CardContent>

@@ -100,7 +100,7 @@ function ReviewItem({ review }: { review: Review }) {
 
 export default function Reviews() {
   return (
-    <Card className="rounded-2xl shadow p-6">
+    <Card className="border-none shadow-none bg-transparent">
     <div className="flex items-center justify-between mb-6">
       <h3 className="text-lg font-semibold flex items-center gap-2">
         <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" /> 5.0 · 3

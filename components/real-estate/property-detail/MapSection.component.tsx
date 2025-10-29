@@ -185,7 +185,7 @@ const GoogleMaps = (props) => {
   }
 
   return (
-    <Card className="rounded-2xl shadow p-6">
+    <Card className="border-none shadow-none bg-transparent">
       <h3 className="text-xl font-semibold mb-4">
         Location & Nearby Amenities
       </h3>

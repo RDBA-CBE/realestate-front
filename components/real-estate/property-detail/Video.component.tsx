@@ -23,7 +23,7 @@ export default function Video(props: any) {
 
   return (
     <>
-      <Card className="rounded-2xl shadow p-6">
+      <Card className="border-none shadow-none bg-transparent">
         <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
           <VideoIcon className="w-5 h-5" />
           Property Video

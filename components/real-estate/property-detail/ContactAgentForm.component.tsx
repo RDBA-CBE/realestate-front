@@ -15,19 +15,22 @@ import {
 } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import TextArea from "@/components/common-components/textArea";
+import { X } from "lucide-react";
 
 interface ContactAgentFormProps {
   data: any;
   token: any;
+  onClose;
 }
 
 export default function ContactAgentForm({
   data,
   token,
+  onClose,
 }: ContactAgentFormProps) {
   const [state, setState] = useSetState({
     first_name: "",
-    last_name:"",
+    last_name: "",
     phone: "",
     email: "",
     contactAgreement: false,
@@ -42,7 +45,7 @@ export default function ContactAgentForm({
     try {
       setState({ btnLoading: true });
       const body = {
-        assigned_to : data?.developer?.id,
+        assigned_to: data?.developer?.id,
         first_name: state.first_name,
         last_name: state.last_name,
         phone: state.phone,
@@ -59,7 +62,7 @@ export default function ContactAgentForm({
       Success("Enquiry sent ! ");
       setState({
         btnLoading: false,
-        first_name:'',
+        first_name: "",
         last_name: "",
         phone: "",
         email: "",
@@ -83,7 +86,7 @@ export default function ContactAgentForm({
 
       const response: any = await Models.user.details(userId);
       const body = {
-        assigned_to : data?.developer?.id,
+        assigned_to: data?.developer?.id,
         first_name: response?.first_name,
         last_name: response?.last_name,
         phone: response.phone,
@@ -98,7 +101,7 @@ export default function ContactAgentForm({
 
       setState({
         btnLoading: false,
-        first_name:'',
+        first_name: "",
         last_name: "",
         phone: "",
         email: "",
@@ -124,8 +127,20 @@ export default function ContactAgentForm({
   };
 
   return (
-    <Card className="rounded-2xl shadow-lg border border-gray-200 max-w-md mx-auto me-0">
-      <CardContent className="p-6 space-y-6">
+    <Card className={`rounded-2xl shadow-lg border border-gray-200 max-w-md mx-auto  !bg-gray ${onClose ? "w-[500px]" : "me-0"}`}>
+       {onClose && (
+        <div className="w-100 text-right">
+           <button
+            onClick={onClose}
+            className=" px-5 pt-4"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+         
+        )}
+      <CardContent className={`p-6 space-y-6 ${onClose ? "pt-0" : ""}`}>
+       
         <div className="flex items-center gap-4 border-b border-gray-200 pb-4">
           <div className="flex-shrink-0">
             <Image
@@ -188,7 +203,7 @@ export default function ContactAgentForm({
                 required
                 error={state.errors?.first_name}
               />
-               <Input
+              <Input
                 name="last_name"
                 title="Last Name"
                 value={state.last_name}

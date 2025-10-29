@@ -85,7 +85,7 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
   // If no data or categories, show empty state
   if (!data || data.length === 0 || categories.length === 0) {
     return (
-      <div className="bg-white p-6 rounded-2xl shadow-sm">
+      <div className="border-none shadow-none bg-transparent">
         <h2 className="text-xl font-semibold mb-4">Price & Floor Plan</h2>
         <div className="text-center py-8 text-gray-500">
           No floor plans available
@@ -95,7 +95,7 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
   }
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm">
+    <div className="border-none shadow-none bg-transparent">
       <h3 className="text-xl font-semibold mb-6">Price & Floor Plan</h3>
 
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import Gallery from "@/components/real-estate/property-detail/Gallery.component";
 import PropertyDetails from "@/components/real-estate/property-detail/PropertyDetails.component";
@@ -30,6 +30,7 @@ import { Label } from "@/components/ui/label";
 import { useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import { useParams } from "next/navigation";
+import { PhoneForwarded, X } from "lucide-react";
 
 // ---------------- AUTH HOOK ----------------
 function useAuth() {
@@ -206,6 +207,15 @@ export default function PropertyDetailPage() {
     token: null,
   });
 
+  const [isMobileFormOpen, setIsMobileFormOpen] = useState(false);
+
+  useEffect(() => {
+    if (isMobileFormOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [isMobileFormOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -268,6 +278,35 @@ export default function PropertyDetailPage() {
     }
   };
 
+  const sections = [
+    { id: "overview", component: <PropertyDetails data={state.detail} /> },
+    { id: "description", component: <PropertyDesc data={state.detail} /> },
+    { id: "map", component: <MapSection data={state.detail} /> },
+    {
+      id: "amenities",
+      component: <Amenities data={state.detail?.amenities} />,
+    },
+    ...(state.detail?.floor_plans?.length > 0
+      ? [
+          {
+            id: "floorplans",
+            component: <FloorPlans data={state.detail?.floor_plans} />,
+          },
+        ]
+      : []),
+    ...(state.detail?.videos?.length > 0
+      ? [{ id: "video", component: <Video data={state.detail?.videos?.[0]} /> }]
+      : []),
+    ...(state.detail?.virtual_tours?.length > 0
+      ? [{ id: "virtualtour", component: <VirtualTour /> }]
+      : []),
+    { id: "nearby", component: <Nearby /> },
+    { id: "walkscore", component: <WalkScore /> },
+    { id: "reviews", component: <Reviews /> },
+  ];
+
+  const tabSections = sections.map(s => ({ id: s.id, label: s.id })).filter(Boolean);
+
   return (
     <div className=" xl:max-w-[110rem] max-w-[85rem] mx-auto p-6">
       <motion.div
@@ -285,44 +324,21 @@ export default function PropertyDetailPage() {
       <PropertyTabs />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-3">
-          <div id="overview">
-            <PropertyDetails data={state.detail} />
-          </div>
-          <div id="desc">
-            <PropertyDesc data={state.detail} />
-          </div>
-          <div id="map">
-            <MapSection data={state.detail} />
-          </div>
-          <div id="amenities">
-            <Amenities data={state.detail?.amenities} />
-          </div>
-          {state.detail?.floor_plans?.length > 0 && (
-            <div id="floorplans">
-              <FloorPlans data={state.detail?.floor_plans} />
-            </div>
-          )}
-          {state.detail?.videos?.length > 0 && (
-            <div id="video">
-              <Video data={state.detail?.videos?.[0]} />
-            </div>
-          )}
-          {state.detail?.virtual_tours?.length > 0 && (
-            <div id="virtualtour">
-              <VirtualTour />
-            </div>
-          )}
+        <div className="lg:col-span-2 space-y-8">
+          {sections.map((sec, idx) => {
+            // Define an array of background colors to cycle through
+            const bgColors = ["bg-gray-50", "bg-white"];
+            const bgClass = bgColors[idx % bgColors.length]; // cycle dynamically
 
-          <div id="nearby">
-            <Nearby />
-          </div>
-          <div id="walkscore">
-            <WalkScore />
-          </div>
-          <div id="reviews">
-            <Reviews />
-          </div>
+            return (
+              <div
+                key={sec.id}
+                className={`${bgClass} border rounded-2xl shadow p-6`}
+              >
+                {sec.component}
+              </div>
+            );
+          })}
         </div>
 
         {/* Sticky Contact Section */}
@@ -331,19 +347,59 @@ export default function PropertyDetailPage() {
             <ContactSection />
           </div>
         </div> */}
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 hidden lg:block ">
           <div
             className={`sticky ${state.isActive ? "top-[8rem]" : "top-[6rem]"}`}
           >
-            <ContactAgentForm data={state.detail} token={state.token} />
+            <ContactAgentForm data={state.detail} token={state.token} onClose={false}/>
           </div>
         </div>
+      </div>
+
+      <div className="lg:hidden fixed bottom-8 right-0 w-auto flex justify-center z-50">
+        <Button
+          className="bg-red-500 hover:bg-red-600 text-white px-9 py-6 rounded-l-full rounded-r-none  shadow-lg text-lg"
+          onClick={() => setIsMobileFormOpen(true)}
+        >
+         <PhoneForwarded/>
+          Contact Us
+        </Button>
       </div>
 
       {/* Similar Listings */}
       <div className="mt-16">
         <SimilarListings data={state.similarProperty} />
       </div>
+
+      <AnimatePresence>
+        {isMobileFormOpen && (
+          <>
+            {/* Overlay */}
+            <motion.div
+              className="fixed inset-0 bg-black/50 z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileFormOpen(false)}
+            />
+
+            {/* Modal Wrapper */}
+            <motion.div
+              className="fixed inset-0 flex items-center justify-center z-50 p-4 "
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+            >
+              
+
+                {/* CONTACT FORM GOES HERE */}
+                <ContactAgentForm data={state.detail} token={state.token}   onClose={() => setIsMobileFormOpen(false)}/>
+              {/* </div> */}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

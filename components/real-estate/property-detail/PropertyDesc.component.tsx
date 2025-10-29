@@ -34,7 +34,7 @@ export default function PropertyDesc(props: any) {
 
 
   return (
-    <Card className="rounded-2xl shadow p-6 space-y-6">
+    <Card className="border-none shadow-none bg-transparent space-y-6">
       {/* Description */}
       <div>
         <h3 className="text-xl font-semibold mb-3">Property Description</h3>

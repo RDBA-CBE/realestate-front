@@ -35,7 +35,7 @@ console.log('✌️data --->', data);
   
 
   return (
-    <Card className="rounded-2xl shadow p-6">
+    <Card className="border-none shadow-none bg-transparent">
       <h3 className="text-xl font-semibold mb-6">Overview</h3>
       <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {details.map((item, idx) => (
