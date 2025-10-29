@@ -116,7 +116,7 @@ const Header = () => {
         className="bg-white shadow-md sticky top-0 z-[50]"
       >
         <div className=" border-b border-gray-200 ">
-          <div className=" container mx-auto flex items-center justify-between gap-20 ">
+          <div className="  flex items-center justify-between gap-20 xl:max-w-[110rem] max-w-[85rem] mx-auto px-6">
             {/* Logo */}
             <div className="flex justify-center">
               <Link href="home">

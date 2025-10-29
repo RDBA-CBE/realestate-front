@@ -268,8 +268,8 @@ export function PropertyView(props: any) {
       className="xl:max-w-[110rem] max-w-[85rem] mx-auto p-6"
     >
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-8 items-start min-h-screen">
-        <aside className="space-y-6 lg:col-span-1 xl:sticky md:top-16 lg:top-16 h-fit hidden xl:block">
-          <div className="p-4 border rounded-lg space-y-6 bg-gray-100 border-none">
+        <aside className="space-y-6 lg:col-span-1 xl:sticky md:top-16 lg:top-16  hidden xl:block ">
+          <div className="p-4 pb-8 border rounded-lg space-y-6 bg-gray-100 border-none h-[91vh] overflow-auto thin-scrollbar">
             <div className="w-full flex justify-end">
               <Button
                 onClick={() => resetFilter()}
@@ -705,8 +705,8 @@ export function PropertyView(props: any) {
               <div
                 className={
                   state.view === "grid"
-                    ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 gap-6"
-                    : "flex flex-col gap-6"
+                    ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 !gap-5"
+                    : "flex flex-col !gap-5"
                 }
               >
                 {properties?.map((property: any, index: number) => (

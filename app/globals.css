@@ -1306,3 +1306,15 @@ body {
 .equal-height-grid > * {
   height: 100%;
 }
+
+.thin-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+
+
+/* For Firefox
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 transparent;
+} */

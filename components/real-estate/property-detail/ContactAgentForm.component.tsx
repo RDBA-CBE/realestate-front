@@ -26,7 +26,8 @@ export default function ContactAgentForm({
   token,
 }: ContactAgentFormProps) {
   const [state, setState] = useSetState({
-    name: "",
+    first_name: "",
+    last_name:"",
     phone: "",
     email: "",
     contactAgreement: false,
@@ -41,8 +42,9 @@ export default function ContactAgentForm({
     try {
       setState({ btnLoading: true });
       const body = {
-        first_name: state.name,
-        last_name: state.name,
+        assigned_to : data?.developer?.id,
+        first_name: state.first_name,
+        last_name: state.last_name,
         phone: state.phone,
         email: state.email,
         interested_property: data?.id,
@@ -57,7 +59,8 @@ export default function ContactAgentForm({
       Success("Enquiry sent ! ");
       setState({
         btnLoading: false,
-        name: "",
+        first_name:'',
+        last_name: "",
         phone: "",
         email: "",
         inquiry: "",
@@ -80,6 +83,7 @@ export default function ContactAgentForm({
 
       const response: any = await Models.user.details(userId);
       const body = {
+        assigned_to : data?.developer?.id,
         first_name: response?.first_name,
         last_name: response?.last_name,
         phone: response.phone,
@@ -92,10 +96,14 @@ export default function ContactAgentForm({
 
       const res = await Models.lead.create(body);
 
-      setState({ btnLoading: false, name: "",
+      setState({
+        btnLoading: false,
+        first_name:'',
+        last_name: "",
         phone: "",
         email: "",
-        inquiry: "", });
+        inquiry: "",
+      });
       Success("Enquiry sent ! ");
     } catch (error) {
       if (error?.email?.length > 0) {
@@ -146,6 +154,14 @@ export default function ContactAgentForm({
 
         {token ? (
           <>
+            <TextArea
+              title="Inquiry"
+              placeholder="Write Your Inquiry"
+              value={state.inquiry}
+              onChange={(e) => setState({ inquiry: e.target.value })}
+              className="border-gray-300 rounded-lg py-2"
+            />
+
             <Button
               type="button"
               disabled={state.btnLoading}
@@ -163,14 +179,24 @@ export default function ContactAgentForm({
 
             <div className="space-y-3">
               <Input
-                name="name"
-                title="Name"
-                value={state.name}
+                name="first_name"
+                title="First Name"
+                value={state.first_name}
                 onChange={handleInputChange}
-                placeholder="Name"
+                placeholder="First Name"
                 className="border-gray-300 rounded-lg py-2"
                 required
-                error={state.errors?.name}
+                error={state.errors?.first_name}
+              />
+               <Input
+                name="last_name"
+                title="Last Name"
+                value={state.last_name}
+                onChange={handleInputChange}
+                placeholder="Last Name"
+                className="border-gray-300 rounded-lg py-2"
+                required
+                error={state.errors?.last_name}
               />
 
               <div className="flex gap-2">
