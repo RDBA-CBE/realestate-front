@@ -497,7 +497,7 @@ export function PropertyCard({
     >
       <Card
         onClick={() => onClick()}
-        className='bg-white border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer h-full flex flex-row'
+        className='bg-gray-100 border-none overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer h-full flex flex-row'
       >
         {/* Image Slider - Auto Height */}
         <div className='relative w-2/5 flex-shrink-0'>

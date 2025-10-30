@@ -102,109 +102,137 @@
 //   );
 // }
 
+
+//  const sections = [
+//   { id: "overview", label: "Overview" },
+//   { id: "desc", label: "Desc" },
+//   { id: "map", label: "Map" },
+//   { id: "amenities", label: "Amenities" },
+//   { id: "floorplans", label: "FloorPlans" },
+//   { id: "video", label: "Video" },
+//   { id: "virtualtour", label: "Virtual Tour" },
+//   { id: "nearby", label: "Nearby" },
+//   { id: "walkscore", label: "Walk Score" },
+//   { id: "reviews", label: "Reviews" },
+// ];
+
+
+
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { capitalizeFLetter } from "@/utils/function.utils";
 
- const sections = [
-  { id: "overview", label: "Overview" },
-  { id: "desc", label: "Desc" },
-  { id: "map", label: "Map" },
-  { id: "amenities", label: "Amenities" },
-  { id: "floorplans", label: "FloorPlans" },
-  { id: "video", label: "Video" },
-  { id: "virtualtour", label: "Virtual Tour" },
-  { id: "nearby", label: "Nearby" },
-  { id: "walkscore", label: "Walk Score" },
-  { id: "reviews", label: "Reviews" },
-];
-
-export default function PropertyTabs() {
+export default function PropertyTabs({ sections }) {
   const [active, setActive] = useState("overview");
   const [showTabs, setShowTabs] = useState(false);
+  const lastScrollY = useRef(0);
+  const tabsRef = useRef<HTMLDivElement | null>(null);
+  const [triggerPoint, setTriggerPoint] = useState(0);
+
+  useEffect(() => {
+    // Store the original position of the tab container
+    if (tabsRef.current) {
+      const rect = tabsRef.current.getBoundingClientRect();
+      setTriggerPoint(rect.top + window.scrollY); // absolute scroll position
+    }
+  }, []);
 
   useEffect(() => {
     let ticking = false;
 
     const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const overviewEl = document.getElementById("overview");
-          const reviewsEl = document.getElementById("reviews");
-          
-          if (overviewEl && reviewsEl) {
-            const overviewRect = overviewEl.getBoundingClientRect();
-            const reviewsRect = reviewsEl.getBoundingClientRect();
-            
-            const overviewInView = overviewRect.top <= 120;
-            const reviewsFullyPassed = reviewsRect.bottom <= -20;
-            
-            setShowTabs(overviewInView && !reviewsFullyPassed);
-          }
+      const currentScroll = window.scrollY;
 
-          // Update active tab
-          let current = "overview";
-          sections.forEach((section) => {
-            const el = document.getElementById(section.id);
-            if (el) {
-              const rect = el.getBoundingClientRect();
-              if (rect.top <= 100 && rect.bottom > 100) {
-                current = section.id;
-              }
-            }
-          });
-          setActive(current);
-          
-          ticking = false;
-        });
+      // ✅ Show tabs only after passing original position
+      if (currentScroll > triggerPoint + 50) {
+        if (currentScroll > lastScrollY.current + 10) {
+          // scrolling down past trigger point -> show
+          setShowTabs(true);
+        } else if (currentScroll < lastScrollY.current - 10) {
+          // scrolling up -> hide
+          setShowTabs(false);
+        }
+      } else {
+        // before reaching trigger point -> always hide
+        setShowTabs(false);
+      }
+
+      lastScrollY.current = currentScroll <= 0 ? 0 : currentScroll;
+
+      // ✅ Update active tab only when actually in view
+      let current = active;
+      for (const section of sections) {
+        const el = document.getElementById(section.id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 120 && rect.bottom > 120) {
+            current = section.id;
+            break;
+          }
+        }
+      }
+      setActive(current);
+
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(handleScroll);
         ticking = true;
       }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    // Delay initial check to ensure DOM is ready
-    setTimeout(handleScroll, 100);
-    
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [sections, triggerPoint, active]);
 
+  // ✅ On click: scroll + update active immediately
   const scrollTo = (id: string) => {
+    setActive(id); // immediately highlight
     const el = document.getElementById(id);
     if (el) {
-      const offsetTop = el.offsetTop - 100;
-      window.scrollTo({
-        top: offsetTop,
-        behavior: "smooth",
-      });
+      const yOffset = -120; // adjust for sticky header height
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: "smooth" });
     }
   };
 
   return (
-    <div className={cn(
-      "sticky top-[60px] z-40 bg-white shadow-md border-b rounded-b-lg transition-all duration-300",
-      showTabs 
-        ? "opacity-100 translate-y-0" 
-        : "opacity-0 -translate-y-2 pointer-events-none"
-    )}>
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="flex flex-wrap gap-x-8 gap-y-2 py-3">
-          {sections.map((s) => (
-            <button
-              key={s.id}
-              onClick={() => scrollTo(s.id)}
-              className={cn(
-                "text-sm font-medium pb-2 border-b-2 transition-colors whitespace-nowrap",
-                active === s.id
-                  ? "border-red-500 text-red-600"
-                  : "border-transparent text-gray-500 hover:text-gray-800"
-              )}
-            >
-              {s.label}
-            </button>
-          ))}
+    <>
+      {/* The invisible placeholder div marks the tab's original position */}
+      <div ref={tabsRef} />
+
+      {/* Floating tab bar */}
+      <div
+        className={cn(
+          "sticky top-[65px] z-40 bg-white shadow-md border-b rounded-b-lg transition-all duration-500 ",
+          showTabs
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 -translate-y-5 pointer-events-none"
+        )}
+      >
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex  gap-x-8 gap-y-2 py-3 overflow-auto scrollbar-hide thin-scrollbar">
+            {sections?.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => scrollTo(s.id)}
+                className={cn(
+                  "text-sm font-medium  border-b transition-colors whitespace-nowrap",
+                  active === s.id
+                    ? "border-red-500 text-red-600"
+                    : "border-transparent text-gray-500 hover:text-gray-800"
+                )}
+              >
+                {capitalizeFLetter(s.label)}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

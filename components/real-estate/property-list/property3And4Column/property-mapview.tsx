@@ -159,16 +159,16 @@ export function MapView(props) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
         <div className=" xl:col-span-5 p-6 lg:p-8 overflow-y-auto h-[calc(100vh-98px)] flex flex-col items-start">
           {/* First sticky header */}
           <div
-            className="sticky top-0 lg:-top-8 z-10 w-full p-5 rounded-lg mb-7"
-            style={{ backgroundColor: "#f3f4f6" }}
+            className="sticky top-0 lg:-top-8 z-10 w-full p-5 rounded-lg mb-7 bg-gray-100"
+            
           >
             {/* First sticky header */}
-            <div className="flex items-center justify-between mb-6 w-full">
+            <div className="flex items-center justify-between mb-2 w-full">
               <div>
                 <h2 className="text-xl font-semibold text-gray-900 mb-1">
                   {title}
@@ -188,7 +188,7 @@ export function MapView(props) {
             </div>
 
             {/* Second sticky header */}
-            <div className="flex items-center justify-between mb-6 w-full">
+            <div className="flex items-center justify-between mb-2 w-full">
               <div className="flex items-center gap-4">
                 <span className="text-sm text-gray-600 whitespace-nowrap">
                   Sort by:

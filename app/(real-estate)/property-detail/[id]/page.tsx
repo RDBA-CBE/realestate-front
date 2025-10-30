@@ -264,6 +264,7 @@ export default function PropertyDetailPage() {
     try {
       const body = {
         property_type: id,
+        is_approved: "Yes",
       };
       const res: any = await Models.property.list(1, body);
       console.log("✌️res --->", res);
@@ -305,7 +306,9 @@ export default function PropertyDetailPage() {
     { id: "reviews", component: <Reviews /> },
   ];
 
-  const tabSections = sections.map(s => ({ id: s.id, label: s.id })).filter(Boolean);
+  const tabSections = sections
+    .map((s) => ({ id: s.id, label: s.id }))
+    .filter(Boolean);
 
   return (
     <div className=" xl:max-w-[110rem] max-w-[85rem] mx-auto p-6">
@@ -316,12 +319,16 @@ export default function PropertyDetailPage() {
       />
 
       {/* Header + Gallery */}
-      <div className="space-y-6">
-        <PropertyHeader data={state.detail} updateList={() => getDetails()} />
-        <Gallery images={state.detail?.images} />
+      <div className="conatiner flex flex-col md:flex-col space-y-6 md:space-y-6">
+        <div className="order-2 md:order-1 ">
+          <PropertyHeader data={state.detail} updateList={() => getDetails()} />
+        </div>
+        <div className="order-1 md:order-2">
+          <Gallery images={state.detail?.images} data={state.detail}  updateList={() => getDetails()}/>
+        </div>
       </div>
 
-      <PropertyTabs />
+      <PropertyTabs sections={tabSections} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
@@ -333,6 +340,7 @@ export default function PropertyDetailPage() {
             return (
               <div
                 key={sec.id}
+                id={sec.id}
                 className={`${bgClass} border rounded-2xl shadow p-6`}
               >
                 {sec.component}
@@ -351,25 +359,31 @@ export default function PropertyDetailPage() {
           <div
             className={`sticky ${state.isActive ? "top-[8rem]" : "top-[6rem]"}`}
           >
-            <ContactAgentForm data={state.detail} token={state.token} onClose={false}/>
+            <ContactAgentForm
+              data={state.detail}
+              token={state.token}
+              onClose={false}
+            />
           </div>
         </div>
       </div>
 
-      <div className="lg:hidden fixed bottom-8 right-0 w-auto flex justify-center z-50">
+      <div className="lg:hidden fixed bottom-8 right-0 w-auto flex justify-center z-20">
         <Button
           className="bg-red-500 hover:bg-red-600 text-white px-9 py-6 rounded-l-full rounded-r-none  shadow-lg text-lg"
           onClick={() => setIsMobileFormOpen(true)}
         >
-         <PhoneForwarded/>
-          Contact Us
+          <PhoneForwarded />
+          Contact Developer
         </Button>
       </div>
 
       {/* Similar Listings */}
-      <div className="mt-16">
-        <SimilarListings data={state.similarProperty} />
-      </div>
+      {state.similarProperty.length > 0 && (
+        <div className="mt-16">
+          <SimilarListings data={state.similarProperty} />
+        </div>
+      )}
 
       <AnimatePresence>
         {isMobileFormOpen && (
@@ -391,10 +405,12 @@ export default function PropertyDetailPage() {
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
             >
-              
-
-                {/* CONTACT FORM GOES HERE */}
-                <ContactAgentForm data={state.detail} token={state.token}   onClose={() => setIsMobileFormOpen(false)}/>
+              {/* CONTACT FORM GOES HERE */}
+              <ContactAgentForm
+                data={state.detail}
+                token={state.token}
+                onClose={() => setIsMobileFormOpen(false)}
+              />
               {/* </div> */}
             </motion.div>
           </>

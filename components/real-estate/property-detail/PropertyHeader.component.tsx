@@ -96,11 +96,22 @@ export default function PropertyHeader(props: any) {
   };
 
   return (
-    <div className="container">
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+    <div className=" mt-5 md:mt-0 px-2">
+      <div className="flex flex-row items-between md:items-start justify-between gap-4">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold">{data?.title}</h1>
-          <div className="flex items-center flex-wrap gap-3 text-sm text-gray-600">
+          <h1 className="text-xl md:text-3xl font-bold">{data?.title}</h1>
+          <div className="block sm:hidden">
+            <span className="text-xl md:text-2xl font-bold">
+              {formatPriceRange(
+                data?.price_range?.minimum_price,
+                data?.price_range?.maximum_price
+              )}{" "}
+              
+            </span><span className="text-sm text-gray-600">
+                ({formatToINR(data?.price_per_sqft)}/sq ft)
+              </span>
+          </div>
+          <div className="flex items-center flex-wrap gap-3 text-sm text-gray-600 ">
             <span>{`${capitalizeFLetter(data?.city)} , ${capitalizeFLetter(
               data?.state
             )} `}</span>
@@ -113,14 +124,14 @@ export default function PropertyHeader(props: any) {
             {/* <span className="flex items-center gap-1">🔗 8721</span> */}
           </div>
 
-          <div className="flex items-center gap-6 text-gray-700 mt-2">
-            <div className="flex items-center gap-1">
+          <div className="flex flex-wrap items-center gap-2 xs:gap-6 text-gray-700 pt-2">
+            <div className="flex items-center gap-1 bg-gray-200 px-2 py-0.5 rounded-md">
               <Bed size={18} /> <span>{data?.bedrooms} bed</span>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 bg-gray-200 px-2 py-0.5 rounded-md">
               <Bath size={18} /> <span>{data?.bathrooms} bath</span>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 bg-gray-200 px-2 py-0.5 rounded-md">
               <Square size={18} />{" "}
               <span>{formatNumber(data?.built_up_area)} sqft</span>
             </div>
@@ -128,7 +139,7 @@ export default function PropertyHeader(props: any) {
         </div>
 
         {/* Right side */}
-        <div className="flex flex-col items-end gap-3">
+        <div className="flex flex-col items-end  gap-1 hidden sm:block">
           <div className="flex items-center gap-2">
             <Button
               onClick={() => handleWishList()}
@@ -166,7 +177,7 @@ export default function PropertyHeader(props: any) {
           </Button> */}
           </div>
           <div>
-            <p className="text-2xl font-bold">
+            <p className="text-xl md:text-2xl font-bold">
               {formatPriceRange(
                 data?.price_range?.minimum_price,
                 data?.price_range?.maximum_price
