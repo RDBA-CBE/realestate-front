@@ -311,7 +311,7 @@ export default function PropertyDetailPage() {
     .filter(Boolean);
 
   return (
-    <div className=" xl:max-w-[110rem] max-w-[85rem] mx-auto p-6">
+    <div className=" xl:max-w-[80rem] max-w-[85rem] mx-auto p-6">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -331,7 +331,7 @@ export default function PropertyDetailPage() {
       <PropertyTabs sections={tabSections} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-2 space-y-6">
           {sections.map((sec, idx) => {
             // Define an array of background colors to cycle through
             const bgColors = ["bg-gray-50", "bg-white"];

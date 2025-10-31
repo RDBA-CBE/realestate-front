@@ -8,6 +8,15 @@ import {
   InfoWindow,
   Autocomplete,
 } from "@react-google-maps/api";
+import {
+  BusIcon,
+  HospitalIcon,
+  Icon,
+  School,
+  School2,
+  ShoppingBag,
+  UtensilsCrossed,
+} from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 const GoogleMaps = (props) => {
@@ -28,31 +37,36 @@ const GoogleMaps = (props) => {
     education: {
       apiType: "school",
       label: "Education",
-      icon: "/assets/images/school.png",
+      icon: School2,
+      iconUrl: "/assets/images/school.png",
       color: "#3F51B5",
     },
     healthcare: {
       apiType: "hospital",
       label: "Healthcare",
-      icon: "/assets/images/hospital.jpg",
+      icon: HospitalIcon,
+      iconUrl: "/assets/images/hospital.jpg",
       color: "#E91E63",
     },
     commute: {
       apiType: "transit_station",
       label: "Commute",
-      icon: "/assets/images/subway_station.jpg",
+      icon: BusIcon,
+      iconUrl: "/assets/images/subway_station.jpg",
       color: "#009688",
     },
     food: {
       apiType: "restaurant",
       label: "Food & Dining",
-      icon: "/assets/images/restaurant.jpg",
+      icon: UtensilsCrossed,
+      iconUrl: "/assets/images/restaurant.jpg",
       color: "#FF5722",
     },
     shopping: {
       apiType: "shopping_mall",
       label: "Shopping",
-      icon: "/assets/images/shopping_mall.png",
+      icon: ShoppingBag,
+      iconUrl: "/assets/images/shopping_mall.png",
       color: "#795548",
     },
   };
@@ -160,6 +174,8 @@ const GoogleMaps = (props) => {
   const handlePlaceChanged = () => {
     if (autocompleteRef.current) {
       const place = autocompleteRef.current.getPlace();
+      console.log("place", place);
+
       if (place.geometry?.location) {
         const location = {
           lat: place.geometry.location.lat(),
@@ -192,15 +208,15 @@ const GoogleMaps = (props) => {
 
       <CardContent className="space-y-2 mb-6">
         <div className="flex gap-2">
-          <span className="font-semibold w-24 text-gray-700">Address</span>
+          <span className="font-semibold w-24 text-gray-500">Address</span>
           <span>{data?.address || "Not specified"}</span>
         </div>
         <div className="flex gap-2">
-          <span className="font-semibold w-24 text-gray-700">City</span>
+          <span className="font-semibold w-24 text-gray-500">City</span>
           <span>{data?.city || "Not specified"}</span>
         </div>
         <div className="flex gap-2">
-          <span className="font-semibold w-24 text-gray-700">State</span>
+          <span className="font-semibold w-24 text-gray-500">State</span>
           <span>{data?.state || "Not specified"}</span>
         </div>
       </CardContent>
@@ -261,7 +277,7 @@ const GoogleMaps = (props) => {
                     key={place.place_id}
                     position={place.geometry.location}
                     icon={{
-                      url: placeTypes[activeFilter].icon,
+                      url: placeTypes[activeFilter].iconUrl,
                       // scaledSize: { width: 32, height: 32 },
                     }}
                     onClick={() => setSelectedPlace(place)}
@@ -331,10 +347,10 @@ const GoogleMaps = (props) => {
                 placeholder="Search location..."
                 style={{
                   width: "100%",
-                  padding: "12px",
+                  padding: "8px 12px ",
                   border: "1px solid #ddd",
-                  borderRadius: "4px",
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                  borderRadius: "20px",
+                  boxShadow: "0 2px 10px 7px #00000033",
                   outline: "none",
                 }}
               />
@@ -369,83 +385,112 @@ const GoogleMaps = (props) => {
             <div
               style={{
                 position: "absolute",
-                bottom: "80px",
+                bottom: "0px",
                 left: "20px",
                 right: "20px",
-                backgroundColor: "white",
-                borderRadius: "8px",
-                boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
-                maxHeight: "40vh",
-                overflowY: "auto",
+                borderTopLeftRadius: "20px",
+                borderTopRightRadius: "20px",
+                boxShadow: "0 2px 10px 7px #00000033",
+                overflow: "hidden", // <-- clip scrollbar inside
                 zIndex: 10,
-                padding: "16px",
+                width: "60%",
+                margin: "auto",
               }}
             >
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "12px",
+                  maxHeight: "25vh",
+                  overflowY: "auto", // <-- scrollbar stays inside
+                  backgroundColor: "white",
+                  padding: "16px",
+                  boxSizing: "border-box",
                 }}
               >
-                <h3 style={{ margin: 0, fontSize: "18px" }}>
-                  {places.length} {placeTypes[activeFilter].label} around your
-                  location
-                </h3>
-                <button
-                  onClick={() => setShowList(false)}
+                <div
                   style={{
-                    background: "none",
-                    border: "none",
-                    fontSize: "20px",
-                    cursor: "pointer",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "12px",
                   }}
                 >
-                  ×
-                </button>
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "12px",
-                }}
-              >
-                {places.slice(0, 10).map((place) => (
-                  <div
-                    key={place.place_id}
+                  <h3
                     style={{
-                      padding: "12px",
+                      margin: 0,
+                      fontSize: "18px",
                       borderBottom: "1px solid #eee",
-                      cursor: "pointer",
-                      backgroundColor:
-                        selectedPlace?.place_id === place.place_id
-                          ? "#f5f5f5"
-                          : "white",
-                    }}
-                    onClick={() => {
-                      setSelectedPlace(place);
-                      map.panTo(place.geometry.location);
-                      map.setZoom(16);
-                      setShowList(false);
+                      width: "100%",
+                      paddingBottom: "5px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
                     }}
                   >
-                    <h4 style={{ margin: "0 0 4px 0", fontSize: "16px" }}>
-                      {place.name}
-                    </h4>
-                    <p style={{ margin: 0, color: "#666", fontSize: "14px" }}>
-                      {place.vicinity}
-                    </p>
-                    {place.rating && (
-                      <p style={{ margin: "4px 0 0 0", fontSize: "14px" }}>
-                        ★ {place.rating} ({place.user_ratings_total || 0}{" "}
-                        reviews)
+                    {(() => {
+                      const ActiveIcon = placeTypes[activeFilter]?.icon;
+                      if (!ActiveIcon) return null;
+                      return (
+                        <ActiveIcon
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            color: placeTypes[activeFilter]?.color,
+                          }}
+                        />
+                      );
+                    })()}
+                    {places.length} {placeTypes[activeFilter]?.label} around
+                    your location
+                  </h3>
+                  <button
+                    onClick={() => setShowList(false)}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      fontSize: "20px",
+                      cursor: "pointer",
+                      marginTop: "-20px",
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "12px",
+                  }}
+                >
+                  {places.slice(0, 10).map((place) => (
+                    <div
+                      key={place.place_id}
+                      style={{
+                        padding: "5px",
+                        borderBottom: "1px solid #eee",
+                        cursor: "pointer",
+                        backgroundColor:
+                          selectedPlace?.place_id === place.place_id
+                            ? "#f5f5f5"
+                            : "white",
+                      }}
+                      onClick={() => {
+                        setSelectedPlace(place);
+                        map.panTo(place.geometry.location);
+                        map.setZoom(16);
+                        setShowList(false);
+                      }}
+                    >
+                      <h4 style={{ margin: "0 0 2px 0", fontSize: "16px" }}>
+                        {place.name}
+                      </h4>
+                      <p style={{ margin: 0, color: "#666", fontSize: "14px" }}>
+                        {place.vicinity}
                       </p>
-                    )}
-                  </div>
-                ))}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -467,20 +512,27 @@ const GoogleMaps = (props) => {
               key={key}
               onClick={() => handleFilterClick(key)}
               style={{
-                padding: "8px 16px",
+                padding: "6px 16px",
                 backgroundColor:
-                  activeFilter === key ? config.color + "20" : "#f5f5f5",
-                color: activeFilter === key ? config.color : "#333",
+                  activeFilter === key ? config.color + "20" : "#fff",
+                color:  config.color ,
                 border: `1px solid ${
-                  activeFilter === key ? config.color : "#ddd"
+                  config.color 
                 }`,
                 borderRadius: "20px",
                 cursor: "pointer",
                 whiteSpace: "nowrap",
                 fontWeight: activeFilter === key ? "600" : "400",
                 transition: "all 0.2s",
+                fontSize: "14px",
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
               }}
             >
+              <span>
+                <config.icon className="w-4" />{" "}
+              </span>{" "}
               {config.label}
             </button>
           ))}
