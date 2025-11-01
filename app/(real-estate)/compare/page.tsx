@@ -10,6 +10,7 @@ import {
 } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const PropertyComparisonGrid = () => {
   const [state, setState] = useSetState({
@@ -24,6 +25,8 @@ const PropertyComparisonGrid = () => {
   });
 
   const [activeTab, setActiveTab] = useState(0);
+
+  const router = useRouter()
 
   useEffect(() => {
     compareList();
@@ -379,9 +382,9 @@ const PropertyComparisonGrid = () => {
                   </h3>
                   <p className="text-xs text-red-600 font-bold mt-1">
                     {formatPriceRange(
-                    property?.price_range?.minimum_price,
-                    property?.price_range?.maximum_price
-                  )}{" "}
+                      property?.price_range?.minimum_price,
+                      property?.price_range?.maximum_price
+                    )}{" "}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
                     {property.city}, {property.state}
@@ -443,10 +446,6 @@ const PropertyComparisonGrid = () => {
     >
       <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-extrabold text-gray-900 text-center mb-12">
-            Compare Properties
-          </h1>
-
           {state.loading ? (
             <>
               <div className="lg:hidden">
@@ -462,13 +461,20 @@ const PropertyComparisonGrid = () => {
             </>
           ) : state.propertyList.length === 0 ? (
             // Empty State
-            <div className="text-center py-12">
+            <div className="text-center py-12 h-[700px] flex flex-col items-center justify-center">
               <p className="text-gray-500">
                 No properties to compare. Add properties to compare list.
               </p>
+              <button className="w-auto bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed " onClick={()=>router.push("property-list")}>
+                {" "}
+                Add properties to compare
+              </button>
             </div>
           ) : (
             <>
+              <h1 className="text-2xl font-extrabold text-gray-900 text-center mb-12">
+                Compare Properties
+              </h1>
               <div className="lg:hidden mb-6">
                 <div className="flex space-x-1 overflow-x-auto scrollbar-hide">
                   {attributeGroups.map((group, index) => (

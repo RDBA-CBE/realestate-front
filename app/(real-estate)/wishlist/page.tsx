@@ -6,7 +6,7 @@ import { AlertCircle, Heart, MapPin, Bed, Bath, Square } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PropertyCard } from "@/components/real-estate/property-list/property3And4Column/property-card";
 import { PropertyCardSkeleton } from "@/components/common-components/skeleton/PropertyCardSkeleton.componenet";
-import { Success, useSetState } from "@/utils/function.utils";
+import { formatPriceRange, Success, useSetState } from "@/utils/function.utils";
 import { properties } from "@/utils/constant.utils";
 import Models from "@/imports/models.import";
 import { formatToINR } from "@/utils/function.utils";
@@ -190,15 +190,25 @@ const Favorites = () => {
         </div>
 
         {state.properties.length === 0 ? (
-          <div className="text-center py-12">
-            <Heart className="mx-auto h-16 w-16 text-gray-300 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No favorites yet
-            </h3>
-            <p className="text-gray-500">
-              Properties you add to your wishlist will appear here.
-            </p>
-          </div>
+          // <div className="text-center py-12">
+          //   <Heart className="mx-auto h-16 w-16 text-gray-300 mb-4" />
+          //   <h3 className="text-lg font-medium text-gray-900 mb-2">
+          //     No favorites yet
+          //   </h3>
+          //   <p className="text-gray-500">
+          //     Properties you add to your wishlist will appear here.
+          //   </p>
+          // </div>
+
+          <div className="text-center py-12 h-[600px] flex flex-col items-center justify-center">
+              <p className="text-gray-500">
+                 Properties you add to your wishlist will appear here.
+              </p>
+              <button className="w-auto bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed " onClick={()=>router.push("property-list")}>
+                {" "}
+                Add properties to Wishlist
+              </button>
+            </div>
         ) : (
           <div
             className={
@@ -279,7 +289,10 @@ const Favorites = () => {
 
                       <div className="flex items-center justify-between">
                         <span className="text-lg font-bold text-gray-900">
-                          {formatToINR(property.price)}
+                          {formatPriceRange(
+                            property.minimum_price,
+                            property?.maximum_price
+                          )}
                         </span>
                         <span className="text-sm text-gray-500">
                           {property.price_per_sqft &&
@@ -291,7 +304,7 @@ const Favorites = () => {
                 ) : (
                   // List View Card
                   <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                    <div className="flex flex-col md:flex-row">
+                    <div className="flex flex-col md:flex-row" style={{height:300}}>
                       <div className="md:w-1/3 relative">
                         <Image
                           src={property.primary_image}
@@ -365,7 +378,10 @@ const Favorites = () => {
                           <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                             <div>
                               <span className="text-2xl font-bold text-gray-900">
-                                {formatToINR(property.price)}
+                                {formatPriceRange(
+                                  property.minimum_price,
+                                  property?.maximum_price
+                                )}
                               </span>
                               {property.price_per_sqft && (
                                 <span className="text-sm text-gray-500 ml-2">

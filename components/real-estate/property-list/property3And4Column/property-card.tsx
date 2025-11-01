@@ -311,11 +311,11 @@ export function PropertyCard({
   };
 
   // Helper function to format price range
-  const formatPriceRange = (minPrice: number, maxPrice: number) => {
-    if (!minPrice && !maxPrice) return 'Price on request';
-    if (minPrice === maxPrice) return formatPrice(minPrice);
-    return `${formatPrice(minPrice)} - ${formatPrice(maxPrice)}`;
-  };
+  // const formatPriceRange = (minPrice: number, maxPrice: number) => {
+  //   if (!minPrice && !maxPrice) return 'Price on request';
+  //   if (minPrice === maxPrice) return formatPrice(minPrice);
+  //   return `${formatPrice(minPrice)} - ${formatPrice(maxPrice)}`;
+  // };
 
   // GRID VIEW - UNCHANGED
   if (view === 'grid') {

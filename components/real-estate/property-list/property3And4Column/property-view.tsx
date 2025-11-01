@@ -34,6 +34,7 @@ import { TextInput } from "@/components/common-components/textInput";
 import {
   Sheet,
   SheetContent,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -220,12 +221,12 @@ export function PropertyView(props: any) {
     setState({ [name]: value });
   };
 
-//   const handleChange = (name: string, value: any) => {
-//   setState((prev) => ({
-//     ...prev,
-//     [name]: value,
-//   }));
-// };
+  //   const handleChange = (name: string, value: any) => {
+  //   setState((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
 
   const resetFilter = () => {
     setState({
@@ -481,7 +482,7 @@ export function PropertyView(props: any) {
               </div>
               <div className="flex gap-3">
                 <Input
-                className="bg-white"
+                  className="bg-white"
                   type="number"
                   placeholder="Min."
                   value={state.sqftMin}
@@ -489,7 +490,7 @@ export function PropertyView(props: any) {
                 />
                 <span className="flex items-center">-</span>
                 <Input
-                className="bg-white"
+                  className="bg-white"
                   type="number"
                   placeholder="Max."
                   value={state.sqftMax}
@@ -502,14 +503,14 @@ export function PropertyView(props: any) {
               <div className="mb-2 font-semibold text-gray-900">Year Built</div>
               <div className="flex gap-3">
                 <Input
-                className="bg-white"
+                  className="bg-white"
                   type="number"
                   placeholder=""
                   value={state.yearBuiltMin}
                   onChange={(e) => handleChange("yearBuiltMin", e.target.value)}
                 />
                 <Input
-                className="bg-white"
+                  className="bg-white"
                   type="number"
                   placeholder=""
                   value={state.yearBuiltMax}
@@ -543,32 +544,46 @@ export function PropertyView(props: any) {
 
                     <SheetContent
                       side="left"
-                      className="w-100 p-4 overflow-y-auto bg-gray-100 "
+                      className="w-100 p-0 overflow-y-auto bg-gray-100 "
                     >
-                      <SheetHeader className="flex items-center justify-between">
-                        <SheetTitle>{""}</SheetTitle>
-                      </SheetHeader>
+                      <div className="p-4">
+                        <SheetHeader className="flex items-center justify-between">
+                          <SheetTitle>{""}</SheetTitle>
+                        </SheetHeader>
 
-                      <div className="mt-4 space-y-6">
-                        <SidebarContent
-                          state={state}
-                          handleChange={handleChange}
-                          resetFilter={() => {
-                            resetFilter();
-                           setState((prev) => ({ ...prev, sidebarOpen: true }));
-                          }}
-                          categoryList={categoryList}
-                          parseINR={parseINR}
-                          formatINR={formatINR}
-                        />
+                        <div className="mt-4 space-y-6">
+                          <SidebarContent
+                            state={state}
+                            handleChange={handleChange}
+                            resetFilter={() => {
+                              resetFilter();
+                              setState((prev) => ({
+                                ...prev,
+                                sidebarOpen: true,
+                              }));
+                            }}
+                            categoryList={categoryList}
+                            parseINR={parseINR}
+                            formatINR={formatINR}
+                          />
+                        </div>
                       </div>
+
+                      <SheetFooter
+                        className="sticky bottom-0 left-0  border-t cursor-pointer"
+                        onClick={()=>setState({ sidebarOpen: false })}
+                      >
+                        <div className="bg-red-600 hover:bg-red-500 py-5 px-3 text-white w-full text-center text-lg font-semibold">
+                          View {properties.length} Properties
+                        </div>
+                      </SheetFooter>
                     </SheetContent>
                   </Sheet>
                 </div>
 
                 {/* --------responsive filter sidebar end---------- */}
 
-                <Link href="/property-listmv" className="no-underline">
+                {/* <Link href="/property-listmv" className="no-underline">
                   <Button
                     variant="outline"
                     className="px-4 py-2 h-9 rounded-lg text-sm font-medium text-gray-600 hover:text-red-500 
@@ -576,12 +591,11 @@ export function PropertyView(props: any) {
                       md:border 
                       md:border-gray-300 
                       hover:border-red-200 bg-transparent md:bg-white px-0 md:px-3 shadow-none md:shadow-sm"
-                      
                   >
                     <MapPinHouseIcon />
                     Map View
                   </Button>
-                </Link>
+                </Link> */}
                 {/* <span className="text-sm text-gray-600"></span> */}
               </div>
 
@@ -655,8 +669,6 @@ export function PropertyView(props: any) {
                     List
                   </Button>
                 </div>
-
-               
               </div>
             </div>
           </div>

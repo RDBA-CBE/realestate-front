@@ -322,13 +322,13 @@ export default function ProfilePage() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="min-h-screen py-8 px-4"
+      className="min-h-[93vh]  px-8 flex items-center justify-center  border "
     >
-      <div className="max-w-6xl mx-auto">
+      <div className=" h-full container px-8">
         <div className="grid lg:grid-cols-4 gap-8">
           {/* Sidebar Navigation */}
-          <Card className="lg:col-span-1 rounded-2xl shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-            <CardContent className="p-6">
+          <Card className="lg:col-span-1 rounded-lg shadow-lg border-0 bg-gray-50 backdrop-blur-sm w-full">
+            <CardContent className="py-6">
               <nav className="space-y-2">
                 {[
                   { id: "profile", label: "Personal Info", icon: User },
@@ -338,9 +338,9 @@ export default function ProfilePage() {
                   <button
                     key={item.id}
                     onClick={() => setActiveSection(item.id)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 ${
+                    className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
                       activeSection === item.id
-                        ? "bg-red-600 text-white rounded-full"
+                        ? "bg-red-600 text-white rounded-lg"
                         : "text-gray-600 hover:bg-red-50"
                     }`}
                   >
@@ -353,7 +353,7 @@ export default function ProfilePage() {
           </Card>
 
           {/* Main Content */}
-          <div className="lg:col-span-3 space-y-6">
+          <div className="lg:col-span-3 space-y-6 w-full">
             {/* Profile Section */}
             {activeSection === "profile" && (
               <motion.div
@@ -361,13 +361,13 @@ export default function ProfilePage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4 }}
               >
-                <Card className="rounded-2xl shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+                <Card className="rounded-lg shadow-lg border-0 bg-gray-50  backdrop-blur-sm">
                   <CardContent className="p-8">
                     <div className="flex flex-col md:flex-row gap-8">
                       {/* Profile Photo */}
                       <div className="flex flex-col items-center">
                         <div className="relative group">
-                          <div className="w-32 h-32 rounded-2xl overflow-hidden border-4 border-white shadow-lg">
+                          <div className="w-32 h-32 rounded-lg overflow-hidden border-4 border-white shadow-lg">
                             <Image
                               src={preview}
                               alt="Profile"
@@ -378,11 +378,11 @@ export default function ProfilePage() {
                           </div>
                           <button
                             onClick={handleDeletePhoto}
-                            className="absolute -top-2 -right-2 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                            className="absolute -top-2 -right-2 bg-red-500 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
                           >
                             <Trash2 size={16} />
                           </button>
-                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-2xl" />
+                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-lg" />
                         </div>
 
                         <label className="mt-4 cursor-pointer">
@@ -394,7 +394,7 @@ export default function ProfilePage() {
                           />
                           <Button
                             variant="outline"
-                            className="rounded-full px-6 bg-red-600 text-white rounded-full"
+                            className="rounded-lg px-6 bg-red-600 text-white rounded-lg"
                           >
                             <Upload className="h-4 w-4 mr-2" />
                             Upload Photo
@@ -484,7 +484,7 @@ export default function ProfilePage() {
                         <Button
                           onClick={handleProfileUpdate}
                           disabled={isLoading}
-                          className="w-full md:w-auto px-8 bg-red-600 text-white rounded-full"
+                          className="w-full md:w-auto px-8 bg-red-600 text-white rounded-lg"
                         >
                           {isLoading ? "Updating..." : "Update Profile"}
                         </Button>
@@ -502,7 +502,7 @@ export default function ProfilePage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4 }}
               >
-                <Card className="rounded-2xl shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+                <Card className="rounded-lg shadow-lg border-0 bg-gray-50 backdrop-blur-sm">
                   <CardContent className="p-8">
                     <h3 className="text-2xl font-bold text-gray-800 mb-6">
                       Social Media Links
@@ -545,7 +545,7 @@ export default function ProfilePage() {
                     <Button
                       onClick={handleSocialUpdate}
                       disabled={isLoading}
-                      className="mt-6 px-8 bg-red-600 text-white rounded-full"
+                      className="mt-6 px-8 bg-red-600 text-white rounded-lg"
                     >
                       {isLoading ? "Updating..." : "Update Social Links"}
                     </Button>
@@ -561,7 +561,7 @@ export default function ProfilePage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4 }}
               >
-                <Card className="rounded-2xl shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+                <Card className="rounded-lg shadow-lg border-0 bg-gray-50 backdrop-blur-sm">
                   <CardContent className="p-8">
                     <h3 className="text-2xl font-bold text-gray-800 mb-6">
                       Change Password
@@ -625,7 +625,7 @@ export default function ProfilePage() {
                     <Button
                       onClick={handlePasswordUpdate}
                       disabled={isLoading}
-                      className="mt-6 px-8 bg-red-600 text-white rounded-full"
+                      className="mt-6 px-8 bg-red-600 text-white rounded-lg"
                     >
                       {isLoading ? "Updating..." : "Change Password"}
                     </Button>

@@ -185,6 +185,8 @@ export const formatNumber = (num) => {
   return Number(num) % 1 === 0 ? parseInt(num) : Number(num);
 };
 
+
+
 export const transformSlots = (data) => {
   return Object.entries(data).map(([date, slots]) => ({
     date,
