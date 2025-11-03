@@ -10,6 +10,7 @@ import FloorPlans from "@/components/real-estate/property-detail/FloorPlans.comp
 import Amenities from "@/components/real-estate/property-detail/Amenities.component";
 import Reviews from "@/components/real-estate/property-detail/Reviews.component";
 import SimilarListings from "@/components/real-estate/property-detail/SimilarListings.component";
+import SimilarListings1 from "@/components/real-estate/property-detail/SimilarListings.component1";
 import PropertyDesc from "@/components/real-estate/property-detail/PropertyDesc.component";
 import Nearby from "@/components/real-estate/property-detail/Nearby.component";
 import WalkScore from "@/components/real-estate/property-detail/Walkscore.component";
@@ -381,7 +382,7 @@ export default function PropertyDetailPage() {
       {/* Similar Listings */}
       {state.similarProperty.length > 0 && (
         <div className="mt-16">
-          <SimilarListings data={state.similarProperty} />
+          <SimilarListings1 data={state.similarProperty} />
         </div>
       )}
 

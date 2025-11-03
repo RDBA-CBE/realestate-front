@@ -24,6 +24,8 @@ const Favorites = () => {
     error: null,
   });
 
+  const [hover, setHover] = useState(false);
+
   useEffect(() => {
     wishlist();
   }, []);
@@ -119,11 +121,15 @@ const Favorites = () => {
     );
   };
 
+ 
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
       className="max-w-[85rem] mx-auto"
     >
       <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
@@ -201,14 +207,17 @@ const Favorites = () => {
           // </div>
 
           <div className="text-center py-12 h-[600px] flex flex-col items-center justify-center">
-              <p className="text-gray-500">
-                 Properties you add to your wishlist will appear here.
-              </p>
-              <button className="w-auto bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed " onClick={()=>router.push("property-list")}>
-                {" "}
-                Add properties to Wishlist
-              </button>
-            </div>
+            <p className="text-gray-500">
+              Properties you add to your wishlist will appear here.
+            </p>
+            <button
+              className="w-auto bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed "
+              onClick={() => router.push("property-list")}
+            >
+              {" "}
+              Add properties to Wishlist
+            </button>
+          </div>
         ) : (
           <div
             className={
@@ -226,7 +235,7 @@ const Favorites = () => {
               >
                 {state.view === "grid" ? (
                   // Grid View Card
-                  <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                  <div className="bg-gray-100 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
                     <div className="relative">
                       <Image
                         src={property.primary_image}
@@ -303,8 +312,11 @@ const Favorites = () => {
                   </div>
                 ) : (
                   // List View Card
-                  <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                    <div className="flex flex-col md:flex-row" style={{height:300}}>
+                  <div className="bg-gray-100 rounded-lg  overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
+                    <div
+                      className="flex flex-col md:flex-row"
+                      style={{ height: 300 }}
+                    >
                       <div className="md:w-1/3 relative">
                         <Image
                           src={property.primary_image}
