@@ -294,7 +294,7 @@ export function PropertyCard({
     if (handleClick) {
       handleClick();
     } else {
-      router.push(`property-detail/${property?.id}`);
+      router.push(`/property-detail/${property?.id}`);
     }
   };
 
