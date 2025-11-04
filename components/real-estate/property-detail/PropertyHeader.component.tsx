@@ -24,13 +24,19 @@ import {
 } from "@/utils/function.utils";
 import { useEffect } from "react";
 import Models from "@/imports/models.import";
+import { RWebShare } from "react-web-share";
 
 export default function PropertyHeader(props: any) {
   const [state, setState] = useSetState({
     is_compare: false,
+    url : ''
   });
 
   const { data, updateList } = props;
+
+   useEffect(() => {
+    setState({url:window.location.href});
+  }, []);
 
   useEffect(() => {
     const compareList = localStorage.getItem("compare");
@@ -95,6 +101,9 @@ export default function PropertyHeader(props: any) {
     }
   };
 
+  console.log("window.location.href", window.location.href);
+  
+
   return (
     <div className=" mt-5 md:mt-0 px-2">
       <div className="flex flex-row items-between md:items-start justify-between gap-4">
@@ -106,10 +115,10 @@ export default function PropertyHeader(props: any) {
                 data?.price_range?.minimum_price,
                 data?.price_range?.maximum_price
               )}{" "}
-              
-            </span><span className="text-sm text-gray-600">
-                ({formatToINR(data?.price_per_sqft)}/sq ft)
-              </span>
+            </span>
+            <span className="text-sm text-gray-600">
+              ({formatToINR(data?.price_per_sqft)}/sq ft)
+            </span>
           </div>
           <div className="flex items-center flex-wrap gap-3 text-sm text-gray-600 ">
             <span>{`${capitalizeFLetter(data?.city)} , ${capitalizeFLetter(
@@ -169,9 +178,19 @@ export default function PropertyHeader(props: any) {
             >
               <GitCompareArrowsIcon size={18} />
             </Button>
-            <Button size="icon" variant="outline" className="rounded-full">
-              <Share2 size={18} />
-            </Button>
+            <RWebShare
+              data={{
+                title: "Karpagam Institute Of Technology",
+                text: `Check this out!`,
+                url: state.url,
+              }}
+              onClick={() => console.log("shared successfully!")}
+            >
+              <Button size="icon" variant="outline" className="rounded-full">
+                <Share2 size={18} />
+              </Button>
+            </RWebShare>
+
             {/* <Button size="icon" variant="outline" className="rounded-full">
             <Printer size={18} />
           </Button> */}

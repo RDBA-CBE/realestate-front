@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Failure, Success, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
+import { RWebShare } from "react-web-share";
 
 interface GalleryProps {
   images: any[];
@@ -31,7 +32,12 @@ export default function Gallery({ data, images, updateList }: GalleryProps) {
 
   const [state, setState] = useSetState({
     is_compare: false,
+    url:''
   });
+
+  useEffect(() => {
+    setState({url:window.location.href});
+  }, []);
 
   useEffect(() => {
     const compareList = localStorage.getItem("compare");
@@ -258,9 +264,18 @@ export default function Gallery({ data, images, updateList }: GalleryProps) {
             >
               <GitCompareArrowsIcon size={18} />
             </Button>
-            <Button size="icon" variant="outline" className="rounded-full">
-              <Share2 size={18} />
-            </Button>
+           <RWebShare
+              data={{
+                title: "Karpagam Institute Of Technology",
+                text: `Check this out!`,
+                url: state.url,
+              }}
+              onClick={() => console.log("shared successfully!")}
+            >
+              <Button size="icon" variant="outline" className="rounded-full">
+                <Share2 size={18} />
+              </Button>
+            </RWebShare>
           </div>
 
           {/* Bottom-right image count */}
