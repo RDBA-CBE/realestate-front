@@ -11,7 +11,7 @@ export default function ForgotPasswordEmail() {
 
 
     return (
-        <div className="flex md:min-h-[70vh] min-h-[60vh] w-full items-center justify-center md:p-6 ">
+        <div className="flex h-[91vh] w-full items-center justify-center p-6 ">
             {/* {!isAuthenticated ? ( */}
             <ForgotPasswordEmailForm />
             {/* ) : (hytjhyjuyjmyu     cc v fZ

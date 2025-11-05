@@ -524,7 +524,7 @@ export function PropertyView(props: any) {
         <section className="xl:col-span-3 space-y-6">
           <div className="sticky top-16 z-10">
             <div className="flex flex-wrap items-center justify-between gap-1 md:gap-4 p-4 bg-gray-100 border-none rounded-lg border shadow-sm">
-              <div className="flex items-center justify-between md:justify-normal gap-4 w-full md:w-auto">
+              <div className="flex items-center justify-between md:justify-normal gap-4 w-auto">
                 {/* --------responsive filter sidebar start---------- */}
 
                 <div className="xl:hidden">
@@ -599,7 +599,7 @@ export function PropertyView(props: any) {
                 {/* <span className="text-sm text-gray-600"></span> */}
               </div>
 
-              <div className="flex items-center gap-4 justify-between md:justify-normal  w-full md:w-auto">
+              <div className="flex items-center gap-4 justify-between md:justify-normal  w-auto">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600 whitespace-nowrap">
                     Sort by:
@@ -642,7 +642,7 @@ export function PropertyView(props: any) {
                   </Select>
                 </div>
 
-                <div className="flex items-center gap-0 rounded-md overflow-hidden md:bg-white/70 md:shadow-sm">
+                <div className="hidden sm:flex items-center gap-0 rounded-md overflow-hidden md:bg-white/70 md:shadow-sm">
                   <Button
                     onClick={() => setState({ view: "grid" })}
                     variant="ghost"

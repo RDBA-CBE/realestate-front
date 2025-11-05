@@ -101,19 +101,20 @@ const ForgotPasswordEmailForm = () => {
 
   return (
     <div className="flex items-center justify-center">
-      <Card className="md:w-[400px] w-[100%]">
-        <CardHeader>
-          <CardTitle className="text-2xl">Forgot Password</CardTitle>
-          {/* <CardDescription>
-                        Enter your email below to login to your account
-                    </CardDescription> */}
+      <Card className="md:w-[400px] w-[100%] p-6">
+        <CardHeader className="p-0">
+          <CardTitle className="text-2xl ">Forgot Password</CardTitle>
+          <CardDescription>
+            Enter your email below to receive password reset e-mail
+          </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="mx-0 mt-4 pb-2">
           <form>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                {/* <Label htmlFor="email">Email</Label> */}
                 <Input
+                  title="Email"
                   id="email"
                   type="email"
                   placeholder="Enter Your mail ID"
@@ -158,11 +159,11 @@ const ForgotPasswordEmailForm = () => {
                     //      router?.push("/")
                     //   }}
                     onClick={() =>
-                    setState({
-                      btnLoading: false,
-                      email:""
-                    })
-                  }
+                      setState({
+                        btnLoading: false,
+                        email: "",
+                      })
+                    }
                     variant="outline"
                     className="w-full text-red-500 hover:text-red-500 border-red-500 hover:border-red-500"
                   >
@@ -175,7 +176,7 @@ const ForgotPasswordEmailForm = () => {
                   className="w-full bg-red-500 hover:bg-red-500 "
                   onClick={handleSubmit}
                 >
-                   {state.btnLoading ? <Loader /> : "Confirm"}
+                  {state.btnLoading ? <Loader /> : "Confirm"}
                 </Button>
               </div>
             </div>

@@ -101,7 +101,7 @@ export default function PropertyHeader(props: any) {
     }
   };
 
-  console.log("window.location.href", window.location.href);
+
   
 
   return (

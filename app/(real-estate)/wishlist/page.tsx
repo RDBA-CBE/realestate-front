@@ -147,7 +147,7 @@ const Favorites = () => {
           </div>
 
           {/* View Toggle */}
-          <div className="flex items-center space-x-2 mt-4 md:mt-0">
+          <div className="hidden md:flex items-center space-x-2 mt-4 md:mt-0">
             <button
               onClick={() => toggleView("grid")}
               className={`p-2 rounded-lg ${

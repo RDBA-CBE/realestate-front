@@ -25,6 +25,7 @@ import { Eye, EyeOff, Loader } from 'lucide-react';
 
 const ForgotPasswordForm = () => {
   const router = useRouter();
+  
 
   const searchParams = useSearchParams();
 

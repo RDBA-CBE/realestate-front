@@ -17,6 +17,11 @@ export const signin = Yup.object().shape({
 
 });
 
+export const forgetPassword = Yup.object().shape({
+  email: Yup.string().required("Email is required"),
+
+});
+
 export const profileSchema = Yup.object({
   fullName: Yup.string()
     .min(2, "Name must be at least 2 characters")

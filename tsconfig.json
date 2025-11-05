@@ -25,7 +25,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/(real-estate)/login/page.jsx",
+    "app/(real-estate)/login2/page.jsx",
     "app/(real-estate)/test/page.tsx",
     "app/layout.jsx",
     "components/common-components/checkbox.jsx",
