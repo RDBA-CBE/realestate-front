@@ -25,17 +25,17 @@
 //       // Check if ANY section from overview to reviews is in view
 //       const overviewEl = document.getElementById("overview");
 //       const reviewsEl = document.getElementById("reviews");
-      
+
 //       if (overviewEl && reviewsEl) {
 //         const overviewRect = overviewEl.getBoundingClientRect();
 //         const reviewsRect = reviewsEl.getBoundingClientRect();
-        
+
 //         // Show tabs when overview enters viewport
 //         const overviewInView = overviewRect.top <= 100;
-        
+
 //         // Hide tabs only when we've scrolled past the entire reviews section
 //         const reviewsFullyPassed = reviewsRect.bottom <= 0;
-        
+
 //         // Show tabs from overview until we completely scroll past reviews
 //         setShowTabs(overviewInView && !reviewsFullyPassed);
 //       }
@@ -55,10 +55,10 @@
 //     };
 
 //     window.addEventListener("scroll", handleScroll, { passive: true });
-    
+
 //     // Initial check
 //     handleScroll();
-    
+
 //     return () => window.removeEventListener("scroll", handleScroll);
 //   }, []);
 
@@ -102,7 +102,6 @@
 //   );
 // }
 
-
 //  const sections = [
 //   { id: "overview", label: "Overview" },
 //   { id: "desc", label: "Desc" },
@@ -115,8 +114,6 @@
 //   { id: "walkscore", label: "Walk Score" },
 //   { id: "reviews", label: "Reviews" },
 // ];
-
-
 
 "use client";
 
@@ -146,7 +143,7 @@ export default function PropertyTabs({ sections }) {
       const currentScroll = window.scrollY;
 
       // ✅ Show tabs only after passing original position
-      if (currentScroll > triggerPoint + 50) {
+      if (currentScroll > triggerPoint + 300) {
         if (currentScroll > lastScrollY.current + 10) {
           // scrolling down past trigger point -> show
           setShowTabs(true);
@@ -208,20 +205,20 @@ export default function PropertyTabs({ sections }) {
       {/* Floating tab bar */}
       <div
         className={cn(
-          "sticky top-[65px] z-40 bg-white shadow-md border-b rounded-b-lg transition-all duration-500 ",
+          "sticky top-[65px] z-40 bg-white shadow-md border-b rounded-b-lg transition-all duration-500 overflow-hidden ",
           showTabs
-            ? "opacity-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 -translate-y-5 pointer-events-none"
+            ? "opacity-100 translate-y-0 pointer-events-auto h-auto mt-5 mb-5"
+            : "opacity-0 -translate-y-5 pointer-events-none h-0 mt-2 mb-2 xl:mt-3 xl:mb-3"
         )}
       >
         <div className="max-w-6xl mx-auto px-6">
-          <div className="flex  gap-x-8 gap-y-2 py-3 overflow-auto scrollbar-hide thin-scrollbar">
+          <div className="flex gap-x-8 gap-y-2 py-3 overflow-auto scrollbar-hide thin-scrollbar">
             {sections?.map((s) => (
               <button
                 key={s.id}
                 onClick={() => scrollTo(s.id)}
                 className={cn(
-                  "text-sm font-medium  border-b transition-colors whitespace-nowrap",
+                  "text-sm font-medium border-b transition-colors whitespace-nowrap",
                   active === s.id
                     ? "border-red-500 text-red-600"
                     : "border-transparent text-gray-500 hover:text-gray-800"

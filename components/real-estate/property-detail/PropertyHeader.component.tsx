@@ -134,15 +134,15 @@ export default function PropertyHeader(props: any) {
           </div>
 
           <div className="flex flex-wrap items-center gap-2 xs:gap-6 text-gray-700 pt-2">
-            <div className="flex items-center gap-1 bg-gray-200 px-2 py-0.5 rounded-md">
+            <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-md">
               <Bed size={18} /> <span>{data?.bedrooms} bed</span>
             </div>
-            <div className="flex items-center gap-1 bg-gray-200 px-2 py-0.5 rounded-md">
+            <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-md">
               <Bath size={18} /> <span>{data?.bathrooms} bath</span>
             </div>
-            <div className="flex items-center gap-1 bg-gray-200 px-2 py-0.5 rounded-md">
+            <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-md">
               <Square size={18} />{" "}
-              <span>{formatNumber(data?.built_up_area)} sqft</span>
+              <span>{formatNumber(data?.total_area)} sqft</span>
             </div>
           </div>
         </div>

@@ -34,7 +34,7 @@ export function MapView(props) {
     minPrice,
     maxPrice,
     updateList,
-    clearFilter
+    clearFilter,
   } = props;
 
   const [state, setState] = useSetState({
@@ -57,10 +57,9 @@ export function MapView(props) {
     isOpen: false,
   });
 
-    const initialLoadRef = useRef(true);
+  const initialLoadRef = useRef(true);
   const filterTimeoutRef = useRef(null);
   const previousFiltersRef = useRef({});
-
 
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -107,7 +106,7 @@ export function MapView(props) {
     }
   };
 
- useEffect(() => {
+  useEffect(() => {
     if (initialLoadRef.current && minPrice > 0 && maxPrice > 0) {
       setState({
         minPrice,
@@ -159,25 +158,13 @@ export function MapView(props) {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-        <div className=" xl:col-span-5 p-6 lg:p-8 overflow-y-auto h-[calc(100vh-98px)] flex flex-col items-start">
+    <div className="min-h-[91vh] bg-white">
+      <div className="grid grid-cols-1 xl:grid-cols-12 !gap-0 min-h-[91vh]">
+        <div className=" xl:col-span-3 p-6 lg:py-8 px-3 overflow-y-auto h-[calc(100vh-65px)] flex flex-col items-start">
           {/* First sticky header */}
-          <div
-            className="sticky top-0 lg:-top-8 z-10 w-full p-5 rounded-lg mb-7 bg-gray-100"
-            
-          >
+          <div className="sticky top-0 lg:-top-8 z-10 w-full p-3 rounded-lg mb-3 bg-gray-100">
             {/* First sticky header */}
-            <div className="flex items-center justify-between mb-2 w-full">
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-1">
-                  {title}
-                </h2>
-                <p className="text-sm text-gray-500">
-                  Showing 1–{properties?.length} of {properties?.length} results
-                </p>
-              </div>
-
+            <div className="flex items-center justify-between  w-full">
               <Button
                 onClick={() => setState({ isOpen: true })}
                 variant="outline"
@@ -185,51 +172,51 @@ export function MapView(props) {
               >
                 <SlidersHorizontal className="h-4 w-4" /> More Filter
               </Button>
-            </div>
-
-            {/* Second sticky header */}
-            <div className="flex items-center justify-between mb-2 w-full">
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-gray-600 whitespace-nowrap">
-                  Sort by:
-                </span>
-                <Select
-                  defaultValue="default"
-                  onValueChange={(value) => {
-                    let sortValue = "new";
-                    switch (value) {
-                      case "price-low":
-                        sortValue = "price";
-                        break;
-                      case "price-high":
-                        sortValue = "-price";
-                        break;
-                      case "default":
-                        sortValue = "";
-                        break;
-                      case "newest":
-                        sortValue = "created_at";
-                        break;
-                    }
-                    handleChange("sort", sortValue);
-                  }}
-                >
-                  <SelectTrigger className="border-0 shadow-none focus:ring-0 p-0 h-auto text-sm font-medium text-gray-900">
-                    <SelectValue placeholder="Newest" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="default">Default</SelectItem>
-                    <SelectItem value="newest">Newest</SelectItem>
-                    <SelectItem value="price-low">
-                      Price: Low to High
-                    </SelectItem>
-                    <SelectItem value="price-high">
-                      Price: High to Low
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+              <div>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-gray-600 whitespace-nowrap">
+                    Sort by:
+                  </span>
+                  <Select
+                    defaultValue="default"
+                    onValueChange={(value) => {
+                      let sortValue = "new";
+                      switch (value) {
+                        case "price-low":
+                          sortValue = "price";
+                          break;
+                        case "price-high":
+                          sortValue = "-price";
+                          break;
+                        case "default":
+                          sortValue = "";
+                          break;
+                        case "newest":
+                          sortValue = "created_at";
+                          break;
+                      }
+                      handleChange("sort", sortValue);
+                    }}
+                  >
+                    <SelectTrigger className="border-0 shadow-none focus:ring-0 p-0 h-auto text-sm font-medium text-gray-900">
+                      <SelectValue placeholder="Newest" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="default">Default</SelectItem>
+                      <SelectItem value="newest">Newest</SelectItem>
+                      <SelectItem value="price-low">
+                        Price: Low to High
+                      </SelectItem>
+                      <SelectItem value="price-high">
+                        Price: High to Low
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-
+            </div>{" "}
+            {/* Second sticky header */}
+            {/* <div className="flex items-center justify-between mb-2 w-full">
               <div className="flex items-center gap-0 rounded-lg overflow-hidden border">
                 <Button
                   onClick={() => setState({ view: "grid" })}
@@ -255,18 +242,16 @@ export function MapView(props) {
                   List
                 </Button>
               </div>
-            </div>
+            </div> */}
           </div>
+
+          <p className="text-sm text-gray-500 mb-3">
+            Showing 1–{properties?.length} of {properties?.length} results
+          </p>
 
           {/* Rest of the content remains the same */}
           {loading ? (
-            <div
-              className={
-                state.view === "grid"
-                  ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6"
-                  : "flex flex-col gap-6"
-              }
-            >
+            <div className={"flex flex-col w-full gap-6"}>
               {Array.from({ length: skeletonCount }).map((_, index) => (
                 <PropertyMapCardSkeleton
                   key={`skeleton-${index}`}
@@ -287,7 +272,7 @@ export function MapView(props) {
             <>
               <div
                 className={
-                  state.view === "grid"
+                  state.view === "list"
                     ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 w-full"
                     : "flex flex-col gap-6 w-full"
                 }
@@ -338,7 +323,7 @@ export function MapView(props) {
 
         {state.selectedProperty && (
           <div
-            className="xl:col-span-4 h-[calc(100vh-98px)] overflow-y-auto"
+            className="xl:col-span-3 h-[calc(100vh-65px)] overflow-y-auto"
             ref={propertyDetailRef}
           >
             <PropertyDetailInline
@@ -354,7 +339,7 @@ export function MapView(props) {
         {/* Map section remains the same */}
         <div
           className={`${
-            state.selectedProperty ? "xl:col-span-3" : "xl:col-span-7 "
+            state.selectedProperty ? "xl:col-span-6" : "xl:col-span-9 "
           } relative h-full bg-gray-200`}
         >
           {/* <iframe

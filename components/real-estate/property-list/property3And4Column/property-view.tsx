@@ -583,7 +583,7 @@ export function PropertyView(props: any) {
 
                 {/* --------responsive filter sidebar end---------- */}
 
-                {/* <Link href="/property-listmv" className="no-underline">
+                <Link href="/property-listmv" className="no-underline hidden xl:block">
                   <Button
                     variant="outline"
                     className="px-4 py-2 h-9 rounded-lg text-sm font-medium text-gray-600 hover:text-red-500 
@@ -595,7 +595,7 @@ export function PropertyView(props: any) {
                     <MapPinHouseIcon />
                     Map View
                   </Button>
-                </Link> */}
+                </Link>
                 {/* <span className="text-sm text-gray-600"></span> */}
               </div>
 

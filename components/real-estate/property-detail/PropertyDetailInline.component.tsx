@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import SimilarListings1 from "@/components/real-estate/property-detail/SimilarListings.component1";
 import Gallery from "@/components/real-estate/property-detail/Gallery.component";
 import PropertyDetails from "@/components/real-estate/property-detail/PropertyDetails.component";
 import PropertyHeader from "@/components/real-estate/property-detail/PropertyHeader.component";
@@ -52,9 +53,22 @@ import {
   Home,
   Badge,
   MapPin,
+  ArmchairIcon,
+  Building2,
+  ToiletIcon,
+  Star,
+  Shield,
+  Car,
+  Banknote,
+  Zap,
+  ShoppingBag,
+  Landmark,
+  Users,
+  CheckCircle2,
 } from "lucide-react";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
+import { PropertyCard } from "../property-list/property3And4Column/property-card";
 
 interface PropertyImage {
   image: string;
@@ -70,12 +84,19 @@ interface PropertyDetail {
   bedrooms?: number;
   bathrooms?: number;
   built_up_area?: number;
+  total_area?: number;
+  built_year?: number;
   price?: number;
   price_per_sqft?: number;
   images?: PropertyImage[];
   user_wishlists?: boolean;
+  status?: string;
+  furnishing?: string;
+  balcony?: number;
   property_type?: {
     id: string;
+    name?: string; // ✅ Added this
+    slug?: string; // (optional, if API returns slug)
   };
 }
 
@@ -225,34 +246,216 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
     return imageObj?.image || "/default-property-image.jpg";
   };
 
-  const details = [
-    { icon: Bed, label: "Bedroom", value: state.detail?.bedrooms ?? "-" },
-    { icon: Bath, label: "Bath", value: state.detail?.bathrooms ?? "-" },
-    {
-      icon: Calendar,
-      label: "Year Built",
-      value: state.detail?.built_year ?? "-",
-    },
-    // { icon: Car, label: "Garage", value: data?.garage ?? "-" },
-    {
-      icon: Maximize2,
-      label: "Total Area",
-      value: formatNumber(state.detail?.total_area) ?? "-",
-    },
-    {
-      icon: Maximize2,
-      label: "Build up Area",
-      value: formatNumber(state.detail?.built_up_area) ?? "-",
-    },
+  let details: any = [];
 
-    {
-      icon: Home,
-      label: "Offer Type",
-      value: capitalizeFLetter(state.detail?.listing_type) ?? "-",
-    },
+  if (state?.detail?.property_type?.name == "Residential") {
+    details = [
+      {
+        icon: Maximize2,
+        label: "Total Area",
+        value: formatNumber(state?.detail?.total_area) ?? "-",
+      },
+      {
+        icon: Maximize2,
+        label: "Built up Area",
+        value: formatNumber(state?.detail?.built_up_area) ?? "-",
+      },
 
-    // { icon: Home, label: "Property Type", value: data?.property_type?.name ?? "-" },
-  ];
+      {
+        icon: Home,
+        label: "Offer Type",
+        value: capitalizeFLetter(state?.detail?.listing_type) ?? "-",
+      },
+      ...(state?.detail?.built_year
+        ? [
+            {
+              icon: Calendar,
+              label: "Year Built",
+              value: state?.detail?.built_year ?? "-",
+            },
+          ]
+        : []),
+
+      {
+        icon: Home,
+        label: "Status",
+        value: capitalizeFLetter(state?.detail?.status) ?? "-",
+      },
+
+      ...(state?.detail?.bedrooms
+        ? [
+            {
+              icon: Bed,
+              label: "Bedroom",
+              value: state?.detail?.bedrooms ?? "-",
+            },
+          ]
+        : []),
+      ...(state?.detail?.bathrooms
+        ? [
+            {
+              icon: Bath,
+              label: "Bath",
+              value: state?.detail?.bathrooms ?? "-",
+            },
+          ]
+        : []),
+      ...(state?.detail?.balcony
+        ? [
+            {
+              icon: Building2,
+              label: "Balcony",
+              value: state?.detail?.balcony ?? "-",
+            },
+          ]
+        : []),
+
+      // { icon: Car, label: "Garage", value: data?.garage ?? "-" },
+
+      {
+        icon: ArmchairIcon,
+        label: "Furnishing",
+        value: state?.detail?.furnishing ?? "-",
+      },
+
+      // { icon: Home, label: "Property Type", value: data?.property_type?.name ?? "-" },
+    ];
+  }
+
+  if (state?.detail?.property_type?.name == "Agricultural") {
+    details = [
+      {
+        icon: Maximize2,
+        label: "Total Area",
+        value: formatNumber(state?.detail?.total_area) ?? "-",
+      },
+
+      {
+        icon: Home,
+        label: "Offer Type",
+        value: capitalizeFLetter(state?.detail?.listing_type) ?? "-",
+      },
+
+      {
+        icon: Home,
+        label: "Status",
+        value: capitalizeFLetter(state?.detail?.status) ?? "-",
+      },
+
+      // { icon: Home, label: "Property Type", value: data?.property_type?.name ?? "-" },
+    ];
+  }
+
+  if (state?.detail?.property_type?.name == "Industrial") {
+    details = [
+      {
+        icon: Maximize2,
+        label: "Total Area",
+        value: formatNumber(state?.detail?.total_area) ?? "-",
+      },
+
+      {
+        icon: Maximize2,
+        label: "Built up Area",
+        value: formatNumber(state?.detail?.built_up_area) ?? "-",
+      },
+
+      {
+        icon: Home,
+        label: "Offer Type",
+        value: capitalizeFLetter(state?.detail?.listing_type) ?? "-",
+      },
+
+      ...(state?.detail?.bathrooms
+        ? [
+            {
+              icon: ToiletIcon,
+              label: "Washroom",
+              value: state?.detail?.bathrooms ?? "-",
+            },
+          ]
+        : []),
+
+      ...(state?.detail?.built_year
+        ? [
+            {
+              icon: Calendar,
+              label: "Year Built",
+              value: state?.detail?.built_year ?? "-",
+            },
+          ]
+        : []),
+
+      {
+        icon: Star,
+        label: "Status",
+        value: capitalizeFLetter(state?.detail?.status) ?? "-",
+      },
+      {
+        icon: ArmchairIcon,
+        label: "Furnishing",
+        value: state?.detail?.furnishing ?? "-",
+      },
+
+      // { icon: Home, label: "Property Type", value: data?.property_type?.name ?? "-" },
+    ];
+  }
+
+  if (state?.detail?.property_type?.name == "Commercial") {
+    details = [
+      {
+        icon: Maximize2,
+        label: "Total Area",
+        value: formatNumber(state?.detail?.total_area) ?? "-",
+      },
+
+      {
+        icon: Maximize2,
+        label: "Built up Area",
+        value: formatNumber(state?.detail?.built_up_area) ?? "-",
+      },
+
+      {
+        icon: Home,
+        label: "Offer Type",
+        value: capitalizeFLetter(state?.detail?.listing_type) ?? "-",
+      },
+
+      ...(state?.detail?.bathrooms
+        ? [
+            {
+              icon: ToiletIcon,
+              label: "Washroom",
+              value: state?.detail?.bathrooms ?? "-",
+            },
+          ]
+        : []),
+
+      ...(state?.detail?.built_year
+        ? [
+            {
+              icon: Calendar,
+              label: "Year Built",
+              value: state?.detail?.built_year ?? "-",
+            },
+          ]
+        : []),
+
+      {
+        icon: Star,
+        label: "Status",
+        value: capitalizeFLetter(state?.detail?.status) ?? "-",
+      },
+
+      {
+        icon: ArmchairIcon,
+        label: "Furnishing",
+        value: state?.detail?.furnishing ?? "-",
+      },
+
+      // { icon: Home, label: "Property Type", value: data?.property_type?.name ?? "-" },
+    ];
+  }
 
   const handleclick = (data) => {
     clickSimilarProperty(data);
@@ -272,6 +475,20 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
 
   const handleRedirect = () => {
     router.push(`/property-detail/${state.detail?.id}`);
+  };
+
+  const getIcon = (name) => {
+    const lowerName = name.toLowerCase();
+    if (lowerName.includes("security")) return Shield;
+    if (lowerName.includes("parking")) return Car;
+    if (lowerName.includes("atm") || lowerName.includes("bank"))
+      return Banknote;
+    if (lowerName.includes("power backup")) return Zap;
+    if (lowerName.includes("convenience store")) return ShoppingBag;
+    if (lowerName.includes("sports")) return Landmark;
+    if (lowerName.includes("visitor")) return Users;
+    // Default icon if no match is found
+    return CheckCircle2;
   };
 
   return (
@@ -299,7 +516,7 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
             onClick={() => handleRedirect()}
           >
             <div className="space-y-2">
-              <h1 className="text-3xl font-bold cursor-pointer">
+              <h1 className="text-2xl font-bold cursor-pointer">
                 {state.detail?.title || "Property Title"}
               </h1>
               <div className="flex items-center flex-wrap gap-3 text-sm text-gray-600">
@@ -314,19 +531,19 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
                 </span>
               </div>
 
-              <div className="flex items-center gap-6 text-gray-700 mt-2">
-                <div className="flex items-center gap-1">
+              <div className="flex flex-wrap items-center gap-2 xs:gap-6 text-gray-700 pt-2">
+                <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-md" >
                   <Bed size={18} />{" "}
                   <span>{state.detail?.bedrooms || 0} bed</span>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-md">
                   <Bath size={18} />{" "}
                   <span>{state.detail?.bathrooms || 0} bath</span>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-md">
                   <Square size={18} />{" "}
                   <span>
-                    {formatNumber(state.detail?.built_up_area || 0)} sqft
+                    {formatNumber(state.detail?.total_area || 0)} sqft
                   </span>
                 </div>
               </div>
@@ -338,7 +555,7 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
             onClick={() => handleRedirect()}
           >
             <div>
-              <p className="text-2xl font-bold">
+              <p className="text-xl font-bold">
                 {/* {formatToINR(state.detail?.price || 0)} */}
                 {formatPriceRange(
                   state.detail?.price_range?.minimum_price,
@@ -486,22 +703,27 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
             className="rounded-2xl shadow p-4"
             onClick={() => handleRedirect()}
           >
-            <h3 className="text-xl font-semibold mb-6">Overview</h3>
-            <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6">
-              {details?.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-4">
-                  <div className="p-3 rounded-xl border w-12 h-12 flex items-center justify-center">
-                    <item.icon className="w-6 h-6 text-gray-700" />
+            <h3 className="text-xl font-semibold mb-3">Overview</h3>
+            <div className="grid grid-cols-2  gap-4">
+              {details.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center gap-3   transition-shadow duration-200"
+                >
+                  <div className="flex-shrink-0 w-10 h-10 bg-red-50  text-red-500  rounded-full flex items-center justify-center">
+                    <item.icon className="w-5 h-5" />
                   </div>
-                  <div>
-                    <h4 className="font-medium text-gray-900">{item?.label}</h4>
-                    {item?.value && (
-                      <p className="text-gray-600 text-sm">{item?.value}</p>
-                    )}
+                  <div className="flex flex-col">
+                    <span className="text-sm text-gray-500">{item.label}</span>
+                    <span className="text-md font-semibold text-gray-900 0">
+                      {typeof item.value === "number"
+                        ? formatNumber(item.value)
+                        : item.value}
+                    </span>
                   </div>
                 </div>
               ))}
-            </CardContent>
+            </div>
           </Card>
 
           <Card
@@ -531,147 +753,104 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
             className="rounded-2xl shadow p-6"
             onClick={() => handleRedirect()}
           >
-            <h3 className="text-xl font-semibold mb-6">Features & Amenities</h3>
+            <h3 className="text-xl font-semibold mb-4">Features & Amenities</h3>
 
-            <CardContent>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 ">
-                {state.detail?.amenities?.map((item, i) => (
-                  <li key={i} className="text-gray-800 flex items-start">
-                    <span className="text-gray-500 mr-2">•</span>
-                    {item?.name}
-                  </li>
-                ))}
-              </ul>
+            {/* Responsive Icon Grid */}
+            <CardContent className="grid grid-cols-2  gap-4">
+              {state.detail?.amenities?.map((item, i) => {
+                const Icon = getIcon(item.name);
+                return (
+                  // Card for each amenity
+                  <div
+                    key={i}
+                    className="flex flex-col items-center p-4 text-center bg-white border border-gray-200 rounded-lg shadow-sm transition duration-300 ease-in-out hover:shadow-md hover:border-blue-500"
+                  >
+                    {/* Icon - larger and colored for visibility */}
+                    <div className="mb-2 p-2 bg-red-50   rounded-full">
+                      <Icon
+                        className="w-6 h-6 text-red-500"
+                        aria-hidden="true"
+                      />
+                    </div>
+
+                    {/* Feature Name - bold and easy to read */}
+                    <p className="text-sm font-medium text-gray-700 leading-snug">
+                      {item.name}
+                    </p>
+                  </div>
+                );
+              })}
             </CardContent>
           </Card>
         </div>
 
-        <Card className="space-y-6 relative overflow-x-hidden p-6">
-          <div>
-            <h2 className="text-xl font-semibold  text-gray-900 mb-2">
-              Similar properties
-            </h2>
-          </div>
+        <div className="border p-6 shadow-lg rounded-2xl">
+          {state.similarProperty.length > 0 && (
+            <>
+              {/* <SimilarListings1 data={state.similarProperty} /> */}
 
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between pointer-events-none z-10">
-              <button
-                className="featured-prev p-3 rounded-full border bg-white shadow-lg hover:bg-gray-100 transition-colors pointer-events-auto ml-4"
-                aria-label="Previous"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <button
-                className="featured-next p-3 rounded-full border bg-white shadow-lg hover:bg-gray-100 transition-colors pointer-events-auto mr-4"
-                aria-label="Next"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
-
-            <Swiper
-              modules={[Navigation]}
-              spaceBetween={24}
-              slidesPerView={1}
-              navigation={{
-                prevEl: ".featured-prev",
-                nextEl: ".featured-next",
-              }}
-              breakpoints={{
-                640: { slidesPerView: 1 },
-                768: { slidesPerView: 1 },
-                1024: { slidesPerView: 1 },
-              }}
-              className="!overflow-visible"
-            >
-              {state.similarProperty?.map((property) => (
-                <SwiperSlide
-                  key={property.id}
-                  onClick={() => handleclick(property)}
-                >
-                  <div className="flex justify-center">
-                    <Card className="overflow-hidden cursor-pointer rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 w-full max-w-lg">
-                      <div className="relative h-48 bg-gray-100">
-                        {property?.primary_image ? (
-                          <Image
-                            src={property.primary_image}
-                            alt={property.title || "Property image"}
-                            fill
-                            className="object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                            <div className="text-center text-gray-500">
-                              <div className="text-2xl mb-2">🏠</div>
-                              <p className="text-sm">No image available</p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      <CardContent className="p-5 space-y-4">
-                        <div className="space-y-2">
-                          <h3 className="font-bold text-gray-900 text-xl leading-tight">
-                            {property.title}
-                          </h3>
-                          <div className="flex items-center text-gray-600">
-                            <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
-                            <span className="text-sm truncate">{`${capitalizeFLetter(
-                              property.city
-                            )}, ${capitalizeFLetter(property.state)}`}</span>
-                          </div>
-                        </div>
-
-                        <div className="border-t border-gray-200"></div>
-
-                        <div className="space-y-1">
-                          <p className="text-2xl font-bold text-gray-900">
-                            {/* {formatToINR(property?.price)} */}
-                            {formatPriceRange(
-                              property?.price_range?.minimum_price,
-                              property?.price_range?.maximum_price
-                            )}{" "}
-                            {property.listing_type == "rent" && (
-                              <span className="text-lg font-normal"> / mo</span>
-                            )}
-                          </p>
-                        </div>
-
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-4 text-gray-700 text-sm">
-                            <div className="flex items-center space-x-1">
-                              <Bed className="h-4 w-4" />
-                              <span>{property.bedrooms || 0} BHK</span>
-                            </div>
-                            <div className="flex items-center space-x-1">
-                              <Square className="h-4 w-4" />
-                              <span>
-                                {formattedNoDecimal(property.total_area)} sqft
-                              </span>
-                            </div>
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            {property.bedrooms && property.bedrooms > 1
-                              ? `${property.bedrooms} BHK`
-                              : "1 BHK"}
-                            {property.property_type &&
-                              ` ${property.property_type?.name}`}
-                          </div>
-                        </div>
-
-                        <div className="pt-2">
-                          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg transition-colors">
-                            Contact
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
+              <div className="space-y-4">
+                {/* Header with navigation */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-xl font-semibold"> Similar properties</h2>
+                    {/* <p className="text-gray-600 text-sm">
+                                Aliquam lacinia diam quis lacus euismod
+                              </p> */}
                   </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
-        </Card>
+
+                  {/* Custom Navigation */}
+                  <div className="flex gap-2">
+                    <button
+                      className="featured-prev p-2 rounded-full border bg-white shadow hover:bg-gray-100"
+                      aria-label="Previous"
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </button>
+                    <button
+                      className="featured-next p-2 rounded-full border bg-white shadow hover:bg-gray-100"
+                      aria-label="Next"
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Swiper */}
+                <Swiper
+                  modules={[Navigation]}
+                  spaceBetween={20}
+                  slidesPerView={1}
+                  navigation={{
+                    prevEl: ".featured-prev",
+                    nextEl: ".featured-next",
+                  }}
+                  // breakpoints={{
+                  //   640: { slidesPerView: 1 },
+
+                  // }}
+                >
+                  {state.similarProperty?.map(
+                    (property: any, index: number) => (
+                      <SwiperSlide
+                        key={property.id}
+                        className="!flex !h-auto items-stretch"
+                      >
+                        <div key={index} className="flex flex-col flex-1">
+                          <PropertyCard
+                            property={property}
+                            view="grid"
+                            list={data}
+                          />
+                        </div>
+                      </SwiperSlide>
+                    )
+                  )}
+                </Swiper>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import Gallery from "@/components/real-estate/property-detail/Gallery.component"
 import PropertyDetails from "@/components/real-estate/property-detail/PropertyDetails.component";
 import PropertyHeader from "@/components/real-estate/property-detail/PropertyHeader.component";
 import MapSection from "@/components/real-estate/property-detail/MapSection.component";
+import MobileMapSection from "@/components/real-estate/property-detail/MobileMapSection.component";
 import FloorPlans from "@/components/real-estate/property-detail/FloorPlans.component";
 import Amenities from "@/components/real-estate/property-detail/Amenities.component";
 import Reviews from "@/components/real-estate/property-detail/Reviews.component";
@@ -283,7 +284,14 @@ export default function PropertyDetailPage() {
   const sections = [
     { id: "overview", component: <PropertyDetails data={state.detail} /> },
     { id: "description", component: <PropertyDesc data={state.detail} /> },
-    { id: "map", component: <MapSection data={state.detail} /> },
+
+    // 👇 Add className control for MapSection visibility
+    {
+      id: "map",
+      component: <MapSection data={state.detail} />,
+      className: "hidden xl:block", // only show on xl+
+    },
+
     {
       id: "amenities",
       component: <Amenities data={state.detail?.amenities} />,
@@ -325,14 +333,21 @@ export default function PropertyDetailPage() {
           <PropertyHeader data={state.detail} updateList={() => getDetails()} />
         </div>
         <div className="order-1 md:order-2">
-          <Gallery images={state.detail?.images} data={state.detail}  updateList={() => getDetails()}/>
+          <Gallery
+            images={state.detail?.images}
+            data={state.detail}
+            updateList={() => getDetails()}
+          />
         </div>
+      </div>
+      <div className="block xl:hidden">
+        <MobileMapSection data={state.detail} />
       </div>
 
       <PropertyTabs sections={tabSections} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 ">
+        <div className="lg:col-span-2 space-y-4 lg:space-y-6">
           {sections.map((sec, idx) => {
             // Define an array of background colors to cycle through
             const bgColors = ["bg-gray-50", "bg-white"];
@@ -342,7 +357,9 @@ export default function PropertyDetailPage() {
               <div
                 key={sec.id}
                 id={sec.id}
-                className={`${bgClass} border rounded-2xl shadow p-6`}
+                className={`${bgClass} border rounded-2xl shadow p-6 ${
+                  sec.className || ""
+                }`}
               >
                 {sec.component}
               </div>

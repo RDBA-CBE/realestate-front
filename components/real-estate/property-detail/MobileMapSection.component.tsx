@@ -12,10 +12,12 @@ import {
   BusIcon,
   HospitalIcon,
   Icon,
+  MapPin,
   School,
   School2,
   ShoppingBag,
   UtensilsCrossed,
+  X,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
@@ -31,6 +33,9 @@ const GoogleMaps = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const autocompleteRef = useRef(null);
   const radius = 3000; // 3km radius
+
+  const [showMap, setShowMap] = useState(false);
+
 
   // Place type configuration
   const placeTypes = {
@@ -201,62 +206,55 @@ const GoogleMaps = (props) => {
   }
 
   return (
-    <Card className="border-none shadow-none bg-transparent ">
-      <h3 className="text-xl font-semibold mb-4">
-        Location & Nearby Amenities
-      </h3>
-
-      <CardContent className="space-y-2 mb-6">
-        <div className="flex gap-2">
-          <span className="font-semibold w-24 text-gray-500">Address</span>
-          <span>{data?.address || "Not specified"}</span>
-        </div>
-        <div className="flex gap-2">
-          <span className="font-semibold w-24 text-gray-500">City</span>
-          <span>{data?.city || "Not specified"}</span>
-        </div>
-        <div className="flex gap-2">
-          <span className="font-semibold w-24 text-gray-500">State</span>
-          <span>{data?.state || "Not specified"}</span>
-        </div>
-      </CardContent>
-
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          height: "60vh",
-          display: "flex",
-          flexDirection: "column",
-        }}
+    <>
+    {/* ---- Property Card ---- */}
+      <Card
+        className="flex items-center gap-3 p-4 mt-5 bg-gray-50 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 w-[100%] cursor-pointer "
+        onClick={() => setShowMap(true)}
       >
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          {/* Map */}
-          <div style={{ flex: 1 }}>
+        <div className="flex items-center justify-center w-20 h-14 xs:w-12 xs:h-12  sm:w-14 sm:h-14  bg-white rounded-full border border-gray-200">
+          <MapPin className="text-red-600 w-6 h-6" />
+        </div>
+
+        <CardContent className="p-0">
+          <p className="text-xs text-gray-500">Property Location</p>
+          <p className="text-sm font-semibold text-gray-800 mt-1">
+            {data?.address || "Not specified"}
+          </p>
+          <a
+            href="#"
+            className="text-xs text-red-600 hover:underline font-medium"
+          >
+            View on Map
+          </a>
+        </CardContent>
+      </Card>
+
+      {/* ---- Full Screen Map Overlay ---- */}
+      {showMap && (
+        <div className="fixed inset-0 z-50 flex flex-col bg-white">
+          {/* Close button */}
+          <button
+            onClick={() => setShowMap(false)}
+            className="absolute top-4 right-4 z-50 p-2 bg-white rounded-full shadow-md border border-gray-200 hover:bg-gray-100 transition"
+          >
+            <X className="w-5 h-5 text-gray-700" />
+          </button>
+
+          {/* ---- MAP SECTION ---- */}
+          <div className="flex-1 relative">
             <GoogleMap
               zoom={15}
               center={mapCenter}
-              mapContainerStyle={{
-                width: "100%",
-                height: "100%",
-              }}
+              onLoad={(map) => setMap(map)}
+              mapContainerStyle={{ width: "100%", height: "100%" }}
               options={{
                 zoomControl: true,
                 streetViewControl: false,
                 mapTypeControl: false,
                 fullscreenControl: false,
               }}
-              onLoad={(map) => setMap(map)}
-              onClick={() => {
-                setSelectedPlace(null);
-              }}
+              onClick={() => setSelectedPlace(null)}
             >
               {/* Current location marker */}
               {userLocation && (
@@ -264,13 +262,12 @@ const GoogleMaps = (props) => {
                   position={userLocation}
                   icon={{
                     url: "/assets/images/park.png",
-                    // scaledSize: { width: 60, height: 40 },
                   }}
                   zIndex={1000}
                 />
               )}
 
-              {/* Place markers */}
+              {/* Nearby markers */}
               {activeFilter &&
                 places.map((place) => (
                   <Marker
@@ -278,13 +275,12 @@ const GoogleMaps = (props) => {
                     position={place.geometry.location}
                     icon={{
                       url: placeTypes[activeFilter].iconUrl,
-                      // scaledSize: { width: 32, height: 32 },
                     }}
                     onClick={() => setSelectedPlace(place)}
                   />
                 ))}
 
-              {/* Info window */}
+              {/* InfoWindow */}
               {selectedPlace && (
                 <InfoWindow
                   position={selectedPlace.geometry.location}
@@ -323,222 +319,115 @@ const GoogleMaps = (props) => {
                 </InfoWindow>
               )}
             </GoogleMap>
-          </div>
 
-          {/* Search box */}
-          <div
-            style={{
-              position: "absolute",
-              top: "20px",
-              left: "20px",
-              zIndex: 10,
-              width: "300px",
-            }}
-          >
-            <Autocomplete
-              onLoad={(autocomplete) => {
-                autocompleteRef.current = autocomplete;
-                autocomplete.setComponentRestrictions({ country: "in" });
-              }}
-              onPlaceChanged={handlePlaceChanged}
-            >
-              <input
-                type="text"
-                placeholder="Search location..."
-                style={{
-                  width: "100%",
-                  padding: "8px 12px ",
-                  border: "1px solid #ddd",
-                  borderRadius: "20px",
-                  boxShadow: "0 2px 10px 7px #00000033",
-                  outline: "none",
+            {/* ---- Search box ---- */}
+            <div className="absolute top-5 left-5 z-50 w-[300px]">
+              <Autocomplete
+                onLoad={(autocomplete) => {
+                  autocompleteRef.current = autocomplete;
+                  autocomplete.setComponentRestrictions({ country: "in" });
                 }}
-              />
-            </Autocomplete>
-          </div>
-
-          {/* Locate me button */}
-          <button
-            onClick={handleLocateMe}
-            style={{
-              position: "absolute",
-              top: "70px",
-              left: "20px",
-              zIndex: 10,
-              padding: "8px",
-              backgroundColor: "white",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-              cursor: "pointer",
-            }}
-          >
-            <img
-              src="/assets/images/locate-me.png"
-              alt="Locate me"
-              style={{ width: "20px", height: "20px" }}
-            />
-          </button>
-
-          {/* Places list panel */}
-          {showList && activeFilter && (
-            <div
-              style={{
-                position: "absolute",
-                bottom: "0px",
-                left: "20px",
-                right: "20px",
-                borderTopLeftRadius: "20px",
-                borderTopRightRadius: "20px",
-                boxShadow: "0 2px 10px 7px #00000033",
-                overflow: "hidden", // <-- clip scrollbar inside
-                zIndex: 10,
-                width: "60%",
-                margin: "auto",
-              }}
-            >
-              <div
-                style={{
-                  maxHeight: "25vh",
-                  overflowY: "auto", // <-- scrollbar stays inside
-                  backgroundColor: "white",
-                  padding: "16px",
-                  boxSizing: "border-box",
-                }}
+                onPlaceChanged={handlePlaceChanged}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "12px",
-                  }}
-                >
-                  <h3
-                    style={{
-                      margin: 0,
-                      fontSize: "18px",
-                      borderBottom: "1px solid #eee",
-                      width: "100%",
-                      paddingBottom: "5px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                    }}
-                  >
-                    {(() => {
-                      const ActiveIcon = placeTypes[activeFilter]?.icon;
-                      if (!ActiveIcon) return null;
-                      return (
-                        <ActiveIcon
-                          style={{
-                            width: "20px",
-                            height: "20px",
-                            color: placeTypes[activeFilter]?.color,
-                          }}
-                        />
-                      );
-                    })()}
-                    {places.length} {placeTypes[activeFilter]?.label} around
-                    your location
-                  </h3>
-                  <button
-                    onClick={() => setShowList(false)}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      fontSize: "20px",
-                      cursor: "pointer",
-                      marginTop: "-20px",
-                    }}
-                  >
-                    ×
-                  </button>
-                </div>
+                <input
+                  type="text"
+                  placeholder="Search location..."
+                  className="w-full px-4 py-2 rounded-full border border-gray-200 shadow-lg outline-none"
+                />
+              </Autocomplete>
+            </div>
 
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "12px",
-                  }}
-                >
+            {/* ---- Locate Me Button ---- */}
+            <button
+              onClick={handleLocateMe}
+              className="absolute top-[90px] left-5 z-50 p-2 bg-white border border-gray-200 rounded-md shadow-md hover:bg-gray-50"
+            >
+              <img
+                src="/assets/images/locate-me.png"
+                alt="Locate me"
+                className="w-5 h-5"
+              />
+            </button>
+
+            {/* ---- Places List Panel ---- */}
+            {showList && activeFilter && (
+              <div className="absolute bottom-0 left-5 right-5 z-50 bg-white shadow-xl rounded-t-2xl max-h-[50vh] overflow-y-auto border-t">
+                <div className="p-4">
+                  <div className="flex justify-between items-center mb-3">
+                    <h3 className="font-semibold text-lg flex items-center gap-2 border-b pb-1">
+                      {(() => {
+                        const ActiveIcon = placeTypes[activeFilter]?.icon;
+                        if (!ActiveIcon) return null;
+                        return (
+                          <ActiveIcon
+                            className="w-5 h-5"
+                            style={{
+                              color: placeTypes[activeFilter]?.color,
+                            }}
+                          />
+                        );
+                      })()}
+                      {places.length} {placeTypes[activeFilter]?.label} nearby
+                    </h3>
+                    <button
+                      onClick={() => setShowList(false)}
+                      className="text-2xl font-bold text-gray-600"
+                    >
+                      ×
+                    </button>
+                  </div>
                   {places.slice(0, 10).map((place) => (
                     <div
                       key={place.place_id}
-                      style={{
-                        padding: "5px",
-                        borderBottom: "1px solid #eee",
-                        cursor: "pointer",
-                        backgroundColor:
-                          selectedPlace?.place_id === place.place_id
-                            ? "#f5f5f5"
-                            : "white",
-                      }}
                       onClick={() => {
                         setSelectedPlace(place);
                         map.panTo(place.geometry.location);
                         map.setZoom(16);
                         setShowList(false);
                       }}
+                      className={`p-2 border-b cursor-pointer hover:bg-gray-50 ${
+                        selectedPlace?.place_id === place.place_id
+                          ? "bg-gray-100"
+                          : ""
+                      }`}
                     >
-                      <h4 style={{ margin: "0 0 2px 0", fontSize: "16px" }}>
-                        {place.name}
-                      </h4>
-                      <p style={{ margin: 0, color: "#666", fontSize: "14px" }}>
+                      <h4 className="font-medium text-sm">{place.name}</h4>
+                      <p className="text-xs text-gray-600">
                         {place.vicinity}
                       </p>
                     </div>
                   ))}
                 </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
 
-        {/* Filter buttons */}
-        <div
-          style={{
-            display: "flex",
-            padding: "12px 16px",
-            backgroundColor: "#fff",
-            borderTop: "1px solid #eee",
-            gap: "8px",
-            overflowX: "auto",
-          }}
-        >
-          {Object.entries(placeTypes).map(([key, config]) => (
-            <button
-              key={key}
-              onClick={() => handleFilterClick(key)}
-              style={{
-                padding: "6px 16px",
-                backgroundColor:
-                  activeFilter === key ? config.color + "20" : "#fff",
-                color:  config.color ,
-                border: `1px solid ${
-                  config.color 
-                }`,
-                borderRadius: "20px",
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-                fontWeight: activeFilter === key ? "600" : "400",
-                transition: "all 0.2s",
-                fontSize: "14px",
-                display: "flex",
-                alignItems: "center",
-                gap: "5px",
-              }}
-            >
-              <span>
-                <config.icon className="w-4" />{" "}
-              </span>{" "}
-              {config.label}
-            </button>
-          ))}
+            {/* ---- Filter Buttons ---- */}
+            <div className="absolute bottom-0 left-0 right-0 flex gap-2 p-3 bg-white border-t overflow-x-auto z-50">
+              {Object.entries(placeTypes).map(([key, config]) => (
+                <button
+                  key={key}
+                  onClick={() => handleFilterClick(key)}
+                  className={`px-4 py-1 rounded-full border text-sm font-medium flex items-center gap-2 whitespace-nowrap transition ${
+                    activeFilter === key
+                      ? "bg-opacity-10 font-semibold"
+                      : "bg-white"
+                  }`}
+                  style={{
+                    color: config.color,
+                    borderColor: config.color,
+                    backgroundColor:
+                      activeFilter === key ? config.color + "20" : "#fff",
+                  }}
+                >
+                  <config.icon className="w-4" />
+                  {config.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
-    </Card>
+      )}
+    </>
   );
 };
 

@@ -586,7 +586,7 @@ const onPlaceChanged = () => {
 
   return (
     <Card className="w-full">
-      <div className="relative w-full h-[700px]">
+      <div className="relative w-full h-[calc(100vh-65px)]">
         {/* Search Bar */}
         <div
           className={`absolute top-4 left-1/2 transform -translate-x-1/2 z-10 w-80`}
