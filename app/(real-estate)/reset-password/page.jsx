@@ -2,8 +2,8 @@
 
 import LoginForm from "@/components/ui/login-form";
 import { useState } from "react";
-import ChangePasswordConfirmForm from "../../../../../components/common-components/ChangePasswordConfirm";
-import ForgotPasswordForm from "../../../../../components/common-components/ForgotPasswordPasswordForm";
+import ChangePasswordConfirmForm from "../../../components/common-components/ChangePasswordConfirm";
+import ForgotPasswordForm from "../../../components/common-components/ForgotPasswordPasswordForm";
 
 export default function Login() {
     // const [isAuthenticated, setIsAuthenticated] = useState(

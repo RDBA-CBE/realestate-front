@@ -532,7 +532,7 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
               </div>
 
               <div className="flex flex-wrap items-center gap-2 xs:gap-6 text-gray-700 pt-2">
-                <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-md" >
+                <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-md">
                   <Bed size={18} />{" "}
                   <span>{state.detail?.bedrooms || 0} bed</span>
                 </div>
@@ -793,7 +793,10 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
                 {/* Header with navigation */}
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-xl font-semibold"> Similar properties</h2>
+                    <h2 className="text-xl font-semibold">
+                      {" "}
+                      Similar properties
+                    </h2>
                     {/* <p className="text-gray-600 text-sm">
                                 Aliquam lacinia diam quis lacus euismod
                               </p> */}
@@ -835,12 +838,14 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
                       <SwiperSlide
                         key={property.id}
                         className="!flex !h-auto items-stretch"
+                        // onClick={() => handleclick(property)}
                       >
                         <div key={index} className="flex flex-col flex-1">
                           <PropertyCard
                             property={property}
                             view="grid"
                             list={data}
+                            handleClick={() => handleclick(property)}
                           />
                         </div>
                       </SwiperSlide>

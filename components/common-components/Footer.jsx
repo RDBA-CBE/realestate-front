@@ -11,7 +11,7 @@ const Footer = () => {
             <p className="text-gray-400 mb-4">Talk to our experts or Browse through more properties.</p>
             <div className="space-y-2">
               <p className="font-semibold">+(0) 123 050 945 02</p>
-              <p className="text-red-400 font-semibold">hi@homez.com</p>
+              <p className="text-red-400 font-semibold">realestate@gmail.com</p>
             </div>
           </div>
           
@@ -40,7 +40,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-gray-800 pt-8 text-center">
-          <p className="text-gray-400">© ib-themes - All rights reserved</p>
+          <p className="text-gray-400">© Real Estate - All rights reserved</p>
         </div>
       </div>
     </footer>
