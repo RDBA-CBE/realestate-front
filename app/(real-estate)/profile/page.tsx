@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Badge,
@@ -20,21 +20,144 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import ContactAgentForm from "@/components/real-estate/property-detail/ContactAgentForm.component";
-import { useSetState } from "@/utils/function.utils";
-import { Textarea } from "@/components/ui/textarea";
+import { Failure, Success, useSetState } from "@/utils/function.utils";
+
 import { Input } from "@/components/ui/input";
 import CustomPhoneInput from "@/components/common-components/phoneInput";
-import TextArea from "@/components/common-components/textArea";
+
 import { useRouter } from "next/navigation";
+import Utils from "@/imports/utils.import";
+import Models from "@/imports/models.import";
+import * as Yup from "yup";
+import TextArea from "@/components/common-components/textArea";
 
 export default function ProfilePage() {
   const router = useRouter();
   const [state, setState] = useSetState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    address: "",
     isEditProfile: false,
     isChangePassword: false,
+    id: null,
+    loading: false,
+    error: null,
   });
 
-  const handleSubmit = () => {};
+  useEffect(() => {
+    const id = localStorage.getItem("userId");
+    setState({ id: id });
+  }, []);
+
+  useEffect(() => {
+    getUser();
+    wishlist();
+  }, []);
+
+  console.log("state.id", state.id);
+
+  const getUser = async () => {
+    try {
+      const id = localStorage.getItem("userId");
+      setState({ loading: true });
+
+      const res: any = await Models.user.details(id);
+      setState({
+        loading: false,
+        user: res,
+        first_name: res?.first_name || "",
+        last_name: res?.last_name || "",
+        email: res?.email || "",
+        phone: res?.phone || "",
+        address: res?.address || "",
+      });
+
+      console.log("user detail", res);
+    } catch (error) {
+      setState({
+        loading: false,
+      });
+
+      console.log("✌️error --->", error);
+    }
+  };
+
+  const wishlist = async () => {
+    try {
+      setState({ loading: true });
+      const wishlist_id = localStorage.getItem("wishlist_id");
+      const res: any = await Models.wishlist.list(wishlist_id);
+      console.log("✌️res --->", res);
+      setState({
+        properties: res?.properties || [],
+        loading: false,
+      });
+    } catch (error) {
+      console.log("✌️error --->", error);
+      setState({
+        error: "Failed to load wishlist",
+        loading: false,
+      });
+    }
+  };
+
+  const handleRemoveFromWishlist = async (propertyId: number) => {
+    try {
+      await Models.wishlist.remove_property({
+        property_id: propertyId,
+      });
+
+      const updatedProperties = state.properties.filter(
+        (property: any) => property.id !== propertyId
+      );
+      setState({ properties: updatedProperties });
+      Success("Removed from your wishlist !");
+    } catch (error) {
+      console.log("✌️error removing from wishlist --->", error);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      const body = {
+        first_name: state.first_name,
+        last_name: state.last_name,
+        email: state.email,
+        phone: state.phone,
+
+        address: state.address,
+      };
+
+      console.log("body", body);
+
+      await Utils.Validation.profileSchema.validate(body, {
+        abortEarly: false,
+      });
+
+      const res: any = await Models.user.update(body, state.id);
+
+      console.log("res", res);
+
+      Success("Profile Updated");
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const validationErrors = {};
+        error.inner.forEach((err) => {
+          validationErrors[err.path] = err?.message;
+        });
+        console.log("✌️validationErrors --->", validationErrors);
+
+        setState({ error: validationErrors, loading: false });
+      } else {
+        Failure(error?.error);
+      }
+      console.log("✌️error --->", error);
+      setState({ loading: false });
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,7 +172,7 @@ export default function ProfilePage() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="min-h-[93vh]  px-8    "
+      className="min-h-[93vh]  px-8"
     >
       <div className="container mt-6">
         <div className="w-full bg-gray-100  text-white rounded-xl flex flex-col md:flex-row items-center justify-between p-4 md:p-6 shadow-sm">
@@ -65,16 +188,17 @@ export default function ProfilePage() {
 
             <div>
               <div className="flex flex-col">
-                <h2 className="text-lg text-black font-semibold">Jane Doe</h2>
+                <h2 className="text-lg text-black font-semibold">
+                  {state.user?.first_name} {state.user?.last_name}
+                </h2>
                 <div className="flex gap-2 px-0 mx-0">
-                  <p className="text-gray-600">john@gmail.com |</p> 
-                  <p className="text-gray-600">65464876552</p>
-                
+                  <p className="text-gray-600">{state.user?.email} |</p>
+                  <p className="text-gray-600">{state.user?.phone}</p>
                 </div>
               </div>
 
               <p className="text-sm text-gray-600 mt-1">
-                3 Saved Properties · 1 Active Search · Last Login: Just Now
+                {state?.properties?.length} Wishlist · 1 Active Search · Last Login: Just Now
               </p>
             </div>
           </div>
@@ -173,25 +297,57 @@ export default function ProfilePage() {
           <div className="space-y-5 flex flex-col h-full">
             <h2 className="text-lg font-semibold text-black">My Activity</h2>
 
-            <div className="grid grid-cols-3 !gap-2 flex-1">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="relative rounded-md overflow-hidden bg-gray-700 aspect-[4/3]"
-                >
-                  <Image
-                    src={`/assets/images/real-estate/${i}.png`}
-                    alt={`Saved Home ${i}`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                  <div className="absolute top-2 right-2 bg-white rounded-full p-1">
-                    <Heart className="w-4 h-4 fill-current text-red-500" />
+            {state?.properties?.length > 0 ? (
+              <div className="grid grid-cols-3 !gap-2 flex-1">
+                {state?.properties?.slice(0, 3).map((property, index) => (
+                  <div
+                    key={index}
+                    className="relative rounded-md overflow-hidden bg-gray-700 aspect-[4/3]"
+                  >
+                    <div className="relative">
+                      <Image
+                        src={property.primary_image}
+                        alt={property.title}
+                        width={400}
+                        height={250}
+                        className="w-full h-48 object-cover"
+                      />
+                      <button
+                        onClick={() => handleRemoveFromWishlist(property.id)}
+                        className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-red-50 hover:text-red-600 transition-colors"
+                      >
+                        <Heart className="w-4 h-4 fill-current text-red-500" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col justify-center gap-4 items-center w-full rounded-md overflow-hidden bg-white h-48 ">
+              <div className="flex justify-center items-center gap-8 w-full ">
+                {" "}
+                {[1, 2, 3].map((i) => (
+                  <svg
+                    key={i}
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 512 512"
+                    fill="none"
+                    stroke="#00FFCC"
+                    strokeWidth="24"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-16 h-16"
+                  >
+                    <path d="M64 240L256 64l192 176" />
+                    <path d="M112 224v224h288V224" />
+                    <path d="M192 448V320h128v128" />
+                  </svg>
+                ))}
+              </div>
+              <p className="font-xl text-black font-semibold">No Properties added to Wishlist</p>
+              </div>
+              
+            )}
 
             <div className="flex gap-3">
               <Button
@@ -202,9 +358,9 @@ export default function ProfilePage() {
               </Button>
               <Button
                 className="bg-red-500 hover:bg-red-700 text-white w-full"
-                onClick={() => router.push("/wishlist")}
+                onClick={() => router.push(state?.properties?.length > 0 ? "/wishlist" : "/property-list")}
               >
-                View All Favorites
+               {state?.properties?.length > 0 ? "View All Favorites" : "Add Properties to Wishlist"}
               </Button>
             </div>
 
@@ -317,14 +473,25 @@ export default function ProfilePage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 !gap-3">
                       {/* Full Name */}
                       <Input
-                        name="full_name"
-                        title="Full Name"
-                        value={state.full_name}
+                        name="first_name"
+                        title="First Name"
+                        value={state.first_name}
                         onChange={handleInputChange}
                         placeholder="Enter your full name"
                         className="border-gray-300 rounded-lg py-2"
                         required
-                        error={state.errors?.full_name}
+                        error={state.errors?.first_name}
+                      />
+
+                      <Input
+                        name="last_name"
+                        title="Last Name"
+                        value={state.last_name}
+                        onChange={handleInputChange}
+                        placeholder="Enter your full name"
+                        className="border-gray-300 rounded-lg py-2"
+                        required
+                        error={state.errors?.last_name}
                       />
 
                       {/* Email */}
@@ -341,17 +508,19 @@ export default function ProfilePage() {
                       />
 
                       {/* Phone */}
-                      <CustomPhoneInput
+                      <Input
                         value={state.phone}
-                        onChange={(value) => setState({ phone: value })}
+                        onChange={handleInputChange}
                         title="Phone Number"
+                        placeholder="Enter your Phone"
+                        className="border-gray-300 rounded-lg py-2"
                         name="phone"
                         required
                         error={state.errors?.phone}
                       />
 
                       {/* City */}
-                      <Input
+                      {/* <Input
                         name="city"
                         title="City"
                         value={state.city}
@@ -360,10 +529,10 @@ export default function ProfilePage() {
                         className="border-gray-300 rounded-lg py-2"
                         required
                         error={state.errors?.city}
-                      />
+                      /> */}
 
                       {/* Country */}
-                      <Input
+                      {/* <Input
                         name="country"
                         title="Country"
                         value={state.country}
@@ -372,10 +541,10 @@ export default function ProfilePage() {
                         className="border-gray-300 rounded-lg py-2"
                         required
                         error={state.errors?.country}
-                      />
+                      /> */}
 
                       {/* ZIP */}
-                      <Input
+                      {/* <Input
                         name="zip"
                         title="ZIP Code"
                         value={state.zip}
@@ -384,17 +553,17 @@ export default function ProfilePage() {
                         className="border-gray-300 rounded-lg py-2"
                         required
                         error={state.errors?.zip}
-                      />
+                      /> */}
                     </div>
 
                     {/* About Me - Full Width */}
                     <div className="col-span-2">
                       <TextArea
-                        title="About Me"
-                        name="about"
+                        title="Address"
+                        name="address"
                         placeholder="Write a short description about yourself"
-                        value={state.about}
-                        onChange={(e) => setState({ about: e.target.value })}
+                        value={state.address}
+                        onChange={(e) => setState({ address: e.target.value })}
                         className="border-gray-300 rounded-lg py-2"
                         rows={4}
                       />
