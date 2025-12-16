@@ -68,7 +68,6 @@ export default function FeaturedListings(props: any) {
           640: { slidesPerView: 1 },
           1024: { slidesPerView: 3 },
         }}
-        
       >
         {data?.map((property: any, index: number) => (
           <SwiperSlide key={property.id}  className="!flex !h-auto items-stretch">
