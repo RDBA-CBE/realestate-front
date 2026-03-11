@@ -251,6 +251,7 @@ export default function ProfilePage() {
                 </Button>
               </CardContent>
             </Card>
+            
 
             <Card className="bg-white border-none text-white rounded-xl flex-1">
               <CardContent className="flex justify-between items-center p-4 h-full">
