@@ -246,216 +246,279 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
     return imageObj?.image || "/default-property-image.jpg";
   };
 
-  let details: any = [];
+  const details = [
+    {
+      icon: Maximize2,
+      label: "Total Area",
+      value: formatNumber(data?.total_area) ?? "-",
+    },
+  
+    ...(data?.built_up_area
+      ? [
+          {
+            icon: Maximize2,
+            label: "Built up Area",
+            value: formatNumber(data?.built_up_area) ?? "-",
+          },
+        ]
+      : []),
+  
+    {
+      icon: Home,
+      label: "Offer Type",
+      value: capitalizeFLetter(data?.listing_type) ?? "-",
+    },
+  
+    ...(data?.built_year
+      ? [
+          {
+            icon: Calendar,
+            label: "Year Built",
+            value: data?.built_year ?? "-",
+          },
+        ]
+      : []),
+  
+    {
+      icon: Star,
+      label: "Status",
+      value: capitalizeFLetter(data?.status) ?? "-",
+    },
+  
+    ...(data?.bedrooms
+      ? [{ icon: Bed, label: "Bedroom", value: data?.bedrooms }]
+      : []),
+  
+    ...(data?.bathrooms
+      ? [
+          {
+            icon: data?.property_type?.name === "Residential" ? Bath : ToiletIcon,
+            label: data?.property_type?.name === "Residential" ? "Bath" : "Washroom",
+            value: data?.bathrooms,
+          },
+        ]
+      : []),
+  
+    ...(data?.balcony
+      ? [{ icon: Building2, label: "Balcony", value: data?.balcony }]
+      : []),
+  
+    ...(data?.furnishing
+      ? [{ icon: ArmchairIcon, label: "Furnishing", value: data?.furnishing }]
+      : []),
+  ];
 
-  if (state?.detail?.property_type?.name == "Residential") {
-    details = [
-      {
-        icon: Maximize2,
-        label: "Total Area",
-        value: formatNumber(state?.detail?.total_area) ?? "-",
-      },
-      {
-        icon: Maximize2,
-        label: "Built up Area",
-        value: formatNumber(state?.detail?.built_up_area) ?? "-",
-      },
 
-      {
-        icon: Home,
-        label: "Offer Type",
-        value: capitalizeFLetter(state?.detail?.listing_type) ?? "-",
-      },
-      ...(state?.detail?.built_year
-        ? [
-            {
-              icon: Calendar,
-              label: "Year Built",
-              value: state?.detail?.built_year ?? "-",
-            },
-          ]
-        : []),
+  // let details: any = [];
 
-      {
-        icon: Home,
-        label: "Status",
-        value: capitalizeFLetter(state?.detail?.status) ?? "-",
-      },
+  // if (state?.detail?.property_type?.name == "Residential") {
+  //   details = [
+  //     {
+  //       icon: Maximize2,
+  //       label: "Total Area",
+  //       value: formatNumber(state?.detail?.total_area) ?? "-",
+  //     },
+  //     {
+  //       icon: Maximize2,
+  //       label: "Built up Area",
+  //       value: formatNumber(state?.detail?.built_up_area) ?? "-",
+  //     },
 
-      ...(state?.detail?.bedrooms
-        ? [
-            {
-              icon: Bed,
-              label: "Bedroom",
-              value: state?.detail?.bedrooms ?? "-",
-            },
-          ]
-        : []),
-      ...(state?.detail?.bathrooms
-        ? [
-            {
-              icon: Bath,
-              label: "Bath",
-              value: state?.detail?.bathrooms ?? "-",
-            },
-          ]
-        : []),
-      ...(state?.detail?.balcony
-        ? [
-            {
-              icon: Building2,
-              label: "Balcony",
-              value: state?.detail?.balcony ?? "-",
-            },
-          ]
-        : []),
+  //     {
+  //       icon: Home,
+  //       label: "Offer Type",
+  //       value: capitalizeFLetter(state?.detail?.listing_type) ?? "-",
+  //     },
+  //     ...(state?.detail?.built_year
+  //       ? [
+  //           {
+  //             icon: Calendar,
+  //             label: "Year Built",
+  //             value: state?.detail?.built_year ?? "-",
+  //           },
+  //         ]
+  //       : []),
 
-      // { icon: Car, label: "Garage", value: data?.garage ?? "-" },
+  //     {
+  //       icon: Home,
+  //       label: "Status",
+  //       value: capitalizeFLetter(state?.detail?.status) ?? "-",
+  //     },
 
-      {
-        icon: ArmchairIcon,
-        label: "Furnishing",
-        value: state?.detail?.furnishing ?? "-",
-      },
+  //     ...(state?.detail?.bedrooms
+  //       ? [
+  //           {
+  //             icon: Bed,
+  //             label: "Bedroom",
+  //             value: state?.detail?.bedrooms ?? "-",
+  //           },
+  //         ]
+  //       : []),
+  //     ...(state?.detail?.bathrooms
+  //       ? [
+  //           {
+  //             icon: Bath,
+  //             label: "Bath",
+  //             value: state?.detail?.bathrooms ?? "-",
+  //           },
+  //         ]
+  //       : []),
+  //     ...(state?.detail?.balcony
+  //       ? [
+  //           {
+  //             icon: Building2,
+  //             label: "Balcony",
+  //             value: state?.detail?.balcony ?? "-",
+  //           },
+  //         ]
+  //       : []),
 
-      // { icon: Home, label: "Property Type", value: data?.property_type?.name ?? "-" },
-    ];
-  }
+  //     // { icon: Car, label: "Garage", value: data?.garage ?? "-" },
 
-  if (state?.detail?.property_type?.name == "Agricultural") {
-    details = [
-      {
-        icon: Maximize2,
-        label: "Total Area",
-        value: formatNumber(state?.detail?.total_area) ?? "-",
-      },
+  //     {
+  //       icon: ArmchairIcon,
+  //       label: "Furnishing",
+  //       value: state?.detail?.furnishing ?? "-",
+  //     },
 
-      {
-        icon: Home,
-        label: "Offer Type",
-        value: capitalizeFLetter(state?.detail?.listing_type) ?? "-",
-      },
+  //     // { icon: Home, label: "Property Type", value: data?.property_type?.name ?? "-" },
+  //   ];
+  // }
 
-      {
-        icon: Home,
-        label: "Status",
-        value: capitalizeFLetter(state?.detail?.status) ?? "-",
-      },
+  // if (state?.detail?.property_type?.name == "Agricultural") {
+  //   details = [
+  //     {
+  //       icon: Maximize2,
+  //       label: "Total Area",
+  //       value: formatNumber(state?.detail?.total_area) ?? "-",
+  //     },
 
-      // { icon: Home, label: "Property Type", value: data?.property_type?.name ?? "-" },
-    ];
-  }
+  //     {
+  //       icon: Home,
+  //       label: "Offer Type",
+  //       value: capitalizeFLetter(state?.detail?.listing_type) ?? "-",
+  //     },
 
-  if (state?.detail?.property_type?.name == "Industrial") {
-    details = [
-      {
-        icon: Maximize2,
-        label: "Total Area",
-        value: formatNumber(state?.detail?.total_area) ?? "-",
-      },
+  //     {
+  //       icon: Home,
+  //       label: "Status",
+  //       value: capitalizeFLetter(state?.detail?.status) ?? "-",
+  //     },
 
-      {
-        icon: Maximize2,
-        label: "Built up Area",
-        value: formatNumber(state?.detail?.built_up_area) ?? "-",
-      },
+  //     // { icon: Home, label: "Property Type", value: data?.property_type?.name ?? "-" },
+  //   ];
+  // }
 
-      {
-        icon: Home,
-        label: "Offer Type",
-        value: capitalizeFLetter(state?.detail?.listing_type) ?? "-",
-      },
+  // if (state?.detail?.property_type?.name == "Industrial") {
+  //   details = [
+  //     {
+  //       icon: Maximize2,
+  //       label: "Total Area",
+  //       value: formatNumber(state?.detail?.total_area) ?? "-",
+  //     },
 
-      ...(state?.detail?.bathrooms
-        ? [
-            {
-              icon: ToiletIcon,
-              label: "Washroom",
-              value: state?.detail?.bathrooms ?? "-",
-            },
-          ]
-        : []),
+  //     {
+  //       icon: Maximize2,
+  //       label: "Built up Area",
+  //       value: formatNumber(state?.detail?.built_up_area) ?? "-",
+  //     },
 
-      ...(state?.detail?.built_year
-        ? [
-            {
-              icon: Calendar,
-              label: "Year Built",
-              value: state?.detail?.built_year ?? "-",
-            },
-          ]
-        : []),
+  //     {
+  //       icon: Home,
+  //       label: "Offer Type",
+  //       value: capitalizeFLetter(state?.detail?.listing_type) ?? "-",
+  //     },
 
-      {
-        icon: Star,
-        label: "Status",
-        value: capitalizeFLetter(state?.detail?.status) ?? "-",
-      },
-      {
-        icon: ArmchairIcon,
-        label: "Furnishing",
-        value: state?.detail?.furnishing ?? "-",
-      },
+  //     ...(state?.detail?.bathrooms
+  //       ? [
+  //           {
+  //             icon: ToiletIcon,
+  //             label: "Washroom",
+  //             value: state?.detail?.bathrooms ?? "-",
+  //           },
+  //         ]
+  //       : []),
 
-      // { icon: Home, label: "Property Type", value: data?.property_type?.name ?? "-" },
-    ];
-  }
+  //     ...(state?.detail?.built_year
+  //       ? [
+  //           {
+  //             icon: Calendar,
+  //             label: "Year Built",
+  //             value: state?.detail?.built_year ?? "-",
+  //           },
+  //         ]
+  //       : []),
 
-  if (state?.detail?.property_type?.name == "Commercial") {
-    details = [
-      {
-        icon: Maximize2,
-        label: "Total Area",
-        value: formatNumber(state?.detail?.total_area) ?? "-",
-      },
+  //     {
+  //       icon: Star,
+  //       label: "Status",
+  //       value: capitalizeFLetter(state?.detail?.status) ?? "-",
+  //     },
+  //     {
+  //       icon: ArmchairIcon,
+  //       label: "Furnishing",
+  //       value: state?.detail?.furnishing ?? "-",
+  //     },
 
-      {
-        icon: Maximize2,
-        label: "Built up Area",
-        value: formatNumber(state?.detail?.built_up_area) ?? "-",
-      },
+  //     // { icon: Home, label: "Property Type", value: data?.property_type?.name ?? "-" },
+  //   ];
+  // }
 
-      {
-        icon: Home,
-        label: "Offer Type",
-        value: capitalizeFLetter(state?.detail?.listing_type) ?? "-",
-      },
+  // if (state?.detail?.property_type?.name == "Commercial") {
+  //   details = [
+  //     {
+  //       icon: Maximize2,
+  //       label: "Total Area",
+  //       value: formatNumber(state?.detail?.total_area) ?? "-",
+  //     },
 
-      ...(state?.detail?.bathrooms
-        ? [
-            {
-              icon: ToiletIcon,
-              label: "Washroom",
-              value: state?.detail?.bathrooms ?? "-",
-            },
-          ]
-        : []),
+  //     {
+  //       icon: Maximize2,
+  //       label: "Built up Area",
+  //       value: formatNumber(state?.detail?.built_up_area) ?? "-",
+  //     },
 
-      ...(state?.detail?.built_year
-        ? [
-            {
-              icon: Calendar,
-              label: "Year Built",
-              value: state?.detail?.built_year ?? "-",
-            },
-          ]
-        : []),
+  //     {
+  //       icon: Home,
+  //       label: "Offer Type",
+  //       value: capitalizeFLetter(state?.detail?.listing_type) ?? "-",
+  //     },
 
-      {
-        icon: Star,
-        label: "Status",
-        value: capitalizeFLetter(state?.detail?.status) ?? "-",
-      },
+  //     ...(state?.detail?.bathrooms
+  //       ? [
+  //           {
+  //             icon: ToiletIcon,
+  //             label: "Washroom",
+  //             value: state?.detail?.bathrooms ?? "-",
+  //           },
+  //         ]
+  //       : []),
 
-      {
-        icon: ArmchairIcon,
-        label: "Furnishing",
-        value: state?.detail?.furnishing ?? "-",
-      },
+  //     ...(state?.detail?.built_year
+  //       ? [
+  //           {
+  //             icon: Calendar,
+  //             label: "Year Built",
+  //             value: state?.detail?.built_year ?? "-",
+  //           },
+  //         ]
+  //       : []),
 
-      // { icon: Home, label: "Property Type", value: data?.property_type?.name ?? "-" },
-    ];
-  }
+  //     {
+  //       icon: Star,
+  //       label: "Status",
+  //       value: capitalizeFLetter(state?.detail?.status) ?? "-",
+  //     },
+
+  //     {
+  //       icon: ArmchairIcon,
+  //       label: "Furnishing",
+  //       value: state?.detail?.furnishing ?? "-",
+  //     },
+
+  //     // { icon: Home, label: "Property Type", value: data?.property_type?.name ?? "-" },
+  //   ];
+  // }
 
   const handleclick = (data) => {
     clickSimilarProperty(data);
