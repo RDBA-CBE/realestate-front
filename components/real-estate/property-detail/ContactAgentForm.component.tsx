@@ -20,13 +20,15 @@ import { X } from "lucide-react";
 interface ContactAgentFormProps {
   data: any;
   token: any;
-  onClose;
+  onClose: any;
+  industryClick: any;
 }
 
 export default function ContactAgentForm({
   data,
   token,
   onClose,
+  industryClick,
 }: ContactAgentFormProps) {
   const [state, setState] = useSetState({
     first_name: "",
@@ -127,20 +129,19 @@ export default function ContactAgentForm({
   };
 
   return (
-    <Card className={`rounded-2xl shadow-lg border border-gray-200 max-w-md mx-auto  !bg-gray ${onClose ? "w-[500px]" : "me-0"}`}>
-       {onClose && (
+    <Card
+      className={`rounded-2xl shadow-lg border border-gray-200 max-w-md mx-auto  !bg-gray ${
+        onClose ? "w-[500px]" : "me-0"
+      }`}
+    >
+      {onClose && (
         <div className="w-100 text-right">
-           <button
-            onClick={onClose}
-            className=" px-5 pt-4"
-          >
+          <button onClick={onClose} className=" px-5 pt-4">
             <X className="h-5 w-5" />
           </button>
         </div>
-         
-        )}
+      )}
       <CardContent className={`p-6 space-y-6 ${onClose ? "pt-0" : ""}`}>
-       
         <div className="flex items-center gap-4 border-b border-gray-200 pb-4">
           <div className="flex-shrink-0">
             <Image
@@ -163,6 +164,13 @@ export default function ContactAgentForm({
             </p>
             <p className="text-gray-800 font-medium mt-1">
               {formatPhoneNumber(data?.developer?.phone)}
+            </p>
+
+            <p
+              className="text-blue-800 font-medium mt-1 underline cursor-pointer"
+              onClick={() => industryClick()}
+            >
+              {capitalizeFLetter(data?.developer?.industry)}
             </p>
           </div>
         </div>

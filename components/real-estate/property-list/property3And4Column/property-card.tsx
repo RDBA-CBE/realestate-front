@@ -336,7 +336,7 @@ export function PropertyCard({
               className='relative overflow-hidden rounded-lg h-full'
               style={{ height: GRID_IMAGE_HEIGHT }}
             >
-              {displayImages.length > 0 && (
+              {displayImages.length > 0 && displayImages[currentImageIndex]?.image_url && (
                 <motion.div
                   key={displayImages[currentImageIndex]?.image_url}
                   initial={{ opacity: 0 }}

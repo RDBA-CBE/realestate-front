@@ -31,7 +31,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { PhoneForwarded, X } from "lucide-react";
 
 // ---------------- AUTH HOOK ----------------
@@ -202,6 +202,8 @@ function ContactSection() {
 // ---------------- PAGE ----------------
 export default function PropertyDetailPage() {
   const params = useParams();
+
+  const router = useRouter();
   const [state, setState] = useSetState({
     isActive: false,
     detail: {},
@@ -279,6 +281,10 @@ export default function PropertyDetailPage() {
     } catch (error) {
       console.log("✌️error --->", error);
     }
+  };
+
+  const redirect = () => {
+    router.push(`/property-list?developerId=${state.detail?.developer?.id}`);
   };
 
   const sections = [
@@ -381,6 +387,7 @@ export default function PropertyDetailPage() {
               data={state.detail}
               token={state.token}
               onClose={false}
+              industryClick={() => redirect()}
             />
           </div>
         </div>
@@ -428,6 +435,7 @@ export default function PropertyDetailPage() {
                 data={state.detail}
                 token={state.token}
                 onClose={() => setIsMobileFormOpen(false)}
+                industryClick={() => redirect()}
               />
               {/* </div> */}
             </motion.div>

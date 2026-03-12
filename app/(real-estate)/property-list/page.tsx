@@ -10,9 +10,14 @@ import {
   removePlus,
   useSetState,
 } from "@/utils/function.utils";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 export default function Page() {
+  const searchParams = useSearchParams();
+  const developerId = searchParams.get("developerId");
+console.log('✌️developerId --->', developerId);
+
   const [state, setState] = useSetState({
     propertyList: [],
     loading: false,
@@ -141,6 +146,10 @@ console.log('✌️filterList --->', );
     const bodyData: any = {};
 
     bodyData.is_approved = 'Yes'
+
+    if(developerId){
+      bodyData.developer = developerId;
+    }
 
     if (data?.listingStatus) {
       if (data?.listingStatus != "All") {

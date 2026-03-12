@@ -75,7 +75,7 @@ export const objIsEmpty = (obj: object) => {
 };
 
 export const capitalizeFLetter = (string = "") => {
-  if (string.length > 0) {
+  if (string?.length > 0) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
   return string;
