@@ -207,10 +207,10 @@ const GoogleMaps = (props) => {
       </h3>
 
       <CardContent className="space-y-2 mb-6">
-        <div className="flex gap-2">
+        {/* <div className="flex gap-2">
           <span className="font-semibold w-24 text-gray-500">Address</span>
           <span>{data?.address || "Not specified"}</span>
-        </div>
+        </div> */}
         <div className="flex gap-2">
           <span className="font-semibold w-24 text-gray-500">City</span>
           <span>{data?.city || "Not specified"}</span>
@@ -220,8 +220,13 @@ const GoogleMaps = (props) => {
           <span>{data?.state || "Not specified"}</span>
         </div>
       </CardContent>
-
-      <div
+      {data?.address && (
+        <div
+          className="w-full h-full"
+          dangerouslySetInnerHTML={{ __html: data?.address }}
+        />
+      )}
+      {/* <div
         style={{
           position: "relative",
           width: "100%",
@@ -238,7 +243,6 @@ const GoogleMaps = (props) => {
             overflow: "hidden",
           }}
         >
-          {/* Map */}
           <div style={{ flex: 1 }}>
             <GoogleMap
               zoom={15}
@@ -258,7 +262,6 @@ const GoogleMaps = (props) => {
                 setSelectedPlace(null);
               }}
             >
-              {/* Current location marker */}
               {userLocation && (
                 <Marker
                   position={userLocation}
@@ -270,7 +273,6 @@ const GoogleMaps = (props) => {
                 />
               )}
 
-              {/* Place markers */}
               {activeFilter &&
                 places.map((place) => (
                   <Marker
@@ -284,7 +286,6 @@ const GoogleMaps = (props) => {
                   />
                 ))}
 
-              {/* Info window */}
               {selectedPlace && (
                 <InfoWindow
                   position={selectedPlace.geometry.location}
@@ -325,7 +326,6 @@ const GoogleMaps = (props) => {
             </GoogleMap>
           </div>
 
-          {/* Search box */}
           <div
             style={{
               position: "absolute",
@@ -357,7 +357,6 @@ const GoogleMaps = (props) => {
             </Autocomplete>
           </div>
 
-          {/* Locate me button */}
           <button
             onClick={handleLocateMe}
             style={{
@@ -380,7 +379,6 @@ const GoogleMaps = (props) => {
             />
           </button>
 
-          {/* Places list panel */}
           {showList && activeFilter && (
             <div
               style={{
@@ -496,7 +494,6 @@ const GoogleMaps = (props) => {
           )}
         </div>
 
-        {/* Filter buttons */}
         <div
           style={{
             display: "flex",
@@ -537,7 +534,7 @@ const GoogleMaps = (props) => {
             </button>
           ))}
         </div>
-      </div>
+      </div> */}
     </Card>
   );
 };
