@@ -142,7 +142,7 @@ export default function PropertyHeader(props: any) {
             </div>
             <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-md">
               <Square size={18} />{" "}
-              <span>{formatNumber(data?.total_area)} sqft</span>
+              <span>{(data?.total_area)} sqft</span>
             </div>
           </div>
         </div>
@@ -202,9 +202,9 @@ export default function PropertyHeader(props: any) {
                 data?.price_range?.maximum_price
               )}{" "}
             </p>
-            <p className="text-sm text-gray-600 ">
-              {formatToINR(data?.price_per_sqft)}/sq ft
-            </p>
+            {/* <p className="text-sm text-gray-600 ">
+              {(data?.price_per_sqft)}/sq ft
+            </p> */}
           </div>
         </div>
       </div>

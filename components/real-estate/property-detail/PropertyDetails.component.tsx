@@ -226,25 +226,25 @@ export default function PropertyDetails({ data }: any) {
     {
       icon: Maximize2,
       label: "Total Area",
-      value: formatNumber(data?.total_area) ?? "-",
+      value: data?.total_area ?? "-",
     },
-  
+
     ...(data?.built_up_area
       ? [
           {
             icon: Maximize2,
             label: "Built up Area",
-            value: formatNumber(data?.built_up_area) ?? "-",
+            value: data?.built_up_area ?? "-",
           },
         ]
       : []),
-  
+
     {
       icon: Home,
       label: "Offer Type",
       value: capitalizeFLetter(data?.listing_type) ?? "-",
     },
-  
+
     ...(data?.built_year
       ? [
           {
@@ -254,33 +254,41 @@ export default function PropertyDetails({ data }: any) {
           },
         ]
       : []),
-  
+
     {
       icon: Star,
       label: "Status",
       value: capitalizeFLetter(data?.status) ?? "-",
     },
-  
+
     ...(data?.bedrooms
       ? [{ icon: Bed, label: "Bedroom", value: data?.bedrooms }]
       : []),
-  
+
     ...(data?.bathrooms
       ? [
           {
-            icon: data?.property_type?.name === "Residential" ? Bath : ToiletIcon,
-            label: data?.property_type?.name === "Residential" ? "Bath" : "Washroom",
+            icon:
+              data?.property_type?.name === "Residential" ? Bath : ToiletIcon,
+            label:
+              data?.property_type?.name === "Residential" ? "Bath" : "Washroom",
             value: data?.bathrooms,
           },
         ]
       : []),
-  
+
     ...(data?.balcony
       ? [{ icon: Building2, label: "Balcony", value: data?.balcony }]
       : []),
-  
+
     ...(data?.furnishing
-      ? [{ icon: ArmchairIcon, label: "Furnishing", value: data?.furnishing }]
+      ? [
+          {
+            icon: ArmchairIcon,
+            label: "Furnishing",
+            value: capitalizeFLetter(data?.furnishing),
+          },
+        ]
       : []),
   ];
 

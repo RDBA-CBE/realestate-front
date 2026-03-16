@@ -477,7 +477,7 @@ export function PropertyCard({
                 </div>
                 <div className='flex items-center space-x-1'>
                   <Square className='h-5 w-5' />
-                  <span>{formattedNoDecimal(property.total_area)} sqft</span>
+                  <span>{(property?.total_area)} sqft</span>
                 </div>
               </div>
             </div>

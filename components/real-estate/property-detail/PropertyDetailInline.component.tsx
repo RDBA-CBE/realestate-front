@@ -83,8 +83,8 @@ interface PropertyDetail {
   created_at?: string;
   bedrooms?: number;
   bathrooms?: number;
-  built_up_area?: number;
-  total_area?: number;
+  built_up_area?: any;
+  total_area?: any;
   built_year?: number;
   price?: number;
   price_per_sqft?: number;
@@ -250,64 +250,71 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
     {
       icon: Maximize2,
       label: "Total Area",
-      value: formatNumber(data?.total_area) ?? "-",
+      value: state.detail?.total_area
+        ? `${state.detail.total_area} Sq.ft.`
+        : "-",
     },
-  
+
     ...(data?.built_up_area
       ? [
           {
             icon: Maximize2,
             label: "Built up Area",
-            value: formatNumber(data?.built_up_area) ?? "-",
+            value: state.detail?.built_up_area
+              ? `${state.detail.built_up_area} Sq.ft.`
+              : "-",
           },
         ]
       : []),
-  
+
     {
       icon: Home,
       label: "Offer Type",
-      value: capitalizeFLetter(data?.listing_type) ?? "-",
+      value: state.detail?.listing_type
+        ? `${capitalizeFLetter(state.detail.listing_type)}`
+        : "-",
     },
-  
+
     ...(data?.built_year
       ? [
           {
             icon: Calendar,
             label: "Year Built",
-            value: data?.built_year ?? "-",
+            value: state.detail?.built_year ?? "-",
           },
         ]
       : []),
-  
+
     {
       icon: Star,
       label: "Status",
-      value: capitalizeFLetter(data?.status) ?? "-",
+      value: capitalizeFLetter(state.detail?.status) ?? "-",
     },
-  
+
     ...(data?.bedrooms
       ? [{ icon: Bed, label: "Bedroom", value: data?.bedrooms }]
       : []),
-  
+
     ...(data?.bathrooms
       ? [
           {
-            icon: data?.property_type?.name === "Residential" ? Bath : ToiletIcon,
-            label: data?.property_type?.name === "Residential" ? "Bath" : "Washroom",
+            icon:
+              data?.property_type?.name === "Residential" ? Bath : ToiletIcon,
+            label:
+              data?.property_type?.name === "Residential" ? "Bath" : "Washroom",
             value: data?.bathrooms,
           },
         ]
       : []),
-  
+
     ...(data?.balcony
       ? [{ icon: Building2, label: "Balcony", value: data?.balcony }]
       : []),
-  
+
     ...(data?.furnishing
       ? [{ icon: ArmchairIcon, label: "Furnishing", value: data?.furnishing }]
       : []),
   ];
-
 
   // let details: any = [];
 
