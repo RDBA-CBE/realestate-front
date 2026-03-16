@@ -16,7 +16,6 @@ import { useEffect, useRef } from "react";
 export default function Page() {
   const searchParams = useSearchParams();
   const developerId = searchParams.get("developerId");
-console.log('✌️developerId --->', developerId);
 
   const [state, setState] = useSetState({
     propertyList: [],
@@ -29,7 +28,6 @@ console.log('✌️developerId --->', developerId);
     maxPrice: 0,
   });
 
-
   const initialLoadRef = useRef(true);
   const filterTimeoutRef = useRef(null);
 
@@ -37,7 +35,6 @@ console.log('✌️developerId --->', developerId);
     propertyList();
     categoryList();
   }, []);
-console.log('✌️propertyList --->',state.propertyList );
 
   const propertyList = async (page = 1, append = false, filterData = null) => {
     try {
@@ -98,8 +95,6 @@ console.log('✌️propertyList --->',state.propertyList );
   };
 
   const filterList = async (page = 1, append = false, data = null) => {
-console.log('✌️filterList --->', );
-
     if (filterTimeoutRef.current) {
       clearTimeout(filterTimeoutRef.current);
     }
@@ -145,9 +140,9 @@ console.log('✌️filterList --->', );
   const bodyData = (data) => {
     const bodyData: any = {};
 
-    bodyData.is_approved = 'Yes'
+    bodyData.is_approved = "Yes";
 
-    if(developerId){
+    if (developerId) {
       bodyData.developer = developerId;
     }
 
@@ -213,6 +208,7 @@ console.log('✌️filterList --->', );
 
     bodyData.page_size = PROPERTY_LIST_PAGE;
     bodyData.is_approved = "Yes";
+    bodyData.publish = "Yes";
     return bodyData;
   };
 

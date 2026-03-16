@@ -293,7 +293,7 @@ export function PropertyView(props: any) {
                 Listing Status
               </div>
               <div className="space-y-2">
-                {["All", "Sale", "Rent", "Lease"].map((option) => (
+                {["All", "Sale",  "Lease"].map((option) => (
                   <label
                     key={option}
                     className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"

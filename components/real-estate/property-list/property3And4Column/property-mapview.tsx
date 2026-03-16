@@ -434,7 +434,7 @@ export function MapView(props) {
                       </div>
 
                       <div className="flex items-center justify-start gap-6">
-                        {["All", "Sale", "Rent", "Lease"].map((option) => (
+                        {["All", "Sale", "Lease"].map((option) => (
                           <label
                             key={option}
                             className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"

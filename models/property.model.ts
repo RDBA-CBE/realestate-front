@@ -6,6 +6,10 @@ const properties = {
     let promise = new Promise((resolve, reject) => {
       let url = `properties?page=${page}`;
 
+      if (body?.publish == "Yes") {
+        url += `&publish=${encodeURIComponent(true)}`;
+      }
+
       if (body?.listing_type) {
         url += `&listing_type=${encodeURIComponent(body?.listing_type)}`;
       }

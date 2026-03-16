@@ -180,7 +180,7 @@ export default function Page() {
     if (data?.yearBuiltMax != "") {
       body.yearBuiltMax = data?.yearBuiltMax;
     }
-   if (data?.sort) {
+    if (data?.sort) {
       if (data?.sort == "price") {
         body.sort_by = "minimum_price";
       } else if (data?.sort == "-price") {
@@ -192,6 +192,7 @@ export default function Page() {
 
     body.page_size = PROPERTY_LIST_PAGE;
     body.is_approved = "Yes";
+    body.publish = "Yes";
     return body;
   };
 
@@ -210,7 +211,7 @@ export default function Page() {
           filterList(state.page + 1, true, data);
         }}
         updateList={(data) => setState({ propertyList: data })}
-        clearFilter={()=>propertyList()}
+        clearFilter={() => propertyList()}
       />
     </div>
   );
