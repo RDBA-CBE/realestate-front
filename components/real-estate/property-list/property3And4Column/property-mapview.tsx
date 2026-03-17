@@ -467,15 +467,19 @@ export function MapView(props) {
                             <input
                               type="checkbox"
                               className="cursor-pointer"
-                              checked={state.propertyType.some(
+                              checked={state.propertyType?.some(
                                 (t) => t.value === option.value
                               )}
                               onChange={(e) => {
                                 let updated;
                                 if (e.target.checked) {
-                                  updated = [option];
+                                  // ✅ Add selected option
+                                  updated = [...state.propertyType, option];
                                 } else {
-                                  updated = [];
+                                  // ✅ Remove unchecked option
+                                  updated = state.propertyType.filter(
+                                    (t) => t.value !== option.value
+                                  );
                                 }
                                 handleChange("propertyType", updated);
                               }}

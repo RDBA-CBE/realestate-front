@@ -60,36 +60,38 @@ export const SidebarContent = (props: any) => {
       </div>
 
       <div>
-        <div className="mb-2 font-semibold text-gray-900">Property Type</div>
-        <div className="space-y-2">
-          {categoryList?.map((option) => (
-            <label
-              key={option?.value}
-              className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
-            >
-              <input
-                type="checkbox"
-                className="cursor-pointer"
-                checked={state.propertyType.some(
-                  (t) => t.value === option.value
-                )}
-                onChange={(e) => {
-                  let updated;
-                  if (e.target.checked) {
-                    // ✅ Allow only one selected option
-                    updated = [option];
-                  } else {
-                    // ✅ Uncheck all if the same option is clicked again
-                    updated = [];
-                  }
-                  handleChange("propertyType", updated);
-                }}
-              />
-              <span>{option?.label}</span>
-            </label>
-          ))}
-        </div>
-      </div>
+  <div className="mb-2 font-semibold text-gray-900">Property Type</div>
+  <div className="space-y-2">
+    {categoryList?.map((option) => (
+      <label
+        key={option?.value}
+        className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
+      >
+        <input
+          type="checkbox"
+          className="cursor-pointer"
+          checked={state.propertyType.some(
+            (t) => t.value === option.value
+          )}
+          onChange={(e) => {
+            let updated;
+            if (e.target.checked) {
+              // ✅ Add selected option
+              updated = [...state.propertyType, option];
+            } else {
+              // ✅ Remove unchecked option
+              updated = state.propertyType.filter(
+                (t) => t.value !== option.value
+              );
+            }
+            handleChange("propertyType", updated);
+          }}
+        />
+        <span>{option?.label}</span>
+      </label>
+    ))}
+  </div>
+</div>
 
       <div>
         <PriceRangeSlider

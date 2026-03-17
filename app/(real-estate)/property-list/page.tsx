@@ -36,6 +36,12 @@ export default function Page() {
     categoryList();
   }, []);
 
+  useEffect(() => {
+    if (developerId) {
+      developerDetail();
+    }
+  }, [developerId]);
+
   const propertyList = async (page = 1, append = false, filterData = null) => {
     try {
       if (append) {
@@ -78,6 +84,16 @@ export default function Page() {
         loading: false,
         isLoadingMore: false,
       });
+      console.log("✌️error --->", error);
+    }
+  };
+
+  const developerDetail = async () => {
+    try {
+      const res: any = await Models.user.details(developerId);
+console.log('✌️res --->', res);
+  
+    } catch (error) {
       console.log("✌️error --->", error);
     }
   };
@@ -152,7 +168,7 @@ export default function Page() {
       }
     }
     if (data?.propertyType?.length > 0) {
-      bodyData.property_type = data?.propertyType?.[0]?.value;
+      bodyData.property_type = data?.propertyType?.map((item)=>item?.value);
     }
 
     if (data?.furnishing?.length > 0) {
@@ -209,6 +225,7 @@ export default function Page() {
     bodyData.page_size = PROPERTY_LIST_PAGE;
     bodyData.is_approved = "Yes";
     bodyData.publish = "Yes";
+console.log('✌️bodyData --->', bodyData);
     return bodyData;
   };
 

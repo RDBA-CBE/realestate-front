@@ -40,6 +40,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { SidebarContent } from "../../SidebarContent.components";
+import DeveloperCard from "../../developerProfile.component";
 
 export function PropertyView(props: any) {
   const {
@@ -217,6 +218,7 @@ export function PropertyView(props: any) {
     debouncedMaxPrice,
   ]);
 
+
   const handleChange = (name, value) => {
     setState({ [name]: value });
   };
@@ -293,7 +295,7 @@ export function PropertyView(props: any) {
                 Listing Status
               </div>
               <div className="space-y-2">
-                {["All", "Sale",  "Lease"].map((option) => (
+                {["All", "Sale", "Lease"].map((option) => (
                   <label
                     key={option}
                     className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
@@ -323,17 +325,19 @@ export function PropertyView(props: any) {
                     <input
                       type="checkbox"
                       className="cursor-pointer"
-                      checked={state.propertyType.some(
+                      checked={state.propertyType?.some(
                         (t) => t.value === option.value
                       )}
                       onChange={(e) => {
                         let updated;
                         if (e.target.checked) {
-                          // ✅ Allow only one selected option
-                          updated = [option];
+                          // ✅ Add selected option
+                          updated = [...state.propertyType, option];
                         } else {
-                          // ✅ Uncheck all if the same option is clicked again
-                          updated = [];
+                          // ✅ Remove unchecked option
+                          updated = state.propertyType.filter(
+                            (t) => t.value !== option.value
+                          );
                         }
                         handleChange("propertyType", updated);
                       }}
@@ -571,7 +575,7 @@ export function PropertyView(props: any) {
 
                       <SheetFooter
                         className="sticky bottom-0 left-0  border-t cursor-pointer"
-                        onClick={()=>setState({ sidebarOpen: false })}
+                        onClick={() => setState({ sidebarOpen: false })}
                       >
                         <div className="bg-red-600 hover:bg-red-500 py-5 px-3 text-white w-full text-center text-lg font-semibold">
                           View {properties.length} Properties
@@ -583,7 +587,10 @@ export function PropertyView(props: any) {
 
                 {/* --------responsive filter sidebar end---------- */}
 
-                <Link href="/property-listmv" className="no-underline hidden xl:block">
+                <Link
+                  href="/property-listmv"
+                  className="no-underline hidden xl:block"
+                >
                   <Button
                     variant="outline"
                     className="px-4 py-2 h-9 rounded-lg text-sm font-medium text-gray-600 hover:text-red-500 
@@ -671,6 +678,9 @@ export function PropertyView(props: any) {
                 </div>
               </div>
             </div>
+            {/* <div className="w-full">
+              <DeveloperCard variant="horizontal" />
+            </div> */}
           </div>
 
           {loading ? (

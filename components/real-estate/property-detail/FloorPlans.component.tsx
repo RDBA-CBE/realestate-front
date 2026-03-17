@@ -8,7 +8,8 @@ interface FloorPlan {
   category: string;
   square_feet: string;
   price: string;
-  image: string;
+  image: string | null;
+  type?: string;
 }
 
 interface Props {
@@ -16,124 +17,134 @@ interface Props {
 }
 
 const FloorPlans: React.FC<Props> = ({ data }) => {
-  console.log("✌️data --->", data);
-
-  // Safely group data with useMemo and null checks
+  // ✅ Nested grouping: category → type → plans
   const groupedData = useMemo(() => {
-    if (!data || !Array.isArray(data)) {
-      return {} as Record<string, FloorPlan[]>;
-    }
+    if (!data || !Array.isArray(data)) return {};
 
     return data.reduce((acc, item) => {
-      if (!acc[item.category]) acc[item.category] = [];
-      acc[item.category].push(item);
+      const category = item.category;
+      const type = item.type || "";
+
+      if (!acc[category]) acc[category] = {};
+      if (!acc[category][type]) acc[category][type] = [];
+
+      acc[category][type].push(item);
+
       return acc;
-    }, {} as Record<string, FloorPlan[]>);
+    }, {} as Record<string, Record<string, FloorPlan[]>>);
   }, [data]);
 
-  console.log("✌️groupedData --->", groupedData);
+  const categories = Object.keys(groupedData);
 
-  const categories = Object.keys(groupedData) || [];
-
-  // Initialize state with first available data
   const [activeCategory, setActiveCategory] = useState("");
+  const [activeType, setActiveType] = useState("");
   const [selectedSqft, setSelectedSqft] = useState("");
 
-  // Set initial values when data is available
+  // ✅ Initial selection
   useEffect(() => {
     if (categories.length > 0 && !activeCategory) {
       const firstCategory = categories[0];
-      setActiveCategory(firstCategory);
+      const firstType = Object.keys(groupedData[firstCategory])[0];
+      const firstPlan = groupedData[firstCategory][firstType][0];
 
-      const firstPlan = groupedData[firstCategory]?.[0];
-      if (firstPlan) {
-        setSelectedSqft(firstPlan.square_feet);
-      }
+      setActiveCategory(firstCategory);
+      setActiveType(firstType);
+      setSelectedSqft(firstPlan?.square_feet);
     }
   }, [categories, groupedData, activeCategory]);
 
-  const currentPlans = groupedData?.[activeCategory] || [];
+  // ✅ Current plans
+  const currentPlans =
+    groupedData?.[activeCategory]?.[activeType] || [];
+
   const selectedPlan =
-    currentPlans?.find((p) => p?.square_feet === selectedSqft) ||
+    currentPlans.find((p) => p.square_feet === selectedSqft) ||
     currentPlans[0];
 
+  // ✅ Price formatter
   const formatPrice = (price: string) => {
     if (!price) return "₹0";
     const num = parseFloat(price);
     if (isNaN(num)) return "₹0";
+
     if (num >= 10000000) return `₹${(num / 10000000).toFixed(2)} Cr`;
     if (num >= 100000) return `₹${(num / 100000).toFixed(2)} L`;
+
     return `₹${num.toLocaleString()}`;
   };
 
+  // ✅ Price range
   const getPriceRange = (plans: FloorPlan[]) => {
-    if (!plans || plans.length === 0) return "₹0";
+    if (!plans?.length) return "₹0";
+
     const prices = plans
-      .map((p) => parseFloat(p?.price || "0"))
-      .filter((price) => !isNaN(price));
-    if (prices.length === 0) return "₹0";
+      .map((p) => parseFloat(p.price || "0"))
+      .filter((p) => !isNaN(p));
+
+    if (!prices.length) return "₹0";
+
     const min = Math.min(...prices);
     const max = Math.max(...prices);
+
     return `${formatPrice(min.toString())} - ${formatPrice(max.toString())}`;
   };
 
-  // Handle category change safely
-  const handleCategoryChange = (cat: string) => {
-    setActiveCategory(cat);
-    const firstPlan = groupedData[cat]?.[0];
-    if (firstPlan) {
-      setSelectedSqft(firstPlan.square_feet);
-    }
-  };
-
-  // If no data or categories, show empty state
-  if (!data || data.length === 0 || categories.length === 0) {
+  // ❌ Empty state
+  if (!categories.length) {
     return (
-      <div className="border-none shadow-none bg-transparent">
-        <h2 className="text-xl font-semibold mb-4">Price & Floor Plan</h2>
-        <div className="text-center py-8 text-gray-500">
-          No floor plans available
-        </div>
+      <div className="text-center py-10 text-gray-500">
+        No floor plans available
       </div>
     );
   }
+  console.log('✌️categories --->', categories);
 
   return (
-    <div className="border-none shadow-none bg-transparent">
-      <h3 className="text-xl font-semibold mb-6">Price & Floor Plan</h3>
+    <div className="bg-transparent">
+      <h3 className="text-xl font-semibold mb-6">
+        Price & Floor Plan
+      </h3>
 
-      <div className="flex border-b border-gray-200 mb-4">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => handleCategoryChange(cat)}
-            className={`flex-1 text-center py-3 relative transition-all ${
-              activeCategory === cat
-                ? "bg-white text-black border-b-2 border-indigo-600"
-                : "bg-gray-50 text-gray-600"
-            }`}
-          >
-            <div className="font-semibold capitalize">
-              {cat.replace("bhk", " BHK ")}
-            </div>
-            <div className="text-sm text-gray-500">
-              {getPriceRange(groupedData[cat])}
-            </div>
-          </button>
-        ))}
+      {/* ✅ Category + Type Tabs */}
+      <div className="flex flex-wrap gap-2 border-b pb-4">
+        {categories.map((cat) =>
+          Object.entries(groupedData[cat]).map(([type, plans]) => (
+            <button
+              key={`${cat}-${type}`}
+              onClick={() => {
+                setActiveCategory(cat);
+                setActiveType(type);
+                setSelectedSqft(plans[0]?.square_feet);
+              }}
+              className={`px-4 py-2 rounded-lg border transition ${
+                activeCategory === cat && activeType === type
+                  ? "bg-indigo-600 text-white"
+                  : "bg-gray-100 text-gray-700"
+              }`}
+            >
+              <div className="font-semibold">
+                {cat.toUpperCase()}  {type != null ? ` ${type}` : ""}
+              </div>
+
+              <div className="text-xs">
+                {getPriceRange(plans)}
+              </div>
+            </button>
+          ))
+        )}
       </div>
 
-      {/* SQ.FT Tabs */}
+      {/* ✅ SQFT Tabs */}
       {currentPlans.length > 0 && (
-        <div className="flex overflow-x-auto gap-4 pb-2 border-b border-gray-200 scrollbar-hide">
+        <div className="flex gap-3 overflow-x-auto mt-4 border-b pb-2">
           {currentPlans.map((plan) => (
             <button
               key={plan.id}
               onClick={() => setSelectedSqft(plan.square_feet)}
-              className={`whitespace-nowrap px-4 py-2 text-sm font-medium border-b-2 transition-all ${
+              className={`px-3 py-1 border-b-2 ${
                 selectedSqft === plan.square_feet
                   ? "border-indigo-600 text-indigo-600"
-                  : "border-transparent text-gray-600 hover:text-black"
+                  : "border-transparent text-gray-500"
               }`}
             >
               {formatNumber(plan.square_feet)} SQ.FT
@@ -142,43 +153,43 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
         </div>
       )}
 
-      {/* Price */}
+      {/* ✅ Price */}
       {selectedPlan && (
         <div className="mt-4 text-lg font-bold">
           {formatPrice(selectedPlan.price)}
         </div>
       )}
 
-      {/* Floor Plan Image */}
+      {/* ✅ Image */}
       {selectedPlan?.image && (
-        <div className="relative w-full h-80 mt-4 rounded-xl border overflow-hidden bg-gray-50">
+        <div className="relative w-full h-80 mt-4 border rounded-xl overflow-hidden">
           <Image
             src={selectedPlan.image}
-            alt={selectedPlan.category || "Plan Image"}
+            alt="Floor Plan"
             fill
-            className="object-contain p-4"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.style.display = "none";
-            }}
+            className="object-contain"
           />
         </div>
       )}
 
-      {/* Details */}
+      {/* ✅ Details */}
       {selectedPlan && (
-        <div className="flex flex-wrap justify-between gap-4 mt-6 text-sm text-gray-700">
-          <div className="flex flex-col items-center flex-1">
-            <span className="font-semibold">Plot Area</span>
-            <span>{formatNumber(selectedPlan.square_feet)} sq.ft</span>
+        <div className="flex justify-between mt-6 text-sm text-gray-700">
+          <div>
+            <p className="font-semibold">Plot Area</p>
+            <p>{formatNumber(selectedPlan.square_feet)} sq.ft</p>
           </div>
-          <div className="flex flex-col items-center flex-1">
-            <span className="font-semibold">Rera ID</span>
-            <span>Rera Not Applicable</span>
+
+          <div>
+            <p className="font-semibold">Type</p>
+            <p>{selectedPlan.type}</p>
           </div>
-          <div className="flex flex-col items-center flex-1">
-            <span className="font-semibold">Possession Status</span>
-            <span className="text-green-600 font-semibold">Ready to Move</span>
+
+          <div>
+            <p className="font-semibold">Status</p>
+            <p className="text-green-600 font-semibold">
+              Ready to Move
+            </p>
           </div>
         </div>
       )}
