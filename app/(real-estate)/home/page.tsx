@@ -94,22 +94,9 @@ export default function HomePage() {
       }
 
       const res: any = await Models.property.list(1, body);
-      console.log("✌️res --->", res);
-
-      const compareList: string[] = JSON.parse(
-        localStorage.getItem("compare") || "[]"
-      );
-
-      const resultsWithCompare = res?.results.map((item: any) => ({
-        ...item,
-        is_compare: compareList.includes(item.id),
-      }));
-
-      const minPrice = formatNumber(res?.min_price);
-      const maxPrice = formatNumber(res?.max_price);
 
       setState({
-        propertyList: resultsWithCompare,
+        propertyList: res?.results,
         handNext: res?.next,
         loading: false,
       });

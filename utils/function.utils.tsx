@@ -74,6 +74,17 @@ export const objIsEmpty = (obj: object) => {
   return true;
 };
 
+export const truncateText = (text: string, maxLength: number = 20) => {
+  if (!text) return "";
+
+  const capitalized =
+    text?.charAt(0).toUpperCase() + text?.slice(1)?.toLowerCase();
+
+  return capitalized.length > maxLength
+    ? capitalized?.substring(0, maxLength) + "..."
+    : capitalized;
+};
+
 export const capitalizeFLetter = (string = "") => {
   if (string?.length > 0) {
     return string.charAt(0).toUpperCase() + string.slice(1);

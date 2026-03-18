@@ -5,9 +5,12 @@ import { Navigation, Autoplay } from "swiper/modules";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
-import { capitalizeFLetter } from "@/utils/function.utils";
+import { capitalizeFLetter, truncateText } from "@/utils/function.utils";
+import { useRouter } from "next/navigation";
 
 const PopularProperties = (props) => {
+
+  const router=useRouter()
   const { propertyList, updatePropertyType } = props;
   const [activeFilter, setActiveFilter] = useState("all"); // 'all', 'rent', 'sale'
 
@@ -26,6 +29,11 @@ const PopularProperties = (props) => {
       spaceBetween: 24,
     },
   };
+
+  const handleClick=(property)=>{
+router.push(`property-detail/${property?.id}`)
+
+  }
 
   return (
     <div className="py-16 bg-dark">
@@ -106,76 +114,29 @@ const PopularProperties = (props) => {
         )} */}
 
         {/* Conditional Rendering: Swiper for "All Properties", Grid for filtered views */}
-        {activeFilter === "all" ? (
-          <Swiper
-            modules={[Navigation, Autoplay]}
-            spaceBetween={24}
-            slidesPerView={1}
-            breakpoints={breakpoints}
-            navigation={{
-              nextEl: ".properties-swiper-next",
-              prevEl: ".properties-swiper-prev",
-            }}
-            autoplay={{
-              delay: 4000,
-              disableOnInteraction: false,
-            }}
-            loop={true}
-            className="popular-properties-swiper"
-          >
-            {propertyList?.map((property, index) => (
-              <SwiperSlide key={index}>
-                <div className="bg-white border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow h-full">
-                  <div
-                    className="h-48 bg-cover bg-center relative"
-                    style={{
-                      backgroundImage: `url(${property.primary_image})`,
-                    }}
-                  >
-                    {/* Dark overlay for better text readability */}
-                    <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-
-                    <span
-                      className={`absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-medium ${
-                        property.listing_type === "sale"
-                          ? "bg-green-500 text-white"
-                          : "bg-red-500 text-white"
-                      }`}
-                    >
-                      {capitalizeFLetter(property.listing_type)}
-                    </span>
-
-                    {/* Favorite button */}
-                    {/* <button className="absolute top-4 right-4 bg-white p-2 rounded-full hover:bg-red-50 transition-colors">
-                      <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                      </svg>
-                    </button> */}
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-gray-900 mb-2">
-                      {property.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-3">
-                      {property.city}
-                    </p>
-                    <div className="flex space-x-4 text-sm text-gray-600">
-                      <span>{property.bedrooms} bed</span>
-                      <span>{property.bathrooms} bath</span>
-                    </div>
-                  </div>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        ) : (
-          // Grid layout for Rent and Sale filters
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {propertyList?.map((property, index) => (
+        <Swiper
+          modules={[Navigation, Autoplay]}
+          spaceBetween={24}
+          slidesPerView={1}
+          breakpoints={breakpoints}
+          navigation={{
+            nextEl: ".properties-swiper-next",
+            prevEl: ".properties-swiper-prev",
+          }}
+          autoplay={{
+            delay: 4000,
+            disableOnInteraction: false,
+          }}
+          loop={true}
+          className="popular-properties-swiper"
+        >
+          {propertyList?.map((property, index) => (
+            <SwiperSlide key={index}>
               <div
-                key={index}
-                className="bg-white border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
-              >
+              
+              key={property?.id}
+              onClick={()=>handleClick(property)}
+ className="bg-white cursor-pointer border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow h-full">
                 <div
                   className="h-48 bg-cover bg-center relative"
                   style={{
@@ -197,14 +158,14 @@ const PopularProperties = (props) => {
 
                   {/* Favorite button */}
                   {/* <button className="absolute top-4 right-4 bg-white p-2 rounded-full hover:bg-red-50 transition-colors">
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                  </button> */}
+                      <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                      </svg>
+                    </button> */}
                 </div>
                 <div className="p-4">
                   <h3 className="font-semibold text-gray-900 mb-2">
-                    {property.title}
+                    {truncateText(property.title)}
                   </h3>
                   <p className="text-gray-600 text-sm mb-3">{property.city}</p>
                   <div className="flex space-x-4 text-sm text-gray-600">
@@ -213,9 +174,9 @@ const PopularProperties = (props) => {
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
     </div>
   );
