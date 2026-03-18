@@ -18,6 +18,7 @@ export default function Page() {
   const developerId = searchParams.get("developerId");
   const search = searchParams.get("search");
   const type = searchParams.get("type");
+  const propertyType = searchParams.get("propertyType");
 
   const [state, setState] = useSetState({
     propertyList: [],
@@ -28,6 +29,7 @@ export default function Page() {
     categoryList: [],
     minPrice: 0,
     maxPrice: 0,
+    propertyTypeParams: "",
   });
 
   const initialLoadRef = useRef(true);
@@ -52,6 +54,12 @@ export default function Page() {
     }
   }, [developerId]);
 
+  useEffect(() => {
+    if (propertyType) {
+      categoryList();
+    }
+  }, [propertyType]);
+
   const propertyList = async (page = 1, append = false, filterData = null) => {
     try {
       if (append) {
@@ -63,7 +71,6 @@ export default function Page() {
       const bodys = filterData
         ? bodyData(filterData)
         : { page_size: PROPERTY_LIST_PAGE };
-
       const res: any = await Models.property.list(page, bodys);
 
       const compareList: string[] = JSON.parse(
@@ -101,8 +108,7 @@ export default function Page() {
   const developerDetail = async () => {
     try {
       const res: any = await Models.user.details(developerId);
-console.log('✌️res --->', res);
-  
+      // console.log("✌️res --->", res);
     } catch (error) {
       console.log("✌️error --->", error);
     }
@@ -115,10 +121,18 @@ console.log('✌️res --->', res);
       setState({
         categoryList: dropdown,
       });
+
+      if (propertyType) {
+        const find = res?.results?.filter((item) => item?.id == propertyType);
+      const dropdown = Dropdown(find, "name");
+
+        setState({ propertyTypeParams: dropdown });
+      }
     } catch (error) {
       console.log("✌️error --->", error);
     }
   };
+
 
   const filterList = async (page = 1, append = false, data = null) => {
     if (filterTimeoutRef.current) {
@@ -178,8 +192,9 @@ console.log('✌️res --->', res);
       }
     }
     if (data?.propertyType?.length > 0) {
-      bodyData.property_type = data?.propertyType?.map((item)=>item?.value);
+      bodyData.property_type = data?.propertyType?.map((item) => item?.value);
     }
+  
 
     if (data?.furnishing?.length > 0) {
       bodyData.furnishing = data?.furnishing?.[0]?.value;
@@ -235,7 +250,6 @@ console.log('✌️res --->', res);
     bodyData.page_size = PROPERTY_LIST_PAGE;
     bodyData.is_approved = "Yes";
     bodyData.publish = "Yes";
-console.log('✌️bodyData --->', bodyData);
     return bodyData;
   };
 
@@ -246,6 +260,7 @@ console.log('✌️bodyData --->', bodyData);
   return (
     <div>
       <PropertyView
+        propertyTypeFilter={state.propertyTypeParams}
         minPrice={state.minPrice}
         maxPrice={state.maxPrice}
         properties={state.propertyList}

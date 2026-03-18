@@ -14,7 +14,7 @@ import BlogSection from '@/components/common-components/BlogSection';
 import Footer from '@/components/common-components/Footer';
 import BannerSectionNew from  '@/components/common-components/BannerSectionNew.jsx';
 import { useEffect } from "react";
-import { formatNumber, useSetState } from "@/utils/function.utils";
+import { Dropdown, formatNumber, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import { PROPERTY_LIST_PAGE } from "@/utils/constant.utils";
 
@@ -24,10 +24,12 @@ export default function HomePageNew() {
 
   const [state, setState] = useSetState({
     propertyList: [],
+    propertyTypeList: [],
   });
 
   useEffect(() => {
     propertyList("");
+    propertyTypeList();
   }, []);
 
   const propertyList = async (type) => {
@@ -62,6 +64,17 @@ export default function HomePageNew() {
     }
   };
 
+  const propertyTypeList = async () => {
+    try {
+      const res: any = await Models.category.list(1, {});
+      setState({
+        propertyTypeList: res?.results,
+      });
+    } catch (error) {
+      console.log("✌️error --->", error);
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <motion.div
@@ -75,7 +88,9 @@ export default function HomePageNew() {
         <BannerSectionNew/>
         
         <div>
-          <ApartmentTypes />
+          
+          <ApartmentTypes propertyTypeList={state.propertyTypeList} />
+
           <FeaturedListings />
           <PropertiesByCities />
           <HowItWorks />

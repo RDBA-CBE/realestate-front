@@ -42,7 +42,7 @@ export const SidebarContent = (props: any) => {
       <div>
         <div className="mb-2 font-semibold text-gray-900">Listing Status</div>
         <div className="space-y-2">
-          {["All", "Sale", "Rent", "Lease"].map((option) => (
+          {["All", "Sale",  "Lease"].map((option) => (
             <label
               key={option}
               className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
