@@ -56,6 +56,7 @@ export function PropertyView(props: any) {
     maxPrice,
     updateList,
     clearFilter,
+    propertyTypeFilter,
   } = props;
 
   const [state, setState] = useSetState({
@@ -101,6 +102,12 @@ export function PropertyView(props: any) {
     },
     [isLoadingMore, handNext, loadMore]
   );
+
+  useEffect(() => {
+    if (propertyTypeFilter) {
+      setState({ propertyType: propertyTypeFilter });
+    }
+  }, [propertyTypeFilter]);
 
   useEffect(() => {
     if (initialLoadRef.current && minPrice > 0 && maxPrice > 0) {
@@ -152,6 +159,7 @@ export function PropertyView(props: any) {
   //   debouncedState.yearBuiltMax,
   //   state.sort,
   // ]);
+
 
   useEffect(() => {
     // Skip initial load
@@ -217,7 +225,6 @@ export function PropertyView(props: any) {
     debouncedMinPrice,
     debouncedMaxPrice,
   ]);
-
 
   const handleChange = (name, value) => {
     setState({ [name]: value });
