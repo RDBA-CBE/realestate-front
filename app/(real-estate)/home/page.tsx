@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 // import Header from '@/components/common-components/Header';
 import BannerSection from '@/components/common-components/HeroSection';
 import ApartmentTypes from '@/components/common-components/ApartmentTypes';
@@ -13,11 +13,57 @@ import Testimonials from '@/components/common-components/Testimonials';
 import BlogSection from '@/components/common-components/BlogSection';
 import Footer from '@/components/common-components/Footer';
 import BannerSectionNew from  '@/components/common-components/BannerSectionNew.jsx';
+import { useEffect } from "react";
+import { formatNumber, useSetState } from "@/utils/function.utils";
+import Models from "@/imports/models.import";
+import { PROPERTY_LIST_PAGE } from "@/utils/constant.utils";
 
 // ---------------- PAGE ----------------
 export default function HomePageNew() {
+
+
+  const [state, setState] = useSetState({
+    propertyList: [],
+  });
+
+  useEffect(() => {
+    propertyList("");
+  }, []);
+
+  const propertyList = async (type) => {
+    try {
+      setState({ loading: true });
+
+      let body = {};
+      if (type == "sale") {
+        body = { listing_type: "sale" };
+      }
+
+      if (type == "lease") {
+        body = { listing_type: "lease" };
+      }
+
+      if (type == "all") {
+        body = {};
+      }
+
+      const res: any = await Models.property.list(1, body);
+
+      setState({
+        propertyList: res?.results,
+        handNext: res?.next,
+        loading: false,
+      });
+    } catch (error) {
+      setState({
+        loading: false,
+      });
+      console.log("✌️error --->", error);
+    }
+  };
+
   return (
-    <div className='min-h-screen'>
+    <div className="min-h-screen">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -34,11 +80,14 @@ export default function HomePageNew() {
           <FeaturedListings />
           <PropertiesByCities />
           <SellingOptions />
-          <PopularProperties />
+          <PopularProperties
+            propertyList={state.propertyList}
+            updatePropertyType={(type) => propertyList(type)}
+          />
           <Testimonials />
           <BlogSection />
         </div>
-        
+
         <Footer />
       </motion.div>
     </div>
