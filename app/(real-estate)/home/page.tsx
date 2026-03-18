@@ -36,14 +36,14 @@ export default function HomePageNew() {
 
       let body = {};
       if (type == "sale") {
-        body = { listing_type: "sale" };
+        body = { listing_type: "Sale" };
       }
 
       if (type == "lease") {
-        body = { listing_type: "lease" };
+        body = { listing_type: "Lease" };
       }
 
-      if (type == "all") {
+      if (type == "All") {
         body = {};
       }
 
@@ -76,16 +76,18 @@ export default function HomePageNew() {
         
         <div>
           <ApartmentTypes />
-          <HowItWorks />
           <FeaturedListings />
           <PropertiesByCities />
+          <HowItWorks />
+          
+         
           <SellingOptions />
           <PopularProperties
             propertyList={state.propertyList}
             updatePropertyType={(type) => propertyList(type)}
           />
           <Testimonials />
-          <BlogSection />
+          {/* <BlogSection /> */}
         </div>
 
         <Footer />

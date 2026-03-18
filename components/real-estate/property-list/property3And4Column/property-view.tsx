@@ -56,12 +56,14 @@ export function PropertyView(props: any) {
     maxPrice,
     updateList,
     clearFilter,
+    initialSearch,
+    initialListingStatus,
   } = props;
 
   const [state, setState] = useSetState({
     isOpen: false,
-    search: "",
-    listingStatus: "",
+    search: initialSearch || "",
+    listingStatus: initialListingStatus || "All",
     propertyType: [],
     furnishing: [],
     priceRange: [0, 0],

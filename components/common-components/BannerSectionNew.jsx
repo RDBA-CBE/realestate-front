@@ -1,9 +1,21 @@
+"use client";
+
 import { useState } from "react";
 import { TextInput } from "./textInput";
 import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function BannerSectionNew() {
-  const [activeTab, setActiveTab] = useState("sell");
+  const [activeTab, setActiveTab] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (searchTerm) params.append("search", searchTerm);
+    params.append("type", activeTab);
+    router.push(`/property-list?${params.toString()}`);
+  };
 
   return (
     <section className="property-hero">
@@ -24,22 +36,22 @@ export default function BannerSectionNew() {
           {/* Tabs */}
           <div className="hero-tabs">
             <button
-              className={`tab-btn ${activeTab === "sell" ? "active" : ""}`}
-              onClick={() => setActiveTab("sell")}
+              className={`tab-btn ${activeTab === "All" ? "active" : ""}`}
+              onClick={() => setActiveTab("All")}
             >
-              Sell
+              All
             </button>
             <button
-              className={`tab-btn ${activeTab === "buy" ? "active" : ""}`}
-              onClick={() => setActiveTab("buy")}
+              className={`tab-btn ${activeTab === "Sale" ? "active" : ""}`}
+              onClick={() => setActiveTab("Sale")}
             >
-              Buy
+              Sale
             </button>
             <button
-              className={`tab-btn ${activeTab === "rent" ? "active" : ""}`}
-              onClick={() => setActiveTab("rent")}
+              className={`tab-btn ${activeTab === "Lease" ? "active" : ""}`}
+              onClick={() => setActiveTab("Lease")}
             >
-              Rent
+              Lease
             </button>
           </div>
 
@@ -48,6 +60,8 @@ export default function BannerSectionNew() {
             <TextInput 
             placeholder="What are you looking for?"
             className="hero-search-input "
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             />
             {/* <input
               type="text"
@@ -61,7 +75,7 @@ export default function BannerSectionNew() {
               <option>Bangalore</option>
             </select>*/}
 
-            <button className="search-btn">
+            <button className="search-btn" onClick={handleSearch}>
               <Search size={18} />
                Search
             </button> 

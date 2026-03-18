@@ -16,6 +16,8 @@ import { useEffect, useRef } from "react";
 export default function Page() {
   const searchParams = useSearchParams();
   const developerId = searchParams.get("developerId");
+  const search = searchParams.get("search");
+  const type = searchParams.get("type");
 
   const [state, setState] = useSetState({
     propertyList: [],
@@ -32,9 +34,17 @@ export default function Page() {
   const filterTimeoutRef = useRef(null);
 
   useEffect(() => {
-    propertyList();
+    let filterData: any = null;
+    if (search || type) {
+      filterData = {};
+      if (search) filterData.search = search;
+      if (type) filterData.listingStatus = type == "All" ? "All" : type.charAt(0).toUpperCase() + type.slice(1);
+    }
+
+    propertyList(1, false, filterData);
     categoryList();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, type]);
 
   useEffect(() => {
     if (developerId) {
@@ -249,6 +259,8 @@ console.log('✌️bodyData --->', bodyData);
         }}
         updateList={(data) => setState({ propertyList: data })}
         clearFilter={clearAllFilters}
+        initialSearch={search}
+        initialListingStatus={type ? (type === "all" ? "All" : type.charAt(0).toUpperCase() + type.slice(1)) : "All"}
       />
     </div>
   );

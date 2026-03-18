@@ -31,7 +31,7 @@ const FeaturedListings = () => {
 
 
   return (
-    <div className='py-16'> {/* Just use div instead of section */}
+    <div className='py-16 bg-color1'> {/* Just use div instead of section */}
       <div className='container mx-auto px-4'>
         <div className='flex justify-between items-center mb-12'>
           <div>
