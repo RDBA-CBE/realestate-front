@@ -1,73 +1,27 @@
-// "use client";
-// import { Button } from "@/components/ui/button";
-// import { useRouter } from "next/navigation";
-// import React from "react";
-
-// export default function Page() {
-//   const router = useRouter();
-//   return (
-//     <Button
-//       className=" bg-red-500 hover:bg-red-600"
-//       onClick={() => router.push("/home-data")}
-//     >
-//       Create account
-//     </Button>
-//   );
-// }
-// "use client";
-// import React from 'react';
-// import Header from '@/components/common-components/Header1';
-// import HeroSection from '@/components/common-components/HeroSection';
-// import ApartmentTypes from '@/components/common-components/ApartmentTypes';
-// import HowItWorks from '@/components/common-components/HowItWorks';
-// import FeaturedListings from '@/components/common-components/FeaturedListings';
-// import PropertiesByCities from '@/components/common-components/PropertiesByCities';
-// import SellingOptions from '@/components/common-components/SellingOptions';
-// import PopularProperties from '@/components/common-components/PopularProperties';
-// import Testimonials from '@/components/common-components/Testimonials';
-// import BlogSection from '@/components/common-components/BlogSection';
-// import Footer from '@/components/common-components/Footer';
-
-// export default function Page() {
-//   // const router = useRouter();
-//   return (
-//     <div>
-//       <Header />
-//       <HeroSection />
-//       <ApartmentTypes />
-//       <HowItWorks />
-//       <FeaturedListings />
-//       <PropertiesByCities />
-//       <SellingOptions />
-//       <PopularProperties />
-//       <Testimonials />
-//       <BlogSection />
-//       <Footer />
-//     </div>
-//   );
-// }
-
-"use client";
+'use client';
 
 import { motion } from "framer-motion";
 // import Header from '@/components/common-components/Header';
-import BannerSection from "@/components/common-components/HeroSection";
-import ApartmentTypes from "@/components/common-components/ApartmentTypes";
-import HowItWorks from "@/components/common-components/HowItWorks";
-import FeaturedListings from "@/components/common-components/FeaturedListings";
-import PropertiesByCities from "@/components/common-components/PropertiesByCities";
-import SellingOptions from "@/components/common-components/SellingOptions";
-import PopularProperties from "@/components/common-components/PopularProperties";
-import Testimonials from "@/components/common-components/Testimonials";
-import BlogSection from "@/components/common-components/BlogSection";
-import Footer from "@/components/common-components/Footer";
+import BannerSection from '@/components/common-components/HeroSection';
+import ApartmentTypes from '@/components/common-components/ApartmentTypes';
+import HowItWorks from '@/components/common-components/HowItWorks';
+import FeaturedListings from '@/components/common-components/FeaturedListings';
+import PropertiesByCities from '@/components/common-components/PropertiesByCities';
+import SellingOptions from '@/components/common-components/SellingOptions';
+import PopularProperties from '@/components/common-components/PopularProperties';
+import Testimonials from '@/components/common-components/Testimonials';
+import BlogSection from '@/components/common-components/BlogSection';
+import Footer from '@/components/common-components/Footer';
+import BannerSectionNew from  '@/components/common-components/BannerSectionNew.jsx';
 import { useEffect } from "react";
 import { Dropdown, formatNumber, useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import { PROPERTY_LIST_PAGE } from "@/utils/constant.utils";
 
 // ---------------- PAGE ----------------
-export default function HomePage() {
+export default function HomePageNew() {
+
+
   const [state, setState] = useSetState({
     propertyList: [],
     propertyTypeList: [],
@@ -130,8 +84,9 @@ export default function HomePage() {
       >
         {/* Header + Gallery */}
         {/* <Header /> */}
-        <BannerSection />
-
+        {/* <BannerSection /> */}
+        <BannerSectionNew/>
+        
         <div>
           <ApartmentTypes propertyTypeList={state.propertyTypeList} />
           <HowItWorks />

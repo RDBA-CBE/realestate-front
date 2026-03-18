@@ -38,7 +38,8 @@
 // export default App;
 "use client";
 import { useState } from "react";
-import HomePage from "@/app/(real-estate)/home/page";
+// import HomePage from "@/app/(real-estate)/home2/page";
+import HomePageNew from "./(real-estate)/home/page";
 
 const App = () => {
   
@@ -47,7 +48,7 @@ const App = () => {
 
   return (
     <div>
-      <HomePage />
+      <HomePageNew />
     </div>
   );
 };
