@@ -19,7 +19,7 @@ export default function BannerSectionNew() {
 
   return (
     <section className="property-hero">
-      <div className="bann-container max-w-screen-2xl">
+      <div className="bann-container max-w-7xl xl:container 2xl:max-w-screen-2xl">
         
         {/* LEFT */}
         <div className="hero-left">

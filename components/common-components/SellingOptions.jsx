@@ -13,9 +13,9 @@ const SellingOptions = () => {
         className='max-w-7xl mx-auto '
       >
         <div className='container mx-auto px-4'>
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center text-start'>
             <div>
-              <h2 className='text-3xl font-bold text-gray-900 mb-4'>
+              <h2 className='section-title'>
                 Let's find the right
                 <br />
                 selling option for you

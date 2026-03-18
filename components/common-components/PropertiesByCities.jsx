@@ -40,9 +40,9 @@ const PropertiesByCities = () => {
     <div className='py-16 bg-white'> 
       <div className="container mx-auto px-4">
         {/* Header Section */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-12">
-          <div className="mb-6 lg:mb-0">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Properties by Cities</h2>
+        <div className="flex flex-col md:flex-row justify-between items-start lg:items-center mb-12 text-start">
+          <div className="">
+            <h2 className="section-title">Properties by Cities</h2>
             <p className="text-gray-600">Aliquam lacinia diam quis lacus euismod</p>
           </div>
           {/* <a href="#" className="text-dred font-medium hover:text-red-700 transition-colors">

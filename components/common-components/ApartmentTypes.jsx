@@ -34,7 +34,7 @@ const ApartmentTypes = (props) => {
       >
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            <h2 className="section-title">
               Explore Property Types
             </h2>
             <p className="text-gray-600">
@@ -45,7 +45,7 @@ const ApartmentTypes = (props) => {
           <Swiper
             modules={[Autoplay]}
             spaceBetween={15}
-            slidesPerView={2}
+            slidesPerView={3}
             breakpoints={{
               640: { slidesPerView: 3 },
               1024: { slidesPerView: 6 },
@@ -60,7 +60,7 @@ const ApartmentTypes = (props) => {
                   onClick={() => handleClick(type)}
                   className="text-center  rounded-lg hover:border-red-500 transition-colors h-full cursor-pointer"
                 >
-                  <div className="w-28 h-28  rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <div className="w-20 h-20 md:w-28 md:h-28  rounded-lg flex items-center justify-center mx-auto mb-4">
                     <img
                       src={images[index % images.length]}
                       alt={type.name}

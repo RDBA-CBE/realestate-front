@@ -1152,8 +1152,10 @@ body {
 
 .section-title {
   font-size: 28px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   font-weight: 700;
+  color:#000;
+  line-height: 36px;
 }
 
 .section-subtitle {
@@ -1177,6 +1179,21 @@ body {
   align-items: center;
   gap: 8px;
 }
+
+@media (max-width: 770px) {
+  .section-title {
+  font-size: 24px;
+}
+}
+
+@media (max-width: 600px) {
+  .section-title {
+  font-size: 20px;
+  line-height: 28px;
+}
+}
+
+
 
 .view-all:hover {
   text-decoration: underline;
@@ -1335,7 +1352,7 @@ body {
 
 /* CONTAINER */
 .bann-container {
-  /* width: 100%; */
+  
   height: 100%;
   display: flex;
   align-items: center;

@@ -43,9 +43,9 @@ router.push(`property-detail/${property?.id}`)
     <div className="py-16 bg-lred">
       <div className="container mx-auto px-4">
         {/* Header Section with Filter Buttons on the right */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-12">
+        <div className="flex flex-col md:flex-row justify-between items-start lg:items-center mb-12 text-start">
           <div className="mb-6 lg:mb-0">
-            <h2 className="text-3xl font-bold  mb-2">
+            <h2 className="section-title">
               Discover Popular Properties
             </h2>
             <p className="">

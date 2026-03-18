@@ -42,16 +42,16 @@ const FeaturedListings = (props) => {
       {" "}
       {/* Just use div instead of section */}
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-12">
+        <div className="flex flex-col md:flex-row justify-between md:items-center mb-12 text-start">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            <h2 className="section-title">
               Discover Our Fully Furnished Sale Properties
             </h2>
             <p className="text-gray-600">
               Aliquam lacinia diam quis lacus euismod
             </p>
           </div>
-          <a href="property-list" className="text-dred font-medium">
+          <a href="property-list" className="text-dred font-medium mt-4 md:mt-0">
             See All Properties →
           </a>
         </div>
@@ -80,7 +80,8 @@ const FeaturedListings = (props) => {
               <SwiperSlide key={index}>
                 <div
                   key={index}
-                  className="border border-gray-200 bg-white rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+                  className="border border-gray-200 bg-white rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                  onClick={() => handleClick(listing)}
                 >
                   <div
                     className="h-48 bg-cover bg-center relative"
@@ -96,7 +97,7 @@ const FeaturedListings = (props) => {
                       )}
                     </div>
                   </div>
-                  <div className="p-6">
+                  <div className="p-6 text-start">
                     <h3 className="font-semibold text-gray-900 mb-2">
                       {listing.title}
                     </h3>
@@ -112,7 +113,7 @@ const FeaturedListings = (props) => {
                       </span>
                       <button
                         onClick={() => handleClick(listing)}
-                        className="text-dred border border-[#9b0f09] px-4 py-2 rounded text-sm font-medium hover:bg-red-50 transition-colors"
+                        className="text-dred border border-[#9b0f09] px-4 py-1 rounded text-sm font-medium hover:bg-red-50 transition-colors"
                       >
                         Details
                       </button>
