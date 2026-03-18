@@ -93,7 +93,7 @@ export default function HomePageNew() {
     try {
       const res: any = await Models.category.list(1, {});
       setState({
-        propertyTypeList: res?.results,
+        propertyTypeList: res?.results?.filter((item)=>item?.properties_count != 0),
       });
     } catch (error) {
       console.log("✌️error --->", error);
