@@ -36,17 +36,11 @@ export default function Page() {
   const filterTimeoutRef = useRef(null);
 
   useEffect(() => {
-    let filterData: any = null;
-    if (search || type) {
-      filterData = {};
-      if (search) filterData.search = search;
-      if (type) filterData.listingStatus = type == "All" ? "All" : type.charAt(0).toUpperCase() + type.slice(1);
-    }
-
-    propertyList(1, false, filterData);
+ 
+    propertyList(1, false, );
     categoryList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, type]);
+  }, []);
 
   useEffect(() => {
     if (developerId) {

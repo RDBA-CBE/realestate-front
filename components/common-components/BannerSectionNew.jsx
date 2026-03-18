@@ -56,9 +56,14 @@ export default function BannerSectionNew() {
           </div>
 
           {/* Search */}
-          <div className="hero-search">
+          <form
+           onSubmit={(e) => {
+            e.preventDefault();
+            handleSearch();
+          }}
+          className="hero-search">
             <TextInput 
-            placeholder="What are you looking for?"
+            placeholder="Search by property name,location,pincode,state,city ..."
             className="hero-search-input "
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -75,11 +80,11 @@ export default function BannerSectionNew() {
               <option>Bangalore</option>
             </select>*/}
 
-            <button className="search-btn" onClick={handleSearch}>
+            <button  type="submit" className="search-btn">
               <Search size={18} />
                Search
             </button> 
-          </div>
+          </form>
         </div>
 
         {/* RIGHT - SINGLE IMAGE */}

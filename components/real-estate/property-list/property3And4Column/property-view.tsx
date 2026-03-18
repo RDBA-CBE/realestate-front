@@ -63,8 +63,8 @@ export function PropertyView(props: any) {
 
   const [state, setState] = useSetState({
     isOpen: false,
-    search: initialSearch || "",
-    listingStatus: initialListingStatus || "All",
+    search: "",
+    listingStatus: "All",
     propertyType: [],
     furnishing: [],
     priceRange: [0, 0],
@@ -109,7 +109,13 @@ export function PropertyView(props: any) {
     if (propertyTypeFilter) {
       setState({ propertyType: propertyTypeFilter });
     }
-  }, [propertyTypeFilter]);
+    if (initialSearch) {
+      setState({ search: initialSearch });
+    }
+    if (initialListingStatus) {
+      setState({ listingStatus: initialListingStatus });
+    }
+  }, [propertyTypeFilter, initialSearch, initialListingStatus]);
 
   useEffect(() => {
     if (initialLoadRef.current && minPrice > 0 && maxPrice > 0) {
@@ -161,7 +167,6 @@ export function PropertyView(props: any) {
   //   debouncedState.yearBuiltMax,
   //   state.sort,
   // ]);
-
 
   useEffect(() => {
     // Skip initial load
