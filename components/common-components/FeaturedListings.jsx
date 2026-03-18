@@ -1,7 +1,9 @@
 // components/FeaturedListings.js
 import React from 'react';
 
-const FeaturedListings = () => {
+const FeaturedListings = (props) => {
+  const {saleWithFurnishedList}=props
+console.log('✌️saleWithFurnishedList --->', saleWithFurnishedList);
   const listings = [
     {
       price: '$14,000 / mo',
