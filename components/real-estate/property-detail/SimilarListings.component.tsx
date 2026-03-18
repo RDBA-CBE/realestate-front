@@ -102,7 +102,7 @@ export default function FeaturedListings(props: any) {
                     {property.title}
                   </h3>
                   <div className="flex items-center text-gray-600 mb-3">
-                    <MapPin className="h-4 w-4 mr-1" />
+                    <MapPin className="h-4 w-4 mr-1 text-dred" />
                     <span className="text-sm">{`${capitalizeFLetter(
                       property.city
                     )} , ${capitalizeFLetter(property.state)} `}</span>
@@ -110,15 +110,15 @@ export default function FeaturedListings(props: any) {
 
                   <div className="flex items-center gap-6 text-gray-700">
                     <div className="flex items-center space-x-1">
-                      <Bed className="h-4 w-4" />
+                      <Bed className="h-4 w-4 text-dred" />
                       <span className="text-sm">{property.bedrooms} bed</span>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <Bath className="h-4 w-4" />
+                      <Bath className="h-4 w-4 text-dred" />
                       <span className="text-sm">{property.bathrooms} bath</span>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <Square className="h-4 w-4" />
+                      <Square className="h-4 w-4 text-dred" />
                       <span className="text-sm">
                         {formattedNoDecimal(property.total_area)} sqft
                       </span>

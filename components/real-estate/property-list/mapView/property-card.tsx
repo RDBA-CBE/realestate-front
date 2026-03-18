@@ -90,15 +90,15 @@ export function PropertyCard({
 
             <div className="flex items-center gap-4 text-gray-700 mb-2">
               <div className="flex items-center space-x-1">
-                <Bed className="h-4 w-4" />
+                <Bed className="h-4 w-4 text-dred" />
                 <span className="text-xs">{property.bedrooms} bed</span>
               </div>
               <div className="flex items-center space-x-1">
-                <Bath className="h-4 w-4" />
+                <Bath className="h-4 w-4 text-dred" />
                 <span className="text-xs">{property.bathrooms} bath</span>
               </div>
               <div className="flex items-center space-x-1">
-                <Square className="h-4 w-4" />
+                <Square className="h-4 w-4 text-dred"  />
                 <span className="text-xs">
                   {/* {property.squareFeet.toLocaleString()} sqft */}
                 </span>

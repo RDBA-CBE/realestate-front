@@ -11,6 +11,7 @@ import {
   GitCompareArrowsIcon,
   ChevronLeft,
   ChevronRight,
+  IndianRupee,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -460,7 +461,7 @@ export function PropertyCard({
                 {property.title}
               </h3>
               <div className='flex items-center text-gray-600 mb-4'>
-                <MapPin className='h-5 w-5 mr-1 flex-shrink-0' />
+                <MapPin className='h-5 w-5 mr-1 flex-shrink-0 text-dred' />
                 <span className='text-md line-clamp-1'>{`${capitalizeFLetter(
                   property.city
                 )}, ${capitalizeFLetter(property.state)}`}</span>
@@ -468,15 +469,15 @@ export function PropertyCard({
 
               <div className='flex items-center gap-4 text-gray-500 mb-2 flex-wrap text-md'>
                 <div className='flex items-center space-x-1'>
-                  <Bed className='h-5 w-5' />
+                  <Bed className='h-5 w-5 text-dred' />
                   <span>{property.bedrooms} bed</span>
                 </div>
                 <div className='flex items-center space-x-1'>
-                  <Bath className='h-5 w-5' />
+                  <Bath className='h-5 w-5 text-dred' />
                   <span>{property.bathrooms} bath</span>
                 </div>
                 <div className='flex items-center space-x-1'>
-                  <Square className='h-5 w-5' />
+                  <Square className='h-5 w-5 text-dred' />
                   <span>{(property?.total_area)} sqft</span>
                 </div>
               </div>
@@ -625,7 +626,7 @@ export function PropertyCard({
                 {property.title}
               </h3>
               <div className='flex items-center text-gray-600 mb-4'>
-                <MapPin className='h-5 w-5 mr-1 flex-shrink-0' />
+                <MapPin className='h-5 w-5 mr-1 flex-shrink-0 text-dred' />
                 <span className='text-md line-clamp-1'>{`${capitalizeFLetter(
                   property.city
                 )}, ${capitalizeFLetter(property.state)}`}</span>
@@ -718,8 +719,8 @@ export function PropertyCard({
                     // Fallback to regular price display
                     <div className='mb-3'>
                       <div className='flex items-baseline gap-2 mb-1'>
-                        <span className='text-l text-gray-900'>
-                          {formatPriceRange(
+                        <span className='text-l text-gray-900 flex gap-2'>
+                        {formatPriceRange(
                             property?.price_range?.minimum_price,
                             property?.price_range?.maximum_price
                           )}
@@ -760,15 +761,15 @@ export function PropertyCard({
               {/* Property Features */}
               <div className='flex items-center gap-4 text-gray-500 mb-2 flex-wrap text-md'>
                 <div className='flex items-center space-x-1'>
-                  <Bed className='h-5 w-5' />
+                  <Bed className='h-5 w-5 text-dred' />
                   <span>{property.bedrooms} bed</span>
                 </div>
                 <div className='flex items-center space-x-1'>
-                  <Bath className='h-5 w-5' />
+                  <Bath className='h-5 w-5 text-dred' />
                   <span>{property.bathrooms} bath</span>
                 </div>
                 <div className='flex items-center space-x-1'>
-                  <Square className='h-5 w-5' />
+                  <Square className='h-5 w-5 text-dred' />
                   <span>{formattedNoDecimal(property.total_area)} sqft</span>
                 </div>
               </div>
