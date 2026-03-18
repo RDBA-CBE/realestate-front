@@ -3,40 +3,38 @@ import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
+import { useRouter } from "next/navigation";
+
 
 const PropertiesByCities = () => {
+  const router = useRouter();
+
   const cities = [
     { 
-      name: 'Los Angeles', 
-      count: '12 Properties',
+      name: 'Coimbatore', 
+      count: '23 Properties',
       image: 'https://images.unsplash.com/photo-1515896769750-31548aa180ed?w=400&h=300&fit=crop'
     },
     { 
-      name: 'Miami', 
-      count: '12 Properties',
+      name: 'Chennai', 
+      count: '40 Properties',
       image: 'https://images.unsplash.com/photo-1514214246283-d427a95c5d2f?w=400&h=300&fit=crop'
     },
     { 
-      name: 'New York', 
-      count: '12 Properties',
+      name: 'Tiruchirappalli', 
+      count: '3 Properties',
       image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=300&fit=crop'
     },
     { 
-      name: 'Chicago', 
-      count: '12 Properties',
+      name: 'Bangalore', 
+      count: '2 Properties',
       image: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=400&h=300&fit=crop'
-    },
-    { 
-      name: 'San Francisco', 
-      count: '12 Properties',
-      image: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&h=300&fit=crop'
-    },
-    { 
-      name: 'Seattle', 
-      count: '12 Properties',
-      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop'
     }
   ];
+
+  const handleClick = (type) => {
+    router.push(`/property-list?search=${type?.name}`);
+  };
 
   return (
     <div className='py-16 bg-white'> 
@@ -70,6 +68,7 @@ const PropertiesByCities = () => {
           {cities.map((city, index) => (
             <SwiperSlide key={index}>
               <div 
+              onClick={()=>handleClick(city)}
                 className="relative bg-cover bg-center rounded-lg overflow-hidden h-48 hover:shadow-lg transition-all duration-300 group cursor-pointer"
                 style={{ backgroundImage: `url(${city.image})` }}
               >
