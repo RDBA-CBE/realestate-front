@@ -71,7 +71,7 @@ const Testimonials = () => {
   };
 
   return (
-    <div className='py-16 bg-gray-50'>
+    <div className='py-16 bg-white'>
       <div className='container mx-auto px-4'>
         <div className='text-center mb-12'>
           <h2 className='text-3xl font-bold text-gray-900 mb-2'>
@@ -123,7 +123,7 @@ const Testimonials = () => {
         >
           {testimonials.map((testimonial, index) => (
             <SwiperSlide key={index}>
-              <div className='bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow h-full'>
+              <div className='bg-lred rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow h-full'>
                 {/* Quote Icon */}
                 <div className='text-red-500 mb-4'>
                   <svg

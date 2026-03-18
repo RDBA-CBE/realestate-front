@@ -31,7 +31,7 @@ const FeaturedListings = () => {
 
 
   return (
-    <div className='py-16 bg-color1'> {/* Just use div instead of section */}
+    <div className='py-16 bg-lred'> {/* Just use div instead of section */}
       <div className='container mx-auto px-4'>
         <div className='flex justify-between items-center mb-12'>
           <div>
@@ -51,7 +51,7 @@ const FeaturedListings = () => {
           {listings.map((listing, index) => (
             <div
               key={index}
-              className='border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow'
+              className='border border-gray-200 bg-white rounded-lg overflow-hidden hover:shadow-lg transition-shadow'
             >
               <div
                 className='h-48 bg-cover bg-center relative'

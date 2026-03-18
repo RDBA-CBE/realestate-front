@@ -1550,7 +1550,20 @@ body {
     height: 110px;
   }
 }
+.bg-color2{
+  /* background: #a31813; */
+  background: #9b0f09;
+}
 
 .bg-color1{
   background:#f3f4f6 ;
+}
+
+.bg-lred{
+  background:#fff6f6;
+}
+
+.property-swipper .swiper-wrapper{
+  display: flex;
+  justify-content:center;
 }

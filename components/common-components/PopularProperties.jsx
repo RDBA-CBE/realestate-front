@@ -36,15 +36,15 @@ router.push(`property-detail/${property?.id}`)
   }
 
   return (
-    <div className="py-16 bg-dark">
+    <div className="py-16 bg-lred">
       <div className="container mx-auto px-4">
         {/* Header Section with Filter Buttons on the right */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-12">
           <div className="mb-6 lg:mb-0">
-            <h2 className="text-3xl font-bold text-white mb-2">
+            <h2 className="text-3xl font-bold  mb-2">
               Discover Popular Properties
             </h2>
-            <p className="text-white">
+            <p className="">
               Aliquam lacinia diam quis lacus euismod
             </p>
           </div>

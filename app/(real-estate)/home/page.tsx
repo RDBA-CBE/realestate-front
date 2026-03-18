@@ -64,16 +64,18 @@ export default function HomePageNew() {
     }
   };
 
+
   const propertyTypeList = async () => {
     try {
       const res: any = await Models.category.list(1, {});
       setState({
-        propertyTypeList: res?.results,
+        propertyTypeList: res?.results?.filter((item)=>item?.properties_count != 0),
       });
     } catch (error) {
       console.log("✌️error --->", error);
     }
   };
+
 
   return (
     <div className="min-h-screen">
