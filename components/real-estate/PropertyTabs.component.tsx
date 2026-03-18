@@ -89,7 +89,7 @@
 //               className={cn(
 //                 "text-sm font-medium pb-2 border-b-2 transition-colors whitespace-nowrap",
 //                 active === s.id
-//                   ? "border-red-500 text-red-600"
+//                   ? "border-red-500 text-dred"
 //                   : "border-transparent text-gray-500 hover:text-gray-800"
 //               )}
 //             >
@@ -220,7 +220,7 @@ export default function PropertyTabs({ sections }) {
                 className={cn(
                   "text-sm font-medium border-b transition-colors whitespace-nowrap",
                   active === s.id
-                    ? "border-red-500 text-red-600"
+                    ? "border-red-500 text-dred"
                     : "border-transparent text-gray-500 hover:text-gray-800"
                 )}
               >

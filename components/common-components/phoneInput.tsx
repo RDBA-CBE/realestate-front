@@ -42,7 +42,7 @@ const CustomPhoneInput: React.FC<PhoneInputProps> = (props) => {
      {title && (
           <>
             <Label htmlFor={props.name}>{title}</Label>
-            {required && <span className="text-red-500 ml-1">*</span>}
+            {required && <span className="text-dred ml-1">*</span>}
           </>
         )}
       
@@ -88,7 +88,7 @@ const CustomPhoneInput: React.FC<PhoneInputProps> = (props) => {
         />
         
         {error && (
-          <p className="mt-1 text-sm text-red-600" id={`${name}-error`}>
+          <p className="mt-1 text-sm text-dred" id={`${name}-error`}>
             {error}
           </p>
         )}

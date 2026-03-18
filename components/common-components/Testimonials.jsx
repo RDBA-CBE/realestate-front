@@ -125,7 +125,7 @@ const Testimonials = () => {
             <SwiperSlide key={index}>
               <div className='bg-lred rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow h-full'>
                 {/* Quote Icon */}
-                <div className='text-red-500 mb-4'>
+                <div className='text-dred mb-4'>
                   <svg
                     className='w-8 h-8'
                     fill='currentColor'

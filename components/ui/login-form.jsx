@@ -113,7 +113,7 @@ export default function AuthPage() {
         <Card className="w-full max-w-md shadow-xl rounded-3xl backdrop-blur bg-white/90">
           <CardContent className="p-8 space-y-6">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-red-500 flex items-center justify-center text-white font-bold">
+              <div className="h-10 w-10 rounded-full bg-color2 flex items-center justify-center text-white font-bold">
                 R
               </div>
               <span className="text-lg font-semibold">Repute</span>
@@ -161,7 +161,7 @@ export default function AuthPage() {
             </div>
 
             <Button
-              className="w-full bg-red-600 hover:bg-red-700 rounded-xl text-white font-semibold"
+              className="w-full bg-color2 hover:bg-red-700 rounded-xl text-white font-semibold"
               onClick={() => handleSubmit()}
               loading={state.loading}
             >
@@ -185,7 +185,7 @@ export default function AuthPage() {
               Don’t have an account?{" "}
               <Link
                 href="/signin"
-                className="font-medium text-red-600 hover:underline"
+                className="font-medium text-dred hover:underline"
               >
                 Sign Up
               </Link>

@@ -125,7 +125,7 @@ export default function SignInForm() {
           <CardContent className="p-8 space-y-6">
             {/* Logo / Header */}
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-full bg-red-500 flex items-center justify-center text-white font-bold">
+              <div className="h-8 w-8 rounded-full bg-color2 flex items-center justify-center text-white font-bold">
                 R
               </div>
               <span className="text-lg font-semibold">Repute</span>
@@ -147,7 +147,7 @@ export default function SignInForm() {
                     key={r}
                     variant={state.role === r ? "default" : "outline"}
                     className={`w-full ${
-                      state.role === r ? "bg-red-500 text-white" : ""
+                      state.role === r ? "bg-color2 text-white" : ""
                     }`}
                     onClick={() => setState({ role: r })}
                   >
@@ -237,7 +237,7 @@ export default function SignInForm() {
 
             <Button
               type="button"
-              className="w-full bg-red-500 hover:bg-red-600"
+              className="w-full bg-color2 hover:bg-color2"
               onClick={() => handleSubmit()}
               loading={state.submitLoading}
             >
@@ -266,7 +266,7 @@ export default function SignInForm() {
               Already Have an Account?{" "}
               <Link
                 href="/login"
-                className="font-medium text-red-600 hover:underline"
+                className="font-medium text-dred hover:underline"
               >
                 Login
               </Link>

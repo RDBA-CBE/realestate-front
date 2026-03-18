@@ -25,6 +25,10 @@ const PopularProperties = (props) => {
       spaceBetween: 20,
     },
     1024: {
+      slidesPerView: 3,
+      spaceBetween: 24,
+    },
+    1200: {
       slidesPerView: 4,
       spaceBetween: 24,
     },
@@ -58,8 +62,8 @@ router.push(`property-detail/${property?.id}`)
               }}
               className={`px-6 py-2 rounded-md font-medium transition-colors ${
                 activeFilter === "all"
-                  ? "bg-red-600 text-white"
-                  : "text-gray-600 hover:text-red-600"
+                  ? "bg-color2 text-white"
+                  : "text-gray-600 hover:text-dred"
               }`}
             >
               All Properties
@@ -72,8 +76,8 @@ router.push(`property-detail/${property?.id}`)
               }}
               className={`px-6 py-2 rounded-md font-medium transition-colors ${
                 activeFilter === "lease"
-                  ? "bg-red-600 text-white"
-                  : "text-gray-600 hover:text-red-600"
+                  ? "bg-color2 text-white"
+                  : "text-gray-600 hover:text-dred"
               }`}
             >
               For Lease
@@ -86,8 +90,8 @@ router.push(`property-detail/${property?.id}`)
               }}
               className={`px-6 py-2 rounded-md font-medium transition-colors ${
                 activeFilter === "sale"
-                  ? "bg-red-600 text-white"
-                  : "text-gray-600 hover:text-red-600"
+                  ? "bg-color2 text-white"
+                  : "text-gray-600 hover:text-dred"
               }`}
             >
               For Sale
@@ -150,7 +154,7 @@ router.push(`property-detail/${property?.id}`)
                     className={`absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-medium ${
                       property.listing_type === "sale"
                         ? "bg-green-500 text-white"
-                        : "bg-red-500 text-white"
+                        : "bg-color2 text-white"
                     }`}
                   >
                     {capitalizeFLetter(property.listing_type)}
@@ -169,8 +173,9 @@ router.push(`property-detail/${property?.id}`)
                   </h3>
                   <p className="text-gray-600 text-sm mb-3">{property.city}</p>
                   <div className="flex space-x-4 text-sm text-gray-600">
-                    <span>{property.bedrooms} bed</span>
-                    <span>{property.bathrooms} bath</span>
+                    <span className="bg-batch">{property.bedrooms} bed</span>
+                    <span className="bg-batch">{property.bathrooms} bath</span>
+                    {/* <span className="bg-batch">{property.price_per_sqft} sqft</span> */}
                   </div>
                 </div>
               </div>

@@ -245,8 +245,8 @@ export function PropertyView1(props: any) {
                     variant="ghost"
                     className={`px-4 py-2 h-9 rounded-none text-sm font-medium ${
                       state.view === "grid"
-                        ? "bg-red-50 text-red-600"
-                        : "text-gray-600 hover:text-red-500"
+                        ? "bg-red-50 text-dred"
+                        : "text-gray-600 hover:text-dred"
                     }`}
                   >
                     Grid
@@ -257,8 +257,8 @@ export function PropertyView1(props: any) {
                     variant="ghost"
                     className={`px-4 py-2 h-9 rounded-none text-sm font-medium ${
                       state.view === "list"
-                        ? "bg-red-50 text-red-600"
-                        : "text-gray-600 hover:text-red-500"
+                        ? "bg-red-50 text-dred"
+                        : "text-gray-600 hover:text-dred"
                     }`}
                   >
                     List

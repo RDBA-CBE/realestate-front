@@ -1386,7 +1386,7 @@ body {
 }
 
 .tab-btn.active {
-  background: #ef4444;
+  background: #9b0f09;
   color: #fff;
 }
 
@@ -1426,7 +1426,7 @@ body {
 }
 
 .search-btn {
-  background: #ef4444;
+  background: #9b0f09;
   color: white;
   padding: 10px 35px;
   border: none;
@@ -1555,6 +1555,7 @@ body {
   background: #9b0f09;
 }
 
+
 .bg-color1{
   background:#f3f4f6 ;
 }
@@ -1563,7 +1564,21 @@ body {
   background:#fff6f6;
 }
 
+.text-dred{
+  color:#9b0f09
+}
+
+.border-dred{
+  border-color: #9b0f09;
+}
+
 .property-swipper .swiper-wrapper{
   display: flex;
   justify-content:center;
+}
+
+.bg-batch{
+  background: #f3f4f6;
+  padding: 3px 10px;
+  border-radius: 5px;
 }

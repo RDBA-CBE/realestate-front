@@ -31,7 +31,7 @@ const LoadMoreDropdown = (props) => {
     <div className="w-full">
       {title && (
         <label className="block text-sm font-bold text-gray-700 mb-2">
-          {title} {required && <span className="text-red-500">*</span>}
+          {title} {required && <span className="text-dred">*</span>}
         </label>
       )}
 
@@ -76,7 +76,7 @@ const LoadMoreDropdown = (props) => {
         }}
       />
 
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-2 text-sm text-dred">{error}</p>}
     </div>
   );
 };

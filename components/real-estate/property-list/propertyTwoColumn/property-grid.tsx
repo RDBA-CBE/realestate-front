@@ -114,7 +114,7 @@ export function PropertyGrid(props: any) {
                   {["Any", "1+", "2+", "3+", "4+", "5+"].map((val) => (
                     <button
                       key={val}
-                      className="px-3 py-1 border rounded-md text-sm mr-2 mb-2 hover:bg-gray-100"
+                      className="px-3 py-1 border rounded-md text-sm mr-2 mb-2 hover:bg-color1"
                     >
                       {val}
                     </button>
@@ -127,7 +127,7 @@ export function PropertyGrid(props: any) {
                   {["Any", "1+", "2+", "3+", "4+", "5+"].map((val) => (
                     <button
                       key={val}
-                      className="px-3 py-1 border rounded-md text-sm mr-2 mb-2 hover:bg-gray-100"
+                      className="px-3 py-1 border rounded-md text-sm mr-2 mb-2 hover:bg-color1"
                     >
                       {val}
                     </button>

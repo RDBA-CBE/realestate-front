@@ -31,7 +31,7 @@ export default function Video(props: any) {
         <CardContent className="space-y-4">
           <div
             onClick={() => setOpen(true)}
-            className="relative w-full h-64 md:h-96 rounded-lg overflow-hidden cursor-pointer group bg-gray-100"
+            className="relative w-full h-64 md:h-96 rounded-lg overflow-hidden cursor-pointer group bg-color1"
           >
             <video
               ref={thumbnailVideoRef}

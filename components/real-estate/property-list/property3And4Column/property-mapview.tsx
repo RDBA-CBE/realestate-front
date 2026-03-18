@@ -162,7 +162,7 @@ export function MapView(props) {
       <div className="grid grid-cols-1 xl:grid-cols-12 !gap-0 min-h-[91vh]">
         <div className=" xl:col-span-3 p-6 lg:py-8 px-3 overflow-y-auto h-[calc(100vh-65px)] flex flex-col items-start">
           {/* First sticky header */}
-          <div className="sticky top-0 lg:-top-8 z-10 w-full p-3 rounded-lg mb-3 bg-gray-100">
+          <div className="sticky top-0 lg:-top-8 z-10 w-full p-3 rounded-lg mb-3 bg-color1">
             {/* First sticky header */}
             <div className="flex items-center justify-between  w-full">
               <Button
@@ -223,8 +223,8 @@ export function MapView(props) {
                   variant="ghost"
                   className={`px-4 py-2 h-9 rounded-none text-sm font-medium ${
                     state.view === "grid"
-                      ? "bg-red-50 text-red-600"
-                      : "text-gray-600 hover:text-red-500"
+                      ? "bg-red-50 text-dred"
+                      : "text-gray-600 hover:text-dred"
                   }`}
                 >
                   Grid
@@ -235,8 +235,8 @@ export function MapView(props) {
                   variant="ghost"
                   className={`px-4 py-2 h-9 rounded-none text-sm font-medium ${
                     state.view === "list"
-                      ? "bg-red-50 text-red-600"
-                      : "text-gray-600 hover:text-red-500"
+                      ? "bg-red-50 text-dred"
+                      : "text-gray-600 hover:text-dred"
                   }`}
                 >
                   List
@@ -406,7 +406,7 @@ export function MapView(props) {
                       variant="ghost"
                       size="icon"
                       onClick={() => setState({ isOpen: false })}
-                      className="h-8 w-8 rounded-full hover:bg-gray-100"
+                      className="h-8 w-8 rounded-full hover:bg-color1"
                     >
                       <X className="h-4 w-4" />
                     </Button>

@@ -286,7 +286,7 @@ export function PropertyView(props: any) {
     >
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-8 items-start min-h-screen">
         <aside className="space-y-6 lg:col-span-1 xl:sticky md:top-16 lg:top-16  hidden xl:block ">
-          <div className="p-4 pb-8 border rounded-lg space-y-6 bg-gray-100 border-none h-[91vh] overflow-auto thin-scrollbar">
+          <div className="p-4 pb-8 border rounded-lg space-y-6 bg-color1 border-none h-[91vh] overflow-auto thin-scrollbar">
             <div className="w-full flex justify-end">
               <Button
                 onClick={() => resetFilter()}
@@ -541,7 +541,7 @@ export function PropertyView(props: any) {
 
         <section className="xl:col-span-3 space-y-6">
           <div className="sticky top-16 z-10">
-            <div className="flex flex-wrap items-center justify-between gap-1 md:gap-4 p-4 bg-gray-100 border-none rounded-lg border shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-1 md:gap-4 p-4 bg-color1 border-none rounded-lg border shadow-sm">
               <div className="flex items-center justify-between md:justify-normal gap-4 w-auto">
                 {/* --------responsive filter sidebar start---------- */}
 
@@ -562,7 +562,7 @@ export function PropertyView(props: any) {
 
                     <SheetContent
                       side="left"
-                      className="w-100 p-0 overflow-y-auto bg-gray-100 "
+                      className="w-100 p-0 overflow-y-auto bg-color1 "
                     >
                       <div className="p-4">
                         <SheetHeader className="flex items-center justify-between">
@@ -591,7 +591,7 @@ export function PropertyView(props: any) {
                         className="sticky bottom-0 left-0  border-t cursor-pointer"
                         onClick={() => setState({ sidebarOpen: false })}
                       >
-                        <div className="bg-red-600 hover:bg-red-500 py-5 px-3 text-white w-full text-center text-lg font-semibold">
+                        <div className="bg-color2 hover:bg-color2 py-5 px-3 text-white w-full text-center text-lg font-semibold">
                           View {properties.length} Properties
                         </div>
                       </SheetFooter>
@@ -607,7 +607,7 @@ export function PropertyView(props: any) {
                 >
                   <Button
                     variant="outline"
-                    className="px-4 py-2 h-9 rounded-lg text-sm font-medium text-gray-600 hover:text-red-500 
+                    className="px-4 py-2 h-9 rounded-lg text-sm font-medium text-gray-600 hover:text-dred 
                       border-none 
                       md:border 
                       md:border-gray-300 
@@ -669,8 +669,8 @@ export function PropertyView(props: any) {
                     variant="ghost"
                     className={`px-2 md:px-3 py-2 text-sm font-medium flex items-center gap-1 transition-colors ${
                       state.view === "grid"
-                        ? "text-red-600 hover:text-red-600 hover:bg-transparent"
-                        : "text-gray-600  hover:text-red-600 hover:bg-transparent"
+                        ? "text-dred hover:text-dred hover:bg-transparent"
+                        : "text-gray-600  hover:text-dred hover:bg-transparent"
                     }`}
                   >
                     <Grid className="w-4 h-4" />
@@ -682,8 +682,8 @@ export function PropertyView(props: any) {
                     variant="ghost"
                     className={`pe-0 px-2 md:px-3 py-2 text-sm font-medium flex items-center gap-1 transition-colors ${
                       state.view === "list"
-                        ? " text-red-600 hover:text-red-600 hover:bg-transparent"
-                        : "text-gray-600  hover:text-red-600 hover:bg-transparent"
+                        ? " text-dred hover:text-dred hover:bg-transparent"
+                        : "text-gray-600  hover:text-dred hover:bg-transparent"
                     }`}
                   >
                     <List className="w-4 h-4" />

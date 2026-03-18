@@ -340,7 +340,7 @@ export default function ProfilePage() {
                     onClick={() => setActiveSection(item.id)}
                     className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
                       activeSection === item.id
-                        ? "bg-red-600 text-white rounded-lg"
+                        ? "bg-color2 text-white rounded-lg"
                         : "text-gray-600 hover:bg-red-50"
                     }`}
                   >
@@ -378,7 +378,7 @@ export default function ProfilePage() {
                           </div>
                           <button
                             onClick={handleDeletePhoto}
-                            className="absolute -top-2 -right-2 bg-red-500 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                            className="absolute -top-2 -right-2 bg-color2 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
                           >
                             <Trash2 size={16} />
                           </button>
@@ -394,14 +394,14 @@ export default function ProfilePage() {
                           />
                           <Button
                             variant="outline"
-                            className="rounded-lg px-6 bg-red-600 text-white rounded-lg"
+                            className="rounded-lg px-6 bg-color2 text-white rounded-lg"
                           >
                             <Upload className="h-4 w-4 mr-2" />
                             Upload Photo
                           </Button>
                         </label>
                         {errors.photo && (
-                          <span className="text-red-500 text-sm mt-2">
+                          <span className="text-dred text-sm mt-2">
                             {errors.photo}
                           </span>
                         )}
@@ -442,7 +442,7 @@ export default function ProfilePage() {
                                 />
                               </div>
                               {errors.profile[field.key] && (
-                                <span className="text-red-500 text-sm block">
+                                <span className="text-dred text-sm block">
                                   {errors.profile[field.key]}
                                 </span>
                               )}
@@ -475,7 +475,7 @@ export default function ProfilePage() {
                             placeholder="Tell us about yourself..."
                           />
                           {errors.profile.about && (
-                            <span className="text-red-500 text-sm">
+                            <span className="text-dred text-sm">
                               {errors.profile.about}
                             </span>
                           )}
@@ -484,7 +484,7 @@ export default function ProfilePage() {
                         <Button
                           onClick={handleProfileUpdate}
                           disabled={isLoading}
-                          className="w-full md:w-auto px-8 bg-red-600 text-white rounded-lg"
+                          className="w-full md:w-auto px-8 bg-color2 text-white rounded-lg"
                         >
                           {isLoading ? "Updating..." : "Update Profile"}
                         </Button>
@@ -533,7 +533,7 @@ export default function ProfilePage() {
                               }`}
                             />
                             {errors.social[platform] && (
-                              <span className="text-red-500 text-sm block">
+                              <span className="text-dred text-sm block">
                                 {errors.social[platform]}
                               </span>
                             )}
@@ -545,7 +545,7 @@ export default function ProfilePage() {
                     <Button
                       onClick={handleSocialUpdate}
                       disabled={isLoading}
-                      className="mt-6 px-8 bg-red-600 text-white rounded-lg"
+                      className="mt-6 px-8 bg-color2 text-white rounded-lg"
                     >
                       {isLoading ? "Updating..." : "Update Social Links"}
                     </Button>
@@ -604,7 +604,7 @@ export default function ProfilePage() {
                             </button>
                           </div>
                           {errors.passwords[field.key] && (
-                            <span className="text-red-500 text-sm block">
+                            <span className="text-dred text-sm block">
                               {errors.passwords[field.key]}
                             </span>
                           )}
@@ -625,7 +625,7 @@ export default function ProfilePage() {
                     <Button
                       onClick={handlePasswordUpdate}
                       disabled={isLoading}
-                      className="mt-6 px-8 bg-red-600 text-white rounded-lg"
+                      className="mt-6 px-8 bg-color2 text-white rounded-lg"
                     >
                       {isLoading ? "Updating..." : "Change Password"}
                     </Button>

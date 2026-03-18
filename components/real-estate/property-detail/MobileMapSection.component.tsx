@@ -213,7 +213,7 @@ const GoogleMaps = (props) => {
         onClick={() => setShowMap(true)}
       >
         <div className="flex items-center justify-center w-20 h-14 xs:w-12 xs:h-12  sm:w-14 sm:h-14  bg-white rounded-full border border-gray-200">
-          <MapPin className="text-red-600 w-6 h-6" />
+          <MapPin className="text-dred w-6 h-6" />
         </div>
 
         <CardContent className="p-0">
@@ -223,7 +223,7 @@ const GoogleMaps = (props) => {
           </p>
           <a
             href="#"
-            className="text-xs text-red-600 hover:underline font-medium"
+            className="text-xs text-dred hover:underline font-medium"
           >
             View on Map
           </a>
@@ -236,7 +236,7 @@ const GoogleMaps = (props) => {
           {/* Close button */}
           <button
             onClick={() => setShowMap(false)}
-            className="absolute top-4 right-4 z-50 p-2 bg-white rounded-full shadow-md border border-gray-200 hover:bg-gray-100 transition"
+            className="absolute top-4 right-4 z-50 p-2 bg-white rounded-full shadow-md border border-gray-200 hover:bg-color1 transition"
           >
             <X className="w-5 h-5 text-gray-700" />
           </button>
@@ -387,7 +387,7 @@ const GoogleMaps = (props) => {
                       }}
                       className={`p-2 border-b cursor-pointer hover:bg-gray-50 ${
                         selectedPlace?.place_id === place.place_id
-                          ? "bg-gray-100"
+                          ? "bg-color1"
                           : ""
                       }`}
                     >

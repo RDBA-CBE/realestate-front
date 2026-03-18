@@ -1,5 +1,6 @@
 // components/Footer.js
 import React from 'react';
+import { Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -15,7 +16,7 @@ const Footer = () => {
             </div>
           </div>
           
-          <div>
+          <div className='md:ps-10'>
             <h4 className="font-semibold mb-4">Apps</h4>
             <div className="space-y-2">
               <a href="#" className="block text-white hover:text-white">Apple Store</a>
@@ -25,16 +26,27 @@ const Footer = () => {
           
           <div>
             <h4 className="font-semibold mb-4">Follow us on social media</h4>
-            <div className="flex space-x-4">
-              {/* Social media icons would go here */}
+            <div className="flex space-x-4 justify-center md:justify-start">
+              <a href="#" className="text-white hover:text-gray-200 transition-colors">
+                <Instagram size={24} />
+              </a>
+              <a href="#" className="text-white hover:text-gray-200 transition-colors text-[22px] mt-[-3px]">
+               𝕏
+              </a>
+              <a href="#" className="text-white hover:text-gray-200 transition-colors">
+                <Facebook size={24} />
+              </a>
+              <a href="#" className="text-white hover:text-gray-200 transition-colors">
+                <Youtube size={24} />
+              </a>
             </div>
           </div>
           
           <div>
             <h4 className="font-semibold mb-4">Keep Yourself Up to Date</h4>
             <div className="flex">
-              <input type="email" placeholder="Your email" className="flex-1 px-4 py-2 bg-white  rounded-l focus:outline-none" />
-              <button className="bg-dark px-4 py-2 rounded-r font-medium">Subscribe</button>
+              <input type="email" placeholder="Your email" className="flex-1 px-4 py-2 border bg-transparent border-white rounded-l focus:outline-none placeholder:text-white" />
+              <button className="bg-white text-dred px-4 py-2 rounded-r font-medium">Subscribe</button>
             </div>
           </div>
         </div>

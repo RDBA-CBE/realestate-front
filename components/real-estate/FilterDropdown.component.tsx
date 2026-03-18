@@ -122,7 +122,7 @@ export default function FilterDropdown({
 
         <div className="flex justify-end">
           <Button
-            className="rounded-lg bg-red-500 hover:bg-red-600"
+            className="rounded-lg bg-color2 hover:bg-color2"
             onClick={() => setOpen(false)}
           >
             Done

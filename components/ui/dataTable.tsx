@@ -37,7 +37,7 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
         </TableHeader>
         <TableBody>
           {data.map((row, index) => (
-            <TableRow key={index} className="hover:bg-gray-100">
+            <TableRow key={index} className="hover:bg-color1">
               {columns.map((column) => (
                 <TableCell key={column.accessor} className="py-4 px-4">
                   {column.Cell ? column.Cell({ value: row[column.accessor], row }) : row[column.accessor]}

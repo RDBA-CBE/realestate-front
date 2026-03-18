@@ -43,7 +43,7 @@ const getIcon = (name) => {
                     >
                         {/* Icon - larger and colored for visibility */}
                         <div className="mb-2 p-2 bg-red-50   rounded-full">
-                            <Icon className="w-6 h-6 text-red-500" aria-hidden="true" />
+                            <Icon className="w-6 h-6 text-dred" aria-hidden="true" />
                         </div>
 
                         {/* Feature Name - bold and easy to read */}

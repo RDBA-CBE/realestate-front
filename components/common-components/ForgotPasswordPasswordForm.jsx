@@ -170,7 +170,7 @@ const ForgotPasswordForm = () => {
                     }}
                     className={` ${
                       state.errors?.password
-                        ? 'absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none bg-red-600'
+                        ? 'absolute top-2 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none bg-color2'
                         : 'absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground focus:outline-none'
                     }`}
                   >
@@ -220,7 +220,7 @@ const ForgotPasswordForm = () => {
               <div className='flex items-center gap-2'>
                 <Button
                   type='button'
-                  className='w-full bg-red-600'
+                  className='w-full bg-color2'
                   onClick={handleSubmit}
                 >
                   {state.btnLoading ? <Loader /> : 'Confirm'}

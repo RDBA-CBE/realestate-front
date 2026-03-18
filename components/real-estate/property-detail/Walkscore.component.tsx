@@ -8,19 +8,19 @@ const scores = [
     label: "Walk Score",
     value: "57 / 100",
     desc: "Somewhat Walkable",
-    icon: <PersonStanding className="w-6 h-6 text-red-500" />,
+    icon: <PersonStanding className="w-6 h-6 text-dred" />,
   },
   {
     label: "Transit Score",
     value: "27 / 100",
     desc: "Some Transit",
-    icon: <Bus className="w-6 h-6 text-red-500" />,
+    icon: <Bus className="w-6 h-6 text-dred" />,
   },
   {
     label: "Bike Score",
     value: "45 / 100",
     desc: "Somewhat Bikeable",
-    icon: <Bike className="w-6 h-6 text-red-500" />,
+    icon: <Bike className="w-6 h-6 text-dred" />,
   },
 ];
 

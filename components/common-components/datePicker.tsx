@@ -42,7 +42,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     <div className="w-full relative">
       {title && (
         <label className="block text-sm font-bold text-gray-700 mb-2">
-          {title} {required && <span className="text-red-500">*</span>}
+          {title} {required && <span className="text-dred">*</span>}
         </label>
       )}
       <Popover>
@@ -117,7 +117,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
         </button>
       )} */}
 
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-2 text-sm text-dred">{error}</p>}
     </div>
   );
 };

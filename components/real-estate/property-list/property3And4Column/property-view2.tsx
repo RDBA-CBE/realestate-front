@@ -147,7 +147,7 @@ export function PropertyView2(props: any) {
             className="flex items-center gap-2 cursor-pointer hover:bg-red-50 px-3 py-2 rounded-md transition bg-white/70"
             onClick={() => setState({ modalOpen: true })}
           >
-            <Filter className="w-5 h-5 text-red-500" />{" "}
+            <Filter className="w-5 h-5 text-dred" />{" "}
             <span className="text-sm font-medium text-gray-700">Filter</span>
           </Button>
 
@@ -177,8 +177,8 @@ export function PropertyView2(props: any) {
                 variant="ghost"
                 className={`px-3 py-2 text-sm font-medium flex items-center gap-1 transition-colors ${
                   state.view === "grid"
-                    ? "text-red-600 hover:text-red-600 hover:bg-transparent"
-                    : "text-gray-600  hover:text-red-600 hover:bg-transparent"
+                    ? "text-dred hover:text-dred hover:bg-transparent"
+                    : "text-gray-600  hover:text-dred hover:bg-transparent"
                 }`}
               >
                 <Grid className="w-4 h-4" />
@@ -190,8 +190,8 @@ export function PropertyView2(props: any) {
                 variant="ghost"
                 className={`px-3 py-2 text-sm font-medium flex items-center gap-1 transition-colors ${
                   state.view === "list"
-                    ? " text-red-600 hover:text-red-600 hover:bg-transparent"
-                    : "text-gray-600  hover:text-red-600 hover:bg-transparent"
+                    ? " text-dred hover:text-dred hover:bg-transparent"
+                    : "text-gray-600  hover:text-dred hover:bg-transparent"
                 }`}
               >
                 <List className="w-4 h-4" />

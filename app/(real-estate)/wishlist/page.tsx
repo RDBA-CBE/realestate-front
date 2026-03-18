@@ -116,7 +116,7 @@ const Favorites = () => {
     return (
       types[type] || {
         label: "Available",
-        className: "bg-gray-100 text-gray-800",
+        className: "bg-color1 text-gray-800",
       }
     );
   };
@@ -153,7 +153,7 @@ const Favorites = () => {
               className={`p-2 rounded-lg ${
                 state.view === "grid"
                   ? "bg-blue-100 text-blue-600"
-                  : "bg-gray-100 text-gray-500"
+                  : "bg-color1 text-gray-500"
               }`}
             >
               <svg
@@ -175,7 +175,7 @@ const Favorites = () => {
               className={`p-2 rounded-lg ${
                 state.view === "list"
                   ? "bg-blue-100 text-blue-600"
-                  : "bg-gray-100 text-gray-500"
+                  : "bg-color1 text-gray-500"
               }`}
             >
               <svg
@@ -211,7 +211,7 @@ const Favorites = () => {
               Properties you add to your wishlist will appear here.
             </p>
             <button
-              className="w-auto bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed "
+              className="w-auto bg-color2 hover:bg-red-700 text-white font-semibold py-2 px-4 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed "
               onClick={() => router.push("property-list")}
             >
               {" "}
@@ -235,7 +235,7 @@ const Favorites = () => {
               >
                 {state.view === "grid" ? (
                   // Grid View Card
-                  <div className="bg-gray-100 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                  <div className="bg-color1 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
                     <div className="relative">
                       <Image
                         src={property.primary_image}
@@ -246,9 +246,9 @@ const Favorites = () => {
                       />
                       <button
                         onClick={() => handleRemoveFromWishlist(property.id)}
-                        className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-red-50 hover:text-red-600 transition-colors"
+                        className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-red-50 hover:text-dred transition-colors"
                       >
-                        <Heart className="w-4 h-4 fill-current text-red-500" />
+                        <Heart className="w-4 h-4 fill-current text-dred" />
                       </button>
                       <div className="absolute top-3 left-3">
                         <span
@@ -312,7 +312,7 @@ const Favorites = () => {
                   </div>
                 ) : (
                   // List View Card
-                  <div className="bg-gray-100 rounded-lg  overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
+                  <div className="bg-color1 rounded-lg  overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
                     <div
                       className="flex flex-col md:flex-row"
                       style={{ height: 300 }}
@@ -327,9 +327,9 @@ const Favorites = () => {
                         />
                         <button
                           onClick={() => handleRemoveFromWishlist(property.id)}
-                          className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-red-50 hover:text-red-600 transition-colors"
+                          className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-red-50 hover:text-dred transition-colors"
                         >
-                          <Heart className="w-4 h-4 fill-current text-red-500" />
+                          <Heart className="w-4 h-4 fill-current text-dred" />
                         </button>
                       </div>
 

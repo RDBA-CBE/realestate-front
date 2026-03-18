@@ -52,7 +52,7 @@ const BlogSection = () => {
                 
                 <h3 className="font-semibold text-gray-900 text-lg mb-2">{post.title}</h3>
                 <p className="text-gray-600 mb-4">{post.subtitle}</p>
-                <a href="#" className="text-red-600 font-medium hover:text-red-700 transition-colors inline-flex items-center">
+                <a href="#" className="text-dred font-medium hover:text-red-700 transition-colors inline-flex items-center">
                   Read More
                   <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

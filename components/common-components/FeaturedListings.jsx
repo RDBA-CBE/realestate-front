@@ -24,6 +24,10 @@ const FeaturedListings = (props) => {
       spaceBetween: 20,
     },
     1024: {
+      slidesPerView: 3,
+      spaceBetween: 24,
+    },
+     1200: {
       slidesPerView: 4,
       spaceBetween: 24,
     },
@@ -34,20 +38,20 @@ const FeaturedListings = (props) => {
   };
 
   return (
-    <div className="py-16 bg-lred">
+    <div className="py-14 bg-lred">
       {" "}
       {/* Just use div instead of section */}
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-12">
           <div>
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
-              Discover Our Featured Listings
+              Discover Our Fully Furnished Sale Properties
             </h2>
             <p className="text-gray-600">
               Aliquam lacinia diam quis lacus euismod
             </p>
           </div>
-          <a href="property-list" className="text-red-600 font-medium">
+          <a href="property-list" className="text-dred font-medium">
             See All Properties →
           </a>
         </div>
@@ -85,7 +89,7 @@ const FeaturedListings = (props) => {
                     }}
                   >
                     <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-                    <div className="absolute top-4 left-4 bg-white px-3 py-1 rounded text-sm font-semibold text-red-600">
+                    <div className="absolute top-4 left-4 bg-white px-3 py-1 rounded text-sm font-semibold text-dred">
                       {formatPriceRange(
                         listing?.price_range?.minimum_price,
                         listing?.price_range?.maximum_price
@@ -98,9 +102,9 @@ const FeaturedListings = (props) => {
                     </h3>
                     <p className="text-gray-600 text-sm mb-4">{listing.city}</p>
                     <div className="flex space-x-4 text-sm text-gray-600 mb-4">
-                      <span>{listing.bedrooms} bed</span>
-                      <span>{listing.bathrooms} bath</span>
-                      <span>{listing.price_per_sqft} sqft</span>
+                      <span className="bg-batch">{listing.bedrooms} bed</span>
+                      <span className="bg-batch">{listing.bathrooms} bath</span>
+                      <span className="bg-batch">{listing.price_per_sqft} sqft</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
@@ -108,7 +112,7 @@ const FeaturedListings = (props) => {
                       </span>
                       <button
                         onClick={() => handleClick(listing)}
-                        className="text-red-600 border border-red-600 px-4 py-2 rounded text-sm font-medium hover:bg-red-50 transition-colors"
+                        className="text-dred border border-[#9b0f09] px-4 py-2 rounded text-sm font-medium hover:bg-red-50 transition-colors"
                       >
                         Details
                       </button>

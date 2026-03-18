@@ -162,7 +162,7 @@ function ContactSection() {
       {!isLoggedIn && (
         <Button
           onClick={handleContactClick}
-          className="w-full bg-red-500 hover:bg-red-600 text-white"
+          className="w-full bg-color2 hover:bg-color2 text-white"
           size="lg"
         >
           Enquiry
@@ -395,7 +395,7 @@ export default function PropertyDetailPage() {
 
       <div className="lg:hidden fixed bottom-8 right-0 w-auto flex justify-center z-20">
         <Button
-          className="bg-red-500 hover:bg-red-600 text-white px-9 py-6 rounded-l-full rounded-r-none  shadow-lg text-lg"
+          className="bg-color2 hover:bg-color2 text-white px-9 py-6 rounded-l-full rounded-r-none  shadow-lg text-lg"
           onClick={() => setIsMobileFormOpen(true)}
         >
           <PhoneForwarded />

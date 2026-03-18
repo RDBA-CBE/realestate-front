@@ -511,7 +511,7 @@ const onPlaceChanged = () => {
       case "lease":
         return "bg-green-100 text-green-800 border-green-200";
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return "bg-color1 text-gray-800 border-gray-200";
     }
   };
 
@@ -569,7 +569,7 @@ const onPlaceChanged = () => {
   if (loadError) {
     return (
       <Card className="p-4">
-        <div className="text-red-500 text-center">
+        <div className="text-dred text-center">
           Error loading Google Maps. Please check your API key and try again.
         </div>
       </Card>
@@ -633,7 +633,7 @@ const onPlaceChanged = () => {
                       </span>
                     )}
                     {displayProperties.length === 0 && (
-                      <span className="text-red-600 font-semibold ml-2">
+                      <span className="text-dred font-semibold ml-2">
                         ✗ No properties found in this area
                       </span>
                     )}
@@ -952,7 +952,7 @@ const onPlaceChanged = () => {
           </div>
           <div className="space-y-2">
             <div className="flex items-center text-xs">
-              <div className="w-4 h-4 bg-red-500 rounded-full mr-3 flex items-center justify-center">
+              <div className="w-4 h-4 bg-color2 rounded-full mr-3 flex items-center justify-center">
                 <div className="w-2 h-2 bg-white rounded-full"></div>
               </div>
               <span className="font-medium">For Sale</span>

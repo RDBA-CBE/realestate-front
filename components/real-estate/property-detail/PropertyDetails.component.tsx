@@ -303,7 +303,7 @@ export default function PropertyDetails({ data }: any) {
             key={idx}
             className="flex items-center gap-3   transition-shadow duration-200"
           >
-            <div className="flex-shrink-0 w-10 h-10 bg-red-50  text-red-500  rounded-full flex items-center justify-center">
+            <div className="flex-shrink-0 w-10 h-10 bg-red-50  text-dred  rounded-full flex items-center justify-center">
               <item.icon className="w-5 h-5" />
             </div>
             <div className="flex flex-col">

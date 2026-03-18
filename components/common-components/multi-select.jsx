@@ -43,7 +43,7 @@ const CustomMultiSelect = ({
         <div className="w-full" >
             {title && (
                 <label className="block text-sm font-bold text-gray-700 mb-2">
-                    {title} {required && <span className="text-red-500">*</span>}
+                    {title} {required && <span className="text-dred">*</span>}
                 </label>
             )}
 
@@ -60,7 +60,7 @@ const CustomMultiSelect = ({
                         {options.map((option) => (
                             <div
                                 key={option.value}
-                                className="flex items-center p-2 cursor-pointer hover:bg-gray-100"
+                                className="flex items-center p-2 cursor-pointer hover:bg-color1"
                                 onClick={() => handleSelectChange(option.value)}
                             >
                                 <input
@@ -81,7 +81,7 @@ const CustomMultiSelect = ({
                 {value.length > 0 && (
                     <button
                         onClick={handleClear}
-                        className="text-red-500 bg-red-100 px-2 py-1 rounded-md hover:text-gray-700 mt-2 text-xs"
+                        className="text-dred bg-red-100 px-2 py-1 rounded-md hover:text-gray-700 mt-2 text-xs"
                     >
                         Clear All
                     </button>
@@ -114,7 +114,7 @@ const CustomMultiSelect = ({
 
 
 
-            {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+            {error && <p className="mt-2 text-sm text-dred">{error}</p>}
         </div>
     );
 };

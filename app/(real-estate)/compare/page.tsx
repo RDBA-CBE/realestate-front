@@ -276,7 +276,7 @@ const PropertyComparisonGrid = () => {
                 <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">
                   {property.title}
                 </h3>
-                <p className="text-xs text-red-600 font-bold mt-1">
+                <p className="text-xs text-dred font-bold mt-1">
                   {formatPriceRange(
                     property?.price_range?.minimum_price,
                     property?.price_range?.maximum_price
@@ -287,7 +287,7 @@ const PropertyComparisonGrid = () => {
                 </p>
               </div>
               <button
-                className="text-gray-400 hover:text-red-500 transition ml-2"
+                className="text-gray-400 hover:text-dred transition ml-2"
                 title="Remove property"
                 onClick={() => handleRemove(property.id)}
               >
@@ -321,7 +321,7 @@ const PropertyComparisonGrid = () => {
                   <span
                     className={`${
                       attr.highlight
-                        ? "text-red-600 font-bold"
+                        ? "text-dred font-bold"
                         : "text-gray-900"
                     }`}
                   >
@@ -353,7 +353,7 @@ const PropertyComparisonGrid = () => {
               >
                 <div className="relative">
                   <button
-                    className="absolute top-0 right-0 text-gray-400 hover:text-red-500 transition"
+                    className="absolute top-0 right-0 text-gray-400 hover:text-dred transition"
                     title="Remove property"
                     onClick={() => handleRemove(property.id)}
                   >
@@ -380,7 +380,7 @@ const PropertyComparisonGrid = () => {
                   <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">
                     {property.title}
                   </h3>
-                  <p className="text-xs text-red-600 font-bold mt-1">
+                  <p className="text-xs text-dred font-bold mt-1">
                     {formatPriceRange(
                       property?.price_range?.minimum_price,
                       property?.price_range?.maximum_price
@@ -420,7 +420,7 @@ const PropertyComparisonGrid = () => {
                       <span
                         className={`${
                           attr.highlight
-                            ? "text-lg font-extrabold text-red-600"
+                            ? "text-lg font-extrabold text-dred"
                             : "text-gray-800 text-sm"
                         }`}
                       >
@@ -465,7 +465,7 @@ const PropertyComparisonGrid = () => {
               <p className="text-gray-500">
                 No properties to compare. Add properties to compare list.
               </p>
-              <button className="w-auto bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed " onClick={()=>router.push("property-list")}>
+              <button className="w-auto bg-color2 hover:bg-red-700 text-white font-semibold py-2 px-4 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed " onClick={()=>router.push("property-list")}>
                 {" "}
                 Add properties to compare
               </button>
@@ -483,7 +483,7 @@ const PropertyComparisonGrid = () => {
                       onClick={() => setActiveTab(index)}
                       className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
                         activeTab === index
-                          ? "bg-red-600 text-white"
+                          ? "bg-color2 text-white"
                           : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                       }`}
                     >

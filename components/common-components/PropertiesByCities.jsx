@@ -45,9 +45,9 @@ const PropertiesByCities = () => {
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Properties by Cities</h2>
             <p className="text-gray-600">Aliquam lacinia diam quis lacus euismod</p>
           </div>
-          <a href="#" className="text-red-600 font-medium hover:text-red-700 transition-colors">
+          {/* <a href="#" className="text-dred font-medium hover:text-red-700 transition-colors">
             See All Cities →
-          </a>
+          </a> */}
         </div>
 
         {/* Swiper Component */}

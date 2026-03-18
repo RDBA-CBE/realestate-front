@@ -175,7 +175,7 @@ export default function ProfilePage() {
       className="min-h-[93vh]  px-8"
     >
       <div className="container mt-6">
-        <div className="w-full bg-gray-100  text-white rounded-xl flex flex-col md:flex-row items-center justify-between p-4 md:p-6 shadow-sm">
+        <div className="w-full bg-color1  text-white rounded-xl flex flex-col md:flex-row items-center justify-between p-4 md:p-6 shadow-sm">
           {/* Left Section */}
           <div className="flex items-center space-x-4">
             <Image
@@ -207,7 +207,7 @@ export default function ProfilePage() {
           <div className="flex space-x-3 mt-4 md:mt-0">
             <Button
               variant="outline"
-              className="w-full rounded-full border-red-500 bg-transparent hover:bg-red-600 text-red-500 hover:text-white hover:border-none"
+              className="w-full rounded-full border-red-500 bg-transparent hover:bg-color2 text-dred hover:text-white hover:border-none"
               onClick={() => setState({ isEditProfile: true })}
             >
               <Pencil size={16} />
@@ -216,7 +216,7 @@ export default function ProfilePage() {
 
             <Button
               variant="outline"
-              className="w-full rounded-full border-red-500 bg-transparent hover:bg-red-600 text-red-500 hover:text-white hover:border-none"
+              className="w-full rounded-full border-red-500 bg-transparent hover:bg-color2 text-dred hover:text-white hover:border-none"
               onClick={() => setState({ isChangePassword: true })}
             >
               <MessageCircle size={16} />
@@ -225,7 +225,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="w-full bg-gray-100 mt-5 text-white p-6 rounded-2xl grid md:grid-cols-2 gap-6 items-stretch">
+        <div className="w-full bg-color1 mt-5 text-white p-6 rounded-2xl grid md:grid-cols-2 gap-6 items-stretch">
           {/* Left Column - My Dream Home */}
           <div className="space-y-5 flex flex-col h-full">
             <h2 className="text-lg text-black font-semibold">My Preference</h2>
@@ -315,9 +315,9 @@ export default function ProfilePage() {
                       />
                       <button
                         onClick={() => handleRemoveFromWishlist(property.id)}
-                        className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-red-50 hover:text-red-600 transition-colors"
+                        className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-red-50 hover:text-dred transition-colors"
                       >
-                        <Heart className="w-4 h-4 fill-current text-red-500" />
+                        <Heart className="w-4 h-4 fill-current text-dred" />
                       </button>
                     </div>
                   </div>
@@ -352,13 +352,13 @@ export default function ProfilePage() {
 
             <div className="flex gap-3">
               <Button
-                className="bg-red-500 hover:bg-red-700 text-white w-full"
+                className="bg-color2 hover:bg-red-700 text-white w-full"
                 onClick={() => router.push("/property-list")}
               >
                 Search Properties
               </Button>
               <Button
-                className="bg-red-500 hover:bg-red-700 text-white w-full"
+                className="bg-color2 hover:bg-red-700 text-white w-full"
                 onClick={() => router.push(state?.properties?.length > 0 ? "/wishlist" : "/property-list")}
               >
                {state?.properties?.length > 0 ? "View All Favorites" : "Add Properties to Wishlist"}
@@ -450,7 +450,7 @@ export default function ProfilePage() {
                             height={96}
                             className="rounded-full object-cover border-2 border-gray-300 w-24 h-24"
                           />
-                          <div className="absolute bottom-0 right-0 bg-red-500 text-white rounded-full p-1.5 text-xs">
+                          <div className="absolute bottom-0 right-0 bg-color2 text-white rounded-full p-1.5 text-xs">
                             <Pencil size={14} />
                           </div>
                         </div>
@@ -574,7 +574,7 @@ export default function ProfilePage() {
                     <Button
                       type="submit"
                       disabled={state.btnLoading}
-                      className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                      className="w-full bg-color2 hover:bg-red-700 text-white font-semibold py-3 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
                       {state.btnLoading ? "Saving..." : "Submit"}
                     </Button>
@@ -672,7 +672,7 @@ export default function ProfilePage() {
                     <Button
                       type="submit"
                       disabled={state.btnLoading}
-                      className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                      className="w-full bg-color2 hover:bg-red-700 text-white font-semibold py-3 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
                       {state.btnLoading ? "Saving..." : "Submit"}
                     </Button>

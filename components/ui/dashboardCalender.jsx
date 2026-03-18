@@ -442,7 +442,7 @@ const DashboardCalender = ({ events, setEvents }) => {
                     <td
                       key={dayIndex}
                       className={`p-4 h-[100px] w-[200px] relative border border-gray-300 cursor-pointer ${
-                        day ? "hover:bg-fuchsia-100" : "bg-gray-100"
+                        day ? "hover:bg-fuchsia-100" : "bg-color1"
                       }`}
                     >
                       <div className="flex justify-between items-start">

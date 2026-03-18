@@ -61,7 +61,7 @@ export function PropertyCard({
               {[Heart, Copy, Share].map((Icon, i) => (
                 <button
                   key={i}
-                  className="bg-white rounded-full p-2 shadow hover:bg-gray-100"
+                  className="bg-white rounded-full p-2 shadow hover:bg-color1"
                 >
                   <Icon size={16} />
                 </button>

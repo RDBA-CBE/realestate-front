@@ -117,8 +117,8 @@ export function PropertyGrid(props: any) {
               variant='ghost'
               className={`px-4 py-2 h-9 rounded-none text-sm font-medium ${
                 view === 'grid'
-                  ? 'text-red-600 bg-transparent'
-                  : 'text-gray-600 hover:text-red-500'
+                  ? 'text-dred bg-transparent'
+                  : 'text-gray-600 hover:text-dred'
               }`}
             >
               Grid
@@ -129,8 +129,8 @@ export function PropertyGrid(props: any) {
               variant='ghost'
               className={`px-4 py-2 h-9 rounded-none text-sm font-medium ${
                 view === 'list'
-                  ? 'text-red-600 bg-transparent'
-                  : 'text-gray-600 hover:text-red-500'
+                  ? 'text-dred bg-transparent'
+                  : 'text-gray-600 hover:text-dred'
               }`}
             >
               List

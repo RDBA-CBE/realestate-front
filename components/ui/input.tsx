@@ -17,7 +17,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {title && (
           <>
             <Label htmlFor={props.name}>{title}</Label>
-            {required && <span className="text-red-500 ml-1">*</span>}
+            {required && <span className="text-dred ml-1">*</span>}
           </>
         )}
 
@@ -52,7 +52,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {error && typeof error === "string" && (
-          <p className="mt-1 text-sm text-red-600" id={`${props.name}-error`}>
+          <p className="mt-1 text-sm text-dred" id={`${props.name}-error`}>
             {error}
           </p>
         )}

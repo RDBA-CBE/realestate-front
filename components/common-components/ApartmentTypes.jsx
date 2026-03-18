@@ -25,7 +25,7 @@ const ApartmentTypes = (props) => {
   ];
 
   return (
-    <div className="py-16 bg-white">
+    <div className="py-8 bg-white">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -38,7 +38,7 @@ const ApartmentTypes = (props) => {
               Explore Property Types
             </h2>
             <p className="text-gray-600">
-              Get some Inspirations from 1800+ skills
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
             </p>
           </div>
 

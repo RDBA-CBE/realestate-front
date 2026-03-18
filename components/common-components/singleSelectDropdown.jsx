@@ -75,7 +75,7 @@ const SingleSelectDropdown = ({
       <div className="dropdown-container">
         {title && (
           <label className="block text-sm font-bold text-gray-700 mb-2">
-            {title} {required && <span className="text-red-500">*</span>}
+            {title} {required && <span className="text-dred">*</span>}
           </label>
         )}
 

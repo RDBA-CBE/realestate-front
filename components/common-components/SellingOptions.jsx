@@ -1,6 +1,7 @@
 // components/SellingOptions.js
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Check } from 'lucide-react';
 
 const SellingOptions = () => {
   return (
@@ -9,7 +10,7 @@ const SellingOptions = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className='max-w-7xl mx-auto p-6'
+        className='max-w-7xl mx-auto '
       >
         <div className='container mx-auto px-4'>
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center'>
@@ -25,15 +26,18 @@ const SellingOptions = () => {
               </p>
               <ul className='space-y-3 mb-8'>
                 <li className='flex items-center'>
-                  <span className='w-2 h-2 bg-red-600 rounded-full mr-3'></span>
+                  <Check className=' text-dred  mr-3'/>
+                  {/* <span className='w-2 h-2 bg-color2 rounded-full mr-3'></span> */}
                   Find excellent deals
                 </li>
                 <li className='flex items-center'>
-                  <span className='w-2 h-2 bg-red-600 rounded-full mr-3'></span>
+                  <Check className=' text-dred  mr-3'/>
+                  {/* <span className='w-2 h-2 bg-color2 rounded-full mr-3'></span> */}
                   Friendly host & Fast support
                 </li>
                 <li className='flex items-center'>
-                  <span className='w-2 h-2 bg-red-600 rounded-full mr-3'></span>
+                  <Check className=' text-dred  mr-3'/>
+                  {/* <span className='w-2 h-2 bg-color2 rounded-full mr-3'></span> */}
                   List your own property
                 </li>
               </ul>

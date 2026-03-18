@@ -22,7 +22,7 @@ const Header = () => {
           {/* Header Actions */}
           <div className="flex items-center space-x-4">
             <a href="#" className="text-gray-600 hover:text-gray-900 text-sm">Login / Register</a>
-            <button className="bg-red-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-red-700">
+            <button className="bg-color2 text-white px-4 py-2 rounded text-sm font-medium hover:bg-red-700">
               Add Property
             </button>
           </div>

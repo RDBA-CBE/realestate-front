@@ -307,7 +307,7 @@ const Dashboard = () => {
               <h2 className="text-lg font-semibold text-gray-800">
                 Cancelled Users
               </h2>
-              <XCircle className="h-5 w-5 text-red-500" />
+              <XCircle className="h-5 w-5 text-dred" />
             </div>
             <p className="text-2xl font-bold">
               {state.counts?.cancelOrder ?? 0}

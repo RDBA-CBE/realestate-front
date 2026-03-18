@@ -124,7 +124,7 @@ export default function PropertyHeader(props: any) {
             <span>{`${capitalizeFLetter(data?.city)} , ${capitalizeFLetter(
               data?.state
             )} `}</span>
-            <span className="flex items-center gap-1 text-red-500 font-medium">
+            <span className="flex items-center gap-1 text-dred font-medium">
               ● For {capitalizeFLetter(data?.listing_type)}
             </span>
             <span className="flex items-center gap-1">
@@ -134,13 +134,13 @@ export default function PropertyHeader(props: any) {
           </div>
 
           <div className="flex flex-wrap items-center gap-2 xs:gap-6 text-gray-700 pt-2">
-            <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-md">
+            <div className="flex items-center gap-1 bg-color1 px-2 py-0.5 rounded-md">
               <Bed size={18} /> <span>{data?.bedrooms} bed</span>
             </div>
-            <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-md">
+            <div className="flex items-center gap-1 bg-color1 px-2 py-0.5 rounded-md">
               <Bath size={18} /> <span>{data?.bathrooms} bath</span>
             </div>
-            <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-md">
+            <div className="flex items-center gap-1 bg-color1 px-2 py-0.5 rounded-md">
               <Square size={18} />{" "}
               <span>{(data?.total_area)} sqft</span>
             </div>
@@ -156,7 +156,7 @@ export default function PropertyHeader(props: any) {
               variant="outline"
               className={`rounded-full ${
                 data?.user_wishlists
-                  ? "bg-red-500 border-red-500 text-white hover:bg-red-600 hover:border-red-600"
+                  ? "bg-color2 border-red-500 text-white hover:bg-color2 hover:border-[#9b0f09]"
                   : "bg-white text-black"
               }`}
             >

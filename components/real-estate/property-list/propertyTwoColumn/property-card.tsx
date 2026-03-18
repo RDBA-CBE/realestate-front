@@ -48,7 +48,7 @@ export function PropertyCard({ property, view }: PropertyCardProps) {
         />
 
         {property.featured && (
-          <Badge className="absolute top-4 left-4 bg-red-500 text-white font-semibold px-3 py-1 text-sm">
+          <Badge className="absolute top-4 left-4 bg-color2 text-white font-semibold px-3 py-1 text-sm">
             FEATURED
           </Badge>
         )}

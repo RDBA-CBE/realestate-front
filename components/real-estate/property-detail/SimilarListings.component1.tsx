@@ -43,13 +43,13 @@ export default function FeaturedListings(props: any) {
         {/* Custom Navigation */}
         <div className="flex gap-2">
           <button
-            className="featured-prev p-2 rounded-full border bg-white shadow hover:bg-gray-100"
+            className="featured-prev p-2 rounded-full border bg-white shadow hover:bg-color1"
             aria-label="Previous"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
           <button
-            className="featured-next p-2 rounded-full border bg-white shadow hover:bg-gray-100"
+            className="featured-next p-2 rounded-full border bg-white shadow hover:bg-color1"
             aria-label="Next"
           >
             <ChevronRight className="h-5 w-5" />

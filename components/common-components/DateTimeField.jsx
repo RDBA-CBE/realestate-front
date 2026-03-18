@@ -19,7 +19,7 @@ export default function DateTimeField({
     <div className="flex flex-col">
       {label && (
         <label className="block text-sm font-bold mb-2 text-gray-700">
-          {label} {required && <span className="text-red-500">*</span>}
+          {label} {required && <span className="text-dred">*</span>}
         </label>
       )}
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -42,7 +42,7 @@ export default function DateTimeField({
 
       {/* Show error message below like a label */}
       {error && (
-        <span className="text-red-500 text-sm font-medium mt-1">{error}</span>
+        <span className="text-dred text-sm font-medium mt-1">{error}</span>
       )}
     </div>
   );

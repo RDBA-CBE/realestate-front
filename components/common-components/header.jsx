@@ -228,7 +228,7 @@ const Header = () => {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={handleLogout}
-                        className="text-red-500 focus:text-red-600"
+                        className="text-dred focus:text-dred"
                       >
                         <LogOut className="mr-2 h-4 w-4" />
                         <span>Logout</span>
@@ -247,7 +247,7 @@ const Header = () => {
                     </Button>
                     <Button
                       onClick={() => router.push("/signin")}
-                      className="bg-red-500 hover:bg-red-600 text-white"
+                      className="bg-color2 hover:bg-color2 text-white"
                     >
                       Register
                     </Button>
@@ -297,7 +297,7 @@ const Header = () => {
                       </Button>
                       <Button
                         onClick={() => router.push("/signin")}
-                        className="w-full bg-red-500 hover:bg-red-600"
+                        className="w-full bg-color2 hover:bg-color2"
                       >
                         Register
                       </Button> */}
@@ -386,7 +386,7 @@ const Header = () => {
                   </Button>
                   <Button
                     onClick={() => router.push("/signin")}
-                    className="bg-red-500 hover:bg-red-600 text-white"
+                    className="bg-color2 hover:bg-color2 text-white"
                   >
                     Register
                   </Button>

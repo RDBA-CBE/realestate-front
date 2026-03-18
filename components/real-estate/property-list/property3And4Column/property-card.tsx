@@ -328,7 +328,7 @@ export function PropertyCard({
       >
         <Card
           onClick={() => onClick()}
-          className='bg-gray-100 border-none overflow-hidden p-3 border shadow-sm hover:shadow-lg cursor-pointer h-full flex flex-col'
+          className='bg-color1 border-none overflow-hidden p-3 border shadow-sm hover:shadow-lg cursor-pointer h-full flex flex-col'
         >
           {/* Image Slider - Fixed Height */}
           <div className='relative'>
@@ -422,14 +422,14 @@ export function PropertyCard({
                     return (
                       <button
                         key={i}
-                        className={`rounded-full p-2 shadow hover:bg-gray-100 transition-colors ${
+                        className={`rounded-full p-2 shadow hover:bg-color1 transition-colors ${
                           isCompareIcon
                             ? state.is_compare || property?.is_compare
                               ? 'bg-green-500 text-white'
                               : 'bg-white text-black'
                             : like
                             ? property?.user_wishlists
-                              ? 'bg-red-500 text-white'
+                              ? 'bg-color2 text-white'
                               : 'bg-white text-black'
                             : 'bg-white text-black'
                         }`}
@@ -497,7 +497,7 @@ export function PropertyCard({
     >
       <Card
         onClick={() => onClick()}
-        className='bg-gray-100 border-none overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer h-full flex flex-row'
+        className='bg-color1 border-none overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer h-full flex flex-row'
       >
         {/* Image Slider - Auto Height */}
         <div className='relative w-2/5 flex-shrink-0'>
@@ -587,14 +587,14 @@ export function PropertyCard({
                   return (
                     <button
                       key={i}
-                      className={`rounded-full p-2 shadow hover:bg-gray-100 transition-colors ${
+                      className={`rounded-full p-2 shadow hover:bg-color1 transition-colors ${
                         isCompareIcon
                           ? state.is_compare || property?.is_compare
                             ? 'bg-green-500 text-white'
                             : 'bg-white text-black'
                           : like
                           ? property?.user_wishlists
-                            ? 'bg-red-500 text-white'
+                            ? 'bg-color2 text-white'
                             : 'bg-white text-black'
                           : 'bg-white text-black'
                       }`}

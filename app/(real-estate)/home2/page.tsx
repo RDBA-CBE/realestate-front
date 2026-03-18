@@ -7,7 +7,7 @@
 //   const router = useRouter();
 //   return (
 //     <Button
-//       className=" bg-red-500 hover:bg-red-600"
+//       className=" bg-color2 hover:bg-color2"
 //       onClick={() => router.push("/home-data")}
 //     >
 //       Create account

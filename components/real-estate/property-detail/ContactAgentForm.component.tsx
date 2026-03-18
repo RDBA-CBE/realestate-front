@@ -189,7 +189,7 @@ export default function ContactAgentForm({
               type="button"
               disabled={state.btnLoading}
               onClick={() => withTokenSubmit()}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="w-full bg-color2 hover:bg-red-700 text-white font-semibold py-3 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {state.btnLoading ? "Submitting..." : "Enquire"}
             </Button>
@@ -260,7 +260,7 @@ export default function ContactAgentForm({
             <Button
               type="submit"
               disabled={state.btnLoading}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="w-full bg-color2 hover:bg-red-700 text-white font-semibold py-3 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {state.btnLoading ? "Submitting..." : "Enquire"}
             </Button>

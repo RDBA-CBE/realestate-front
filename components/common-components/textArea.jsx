@@ -34,7 +34,7 @@ export default function TextArea(props) {
     <div className="w-full space-y-2">
       {title && (
         <label className="block text-sm font-bold text-gray-700">
-          {title} {required && <span className="text-red-500">*</span>}
+          {title} {required && <span className="text-dred">*</span>}
         </label>
       )}
       <Textarea
@@ -51,7 +51,7 @@ export default function TextArea(props) {
       />
 
       {error && (
-        <p className="mt-2 text-sm text-red-600" id={`${name}-error`}>
+        <p className="mt-2 text-sm text-dred" id={`${name}-error`}>
           {error} {/* Display the error message if it exists */}
         </p>
       )}

@@ -39,7 +39,7 @@ const CustomSelect = (props) => {
     <div className="w-full ">
       {title && (
         <label className="block text-sm font-bold text-gray-700 mb-2">
-          {title} {required && <span className="text-red-500">*</span>}
+          {title} {required && <span className="text-dred">*</span>}
         </label>
       )}
       <div className="relative">
@@ -77,7 +77,7 @@ const CustomSelect = (props) => {
         )}
       </div>
       {error && (
-        <p className="mt-2 text-sm text-red-600">
+        <p className="mt-2 text-sm text-dred">
           {error} {/* Display the error message if it exists */}
         </p>
       )}

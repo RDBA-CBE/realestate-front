@@ -571,7 +571,7 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
       <div className="flex w-full justify-end">
         <Button
           onClick={() => handleClick()}
-          className="p-2 border rounded-full hover:bg-gray-100 transition-colors bg-transparent"
+          className="p-2 border rounded-full hover:bg-color1 transition-colors bg-transparent"
           aria-label="Close"
         >
           <X className="w-4 h-4 text-gray-600" />
@@ -593,7 +593,7 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
                 <span>{`${capitalizeFLetter(
                   state.detail?.city || ""
                 )} , ${capitalizeFLetter(state.detail?.state || "")} `}</span>
-                <span className="flex items-center gap-1 text-red-500 font-medium">
+                <span className="flex items-center gap-1 text-dred font-medium">
                   ● For {capitalizeFLetter(state.detail?.listing_type || "")}
                 </span>
                 <span className="flex items-center gap-1">
@@ -602,15 +602,15 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
               </div>
 
               <div className="flex flex-wrap items-center gap-2 xs:gap-6 text-gray-700 pt-2">
-                <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-md">
+                <div className="flex items-center gap-1 bg-color1 px-2 py-0.5 rounded-md">
                   <Bed size={18} />{" "}
                   <span>{state.detail?.bedrooms || 0} bed</span>
                 </div>
-                <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-md">
+                <div className="flex items-center gap-1 bg-color1 px-2 py-0.5 rounded-md">
                   <Bath size={18} />{" "}
                   <span>{state.detail?.bathrooms || 0} bath</span>
                 </div>
-                <div className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-md">
+                <div className="flex items-center gap-1 bg-color1 px-2 py-0.5 rounded-md">
                   <Square size={18} />{" "}
                   <span>
                     {formatNumber(state.detail?.total_area || 0)} sqft
@@ -643,7 +643,7 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
                 variant="outline"
                 className={`rounded-full ${
                   state.detail?.user_wishlists
-                    ? "bg-red-500 border-red-500 text-white hover:bg-red-600 hover:border-red-600"
+                    ? "bg-color2 border-red-500 text-white hover:bg-color2 hover:border-[#9b0f09]"
                     : "bg-white text-black"
                 }`}
               >
@@ -760,7 +760,7 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
                 )}
               </div>
             ) : (
-              <Card className="h-[500px] rounded-2xl shadow-lg flex items-center justify-center bg-gray-100">
+              <Card className="h-[500px] rounded-2xl shadow-lg flex items-center justify-center bg-color1">
                 <div className="text-center text-gray-500">
                   <div className="text-4xl mb-2">🏠</div>
                   <p>No images available</p>
@@ -780,7 +780,7 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
                   key={idx}
                   className="flex items-center gap-3   transition-shadow duration-200"
                 >
-                  <div className="flex-shrink-0 w-10 h-10 bg-red-50  text-red-500  rounded-full flex items-center justify-center">
+                  <div className="flex-shrink-0 w-10 h-10 bg-red-50  text-dred  rounded-full flex items-center justify-center">
                     <item.icon className="w-5 h-5" />
                   </div>
                   <div className="flex flex-col">
@@ -838,7 +838,7 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
                     {/* Icon - larger and colored for visibility */}
                     <div className="mb-2 p-2 bg-red-50   rounded-full">
                       <Icon
-                        className="w-6 h-6 text-red-500"
+                        className="w-6 h-6 text-dred"
                         aria-hidden="true"
                       />
                     </div>
@@ -875,13 +875,13 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
                   {/* Custom Navigation */}
                   <div className="flex gap-2">
                     <button
-                      className="featured-prev p-2 rounded-full border bg-white shadow hover:bg-gray-100"
+                      className="featured-prev p-2 rounded-full border bg-white shadow hover:bg-color1"
                       aria-label="Previous"
                     >
                       <ChevronLeft className="h-5 w-5" />
                     </button>
                     <button
-                      className="featured-next p-2 rounded-full border bg-white shadow hover:bg-gray-100"
+                      className="featured-next p-2 rounded-full border bg-white shadow hover:bg-color1"
                       aria-label="Next"
                     >
                       <ChevronRight className="h-5 w-5" />

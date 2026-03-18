@@ -62,10 +62,10 @@ const BannerSection = () => {
             </div>
 
             <div className="flex items-center gap-2 w-full md:w-auto">
-              <button className="w-full md:w-auto px-6 py-3 rounded-lg font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition whitespace-nowrap">
+              <button className="w-full md:w-auto px-6 py-3 rounded-lg font-semibold text-gray-700 bg-color1 hover:bg-gray-200 transition whitespace-nowrap">
                 Advanced
               </button>
-              <button className="w-full md:w-auto px-8 py-3 rounded-lg font-semibold bg-red-600 text-white hover:bg-red-700 transition whitespace-nowrap">
+              <button className="w-full md:w-auto px-8 py-3 rounded-lg font-semibold bg-color2 text-white hover:bg-red-700 transition whitespace-nowrap">
                 Search
               </button>
             </div>

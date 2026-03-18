@@ -32,7 +32,7 @@ export const FilterPopup = (props: any) => {
         className="flex items-center gap-2 cursor-pointer hover:bg-red-50 px-3 py-2 rounded-md transition bg-white/70"
         onClick={() => setState({ modalOpen: true })}
       >
-        <Filter className="w-5 h-5 text-red-500" /> <span className="text-sm font-medium text-gray-700">Filter</span>
+        <Filter className="w-5 h-5 text-dred" /> <span className="text-sm font-medium text-gray-700">Filter</span>
       </Button>
 
       <AnimatePresence>

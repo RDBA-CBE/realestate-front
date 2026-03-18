@@ -242,7 +242,7 @@ export default function Gallery({ data, images, updateList }: GalleryProps) {
               variant="outline"
               className={`rounded-full ${
                 data?.user_wishlists
-                  ? "bg-red-500 border-red-500 text-white hover:bg-red-600 hover:border-red-600"
+                  ? "bg-color2 border-red-500 text-white hover:bg-color2 hover:border-[#9b0f09]"
                   : "bg-white text-black"
               }`}
             >
