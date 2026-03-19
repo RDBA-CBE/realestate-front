@@ -436,7 +436,7 @@ export default function ProfilePage() {
                                   }
                                   className={`pl-10 rounded-xl border-2 transition-all ${
                                     errors.profile[field.key]
-                                      ? "border-red-300 focus:border-red-500"
+                                      ? "border-red-300 focus:border-dred"
                                       : "border-gray-200 focus:border-blue-500"
                                   }`}
                                 />
@@ -469,7 +469,7 @@ export default function ProfilePage() {
                             rows={4}
                             className={`rounded-xl border-2 transition-all ${
                               errors.profile.about
-                                ? "border-red-300 focus:border-red-500"
+                                ? "border-red-300 focus:border-dred"
                                 : "border-gray-200 focus:border-blue-500"
                             }`}
                             placeholder="Tell us about yourself..."
@@ -528,7 +528,7 @@ export default function ProfilePage() {
                               placeholder={`https://${platform}.com/username`}
                               className={`rounded-xl border-2 transition-all ${
                                 errors.social[platform]
-                                  ? "border-red-300 focus:border-red-500"
+                                  ? "border-red-300 focus:border-dred"
                                   : "border-gray-200 focus:border-blue-500"
                               }`}
                             />
@@ -586,7 +586,7 @@ export default function ProfilePage() {
                               }
                               className={`pr-10 rounded-xl border-2 transition-all ${
                                 errors.passwords[field.key]
-                                  ? "border-red-300 focus:border-red-500"
+                                  ? "border-red-300 focus:border-dred"
                                   : "border-gray-200 focus:border-blue-500"
                               }`}
                               placeholder={`Enter your ${field.label.toLowerCase()}`}

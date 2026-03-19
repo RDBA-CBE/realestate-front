@@ -160,7 +160,7 @@ export const SidebarContent = (props: any) => {
                 onChange={() => handleChange("bedrooms", option)}
                 className="peer hidden"
               />
-              <span className="flex items-center justify-center px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:border-red-400 peer-checked:border-red-500">
+              <span className="flex items-center justify-center px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:border-red-400 peer-checked:border-dred">
                 {option}
               </span>
             </label>
@@ -180,7 +180,7 @@ export const SidebarContent = (props: any) => {
                 onChange={() => handleChange("bathrooms", option)}
                 className="peer hidden"
               />
-              <span className="flex items-center justify-center px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:border-red-400 peer-checked:border-red-500">
+              <span className="flex items-center justify-center px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:border-red-400 peer-checked:border-dred">
                 {option}
               </span>
             </label>

@@ -23,9 +23,9 @@ export default {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
         },
-        themePurple: {
-          DEFAULT: "#7F4099",
-          foreground: "#7F4099",
+        themeColor1: {
+          DEFAULT: "#9b0f09",
+          foreground: "#9b0f09",
         },
         themeGreen: {
           DEFAULT: "#88c742",

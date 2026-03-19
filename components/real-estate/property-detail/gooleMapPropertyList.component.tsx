@@ -518,7 +518,7 @@ const onPlaceChanged = () => {
   const getListingTypeBorderColor = (listingType: string) => {
     switch (listingType) {
       case "sale":
-        return "border-red-500";
+        return "border-dred";
       case "rent":
         return "border-blue-500";
       case "lease":

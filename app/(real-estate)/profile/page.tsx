@@ -207,7 +207,7 @@ export default function ProfilePage() {
           <div className="flex space-x-3 mt-4 md:mt-0">
             <Button
               variant="outline"
-              className="w-full rounded-full border-red-500 bg-transparent hover:bg-color2 text-dred hover:text-white hover:border-none"
+              className="w-full rounded-full border-dred bg-transparent text-dred hover:text-white hover:bg-[#9b0f09]"
               onClick={() => setState({ isEditProfile: true })}
             >
               <Pencil size={16} />
@@ -216,7 +216,7 @@ export default function ProfilePage() {
 
             <Button
               variant="outline"
-              className="w-full rounded-full border-red-500 bg-transparent hover:bg-color2 text-dred hover:text-white hover:border-none"
+              className="w-full rounded-full border-dred bg-transparent text-dred hover:text-white hover:bg-[#9b0f09]"
               onClick={() => setState({ isChangePassword: true })}
             >
               <MessageCircle size={16} />

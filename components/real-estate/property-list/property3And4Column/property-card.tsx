@@ -47,7 +47,7 @@ interface Property {
   squareFeet: number;
   primary_image: string;
   featured?: boolean;
-  total_area: string;
+  // total_area: string;
   state: string;
   city: string;
   country: string;
@@ -75,6 +75,7 @@ interface Property {
   booking_amount?: number;
   highlights?: string[];
   possession_date?: string;
+  total_area?:any
 }
 
 interface PropertyCardProps {
@@ -478,7 +479,7 @@ export function PropertyCard({
                 </div>
                 <div className='flex items-center space-x-1'>
                   <Square className='h-5 w-5 text-dred' />
-                  <span>{(property?.total_area)} sqft</span>
+                  <span>{property?.total_area} sqft</span>
                 </div>
               </div>
             </div>
@@ -720,7 +721,7 @@ export function PropertyCard({
                     <div className='mb-3'>
                       <div className='flex items-baseline gap-2 mb-1'>
                         <span className='text-l text-gray-900 flex gap-2'>
-                        {formatPriceRange(
+                        <IndianRupee className='h-5 w-5 mr-1 flex-shrink-0 text-dred'/>{formatPriceRange(
                             property?.price_range?.minimum_price,
                             property?.price_range?.maximum_price
                           )}
@@ -770,7 +771,7 @@ export function PropertyCard({
                 </div>
                 <div className='flex items-center space-x-1'>
                   <Square className='h-5 w-5 text-dred' />
-                  <span>{formattedNoDecimal(property.total_area)} sqft</span>
+                  <span>{property.total_area} sqft</span>
                 </div>
               </div>
 

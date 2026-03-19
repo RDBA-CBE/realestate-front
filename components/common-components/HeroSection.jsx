@@ -57,7 +57,7 @@ const BannerSection = () => {
               <input
                 type="text"
                 placeholder={placeholderText}
-                className="w-full px-5 py-3 rounded-lg bg-transparent border border-[#a9a7a7] text-white placeholder-white focus:outline-none focus:border-red-500"
+                className="w-full px-5 py-3 rounded-lg bg-transparent border border-[#a9a7a7] text-white placeholder-white focus:outline-none focus:border-dred"
               />
             </div>
 

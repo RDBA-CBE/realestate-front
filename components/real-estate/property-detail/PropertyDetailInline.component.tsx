@@ -643,7 +643,7 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
                 variant="outline"
                 className={`rounded-full ${
                   state.detail?.user_wishlists
-                    ? "bg-color2 border-red-500 text-white hover:bg-color2 hover:border-[#9b0f09]"
+                    ? "bg-color2 border-dred text-white hover:bg-color2 hover:border-[#9b0f09]"
                     : "bg-white text-black"
                 }`}
               >

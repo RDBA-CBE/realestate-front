@@ -58,7 +58,7 @@ const ApartmentTypes = (props) => {
               <SwiperSlide key={index} className="">
                 <div
                   onClick={() => handleClick(type)}
-                  className="text-center  rounded-lg hover:border-red-500 transition-colors h-full cursor-pointer"
+                  className="text-center  rounded-lg hover:border-dred transition-colors h-full cursor-pointer"
                 >
                   <div className="w-20 h-20 md:w-28 md:h-28  rounded-lg flex items-center justify-center mx-auto mb-4">
                     <img

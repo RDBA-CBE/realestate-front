@@ -141,7 +141,7 @@ const Header = () => {
                   <Link
                     prefetch={true}
                     href={menu.url}
-                    className="hover:text-themePurple text-[14px] font-[600] uppercase "
+                    className="hover:text-themeColor1 text-[14px] font-[600] uppercase "
                   >
                     {menu.title}
                   </Link>
@@ -174,7 +174,7 @@ const Header = () => {
                               <Link
                                 prefetch={true}
                                 href={item.url}
-                                className="text-xs text-black font-[600] uppercase hover:text-themePurple"
+                                className="text-xs text-black font-[600] uppercase hover:text-themeColor1"
                               >
                                 {item.title}
                               </Link>
@@ -192,11 +192,11 @@ const Header = () => {
                 state.token ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="flex items-center space-x-2 focus:outline-none">
+                      <button className="flex items-center space-x-2 focus:outline-none ">
                         <Avatar className="h-9 w-9">
                           {/* <AvatarImage src="/images/user-avatar.png" alt="User" /> */}
                           <AvatarFallback>
-                            <User2 />
+                            <User2 className="text-white" />
                           </AvatarFallback>
                         </Avatar>
                       </button>
@@ -207,14 +207,14 @@ const Header = () => {
                       <DropdownMenuSeparator />
                       
                       <DropdownMenuItem onClick={() => router.push("/profile")}>
-                        <User className="mr-2 h-4 w-4" />
+                        <User className="mr-2 h-4 w-4 text-dred" />
                         <span>Profile</span>
                       </DropdownMenuItem>
 
                       <DropdownMenuItem
                         onClick={() => router.push("/wishlist")}
                       >
-                        <Heart className="mr-2 h-4 w-4" />
+                        <Heart className="mr-2 h-4 w-4 text-dred" />
                         <span>Wishlist</span>
                       </DropdownMenuItem>
 
@@ -222,7 +222,7 @@ const Header = () => {
                       <DropdownMenuItem
                         onClick={() => router.push("/compare")}
                       >
-                        <GitCompareArrowsIcon className="mr-2 h-4 w-4" />
+                        <GitCompareArrowsIcon className="mr-2 h-4 w-4 text-dred" />
                         <span>Compare</span>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
@@ -230,7 +230,7 @@ const Header = () => {
                         onClick={handleLogout}
                         className="text-dred focus:text-dred"
                       >
-                        <LogOut className="mr-2 h-4 w-4" />
+                        <LogOut className="mr-2 h-4 w-4 text-dred" />
                         <span>Logout</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>

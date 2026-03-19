@@ -151,7 +151,7 @@ const ForgotPasswordEmailForm = () => {
               <div className="flex items-center gap-2">
                 <Link
                   href={"/"}
-                  className="w-full text- hover:text-dred border-red-500 hover:border-red-500"
+                  className="w-full text- hover:text-dred border-dred hover:border-dred"
                 >
                   <Button
                     //   onClick={() => {
@@ -165,7 +165,7 @@ const ForgotPasswordEmailForm = () => {
                       })
                     }
                     variant="outline"
-                    className="w-full text-dred hover:text-dred border-red-500 hover:border-red-500"
+                    className="w-full text-dred hover:text-dred border-dred hover:border-dred"
                   >
                     Cancel
                   </Button>

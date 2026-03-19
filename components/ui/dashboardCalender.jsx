@@ -373,7 +373,7 @@ const DashboardCalender = ({ events, setEvents }) => {
       </div>
       {state.lounge_type && (
         <div className="text-start mb-5 flex">
-          <div className="flex bg-themePurple px-2 py-1 rounded-lg ites-center">
+          <div className="flex bg-themeColor1 px-2 py-1 rounded-lg ites-center">
             <p className=" text-xs text-white">{state.lounge_type?.label}</p>
             <XIcon
               className="text-white h-4 w-4 ml-2 pointer"
@@ -686,7 +686,7 @@ const DashboardCalender = ({ events, setEvents }) => {
           <div className="flex gap-4 mt-4 w-full">
             <Button
               onClick={handleEnroll}
-              className="flex-1 p-2 rounded bg-themePurple hover:bg-themePurple text-white"
+              className="flex-1 p-2 rounded bg-themeColor1 hover:bg-themeColor1 text-white"
             >
               Read More
             </Button>
