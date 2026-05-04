@@ -317,8 +317,8 @@ export default function PropertyDetailPage() {
       ? [{ id: "virtualtour", component: <VirtualTour /> }]
       : []),
     { id: "nearby", component: <Nearby /> },
-    { id: "walkscore", component: <WalkScore /> },
-    { id: "reviews", component: <Reviews /> },
+    // { id: "walkscore", component: <WalkScore /> },
+    // { id: "reviews", component: <Reviews /> },
   ];
 
   const tabSections = sections

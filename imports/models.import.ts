@@ -15,6 +15,7 @@ import user from "@/models/user.model";
 import video from "@/models/video.model";
 import virtualTour from "@/models/virtual_tour.model";
 import wishlist from "@/models/wishlist.model";
+import chat from "@/models/chat.model";
 
 
 export const Models = {
@@ -32,8 +33,8 @@ export const Models = {
   video,
   virtualTour,
   lead,
-  wishlist
-  
+  wishlist,
+  chat,
 };
 
 export default Models;
