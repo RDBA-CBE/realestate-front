@@ -47,6 +47,9 @@ const App = () => {
         last_name: state.last_name,
         terms_accepted: true,
         user_type: "buyer",
+        groups:[1]
+
+
       };
       console.log("✌️body --->", body);
 

@@ -106,7 +106,6 @@ const Header = () => {
     },
   ];
 
-
   return (
     <>
       <motion.header
@@ -205,7 +204,7 @@ const Header = () => {
                     <DropdownMenuContent className="w-[280px]" align="end">
                       <DropdownMenuLabel>My Account</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      
+
                       <DropdownMenuItem onClick={() => router.push("/profile")}>
                         <User className="mr-2 h-4 w-4 text-dred" />
                         <span>Profile</span>
@@ -218,10 +217,7 @@ const Header = () => {
                         <span>Wishlist</span>
                       </DropdownMenuItem>
 
-
-                      <DropdownMenuItem
-                        onClick={() => router.push("/compare")}
-                      >
+                      <DropdownMenuItem onClick={() => router.push("/compare")}>
                         <GitCompareArrowsIcon className="mr-2 h-4 w-4 text-dred" />
                         <span>Compare</span>
                       </DropdownMenuItem>
@@ -255,6 +251,13 @@ const Header = () => {
                 )
                 // )
               }
+
+              {/* <Button
+                onClick={() => router.push("/ai-search")}
+                className="bg-color2 hover:bg-color2 text-white"
+              >
+                AI Search
+              </Button> */}
 
               <div className="block lg:hidden">
                 <Sheet open={open} onOpenChange={setOpen}>
