@@ -18,9 +18,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   GitCompareArrowsIcon,
   Heart,
+  Home,
   Loader,
   LogIn,
   LogOut,
+  Mail,
   MenuIcon,
   Settings,
   User,
@@ -106,97 +108,119 @@ const Header = () => {
     },
   ];
 
-
   return (
     <>
       <motion.header
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="bg-white shadow-md sticky top-0 z-[50]"
+        className="bg-white sticky top-0 z-[50]"
       >
-        <div className=" border-b border-gray-200 ">
-          <div className="  flex items-center justify-between gap-20 xl:max-w-[110rem] max-w-[85rem] mx-auto px-6">
-            {/* Logo */}
-            <div className="flex justify-center">
-              <Link href="home">
-                <Image
-                  src="/assets/images/logo.png"
-                  alt="logo"
-                  width={60}
-                  height={40}
-                />
-              </Link>
+        <div className="section-wid  ">
+          <div className="  flex justify-between items-center gap-20 ">
+            <div className="flex items-center gap-20">
+              {/* Logo */}
+              <div className="flex justify-center gap-3 py-4">
+                {/* <Link href="home">
+                  <Image
+                    src="/assets/images/logo.png"
+                    alt="logo"
+                    width={60}
+                    height={40}
+                  />
+                </Link> */}
+
+                <div className="rounded-lg bg-[#9b0f09]/10 p-2">
+                  <Home className="h-6 w-6 text-dred" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibolod tracking-[0.1em] text-dred">
+                    REAL
+                  </p>
+                  <p className="text-sm font-bold tracking-[0.1em] text-dred">
+                    ESTATE
+                  </p>
+                </div>
+              </div>
+
+              {/* Left Menu (Desktop) */}
+              <nav className="hidden lg:flex space-x-6">
+                {StudentLeftSideMenu.map((menu) => (
+                  <div
+                    key={menu.title}
+                    className="relative"
+                    onMouseEnter={() => menu.items && setActiveMenu(menu.title)}
+                    onMouseLeave={() => menu.items && setActiveMenu(null)}
+                  >
+                    <Link
+                      prefetch={true}
+                      href={menu.url}
+                      className="hover:text-themeColor1 text-[16px] font-[600]  "
+                    >
+                      {menu.title}
+                    </Link>
+
+                    {/* Submenu with animation */}
+                    <AnimatePresence>
+                      {(activeMenu === menu.title ||
+                        clickedMenu === menu.title) &&
+                        menu.items && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: 0.25, ease: "easeOut" }}
+                            className="absolute left-0 w-56 bg-white p-4 rounded-lg shadow-lg"
+                            onMouseEnter={() => setActiveMenu(menu.title)}
+                            onMouseLeave={() => setActiveMenu(null)}
+                          >
+                            {menu.items.map((item, index) => (
+                              <motion.div
+                                key={item.title}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{
+                                  duration: 0.2,
+                                  delay: index * 0.05,
+                                }}
+                                className="mb-2"
+                              >
+                                <Link
+                                  prefetch={true}
+                                  href={item.url}
+                                  className="text-xs text-black font-[600] uppercase hover:text-themeColor1"
+                                >
+                                  {item.title}
+                                </Link>
+                              </motion.div>
+                            ))}
+                          </motion.div>
+                        )}
+                    </AnimatePresence>
+                  </div>
+                ))}
+              </nav>
             </div>
 
-            {/* Left Menu (Desktop) */}
-            <nav className="hidden lg:flex space-x-6">
-              {StudentLeftSideMenu.map((menu) => (
-                <div
-                  key={menu.title}
-                  className="relative"
-                  onMouseEnter={() => menu.items && setActiveMenu(menu.title)}
-                  onMouseLeave={() => menu.items && setActiveMenu(null)}
-                >
+            <div>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 me-4 hidden lg:flex">
+                  <Mail className="w-4 h-4 text-dred" />
                   <Link
-                    prefetch={true}
-                    href={menu.url}
-                    className="hover:text-themeColor1 text-[14px] font-[600] uppercase "
+                    href={"mailto:support@realestate.com"}
+                    className="font-normal text-[16px]"
                   >
-                    {menu.title}
+                    support@realestate.com
                   </Link>
-
-                  {/* Submenu with animation */}
-                  <AnimatePresence>
-                    {(activeMenu === menu.title ||
-                      clickedMenu === menu.title) &&
-                      menu.items && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.25, ease: "easeOut" }}
-                          className="absolute left-0 w-56 bg-white p-4 rounded-lg shadow-lg"
-                          onMouseEnter={() => setActiveMenu(menu.title)}
-                          onMouseLeave={() => setActiveMenu(null)}
-                        >
-                          {menu.items.map((item, index) => (
-                            <motion.div
-                              key={item.title}
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{
-                                duration: 0.2,
-                                delay: index * 0.05,
-                              }}
-                              className="mb-2"
-                            >
-                              <Link
-                                prefetch={true}
-                                href={item.url}
-                                className="text-xs text-black font-[600] uppercase hover:text-themeColor1"
-                              >
-                                {item.title}
-                              </Link>
-                            </motion.div>
-                          ))}
-                        </motion.div>
-                      )}
-                  </AnimatePresence>
                 </div>
-              ))}
-            </nav>
-
-            <div className="flex items-center gap-3">
-              {
-                state.token ? (
+                {state.token ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button className="flex items-center space-x-2 focus:outline-none ">
-                        <Avatar className="h-9 w-9">
+                        <Avatar className="h-8 w-8">
                           {/* <AvatarImage src="/images/user-avatar.png" alt="User" /> */}
                           <AvatarFallback>
-                            <User2 className="text-white" />
+                            <User2 className="text-white w-4 h-4" />
                           </AvatarFallback>
                         </Avatar>
                       </button>
@@ -205,7 +229,7 @@ const Header = () => {
                     <DropdownMenuContent className="w-[280px]" align="end">
                       <DropdownMenuLabel>My Account</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      
+
                       <DropdownMenuItem onClick={() => router.push("/profile")}>
                         <User className="mr-2 h-4 w-4 text-dred" />
                         <span>Profile</span>
@@ -218,10 +242,7 @@ const Header = () => {
                         <span>Wishlist</span>
                       </DropdownMenuItem>
 
-
-                      <DropdownMenuItem
-                        onClick={() => router.push("/compare")}
-                      >
+                      <DropdownMenuItem onClick={() => router.push("/compare")}>
                         <GitCompareArrowsIcon className="mr-2 h-4 w-4 text-dred" />
                         <span>Compare</span>
                       </DropdownMenuItem>
@@ -236,58 +257,97 @@ const Header = () => {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ) : (
+                  /* <Button
+                        onClick={() => router.push("/login")}
+                        variant="outline"
+                        className="rounded-full border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900"
+                      >
+                        Add Property
+                      </Button> */
                   // !username && (
                   <div className="hidden lg:flex items-center gap-3">
                     <Button
                       onClick={() => router.push("/login")}
                       variant="outline"
-                      className="border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900"
+                      className="px-6 rounded-full bg-lred hover:bg-color2 border-[#9b0f09]  text-dred hover:text-gray-900"
                     >
                       Login
                     </Button>
-                    <Button
-                      onClick={() => router.push("/signin")}
-                      className="bg-color2 hover:bg-color2 text-white"
-                    >
-                      Register
-                    </Button>
+                    {/* <Button
+                        onClick={() => router.push("/signin")}
+                        className="rounded-full bg-color2 hover:bg-color2 text-white"
+                      >
+                        Register
+                      </Button> */}
                   </div>
-                )
-                // )
-              }
+                )}
 
-              <div className="block lg:hidden">
-                <Sheet open={open} onOpenChange={setOpen}>
-                  <SheetTrigger asChild>
-                    <MenuIcon />
-                  </SheetTrigger>
-                  <SheetContent>
-                    <SheetHeader>
-                      <SheetTitle></SheetTitle>
-                    </SheetHeader>
-                    <div className="flex justify-between items-center mt-5">
-                      <Link href="home">
-                        <Image
-                          src="/assets/images/logo.png"
-                          alt="logo"
-                          width={60}
-                          height={80}
-                        />
-                      </Link>
-                      {!state.token && (
-                        <Button
-                          onClick={() => router.push("/login")}
-                          variant="outline"
-                          // className="w-full"
-                        >
-                          Login
-                        </Button>
-                      )}
+                {/* <Button
+                onClick={() => router.push("/ai-search")}
+                className="bg-color2 hover:bg-color2 text-white"
+              >
+                AI Search
+              </Button> */}
+
+                <div className="block lg:hidden">
+                  <Sheet open={open} onOpenChange={setOpen}>
+                    <div className="flex items-center gap-3">
+                      {!state.token && 
+                      <Button
+                      onClick={() => router.push("/login")}
+                      variant="outline"
+                      className="px-5 h-7 py-0 rounded-full bg-lred hover:bg-color2 border-[#9b0f09]  text-dred hover:text-gray-900"
+                    >
+                      Login
+                    </Button>
+                    }
+                    <SheetTrigger asChild>
+                      
+                      <MenuIcon className="text-dred"/>
+                    </SheetTrigger>
                     </div>
+                    
+                    <SheetContent>
+                      <SheetHeader>
+                        <SheetTitle></SheetTitle>
+                      </SheetHeader>
+                      <div className="flex justify-between items-center mt-5">
+                        {/* <Link href="home">
+                          <Image
+                            src="/assets/images/logo.png"
+                            alt="logo"
+                            width={60}
+                            height={80}
+                          />
+                        </Link> */}
+                        <div className="flex justify-center gap-3 py-4">
+                        <div className="rounded-lg bg-[#9b0f09]/10 p-2">
+                          <Home className="h-6 w-6 text-dred" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibolod tracking-[0.1em] text-dred">
+                            REAL
+                          </p>
+                          <p className="text-sm font-bold tracking-[0.1em] text-dred">
+                            ESTATE
+                          </p>
+                        </div>
+                        </div>
 
-                    {/* Mobile Auth Buttons */}
-                    {/* {!username && ( */}
-                    {/* <div className="flex flex-col gap-3 mt-6 mb-6">
+                        {/* {!state.token && (
+                          <Button
+                            onClick={() => router.push("/login")}
+                            variant="outline"
+                            // className="w-full"
+                          >
+                            Login
+                          </Button>
+                        )} */}
+                      </div>
+
+                      {/* Mobile Auth Buttons */}
+                      {/* {!username && ( */}
+                      {/* <div className="flex flex-col gap-3 mt-6 mb-6">
                       <Button
                         onClick={() => router.push("/login")}
                         variant="outline"
@@ -301,74 +361,86 @@ const Header = () => {
                       >
                         Register
                       </Button> */}
-                    {/* </div> */}
-                    {/* )} */}
+                      {/* </div> */}
+                      {/* )} */}
 
-                    <div className="mt-4">
-                      {StudentLeftSideMenu.map((menu, index) => (
-                        <Accordion
-                          type="single"
-                          collapsible
-                          className="w-full"
-                          key={index}
-                        >
-                          <AccordionItem value={`item-${index + 1}`}>
-                            <AccordionTrigger
-                              className={`no-underline hover:no-underline uppercase text-sm ${
-                                menu.items?.length > 0 ? "" : "[&>svg]:hidden"
-                              }`}
-                              onClick={() => {
-                                if (!menu.items?.length) {
-                                  router.push(menu.url);
-                                  setOpen(false);
-                                }
-                              }}
-                            >
-                              {menu.title}
-                            </AccordionTrigger>
-                            {menu.items?.length > 0 && (
-                              <AccordionContent>
-                                {menu.items ? (
-                                  <motion.ul
-                                    initial={{ opacity: 0, y: -5 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -5 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="pl-5 uppercase"
-                                  >
-                                    {menu.items.map((item, itemIndex) => (
-                                      <motion.li
-                                        key={itemIndex}
-                                        initial={{ opacity: 0, x: -10 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{
-                                          duration: 0.2,
-                                          delay: itemIndex * 0.05,
-                                        }}
-                                        className="pb-2 text-sm"
-                                      >
-                                        <a
-                                          href={item.url}
-                                          onClick={() => setOpen(false)}
+                      <div className="mt-4">
+                        {StudentLeftSideMenu.map((menu, index) => (
+                          <Accordion
+                            type="single"
+                            collapsible
+                            className="w-full"
+                            key={index}
+                          >
+                            <AccordionItem value={`item-${index + 1}`}>
+                              <AccordionTrigger
+                                className={`no-underline hover:no-underline uppercase text-sm ${
+                                  menu.items?.length > 0 ? "" : "[&>svg]:hidden"
+                                }`}
+                                onClick={() => {
+                                  if (!menu.items?.length) {
+                                    router.push(menu.url);
+                                    setOpen(false);
+                                  }
+                                }}
+                              >
+                                {menu.title}
+                              </AccordionTrigger>
+                              {menu.items?.length > 0 && (
+                                <AccordionContent>
+                                  {menu.items ? (
+                                    <motion.ul
+                                      initial={{ opacity: 0, y: -5 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -5 }}
+                                      transition={{ duration: 0.3 }}
+                                      className="pl-5 uppercase"
+                                    >
+                                      {menu.items.map((item, itemIndex) => (
+                                        <motion.li
+                                          key={itemIndex}
+                                          initial={{ opacity: 0, x: -10 }}
+                                          animate={{ opacity: 1, x: 0 }}
+                                          transition={{
+                                            duration: 0.2,
+                                            delay: itemIndex * 0.05,
+                                          }}
+                                          className="pb-2 text-sm"
                                         >
-                                          {item.title}
-                                        </a>
-                                      </motion.li>
-                                    ))}
-                                  </motion.ul>
-                                ) : (
-                                  <p className="uppercase">
-                                    <a href={menu.url}>{menu.title}</a>
-                                  </p>
-                                )}
-                              </AccordionContent>
-                            )}
-                          </AccordionItem>
-                        </Accordion>
-                      ))}
-                    </div>
-                  </SheetContent>
-                </Sheet>
+                                          <a
+                                            href={item.url}
+                                            onClick={() => setOpen(false)}
+                                          >
+                                            {item.title}
+                                          </a>
+                                        </motion.li>
+                                      ))}
+                                    </motion.ul>
+                                  ) : (
+                                    <p className="uppercase">
+                                      <a href={menu.url}>{menu.title}</a>
+                                    </p>
+                                  )}
+                                </AccordionContent>
+                              )}
+
+                              
+                            </AccordionItem>
+                          </Accordion>
+                        ))}
+                        <div className="flex items-center gap-3 me-4 mt-5 lg:flex">
+                  <Mail className="w-4 h-4 text-dred" />
+                  <Link
+                    href={"mailto:support@realestate.com"}
+                    className="font-normal text-[16px]"
+                  >
+                    support@realestate.com
+                  </Link>
+                </div>
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+                </div>
               </div>
             </div>
 

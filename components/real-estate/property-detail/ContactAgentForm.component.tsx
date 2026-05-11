@@ -52,7 +52,7 @@ export default function ContactAgentForm({
         last_name: state.last_name,
         phone: state.phone,
         email: state.email,
-        interested_property: data?.id,
+        interested_property: [data?.id],
         lead_source: "website",
         status: "new",
         requirements: state.inquiry ? state.inquiry : "New Requirements",
@@ -87,17 +87,22 @@ export default function ContactAgentForm({
       const userId = localStorage.getItem("userId");
 
       const response: any = await Models.user.details(userId);
-      const body = {
+      const body:any = {
         assigned_to: data?.developer?.id,
         first_name: response?.first_name,
         last_name: response?.last_name,
-        phone: response.phone,
+        // phone: response.phone,
         email: response.email,
-        interested_property: data?.id,
-        lead_source: "website",
-        status: "new",
+        interested_property: [data?.id],
+        lead_source:1,
+        status: 1,
         requirements: state.inquiry ? state.inquiry : "New Requirements",
+        website : true
       };
+      if(response.phone){
+        body.phone = response.phone;
+      }
+      console.log("body", body);
 
       const res = await Models.lead.create(body);
 

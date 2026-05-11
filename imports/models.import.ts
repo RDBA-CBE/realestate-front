@@ -4,6 +4,7 @@ import address from "@/models/address.model";
 import amenity from "@/models/amenity.model";
 import auth from "@/models/auth.model";
 import category from "@/models/category.model";
+import dropdowns from "@/models/dropdowns.model";
 import image from "@/models/image.model";
 import lead from "@/models/lead.model";
 import master from "@/models/master.model";
@@ -32,7 +33,8 @@ export const Models = {
   video,
   virtualTour,
   lead,
-  wishlist
+  wishlist,
+  dropdowns
   
 };
 

@@ -9,6 +9,7 @@ import store from "@/store";
 import { Suspense } from "react";
 import PageTransition from "@/components/common-components/PageTransition";
 import { usePathname } from "next/navigation";
+import NewHeader from "@/components/real-estate/NewHeader";
 
 
 
@@ -40,6 +41,8 @@ export default function RootLayout({ children }) {
           <Suspense fallback={<div>Loading...</div>}>
             <div className="flex flex-col w-full min-h-screen">
               {!isLoginPath && !isSigninPath && !isForgetPassword && <Header />}
+              {/* {!isLoginPath && !isSigninPath && !isForgetPassword && <NewHeader />} */}
+
 
               <main className="w-full">{children}</main>
             </div>
