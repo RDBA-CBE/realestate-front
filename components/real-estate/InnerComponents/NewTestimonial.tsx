@@ -81,8 +81,10 @@ const NewTestimonial = () => {
               slidesPerView={1}
               navigation={{ prevEl: prevRef.current, nextEl: nextRef.current }}
               onBeforeInit={(swiper) => {
-                swiper.params.navigation.prevEl = prevRef.current;
-                swiper.params.navigation.nextEl = nextRef.current;
+                if (typeof swiper.params.navigation === 'object' && swiper.params.navigation) {
+                  swiper.params.navigation.prevEl = prevRef.current;
+                  swiper.params.navigation.nextEl = nextRef.current;
+                }
               }}
               // autoplay={{ delay: 5000, disableOnInteraction: false }}
               loop={true}

@@ -39,7 +39,7 @@ export default function SellingOptionsSection() {
 
       <div className="section-wid pb-8">
         <div className="text-center mb-16">
-          <h2 className="section-ti">Let's Find The Right Selling Option For You</h2>
+          <h2 className="section-ti">Let&apos;s Find The Right Selling Option For You</h2>
           <p className="section-cap">We offer complete real estate services for buying, selling, and renting residential properties.</p>
         </div>
 
