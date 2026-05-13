@@ -90,16 +90,13 @@ const NewTestimonial = () => {
               loop={true}
             >
               {testimonials.map((t, i) => (
-                <SwiperSlide key={i}>
-                  <div className="px-8">
-                    {/* Stars */}
-                    {/* <Stars count={t.rating} /> */}
-
+                <SwiperSlide key={i} className="h-auto">
+                  <div className="px-8 flex flex-col h-full">
                     {/* Review Text */}
-                    <p className="mb-6">{t.text}</p>
+                    <p className="mb-6 flex-1">{t.text}</p>
 
                     {/* Author + Quote icon */}
-                    <div className="flex items-end justify-between">
+                    <div className="flex items-end justify-between mt-auto">
                       <div>
                         <p className="text-lg font-medium text-[#000]">{t.author}</p>
                         <p className="text-md">{t.position}</p>

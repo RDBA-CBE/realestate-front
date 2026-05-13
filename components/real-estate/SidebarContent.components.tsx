@@ -1,12 +1,8 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
-import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "../ui/button";
 import { RotateCcw } from "lucide-react";
-import { FURNISHING_TYPE } from "@/utils/constant.utils";
 import PriceRangeSlider from "../common-components/priceRange";
-import { formatToINR } from "@/utils/function.utils";
 import { TextInput } from "../common-components/textInput";
 
 export const SidebarContent = (props: any) => {
@@ -15,6 +11,14 @@ export const SidebarContent = (props: any) => {
     handleChange,
     resetFilter,
     categoryList,
+    locationList,
+    areaList,
+    projectList,
+    developerList,
+    floorPlanList,
+    furnishingList,
+    listingTypeList,
+    bedroomList,
     parseINR,
     formatINR,
   } = props;
@@ -42,56 +46,103 @@ export const SidebarContent = (props: any) => {
       <div>
         <div className="mb-2 font-semibold text-gray-900">Listing Status</div>
         <div className="space-y-2">
-          {["All", "Sale",  "Lease"].map((option) => (
+          {([{ label: "All", value: "All" }, ...(listingTypeList || [])]).map((option) => (
             <label
-              key={option}
+              key={option.value}
               className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
             >
               <input
                 type="radio"
                 name="listingStatus"
-                checked={state.listingStatus === option}
-                onChange={() => handleChange("listingStatus", option)}
+                checked={state.listingStatus === option.label}
+                onChange={() => handleChange("listingStatus", option.label)}
               />
-              {option}
+              {option.label}
             </label>
           ))}
         </div>
       </div>
 
       <div>
-  <div className="mb-2 font-semibold text-gray-900">Property Type</div>
-  <div className="space-y-2">
-    {categoryList?.map((option) => (
-      <label
-        key={option?.value}
-        className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
-      >
-        <input
-          type="checkbox"
-          className="cursor-pointer"
-          checked={state.propertyType.some(
-            (t) => t.value === option.value
-          )}
-          onChange={(e) => {
-            let updated;
-            if (e.target.checked) {
-              // ✅ Add selected option
-              updated = [...state.propertyType, option];
-            } else {
-              // ✅ Remove unchecked option
-              updated = state.propertyType.filter(
-                (t) => t.value !== option.value
-              );
-            }
-            handleChange("propertyType", updated);
-          }}
-        />
-        <span>{option?.label}</span>
-      </label>
-    ))}
-  </div>
-</div>
+        <div className="mb-2 font-semibold text-gray-900">Location</div>
+        <div className="space-y-2">
+          {(locationList || []).map((option) => (
+            <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+              <input type="checkbox" className="cursor-pointer"
+                checked={state.location?.some((t) => t.value === option.value)}
+                onChange={(e) => handleChange("location", e.target.checked ? [...(state.location || []), option] : state.location.filter((t) => t.value !== option.value))}
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <div className="mb-2 font-semibold text-gray-900">Area</div>
+        <div className="space-y-2">
+          {(areaList || []).map((option) => (
+            <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+              <input type="checkbox" className="cursor-pointer"
+                checked={state.area?.some((t) => t.value === option.value)}
+                onChange={(e) => handleChange("area", e.target.checked ? [...(state.area || []), option] : state.area.filter((t) => t.value !== option.value))}
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {projectList.length > 0 &&
+      <div>
+        <div className="mb-2 font-semibold text-gray-900">Project</div>
+        <div className="space-y-2">
+          {(projectList || []).map((option) => (
+            <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+              <input type="checkbox" className="cursor-pointer"
+                checked={state.project?.some((t) => t.value === option.value)}
+                onChange={(e) => handleChange("project", e.target.checked ? [...(state.project || []), option] : state.project.filter((t) => t.value !== option.value))}
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
+        </div>
+      </div>}
+
+      <div>
+        <div className="mb-2 font-semibold text-gray-900">Developer</div>
+        <div className="space-y-2">
+          {(developerList || []).map((option) => (
+            <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+              <input type="checkbox" className="cursor-pointer"
+                checked={state.developer?.some((t) => t.value === option.value)}
+                onChange={(e) => handleChange("developer", e.target.checked ? [...(state.developer || []), option] : state.developer.filter((t) => t.value !== option.value))}
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <div className="mb-2 font-semibold text-gray-900">Property Type</div>
+        <div className="space-y-2">
+          {categoryList?.map((option) => (
+            <label key={option?.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+              <input type="checkbox" className="cursor-pointer"
+                checked={state.propertyType.some((t) => t.value === option.value)}
+                onChange={(e) => {
+                  const updated = e.target.checked
+                    ? [...state.propertyType, option]
+                    : state.propertyType.filter((t) => t.value !== option.value);
+                  handleChange("propertyType", updated);
+                }}
+              />
+              <span>{option?.label}</span>
+            </label>
+          ))}
+        </div>
+      </div>
 
       <div>
         <PriceRangeSlider
@@ -148,20 +199,18 @@ export const SidebarContent = (props: any) => {
       </div>
 
       <div>
-        <div className="mb-2 font-semibold text-gray-900">Bedrooms</div>
-
+        <div className="mb-2 font-semibold text-gray-900">Unit Configuration</div>
         <div className="flex flex-wrap gap-2">
-          {["Any", "2+", "3+", "4+", "5+"].map((option) => (
-            <label key={option}>
+          {(floorPlanList || []).map((option) => (
+            <label key={option.value}>
               <input
-                type="radio"
-                name="bedrooms"
-                checked={state.bedrooms === option}
-                onChange={() => handleChange("bedrooms", option)}
+                type="checkbox"
+                checked={state.floorPlan?.some((t) => t.value === option.value)}
+                onChange={(e) => handleChange("floorPlan", e.target.checked ? [...(state.floorPlan || []), option] : state.floorPlan.filter((t) => t.value !== option.value))}
                 className="peer hidden"
               />
-              <span className="flex items-center justify-center px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:border-red-400 peer-checked:border-dred">
-                {option}
+              <span className="flex items-center justify-center px-3 py-1.5 border rounded-md text-sm text-gray-700 cursor-pointer hover:border-red-400 peer-checked:border-dred peer-checked:bg-dred/10">
+                {option.label}
               </span>
             </label>
           ))}
@@ -191,7 +240,7 @@ export const SidebarContent = (props: any) => {
       <div>
         <div className="mb-2 font-semibold text-gray-900">Furnishing</div>
         <div className="space-y-2">
-          {FURNISHING_TYPE?.map((option) => (
+          {(furnishingList || [])?.map((option) => (
             <label
               key={option?.value}
               className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
@@ -199,19 +248,9 @@ export const SidebarContent = (props: any) => {
               <input
                 type="checkbox"
                 className="cursor-pointer"
-                checked={state.furnishing?.some(
-                  (t) => t.value === option.value
-                )}
+                checked={state.furnishing?.some((t) => t.value === option.value)}
                 onChange={(e) => {
-                  let updated;
-                  if (e.target.checked) {
-                    // ✅ Allow only one selected option
-                    updated = [option];
-                  } else {
-                    // ✅ Uncheck all if the same option is clicked again
-                    updated = [];
-                  }
-                  handleChange("furnishing", updated);
+                  handleChange("furnishing", e.target.checked ? [option] : []);
                 }}
               />
               <span>{option?.label}</span>

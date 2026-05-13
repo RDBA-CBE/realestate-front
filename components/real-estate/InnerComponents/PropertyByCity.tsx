@@ -6,8 +6,11 @@ const PropertyByCity = ({ cityList = [] }) => {
   const router = useRouter();
 
   const handleClick = (city) => {
-    router.push(`/property-list?search=${city?.name}`);
+    router.push(`/property-list?location=${city?.id}`);
   };
+
+  console.log("cityList", cityList);
+  
 
   const locations = [
   {
@@ -64,12 +67,12 @@ const PropertyByCity = ({ cityList = [] }) => {
 
         {/* Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 !gap-4 md:!gap-7 mt-10 md:mt-14 mb-5">
-          {cityList.map((item, index) => (
+          {cityList.slice(0,8).map((item, index) => (
             <div key={index} className="exp-card" onClick={() => handleClick(item)}>
-              <img src={item.image} alt={item.name} className="exp-img" />
+              <img src="https://images.unsplash.com/photo-1515896769750-31548aa180ed?w=400&h=300&fit=crop" alt={item.name} className="exp-img" />
               <div className="exp-content">
                 <h4 className="section-in-ti">{item.name}</h4>
-                <p>{item.count} {item.count === 1 ? "Property" : "Properties"}</p>
+                {/* <p>{item.count} {item.count === 1 ? "Property" : "Properties"}</p> */}
               </div>
             </div>
           ))}

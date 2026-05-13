@@ -32,17 +32,25 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
   
 
   return (
-    <section className="adv-wrapper lg:min-h-[90vh] py-20 lg:py-0 flex items-center justify-center">
-      <div className="section-wid adv-container w-full  gap-10 items-center overflow-visible">
+    <section className="adv-wrapper relative lg:min-h-[90vh] py-20 lg:py-0 flex items-center justify-center overflow-hidden">
+      {/* <div className="
+    absolute left-0 top-0 h-full w-[60%] z-0
+    bg-gradient-to-rb
+    from-black/65
+    via-black/35
+    to-transparent
+    backdrop-blur-[5px]
+  "></div> */}
+       <div className="section-wid adv-container relative z-10 w-full gap-10 items-center overflow-visible">
         {/* Left Content */}
         <div className="adv-left">
           <h1 className="adv-title">
-            Easy way to find <br /> perfect property
+            Easy way to find dream <br /> perfect property now
           </h1>
           <p className="adv-subtitle">
             With us, your trip is filled with amazing experiences.
           </p>
-          <button className="adv-btn lg:mb-12"  > <a href="/property-list">Start your search</a></button>
+          <button className="adv-btn lg:mb-12"  > <a href="/property-list">Find Your Home</a></button>
 
           {/* Tabs */}
           <div className="adv-tabs flex gap-8 mt-12 lg:mt-14">
@@ -99,7 +107,7 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
             <div className="flex  flex-1 gap-3 px-4">
               <Search className="text-[#383838] w-4 h-4 md:w-5 md:h-5 mt-1 md:mt-0 shrink-0" />
               <div>
-                <p className="adv-field-label">Search</p>
+                <p className="adv-field-label">Property Name</p>
                 <input
                   type="text"
                   value={searchText}
@@ -125,25 +133,16 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
         </div>
 
         {/* Right Images — hidden on mobile */}
-        <div className="adv-right hidden md:flex relative gap-5">
+        {/* <div className="adv-right hidden md:flex relative gap-5">
           <div className="flex flex-col gap-5 mt-[-50px]">
             <img
-              src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
+              src="assets/images/real-estate/home/home-banner.png"
               alt=""
-              className="adv-img small"
+              className="adv-img w-full h-auto  object-cover"
             />
-            <img
-              src="https://images.unsplash.com/photo-1541625602330-2277a4c46182"
-              alt=""
-              className="adv-img medium"
-            />
+           
           </div>
-          <img
-            src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac"
-            alt=""
-            className="adv-img large"
-          />
-        </div>
+        </div> */}
       </div>
     </section>
   );

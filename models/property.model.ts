@@ -31,11 +31,11 @@ const properties = {
       }
 
       if (body?.minPrice) {
-        url += `&min_price=${encodeURIComponent(body?.minPrice)}`;
+        url += `&minimum_price=${encodeURIComponent(body?.minPrice)}`;
       }
 
       if (body?.maxPrice) {
-        url += `&max_price=${encodeURIComponent(body?.maxPrice)}`;
+        url += `&maximum_price=${encodeURIComponent(body?.maxPrice)}`;
       }
 
       if (body?.bedrooms) {
@@ -45,14 +45,33 @@ const properties = {
         url += `&bathrooms=${encodeURIComponent(body?.bathrooms)}`;
       }
       if (body?.location) {
-        url += `&city=${encodeURIComponent(body?.location)}`;
+        url += `&location=${encodeURIComponent(body?.location)}`;
       }
+      if (body?.area) {
+        url += `&area=${encodeURIComponent(body?.area)}`;
+      }
+      if (body?.developer) {
+        url += `&developer=${encodeURIComponent(body?.developer)}`;
+      }
+      if (body?.project) {
+        url += `&project=${encodeURIComponent(body?.project)}`;
+      }
+
+      if (body?.floor_plan) {
+        url += `&floor_plans_category=${encodeURIComponent(body?.floor_plan)}`;
+      }
+
+      // if (body?.built_up_area) {
+      //   url += `&built_up_area=${encodeURIComponent(body?.built_up_area)}`;
+      // }
+
       if (body?.sqftMin) {
-        url += `&min_area=${encodeURIComponent(body?.sqftMin)}`;
+        url += `&min_built_up_area=${encodeURIComponent(body?.sqftMin)}`;
       }
       if (body?.sqftMax) {
-        url += `&max_area=${encodeURIComponent(body?.sqftMax)}`;
+        url += `&max_built_up_area=${encodeURIComponent(body?.sqftMax)}`;
       }
+
       if (body?.yearBuiltMin) {
         url += `&yearBuiltMin=${encodeURIComponent(body?.yearBuiltMin)}`;
       }
@@ -75,8 +94,56 @@ const properties = {
         url += `&sort_by=${encodeURIComponent(body?.sort_by)}`;
       }
 
+      if(body?.user_preferred_locations ){
+        url += `&user_preferred_locations=${encodeURIComponent(body?.user_preferred_locations)}`;
+      }
+
       instance()
         .get(url, body)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  dynamicFilter: (body: any) => {
+    let promise = new Promise((resolve, reject) => {
+      const params: string[] = [];
+
+      if (body?.listing_type) params.push(`listing_type=${encodeURIComponent(body.listing_type)}`);
+      if (body?.property_type) params.push(`property_type=${encodeURIComponent(body.property_type)}`);
+      if (body?.furnishing) params.push(`furnishing=${encodeURIComponent(body.furnishing)}`);
+      if (body?.search) params.push(`search=${encodeURIComponent(body.search)}`);
+      if (body?.minPrice) params.push(`minimum_price=${encodeURIComponent(body.minPrice)}`);
+      if (body?.maxPrice) params.push(`maximum_price=${encodeURIComponent(body.maxPrice)}`);
+      if (body?.bedrooms) params.push(`bedrooms=${encodeURIComponent(body.bedrooms)}`);
+      if (body?.bathrooms) params.push(`bathrooms=${encodeURIComponent(body.bathrooms)}`);
+      if (body?.location) params.push(`location=${encodeURIComponent(body.location)}`);
+      if (body?.area) params.push(`area=${encodeURIComponent(body.area)}`);
+      if (body?.developer) params.push(`developer=${encodeURIComponent(body.developer)}`);
+      if (body?.project) params.push(`project=${encodeURIComponent(body.project)}`);
+      if (body?.floor_plan) params.push(`floor_plans_category=${encodeURIComponent(body.floor_plan)}`);
+      //  if (body?.built_up_area) {
+      //   params.push(`built_up_area=${encodeURIComponent(body?.built_up_area)}`);
+      // }
+      if (body?.sqftMin) params.push(`min_built_up_area=${encodeURIComponent(body.sqftMin)}`);
+      if (body?.sqftMax) params.push(`max_built_up_area=${encodeURIComponent(body.sqftMax)}`);
+      if (body?.yearBuiltMin) params.push(`yearBuiltMin=${encodeURIComponent(body.yearBuiltMin)}`);
+      if (body?.yearBuiltMax) params.push(`yearBuiltMax=${encodeURIComponent(body.yearBuiltMax)}`);
+      if (body?.sort_by) params.push(`sort_by=${encodeURIComponent(body.sort_by)}`);
+
+      const url = `properties/filter-options/${params.length > 0 ? `?${params.join("&")}` : ""}`;
+
+      instance()
+        .get(url)
         .then((res) => {
           resolve(res.data);
         })

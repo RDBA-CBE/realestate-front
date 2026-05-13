@@ -7,6 +7,7 @@ import { Autoplay } from "swiper/modules";
 import { capitalizeFLetter, formatPriceRange, truncateText } from "@/utils/function.utils";
 import { useRouter } from "next/navigation";
 import { Bath, BedDouble, MapPin, Maximize2 } from "lucide-react";
+import PropertyCard from "./PropertyCard";
 
 const NewPopuplarProperties = (props) => {
 
@@ -19,6 +20,7 @@ const NewPopuplarProperties = (props) => {
     320: { slidesPerView: 1, spaceBetween: 16 },
     640: { slidesPerView: 2, spaceBetween: 30 },
     1024: { slidesPerView: 3, spaceBetween: 60 },
+    1200: { slidesPerView: 4, spaceBetween: 30 },
   };
 
   const handleClick=(property)=>{
@@ -29,7 +31,7 @@ router.push(`property-detail/${property?.id}`)
   console.log("propertyList com", propertyList);
 
   return (
-    <div className="section-pad bg-white">
+    <div className="section-pad bg-[#f8f8f8]">
       <div className="section-wid ">
         {/* Header Section with Filter Buttons on the right */}
         <div className="flex flex-col md:flex-row justify-between items-start lg:items-center mb-12 text-start">
@@ -121,58 +123,11 @@ router.push(`property-detail/${property?.id}`)
             disableOnInteraction: false,
           }}
           loop={true}
-          className="popular-properties-swiper"
+          className="featured-listings-swiper pb-10"
         >
           {propertyList?.map((property, index) => (
            <SwiperSlide key={index} className="h-auto">
-              <div
-                className="bg-white rounded-2xl overflow-hidden cursor-pointer group h-full flex flex-col"
-                onClick={() => handleClick(property)}
-              >
-                {/* Image */}
-                <div className="relative h-52 overflow-hidden rounded-2xl">
-                  <img
-                    src={property?.primary_image}
-                    alt={property?.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute top-3 left-3 bg-white text-[#9b0f09] text-xs font-semibold px-3 py-1 rounded-full shadow">
-                    For Sale
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="pt-4 pb-2 text-start flex flex-col flex-1">
-                  <h3 className="section-in-ti mb-1 min-h-[48px]">
-                    {property?.title}
-                  </h3>
-                  <p className="flex items-center gap-1 mb-4 min-h-[24px]">
-                    {property?.city && <><MapPin className="w-3.5 h-3.5" />{property?.city}</>}
-                  </p>
-
-                  {/* Stats + Price */}
-                  <div className="flex items-center justify-between border-t pt-3 border-[#d1d0d0] mt-auto">
-                    <div className="flex items-center gap-3 ">
-                      <span className="flex items-center gap-1 border-r pr-3 border-[#d1d0d0]">
-                        <BedDouble className="w-4 h-4" /> {property?.bedrooms}
-                      </span>
-                      <span className="flex items-center gap-1 border-r pr-3 border-[#d1d0d0]">
-                        <Bath className="w-4 h-4" /> {property?.bathrooms}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Maximize2 className="w-4 h-4" /> {property?.price_per_sqft}
-                      </span>
-                    </div>
-                    <span className="text-[#9b0f09]  xl:text-xl font-bold text-base">
-                      ₹{" "}
-                      {formatPriceRange(
-                        property?.price_range?.minimum_price,
-                        property?.price_range?.maximum_price
-                      )}
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <PropertyCard listing={property} />
             </SwiperSlide>
           ))}
         </Swiper>

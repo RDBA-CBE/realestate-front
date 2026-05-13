@@ -13,6 +13,7 @@ import NewTestimonial from '../InnerComponents/NewTestimonial';
 import SellingOptionsSection from '../InnerComponents/SellingOptionsSection';
 import NewFooter from '../NewFooter';
 import NewPopuplarProperties from '../InnerComponents/NewPopuplarProperties';
+import Testimonials from '@/components/common-components/Testimonials';
 
 
 const HomePageNew = () => {
@@ -40,6 +41,7 @@ const HomePageNew = () => {
   
         setState({
           locationList: droprdown,
+          cityList: res?.results,
           total: res?.count,
           page,
           next: res.next,
@@ -131,20 +133,11 @@ const HomePageNew = () => {
 
             // derive unique cities
             const seen = new Set();
-            const cityList = res?.results
-              ?.filter((p) => {
-                if (p?.city && !seen.has(p.city)) { seen.add(p.city); return true; }
-                return false;
-              })
-              .map((p) => ({
-                name: p.city,
-                image: p.primary_image,
-                count: res?.results?.filter((x) => x.city === p.city).length,
-              }));
+
       
             setState({
               propertyList: res?.results,
-              cityList: cityList || [],
+              
               handNext: res?.next,
               loading: false,
             });
@@ -191,7 +184,9 @@ const HomePageNew = () => {
 
         {/* <HelpServicesSection/> */}
 
-        <NewTestimonial/>
+        <Testimonials />
+
+        {/* <NewTestimonial/> */}
 
         <NewFooter/>
 

@@ -17,6 +17,16 @@ export const forgetPassword = Yup.object().shape({
   email: Yup.string().required("Email is required"),
 });
 
+export const changePassword = Yup.object().shape({
+  old_password: Yup.string().required("Password is required"),
+  new_password: Yup.string().required("New Password is required"),
+  confirm_password: Yup.string()
+    .oneOf([Yup.ref("new_password"), null], "Passwords must match")
+    .required("Confirm Password is required"),
+})
+
+changePassword
+
 export const profileSchema = Yup.object({
   first_name: Yup.string()
   .required("First Name is required"),

@@ -29,7 +29,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import useDebounce from "@/components/common-components/useDebounce";
 import { PropertyCardSkeleton } from "@/components/common-components/skeleton/PropertyCardSkeleton.componenet";
 import PriceRangeSlider from "@/components/common-components/priceRange";
-import { FURNISHING_TYPE } from "@/utils/constant.utils";
 import { TextInput } from "@/components/common-components/textInput";
 import {
   Sheet,
@@ -52,13 +51,24 @@ export function PropertyView(props: any) {
     handNext,
     loadMore,
     categoryList,
+    locationList,
+    areaList,
+    projectList,
+    developerList,
+    floorPlanList,
+    furnishingList,
+    listingTypeList,
+    bedroomList,
     minPrice,
     maxPrice,
     updateList,
     clearFilter,
     initialSearch,
     initialListingStatus,
+    initialLocation,
+    initialPropertyType,
     propertyTypeFilter,
+    onFilterChange,
   } = props;
 
   const [state, setState] = useSetState({
@@ -67,23 +77,36 @@ export function PropertyView(props: any) {
     listingStatus: "All",
     propertyType: [],
     furnishing: [],
+    location: [],
+    area: [],
+    project: [],
+    developer: [],
+    floorPlan: [],
     priceRange: [0, 0],
     minPrice: 0,
     maxPrice: 0,
+    priceFloor: 0,
+    priceCeiling: 0,
+    priceMinInput: "",
+    priceMaxInput: "",
+    priceMinError: "",
+    priceMaxError: "",
     bedrooms: "",
     bathrooms: "",
-    location: "",
     sqftMin: "",
     sqftMax: "",
     yearBuiltMin: "",
     yearBuiltMax: "",
     view: "grid",
     sort: null,
+    prefferedLocation: false
   });
 
-  const initialLoadRef = useRef(true);
+  const initialLoadRef = useRef(false);
   const filterTimeoutRef = useRef(null);
   const previousFiltersRef = useRef({});
+  const priceFloorRef = useRef(0);
+  const priceCeilingRef = useRef(0);
 
   const skeletonCount = state.view == "grid" ? 3 : 1;
 
@@ -106,25 +129,28 @@ export function PropertyView(props: any) {
   );
 
   useEffect(() => {
-    if (propertyTypeFilter) {
-      setState({ propertyType: propertyTypeFilter });
-    }
-    if (initialSearch) {
-      setState({ search: initialSearch });
-    }
-    if (initialListingStatus) {
-      setState({ listingStatus: initialListingStatus });
-    }
-  }, [propertyTypeFilter, initialSearch, initialListingStatus]);
+    if (propertyTypeFilter) setState({ propertyType: propertyTypeFilter });
+    if (initialSearch) setState({ search: initialSearch });
+    if (initialListingStatus) setState({ listingStatus: initialListingStatus });
+    if (initialLocation?.length > 0) setState({ location: initialLocation });
+    if (initialPropertyType?.length > 0) setState({ propertyType: initialPropertyType });
+  }, [propertyTypeFilter, initialSearch, initialListingStatus, initialLocation, initialPropertyType]);
 
   useEffect(() => {
-    if (initialLoadRef.current && minPrice > 0 && maxPrice > 0) {
+    if (minPrice > 0 || maxPrice > 0) {
+      priceFloorRef.current = minPrice;
+      priceCeilingRef.current = maxPrice;
       setState({
+        priceFloor: minPrice,
+        priceCeiling: maxPrice,
         minPrice,
         maxPrice,
         priceRange: [minPrice, maxPrice],
+        priceMinInput: formatINR(minPrice),
+        priceMaxInput: formatINR(maxPrice),
+        priceMinError: "",
+        priceMaxError: "",
       });
-      initialLoadRef.current = false;
     }
   }, [minPrice, maxPrice]);
 
@@ -186,6 +212,10 @@ export function PropertyView(props: any) {
       bedrooms: state.bedrooms,
       bathrooms: state.bathrooms,
       location: state.location,
+      area: state.area,
+      project: state.project,
+      developer: state.developer,
+      floorPlan: state.floorPlan,
       furnishing: state.furnishing,
       search: debouncedSearch,
       priceRange: state.priceRange,
@@ -194,6 +224,7 @@ export function PropertyView(props: any) {
       yearBuiltMin: debouncedYearBuiltMin,
       yearBuiltMax: debouncedYearBuiltMax,
       sort: state.sort,
+      prefferedLocation: state.prefferedLocation
     };
 
     // Check if filters actually changed
@@ -204,8 +235,9 @@ export function PropertyView(props: any) {
     if (hasFiltersChanged) {
       filterTimeoutRef.current = setTimeout(() => {
         filters(currentFilters);
+        if (onFilterChange) onFilterChange(currentFilters);
         previousFiltersRef.current = currentFilters;
-      }, 400); // Increased debounce time
+      }, 400);
     }
 
     return () => {
@@ -219,6 +251,10 @@ export function PropertyView(props: any) {
     state.bedrooms,
     state.bathrooms,
     state.location,
+    state.area,
+    state.project,
+    state.developer,
+    state.floorPlan,
     state.furnishing,
     debouncedSearch,
     state.priceRange,
@@ -227,7 +263,8 @@ export function PropertyView(props: any) {
     debouncedYearBuiltMin,
     debouncedYearBuiltMax,
     state.sort,
-    filters,
+    state.prefferedLocation,
+
     debouncedPriceRange,
     debouncedMinPrice,
     debouncedMaxPrice,
@@ -254,7 +291,12 @@ export function PropertyView(props: any) {
       maxPrice: "",
       bedrooms: "",
       bathrooms: "",
-      location: "",
+      location: [],
+      area: [],
+      project: [],
+      developer: [],
+      floorPlan: [],
+      furnishing: [],
       sqftMin: "",
       sqftMax: "",
       yearBuiltMin: "",
@@ -276,6 +318,51 @@ export function PropertyView(props: any) {
   const parseINR = (value: string) => {
     return Number(value.replace(/,/g, ""));
   };
+
+  const applyPriceInputs = () => {
+    const floor = priceFloorRef.current;
+    const ceiling = priceCeilingRef.current;
+
+    const newMin = state.priceMinInput ? parseINR(state.priceMinInput) : (state.priceRange?.[0] ?? floor);
+    const newMax = state.priceMaxInput ? parseINR(state.priceMaxInput) : (state.priceRange?.[1] ?? ceiling);
+
+    if (Number.isNaN(newMin) || newMin < 0) {
+      setState({ priceMinError: "Enter a valid minimum price" });
+      return;
+    }
+    if (Number.isNaN(newMax) || newMax < 0) {
+      setState({ priceMaxError: "Enter a valid maximum price" });
+      return;
+    }
+    if (newMin > newMax) {
+      setState({
+        priceMinError: "Minimum price cannot be greater than maximum price",
+        priceMaxError: "",
+      });
+      return;
+    }
+    if (floor > 0 && newMin > ceiling) {
+      setState({ priceMinError: `No properties available above ₹${formatINR(ceiling)}`, priceMaxError: "" });
+      return;
+    }
+    if (ceiling > 0 && newMax < floor) {
+      setState({ priceMaxError: `No properties available below ₹${formatINR(floor)}`, priceMinError: "" });
+      return;
+    }
+
+    const updated = [newMin, newMax];
+    setState({
+      priceRange: updated,
+      priceMinInput: formatINR(newMin),
+      priceMaxInput: formatINR(newMax),
+      priceMinError: "",
+      priceMaxError: "",
+    });
+    handleChange("priceRange", updated);
+  };
+
+  console.log("listingTypeList", listingTypeList);
+  
 
   return (
     <motion.div
@@ -309,18 +396,18 @@ export function PropertyView(props: any) {
                 Listing Status
               </div>
               <div className="space-y-2">
-                {["All", "Sale", "Lease"].map((option) => (
+                {([{ label: "All", value: "All" }, ...( listingTypeList || [])]).map((option) => (
                   <label
-                    key={option}
+                    key={option.value}
                     className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
                   >
                     <input
                       type="radio"
                       name="listingStatus"
-                      checked={state.listingStatus === option}
-                      onChange={() => handleChange("listingStatus", option)}
+                      checked={state.listingStatus === option.label}
+                      onChange={() => handleChange("listingStatus", option.label)}
                     />
-                    {option}
+                    {option.label}
                   </label>
                 ))}
               </div>
@@ -343,16 +430,9 @@ export function PropertyView(props: any) {
                         (t) => t.value === option.value
                       )}
                       onChange={(e) => {
-                        let updated;
-                        if (e.target.checked) {
-                          // ✅ Add selected option
-                          updated = [...state.propertyType, option];
-                        } else {
-                          // ✅ Remove unchecked option
-                          updated = state.propertyType.filter(
-                            (t) => t.value !== option.value
-                          );
-                        }
+                        const updated = e.target.checked
+                          ? [...state.propertyType, option]
+                          : state.propertyType.filter((t) => t.value !== option.value);
                         handleChange("propertyType", updated);
                       }}
                     />
@@ -363,9 +443,73 @@ export function PropertyView(props: any) {
             </div>
 
             <div>
+              <div className="mb-2 font-semibold text-gray-900">Location</div>
+              <div className="space-y-2">
+                {(locationList || []).map((option) => (
+                  <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input type="checkbox" className="cursor-pointer"
+                      checked={state.location.some((t) => t.value === option.value)}
+                      onChange={(e) => handleChange("location", e.target.checked ? [...state.location, option] : state.location.filter((t) => t.value !== option.value))}
+                    />
+                    <span>{option.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <div className="mb-2 font-semibold text-gray-900">Area</div>
+              <div className="space-y-2">
+                {(areaList || []).map((option) => (
+                  <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input type="checkbox" className="cursor-pointer"
+                      checked={state.area.some((t) => t.value === option.value)}
+                      onChange={(e) => handleChange("area", e.target.checked ? [...state.area, option] : state.area.filter((t) => t.value !== option.value))}
+                    />
+                    <span>{option.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            
+
+            <div>
+              <div className="mb-2 font-semibold text-gray-900">Developer</div>
+              <div className="space-y-2">
+                {(developerList || []).map((option) => (
+                  <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input type="checkbox" className="cursor-pointer"
+                      checked={state.developer.some((t) => t.value === option.value)}
+                      onChange={(e) => handleChange("developer", e.target.checked ? [...state.developer, option] : state.developer.filter((t) => t.value !== option.value))}
+                    />
+                    <span>{option.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+
+            {projectList.length > 0 &&  
+            <div>
+              <div className="mb-2 font-semibold text-gray-900">Project</div>
+              <div className="space-y-2">
+                {(projectList || []).map((option) => (
+                  <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input type="checkbox" className="cursor-pointer"
+                      checked={state.project.some((t) => t.value === option.value)}
+                      onChange={(e) => handleChange("project", e.target.checked ? [...state.project, option] : state.project.filter((t) => t.value !== option.value))}
+                    />
+                    <span>{option.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>}
+
+            <div>
               <PriceRangeSlider
-                min={0}
-                max={50000000}
+                min={state.minPrice || 0}
+                max={state.maxPrice || 50000000}
                 value={state.priceRange}
                 onChange={(val) => {
                   setState({ priceRange: val });
@@ -374,75 +518,73 @@ export function PropertyView(props: any) {
                 }}
               />
 
-              <div className="flex gap-3 mt-4 items-center">
+              <div className="flex gap-3 mt-4 items-start">
                 {/* Min Input */}
-                <div className="relative w-full">
-                  <span className="absolute left-3 top-2 text-gray-600">₹</span>
-                  <Input
-                    type="text"
-                    className="pl-6 pr-0 bg-white"
-                    placeholder="Min."
-                    value={formatINR(state.priceRange?.[0] ?? 0)}
-                    onChange={(e) => {
-                      const newMin = parseINR(e.target.value);
-                      const newMax = Math.max(
-                        newMin,
-                        state.priceRange?.[1] ?? 0
-                      );
-                      const updated = [newMin, newMax];
-                      handleChange("priceRange", updated);
-                      setState({ priceRange: updated });
-                    }}
-                  />
+                <div className="w-full">
+                  <div className="relative">
+                    <span className="absolute left-3 top-2 text-gray-600">₹</span>
+                    <Input
+                      type="text"
+                      className={`pl-6 pr-0 bg-white ${state.priceMinError ? 'border-red-400' : ''}`}
+                      placeholder="Min."
+                      value={state.priceMinInput}
+                      onChange={(e) => setState({ priceMinInput: e.target.value, priceMinError: "" })}
+                    />
+                  </div>
+                  {state.priceMinError && (
+                    <p className="text-red-500 text-xs mt-1">{state.priceMinError}</p>
+                  )}
                 </div>
 
-                <span className="flex items-center">-</span>
+                <span className="flex items-center mt-2">-</span>
 
                 {/* Max Input */}
-                <div className="relative w-full">
-                  <span className="absolute left-3 top-2 text-gray-600">₹</span>
-                  <Input
-                    type="text"
-                    className="pl-6 pr-0 bg-white"
-                    placeholder="Max."
-                    value={formatINR(state.priceRange?.[1] ?? 0)}
-                    onChange={(e) => {
-                      const newMax = parseINR(e.target.value);
-                      const newMin = Math.min(
-                        newMax,
-                        state.priceRange?.[0] ?? 0
-                      );
-                      const updated = [newMin, newMax];
-                      handleChange("priceRange", updated);
-                      setState({ priceRange: updated });
-                    }}
-                  />
+                <div className="w-full">
+                  <div className="relative">
+                    <span className="absolute left-3 top-2 text-gray-600">₹</span>
+                    <Input
+                      type="text"
+                      className={`pl-6 pr-0 bg-white ${state.priceMaxError ? 'border-red-400' : ''}`}
+                      placeholder="Max."
+                      value={state.priceMaxInput}
+                      onChange={(e) => setState({ priceMaxInput: e.target.value, priceMaxError: "" })}
+                    />
+                  </div>
+                  {state.priceMaxError && (
+                    <p className="text-red-500 text-xs mt-1">{state.priceMaxError}</p>
+                  )}
                 </div>
+
+                {/* Apply Button */}
+                <button
+                  onClick={applyPriceInputs}
+                  className="mt-1 w-8 h-9 flex items-center justify-center rounded-md bg-[#9b0f09] text-white hover:bg-red-800 transition-colors shrink-0"
+                >
+                  ›
+                </button>
               </div>
             </div>
 
             <div>
-              <div className="mb-2 font-semibold text-gray-900">Bedrooms</div>
-
+              <div className="mb-2 font-semibold text-gray-900">Unit Configuration</div>
               <div className="flex flex-wrap gap-2">
-                {["Any", "2+", "3+", "4+", "5+"].map((option) => (
-                  <label key={option}>
+                {(floorPlanList || []).map((option) => (
+                  <label key={option.value}>
                     <input
-                      type="radio"
-                      name="bedrooms"
-                      checked={state.bedrooms === option}
-                      onChange={() => handleChange("bedrooms", option)}
+                      type="checkbox"
+                      checked={state.floorPlan.some((t) => t.value === option.value)}
+                      onChange={(e) => handleChange("floorPlan", e.target.checked ? [...state.floorPlan, option] : state.floorPlan.filter((t) => t.value !== option.value))}
                       className="peer hidden"
                     />
-                    <span className="flex items-center justify-center px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:border-red-400 peer-checked:border-dred">
-                      {option}
+                    <span className="flex items-center justify-center px-3 py-1.5 border rounded-md text-sm text-gray-700 cursor-pointer hover:border-red-400 peer-checked:border-dred peer-checked:bg-dred/10">
+                      {option.label}
                     </span>
                   </label>
                 ))}
               </div>
             </div>
 
-            <div>
+            {/* <div>
               <div className="mb-2 font-semibold text-gray-900">Bathrooms</div>
               <div className="flex flex-wrap gap-2">
                 {["Any", "2+", "3+", "4+", "5+"].map((option) => (
@@ -460,12 +602,12 @@ export function PropertyView(props: any) {
                   </label>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             <div>
               <div className="mb-2 font-semibold text-gray-900">Furnishing</div>
               <div className="space-y-2">
-                {FURNISHING_TYPE?.map((option) => (
+                {(furnishingList || [])?.map((option) => (
                   <label
                     key={option?.value}
                     className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
@@ -477,15 +619,7 @@ export function PropertyView(props: any) {
                         (t) => t.value === option.value
                       )}
                       onChange={(e) => {
-                        let updated;
-                        if (e.target.checked) {
-                          // ✅ Allow only one selected option
-                          updated = [option];
-                        } else {
-                          // ✅ Uncheck all if the same option is clicked again
-                          updated = [];
-                        }
-                        handleChange("furnishing", updated);
+                        handleChange("furnishing", e.target.checked ? [option] : []);
                       }}
                     />
                     <span>{option?.label}</span>
@@ -517,7 +651,7 @@ export function PropertyView(props: any) {
               </div>
             </div>
 
-            <div>
+            {/* <div>
               <div className="mb-2 font-semibold text-gray-900">Year Built</div>
               <div className="flex gap-3">
                 <Input
@@ -535,7 +669,7 @@ export function PropertyView(props: any) {
                   onChange={(e) => handleChange("yearBuiltMax", e.target.value)}
                 />
               </div>
-            </div>
+            </div> */}
           </div>
         </aside>
 
@@ -581,6 +715,14 @@ export function PropertyView(props: any) {
                               }));
                             }}
                             categoryList={categoryList}
+                            locationList={locationList}
+                            areaList={areaList}
+                            projectList={projectList}
+                            developerList={developerList}
+                            floorPlanList={floorPlanList}
+                            furnishingList={furnishingList}
+                            listingTypeList={listingTypeList}
+                            bedroomList={bedroomList}
                             parseINR={parseINR}
                             formatINR={formatINR}
                           />
@@ -621,6 +763,23 @@ export function PropertyView(props: any) {
               </div>
 
               <div className="flex items-center gap-4 justify-between md:justify-normal  w-auto">
+                <Button
+                    variant="outline"
+                    className="px-4 py-2 h-9 rounded-lg text-sm font-medium text-gray-600 hover:text-dred 
+                      border-none 
+                      md:border 
+                      md:border-gray-300 
+                      hover:border-red-200 bg-transparent md:bg-white px-0 md:px-3 shadow-none md:shadow-sm"
+                      onClick={()=>{
+                        setState({
+                          prefferedLocation: !state.prefferedLocation
+                        })
+                      }}
+                  >
+                    <MapPinHouseIcon />
+                    Preffered Location
+                  </Button>
+
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600 whitespace-nowrap">
                     Sort by:
@@ -640,7 +799,7 @@ export function PropertyView(props: any) {
                           sortValue = "";
                           break;
                         case "newest":
-                          sortValue = "created_at";
+                          sortValue = "-created_at";
                           break;
                       }
                       handleChange("sort", sortValue);

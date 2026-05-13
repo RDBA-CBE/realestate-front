@@ -1,122 +1,190 @@
 "use client";
 
-import { useState } from "react";
-import { X, ChevronDown } from "lucide-react";
-import * as Popover from "@radix-ui/react-popover";
+import { X } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select";
+import { useEffect, useState } from "react";
 
-// interface Option {
-//     value: string;
-//     label: string;
-// }
-
-// interface CustomMultiSelectProps {
-//     options: Option[];
-//     value: string[];
-//     onChange: (selected: string[]) => void;
-//     placeholder?: string;
-//     required?: boolean;
-//     title?: string;
-//     error?: string;
-// }
-
-const CustomMultiSelect = ({
-    options,
+const CustomMultiSelect = (props) => {
+  const {
+    options = [],
     value,
     onChange,
-    placeholder = "Select options",
+    placeholder = "Select an option",
     title,
     required,
     error,
-}) => {
-    const handleSelectChange = (val) => {
-        const newSelection = value.includes(val)
-            ? value.filter((item) => item !== val) // Remove item
-            : [...value, val]; // Add item
-        onChange(newSelection);
-    };
+    disabled,
+    className,
+    isMulti = false,
 
-    const handleClear = () => {
-        onChange([]); // Clear all selections
-    };
+    // async
+    loadOptions,
+    hasMore,
+    isLoading,
+  } = props;
 
-    return (
-        <div className="w-full" >
-            {title && (
-                <label className="block text-sm font-bold text-gray-700 mb-2">
-                    {title} {required && <span className="text-dred">*</span>}
-                </label>
-            )}
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [open, setOpen] = useState(false);
 
-            <Popover.Root>
-                <Popover.Trigger asChild>
-                    <button className="border rounded-lg px-4 py-2 w-full flex justify-between items-center">
-                        <span>{value.length > 0 ? `${value.length} selected` : placeholder}</span>
-                        <ChevronDown />
-                    </button>
-                </Popover.Trigger>
+  // ✅ normalize selected values
+  const selectedValues = isMulti
+    ? Array.isArray(value)
+      ? value
+      : []
+    : value
+      ? [value]
+      : [];
 
-                <Popover.Portal>
-                    <Popover.Content className="bg-white border shadow-md rounded-md p-2 w-[100%]" style={{maxHeight:"340px", overflowY:"scroll", scrollbarWidth:"thin"}}>
-                        {options.map((option) => (
-                            <div
-                                key={option.value}
-                                className="flex items-center p-2 cursor-pointer hover:bg-color1"
-                                onClick={() => handleSelectChange(option.value)}
-                            >
-                                <input
-                                    type="checkbox"
-                                    checked={value.includes(option.value)}
-                                    readOnly
-                                    className="mr-2"
-                                />
-                                {option.label}
-                            </div>
-                        ))}
-                    </Popover.Content>
-                </Popover.Portal>
-            </Popover.Root>
+  const stringSelectedValues = selectedValues.map((v) => String(v));
 
-            <div className="flex items-center justify-start gap-2">
-                {/* Clear button */}
-                {value.length > 0 && (
-                    <button
-                        onClick={handleClear}
-                        className="text-dred bg-red-100 px-2 py-1 rounded-md hover:text-gray-700 mt-2 text-xs"
-                    >
-                        Clear All
-                    </button>
-                )}
+  // 🔍 API call
+  useEffect(() => {
+    if (loadOptions) {
+      loadOptions({ search, page });
+    }
+  }, [search, page]);
 
-                {/* Selected items as pills */}
-                {value.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2" >
-                        {value.map((val) => {
-                            const selectedOption = options.find((option) => option.value === val);
-                            return (
-                                selectedOption && (
-                                    <span
-                                        key={val}
-                                        className="px-2 py-1 bg-gray-200 rounded-md text-xs flex items-center gap-1"
-                                    >
-                                        {selectedOption.label}
-                                        <X
-                                            className="w-4 h-4 cursor-pointer"
-                                            onClick={() => handleSelectChange(val)}
-                                        />
-                                    </span>
-                                )
-                            );
-                        })}
-                    </div>
-                )}
+  // ✅ handle select
+  const handleSelect = (val) => {
+    const stringVal = String(val);
+
+    if (!isMulti) {
+      const selected = options?.find((o) => String(o.value) === stringVal);
+      onChange(selected || null);
+      setOpen(false);
+      return;
+    }
+
+    let updated;
+
+    if (stringSelectedValues.includes(stringVal)) {
+      updated = selectedValues.filter((v) => String(v) !== stringVal);
+    } else {
+      // 🔥 ALWAYS push normalized value
+      updated = [...selectedValues, stringVal];
+    }
+
+    onChange(updated);
+  };
+
+  // ✅ selected options (better than labels only)
+  const selectedOptions = options?.filter((o) =>
+    stringSelectedValues.includes(String(o.value)),
+  );
+
+  return (
+    <div className="w-full">
+      {title && (
+        <label className="block text-sm font-bold text-gray-700 mb-2">
+          {title} {required && <span className="text-red-500">*</span>}
+        </label>
+      )}
+
+      <Select
+        open={open}
+        onOpenChange={setOpen}
+        value={!isMulti ? String(value || "") : undefined}
+        onValueChange={isMulti ? undefined : handleSelect}
+        disabled={disabled}
+      >
+        {/* 🔹 TRIGGER */}
+        <SelectTrigger className={`shadow-none w-full h-auto ${className || "border-none"}`}>
+          {selectedOptions?.length > 0 ? (
+            <div
+              className="flex flex-wrap gap-1 pr-6"
+              onPointerDown={(e) => e.stopPropagation()}
+            >
+              {selectedOptions.map((opt) => (
+                <span
+                  key={opt.value}
+                  className="bg-gray-200 px-2 py-0.5 rounded text-xs flex items-center gap-1"
+                >
+                  {opt.label}
+                  {!disabled && (
+                    <X
+                      className="w-3 h-3 cursor-pointer"
+                      onPointerDown={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        handleSelect(opt.value);
+                      }}
+                    />
+                  )}
+                </span>
+              ))}
             </div>
+          ) : (
+            <span className="text-gray-400">{placeholder}</span>
+          )}
+        </SelectTrigger>
 
+        {/* 🔹 DROPDOWN */}
+        <SelectContent className="p-2">
+          {/* 🔍 SEARCH */}
+          <input
+            placeholder="Search..."
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
+            className="w-full mb-2 px-2 py-1 border rounded text-sm"
+          />
 
+          {/* 🔹 OPTIONS */}
+          <div className="max-h-48 overflow-auto">
+            {(loadOptions
+              ? options
+              : options?.filter((o) =>
+                  o.label?.toLowerCase().includes(search.toLowerCase())
+                )
+            )?.filter((option) => !stringSelectedValues.includes(String(option.value)))
+            ?.map((option) => {
+              const isSelected = stringSelectedValues.includes(
+                String(option.value),
+              );
 
+              return (
+                <div
+                  key={option.value}
+                  className="flex items-center gap-2 px-2 py-1.5 cursor-pointer hover:bg-gray-100 rounded"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSelect(String(option.value)); // 🔥 normalize
+                  }}
+                >
+                  {isMulti && (
+                    <input type="checkbox" checked={isSelected} readOnly />
+                  )}
+                  <span>{option.label}</span>
+                </div>
+              );
+            })}
+          </div>
 
-            {error && <p className="mt-2 text-sm text-dred">{error}</p>}
-        </div>
-    );
+          {/* ✅ APPLY BUTTON */}
+          {isMulti && (
+            <div className="mt-2 border-t pt-2">
+              <button
+                className="w-full bg-blue-600 text-white py-1.5 rounded text-sm"
+                onClick={() => setOpen(false)}
+              >
+                Apply
+              </button>
+            </div>
+          )}
+        </SelectContent>
+      </Select>
+
+      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+    </div>
+  );
 };
 
 export default CustomMultiSelect;

@@ -58,7 +58,7 @@ const App = () => {
       const res: any = await Models.auth.singup(body);
       console.log("✌️res --->", res);
       Success(res?.message);
-      router.push("/login");
+      router.push("/verify-email");
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};

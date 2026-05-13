@@ -32,7 +32,7 @@ const PropertyByType = ({ propertyTypeList = [] }) => {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between md:items-center mb-10 md:mb-14">
           <div>
-            <h2 className="section-ti">Featured Categories</h2>
+            <h2 className="section-ti">Explore Property Types</h2>
             <p className="section-cap">Lorem ipsum dolor sit amet</p>
           </div>
           {/* Nav Arrows */}
@@ -73,8 +73,8 @@ const PropertyByType = ({ propertyTypeList = [] }) => {
                   onClick={() => handleClick(item)}
                   className="bg-white rounded-2xl h-[180px] flex flex-col items-center justify-center text-center border border-gray-100 hover:shadow-lg transition duration-300 cursor-pointer"
                 >
-                  <div className="w-14 h-14 rounded-full bg-gray-50 flex items-center justify-center mb-5 border border-[#9b0f09]">
-                    <Icon size={22} className="text-dred" />
+                  <div className="w-14 h-14 rounded-2xl bg-dred flex text-white items-center justify-center mb-5 border border-[#9b0f09]">
+                    <Icon size={22} className="text-white" />
                   </div>
                   <h3 className="section-in-ti">{item.name}</h3>
                   <p>{item.properties_count} Properties</p>

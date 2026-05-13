@@ -38,7 +38,7 @@ const HowItWorks = () => {
 
   return (
     <div className="section-pad bg-white">
-      <div className="  section-wid pt-4 pb-2">
+      <div className="  section-wid py-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {cards.map((card, index) => (
             <div

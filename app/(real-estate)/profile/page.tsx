@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import ContactAgentForm from "@/components/real-estate/property-detail/ContactAgentForm.component";
-import { Failure, Success, useSetState } from "@/utils/function.utils";
+import { Dropdown, Failure, Success, useSetState } from "@/utils/function.utils";
 
 import { Input } from "@/components/ui/input";
 import CustomPhoneInput from "@/components/common-components/phoneInput";
@@ -30,6 +30,10 @@ import Utils from "@/imports/utils.import";
 import Models from "@/imports/models.import";
 import * as Yup from "yup";
 import TextArea from "@/components/common-components/textArea";
+import CustomMultiSelect from "@/components/common-components/multi-select";
+import user from "@/models/user.model";
+import { get } from "http";
+import { current } from "@reduxjs/toolkit";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -41,9 +45,11 @@ export default function ProfilePage() {
     address: "",
     isEditProfile: false,
     isChangePassword: false,
+    isPrefferedLocation:false,
     id: null,
     loading: false,
     error: null,
+    locationList : []
   });
 
   useEffect(() => {
@@ -54,9 +60,33 @@ export default function ProfilePage() {
   useEffect(() => {
     getUser();
     wishlist();
+    cityList(1)
   }, []);
 
   console.log("state.id", state.id);
+
+  const cityList = async (page, search = "") => {
+        try {
+          const body: any = {};
+          if (search) body.search = search;
+          const res: any = await Models.dropdowns.city(page, body);
+          const droprdown = Dropdown(res?.results, "name");
+    
+          setState({
+            locationList: droprdown,
+            total: res?.count,
+            page,
+            next: res.next,
+            previous: res.previous,
+            totalRecords: res.count,
+          });
+        } catch (error) {
+          console.log("error -->", error);
+        }
+      };
+
+      console.log("locationList", state.locationList);
+      
 
   const getUser = async () => {
     try {
@@ -72,6 +102,7 @@ export default function ProfilePage() {
         email: res?.email || "",
         phone: res?.phone || "",
         address: res?.address || "",
+        location: res?.preferred_locations?.map((loc) => String(loc.id)) || [],
       });
 
       console.log("user detail", res);
@@ -119,7 +150,7 @@ export default function ProfilePage() {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleProfileSubmit = async (e) => {
     try {
       e.preventDefault();
       const body = {
@@ -129,6 +160,7 @@ export default function ProfilePage() {
         phone: state.phone,
 
         address: state.address,
+        
       };
 
       console.log("body", body);
@@ -158,6 +190,127 @@ export default function ProfilePage() {
       setState({ loading: false });
     }
   };
+
+  const handlePasswordSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      const body = {
+       old_password: state.current_password,
+        new_password: state.new_password,
+        confirm_password : state.confirm_password
+      };
+
+      console.log("body", body);
+
+      await Utils.Validation.changePassword.validate(body, {
+        abortEarly: false,
+      });
+
+      const res: any = await Models.auth.change_password(body);
+
+      console.log("res", res);
+
+      Success("Password Changed");
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const validationErrors = {};
+        error.inner.forEach((err) => {
+          validationErrors[err.path] = err?.message;
+        });
+        console.log("✌️validationErrors --->", validationErrors);
+
+        setState({ error: validationErrors, loading: false });
+      } else {
+        Failure(error?.error);
+      }
+      console.log("✌️error --->", error);
+      setState({ loading: false });
+    }
+  };
+
+  const handlePrefferedLocationSubmit = async (e) => {
+
+    console.log("state.location", state.location);
+    
+    try {
+      e.preventDefault();
+      const body = {
+      
+        preferred_locations : state.location,
+      };
+
+      console.log("body", body);
+
+
+      const res: any = await Models.user.update(body, state.id);
+
+      console.log("res", res);
+      
+      setState({ isPrefferedLocation: false });
+
+      Success("Preffered Locations Updated");
+      getUser()
+     
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const validationErrors = {};
+        error.inner.forEach((err) => {
+          validationErrors[err.path] = err?.message;
+        });
+        console.log("✌️validationErrors --->", validationErrors);
+
+        setState({ error: validationErrors, loading: false });
+      } else {
+        Failure(error?.error);
+      }
+      console.log("✌️error --->", error);
+      setState({ loading: false });
+    }
+  };
+
+const handleNewsletterSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const updatedStatus = !state.user?.newsletter; // toggle true/false
+
+    const body = {
+      newsletter: updatedStatus,
+    };
+
+    const res: any = await Models.user.update(body, state.id);
+
+    console.log("res", res);
+
+    // update local state if needed
+    setState({
+    
+        newsletter: updatedStatus,
+      },
+    );
+
+    Success(
+      updatedStatus
+        ? "Subscribed to newsletter successfully"
+        : "Unsubscribed from newsletter successfully"
+    );
+    getUser()
+  } catch (error) {
+    if (error instanceof Yup.ValidationError) {
+      const validationErrors = {};
+
+      error.inner.forEach((err) => {
+        validationErrors[err.path] = err.message;
+      });
+
+      setState({ error: validationErrors, loading: false });
+    } else {
+      Failure(error?.error);
+    }
+
+    setState({ loading: false });
+  }
+};
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -200,6 +353,8 @@ export default function ProfilePage() {
               <p className="text-sm text-gray-600 mt-1">
                 {state?.properties?.length} Wishlist · 1 Active Search · Last Login: Just Now
               </p>
+
+                
             </div>
           </div>
 
@@ -238,22 +393,26 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Location</p>
+                    {/* <h3 className="text-black font-medium"> */}
                     <h3 className="text-black font-medium">
-                      Downtown Loft, West End Arts District
+                    {state.user?.preferred_locations?.length > 0 ? state.user.preferred_locations.map((l) => l.name).join("," ) : "No locations set"}
                     </h3>
                   </div>
                 </div>
                 <Button
                   variant="outline"
                   className="text-emerald-400 border-emerald-500 hover:bg-emerald-500/10 text-sm px-3 py-0 rounded-md"
+                   onClick={() => setState({ isPrefferedLocation: true })}
                 >
                   Edit
                 </Button>
               </CardContent>
             </Card>
+
+            
             
 
-            <Card className="bg-white border-none text-white rounded-xl flex-1">
+            {/* <Card className="bg-white border-none text-white rounded-xl flex-1">
               <CardContent className="flex justify-between items-center p-4 h-full">
                 <div className="flex items-start gap-3">
                   <div className="bg-emerald-500/10 p-2 rounded-md">
@@ -275,7 +434,7 @@ export default function ProfilePage() {
                   Edit
                 </Button>
               </CardContent>
-            </Card>
+            </Card> */}
 
             <Card className="bg-white border-none text-white rounded-xl flex-1">
               <CardContent className="flex items-start gap-4 p-5 h-full">
@@ -292,6 +451,42 @@ export default function ProfilePage() {
                 </div>
               </CardContent>
             </Card>
+
+            {state.user?.newsletter !== undefined && (
+  <div className="mt-3 rounded-xl border border-dashed border-gray-300 bg-white/80 p-3 text-sm text-gray-700">
+    {state.user?.newsletter ? (
+      <>
+        <p className="font-medium text-black">You're subscribed!</p>
+        <p>
+          Enjoy regular property post updates, featured listings, and exclusive alerts.
+        </p>
+
+        <Button
+          variant="outline"
+          className="mt-4 text-red-400 border-red-500 hover:bg-red-500/10 text-sm px-3 py-0 rounded-md"
+          onClick={handleNewsletterSubmit}
+        >
+          Unsubscribe
+        </Button>
+      </>
+    ) : (
+      <>
+        <p className="font-medium text-black">Subscribe to our newsletter</p>
+        <p>
+          Get the latest property listings, updates, and special offers straight to your inbox.
+        </p>
+
+        <Button
+          variant="outline"
+          className="mt-4 text-emerald-400 border-emerald-500 hover:bg-emerald-500/10 text-sm px-3 py-0 rounded-md"
+          onClick={handleNewsletterSubmit}
+        >
+          Subscribe
+        </Button>
+      </>
+    )}
+  </div>
+)}
           </div>
 
           {/* Right Column - My Activity */}
@@ -431,7 +626,7 @@ export default function ProfilePage() {
                     state.isEditProfile ? "pt-0" : ""
                   }`}
                 >
-                  <form onSubmit={handleSubmit} className="space-y-6">
+                  <form onSubmit={handleProfileSubmit} className="space-y-6">
                     <p className="text-gray-600 text-sm text-center mb-4">
                       Please fill in your profile details
                     </p>
@@ -627,7 +822,7 @@ export default function ProfilePage() {
                     state.isChangePassword ? "pt-0" : ""
                   }`}
                 >
-                  <form onSubmit={handleSubmit} className="space-y-6">
+                  <form onSubmit={handlePasswordSubmit} className="space-y-6">
                     {/* Upload Profile Image - Full Width */}
 
                     {/* Two-column grid for form fields */}
@@ -641,31 +836,107 @@ export default function ProfilePage() {
                         placeholder="Enter your current password"
                         className="border-gray-300 rounded-lg py-2 mt-0"
                         required
-                        error={state.errors?.full_name}
+                        error={state.errors?.old_password}
                       />
 
                       {/* Email */}
                       <Input
                         name="new_password"
                         title="New Password"
-                        value={state.current_password}
+                        value={state.new_password}
                         onChange={handleInputChange}
                         placeholder="Enter your new password"
                         className="border-gray-300 rounded-lg py-2"
                         required
-                        error={state.errors?.full_name}
+                        error={state.errors?.new_password}
                       />
 
                       <Input
                         name="confirm_password"
                         title="Confirm Password"
-                        value={state.current_password}
+                        value={state.confirm_password}
                         onChange={handleInputChange}
                         placeholder="Confirm your new password"
                         className="border-gray-300 rounded-lg py-2"
                         required
-                        error={state.errors?.full_name}
+                        error={state.errors?.confirm_password}
                       />
+                    </div>
+
+                    {/* Submit Button */}
+                    <Button
+                      type="submit"
+                      disabled={state.btnLoading}
+                      className="w-full bg-color2 hover:bg-red-700 text-white font-semibold py-3 text-base rounded-lg mt-4 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                      {state.btnLoading ? "Saving..." : "Submit"}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+       <AnimatePresence>
+        {state.isPrefferedLocation && (
+          <>
+            {/* Overlay */}
+            <motion.div
+              className="fixed inset-0 bg-black/50 z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setState({ isPrefferedLocation: false })}
+            />
+
+            {/* Modal Wrapper */}
+            <motion.div
+              className="fixed inset-0 flex items-center justify-center z-50 p-4 "
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+            >
+              <Card
+                className={`rounded-2xl shadow-lg border border-gray-200 max-w-md mx-auto !bg-gray ${
+                  state.isPrefferedLocation ? "w-[500px]" : "me-0"
+                }`}
+              >
+                {state.isPrefferedLocation && (
+                  <div className="w-full text-right">
+                    <button
+                      onClick={() => setState({ isPrefferedLocation: false })}
+                      className="px-5 pt-4"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
+                  </div>
+                )}
+
+                <CardContent
+                  className={`p-6 space-y-6 ${
+                    state.isPrefferedLocation ? "pt-0" : ""
+                  }`}
+                >
+                  <form onSubmit={handlePrefferedLocationSubmit} className="space-y-6">
+                    {/* Upload Profile Image - Full Width */}
+
+                    {/* Two-column grid for form fields */}
+                    <div className=" grid grid-col !gap-3">
+                      {/* Full Name */}
+                      <CustomMultiSelect
+                      className="border border-gray-200 bg-white " 
+                                   options={state.locationList}
+                                   value={state.location || []}
+                                   onChange={(value) => setState({ location: value })}
+                                   placeholder="Location "
+                                    isMulti={true}
+                                    loadOptions={({ search }) => cityList(1, search)}
+                                 />
+
+                     
                     </div>
 
                     {/* Submit Button */}

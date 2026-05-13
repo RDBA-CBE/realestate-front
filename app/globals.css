@@ -1670,16 +1670,24 @@ body {
 }
 
 .adv-wrapper {
-  background: #f7f7f7;
+  /* background: #f7f7f7; */
+  background-image: url(/assets/images/real-estate/home/home-banner1.jpg);
   font-family: "Inter", sans-serif;
   position: relative;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: bottom;
 }
 
 .adv-container{
   gap: 50px !important;
   display: grid;
- display: grid;
-grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: grid;
+  /* grid-template-columns: repeat(2, minmax(0, 1fr)); */
+  grid-template-columns: 1.7fr 1fr;
+
 }
 
 .adv-title {
@@ -1841,11 +1849,20 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-top: 100px;
 }
 
+@media (max-width: 1500px) {
+  .adv-img {
+    height: 550px;
+  }
+}
+
 
 /* ≤ 1280px */
 @media (max-width: 1280px) {
   .adv-title { font-size: 60px; }
   .adv-searchbar-full { width: 900px; }
+    .adv-img {
+    height: auto !important;
+  }
 }
 
 /* ≤ 1100px */
@@ -1981,7 +1998,7 @@ grid-template-columns: repeat(2, minmax(0, 1fr));
 .exp-img {
   width: 62px;
   height: 62px;
-  border-radius: 50%;
+  border-radius: 20%;
   object-fit: cover;
 }
 

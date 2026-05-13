@@ -39,7 +39,8 @@ interface PropertyImage {
 interface Property {
   id: string;
   title: string;
-  location: string;
+  location: any;
+  area:any;
   price: number;
   listing_type: 'rent' | 'sale' | 'lease';
   bedrooms: number;
@@ -47,9 +48,11 @@ interface Property {
   squareFeet: number;
   primary_image: string;
   featured?: boolean;
+  built_up_area:any;
   // total_area: string;
   state: string;
   city: string;
+  name:string,
   country: string;
   is_compare: string;
   user_wishlists: boolean;
@@ -464,8 +467,8 @@ export function PropertyCard({
               <div className='flex items-center text-gray-600 mb-4'>
                 <MapPin className='h-5 w-5 mr-1 flex-shrink-0 text-dred' />
                 <span className='text-md line-clamp-1'>{`${capitalizeFLetter(
-                  property.city
-                )}, ${capitalizeFLetter(property.state)}`}</span>
+                  property.area?.name
+                )}, ${capitalizeFLetter(property.location?.name)}`}</span>
               </div>
 
               <div className='flex items-center gap-4 text-gray-500 mb-2 flex-wrap text-md'>
@@ -473,13 +476,13 @@ export function PropertyCard({
                   <Bed className='h-5 w-5 text-dred' />
                   <span>{property.bedrooms} bed</span>
                 </div>
-                <div className='flex items-center space-x-1'>
+                {/* <div className='flex items-center space-x-1'>
                   <Bath className='h-5 w-5 text-dred' />
                   <span>{property.bathrooms} bath</span>
-                </div>
+                </div> */}
                 <div className='flex items-center space-x-1'>
                   <Square className='h-5 w-5 text-dred' />
-                  <span>{property?.total_area} sqft</span>
+                  <span>{property?.built_up_area} sqft</span>
                 </div>
               </div>
             </div>
@@ -629,8 +632,8 @@ export function PropertyCard({
               <div className='flex items-center text-gray-600 mb-4'>
                 <MapPin className='h-5 w-5 mr-1 flex-shrink-0 text-dred' />
                 <span className='text-md line-clamp-1'>{`${capitalizeFLetter(
-                  property.city
-                )}, ${capitalizeFLetter(property.state)}`}</span>
+                  property?.area?.name
+                )}, ${capitalizeFLetter(property?.location?.name)}`}</span>
               </div>
 
               {/* Enhanced Sale Property Display */}
@@ -771,7 +774,7 @@ export function PropertyCard({
                 </div>
                 <div className='flex items-center space-x-1'>
                   <Square className='h-5 w-5 text-dred' />
-                  <span>{property.total_area} sqft</span>
+                  <span>{property.built_up_area} sqft</span>
                 </div>
               </div>
 
