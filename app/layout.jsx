@@ -45,7 +45,7 @@ export default function RootLayout({ children }) {
 
               <main className="w-full">{children}</main>
             </div>
-            <PropertyFinderChat />
+            {/* <PropertyFinderChat /> */}
             <Toaster position="top-center" />
           </Suspense>
         </body>

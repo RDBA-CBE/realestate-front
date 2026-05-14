@@ -1,11 +1,26 @@
 import instance from "@/utils/axios.utils";
 
 const chat = {
-  getHistory: (params?: { page?: number; page_size?: number }) =>
-    instance().get("chat/history/", { params }),
+  chats: (body: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `properties/chat-flow/`;
+      instance()
+        .post(url, body)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response?.data);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+  
 
-  sendMessage: (data: { message: string }) =>
-    instance().post("chat/send/", data),
 };
 
 export default chat;
