@@ -30,12 +30,12 @@ const properties = {
         url += `&search=${encodeURIComponent(body?.search)}`;
       }
 
-      if (body?.minPrice) {
-        url += `&minimum_price=${encodeURIComponent(body?.minPrice)}`;
+      if (body?.min_price) {
+        url += `&min_price=${encodeURIComponent(body?.min_price)}`;
       }
 
-      if (body?.maxPrice) {
-        url += `&maximum_price=${encodeURIComponent(body?.maxPrice)}`;
+      if (body?.max_price) {
+        url += `&max_price=${encodeURIComponent(body?.max_price)}`;
       }
 
       if (body?.bedrooms) {
@@ -122,8 +122,8 @@ const properties = {
       if (body?.property_type) params.push(`property_type=${encodeURIComponent(body.property_type)}`);
       if (body?.furnishing) params.push(`furnishing=${encodeURIComponent(body.furnishing)}`);
       if (body?.search) params.push(`search=${encodeURIComponent(body.search)}`);
-      if (body?.minPrice) params.push(`minimum_price=${encodeURIComponent(body.minPrice)}`);
-      if (body?.maxPrice) params.push(`maximum_price=${encodeURIComponent(body.maxPrice)}`);
+      if (body?.minimum_price) params.push(`minimum_price=${encodeURIComponent(body.minimum_price)}`);
+      if (body?.maximum_price) params.push(`maximum_price=${encodeURIComponent(body.maximum_price)}`);
       if (body?.bedrooms) params.push(`bedrooms=${encodeURIComponent(body.bedrooms)}`);
       if (body?.bathrooms) params.push(`bathrooms=${encodeURIComponent(body.bathrooms)}`);
       if (body?.location) params.push(`location=${encodeURIComponent(body.location)}`);

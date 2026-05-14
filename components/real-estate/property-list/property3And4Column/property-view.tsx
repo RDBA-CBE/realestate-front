@@ -19,10 +19,11 @@ import {
   List,
   SlidersHorizontal,
   MapPinHouseIcon,
+  ChevronDown,
 } from "lucide-react";
 import FilterDropdown from "../../FilterDropdown.component";
 import Modal from "@/components/common-components/modal";
-import { useSetState } from "@/utils/function.utils";
+import { getPriceLabel, useSetState } from "@/utils/function.utils";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -40,6 +41,7 @@ import {
 } from "@/components/ui/sheet";
 import { SidebarContent } from "../../SidebarContent.components";
 import DeveloperCard from "../../developerProfile.component";
+import { priceOptions, sqftOptions } from "@/utils/constant.utils";
 
 export function PropertyView(props: any) {
   const {
@@ -99,8 +101,10 @@ export function PropertyView(props: any) {
     yearBuiltMax: "",
     view: "grid",
     sort: null,
-    prefferedLocation: false
+    prefferedLocation: false,
   });
+
+  console.log("state", state);
 
   const initialLoadRef = useRef(false);
   const filterTimeoutRef = useRef(null);
@@ -125,7 +129,7 @@ export function PropertyView(props: any) {
 
       if (node) observer.current.observe(node);
     },
-    [isLoadingMore, handNext, loadMore]
+    [isLoadingMore, handNext, loadMore],
   );
 
   useEffect(() => {
@@ -133,8 +137,15 @@ export function PropertyView(props: any) {
     if (initialSearch) setState({ search: initialSearch });
     if (initialListingStatus) setState({ listingStatus: initialListingStatus });
     if (initialLocation?.length > 0) setState({ location: initialLocation });
-    if (initialPropertyType?.length > 0) setState({ propertyType: initialPropertyType });
-  }, [propertyTypeFilter, initialSearch, initialListingStatus, initialLocation, initialPropertyType]);
+    if (initialPropertyType?.length > 0)
+      setState({ propertyType: initialPropertyType });
+  }, [
+    propertyTypeFilter,
+    initialSearch,
+    initialListingStatus,
+    initialLocation,
+    initialPropertyType,
+  ]);
 
   useEffect(() => {
     if (minPrice > 0 || maxPrice > 0) {
@@ -146,8 +157,8 @@ export function PropertyView(props: any) {
         minPrice,
         maxPrice,
         priceRange: [minPrice, maxPrice],
-        priceMinInput: formatINR(minPrice),
-        priceMaxInput: formatINR(maxPrice),
+        // priceMinInput: formatINR(minPrice),
+        // priceMaxInput: formatINR(maxPrice),
         priceMinError: "",
         priceMaxError: "",
       });
@@ -224,7 +235,9 @@ export function PropertyView(props: any) {
       yearBuiltMin: debouncedYearBuiltMin,
       yearBuiltMax: debouncedYearBuiltMax,
       sort: state.sort,
-      prefferedLocation: state.prefferedLocation
+      prefferedLocation: state.prefferedLocation,
+      priceMinInput: state.priceMinInput,
+      priceMaxInput: state.priceMaxInput,
     };
 
     // Check if filters actually changed
@@ -264,6 +277,8 @@ export function PropertyView(props: any) {
     debouncedYearBuiltMax,
     state.sort,
     state.prefferedLocation,
+    state.priceMinInput,
+    state.priceMaxInput,
 
     debouncedPriceRange,
     debouncedMinPrice,
@@ -271,6 +286,7 @@ export function PropertyView(props: any) {
   ]);
 
   const handleChange = (name, value) => {
+    console.log("name", name, "value", value);
     setState({ [name]: value });
   };
 
@@ -323,8 +339,12 @@ export function PropertyView(props: any) {
     const floor = priceFloorRef.current;
     const ceiling = priceCeilingRef.current;
 
-    const newMin = state.priceMinInput ? parseINR(state.priceMinInput) : (state.priceRange?.[0] ?? floor);
-    const newMax = state.priceMaxInput ? parseINR(state.priceMaxInput) : (state.priceRange?.[1] ?? ceiling);
+    const newMin = state.priceMinInput
+      ? parseINR(state.priceMinInput)
+      : (state.priceRange?.[0] ?? floor);
+    const newMax = state.priceMaxInput
+      ? parseINR(state.priceMaxInput)
+      : (state.priceRange?.[1] ?? ceiling);
 
     if (Number.isNaN(newMin) || newMin < 0) {
       setState({ priceMinError: "Enter a valid minimum price" });
@@ -342,27 +362,42 @@ export function PropertyView(props: any) {
       return;
     }
     if (floor > 0 && newMin > ceiling) {
-      setState({ priceMinError: `No properties available above ₹${formatINR(ceiling)}`, priceMaxError: "" });
+      setState({
+        priceMinError: `No properties available above ₹${formatINR(ceiling)}`,
+        priceMaxError: "",
+      });
       return;
     }
     if (ceiling > 0 && newMax < floor) {
-      setState({ priceMaxError: `No properties available below ₹${formatINR(floor)}`, priceMinError: "" });
+      setState({
+        priceMaxError: `No properties available below ₹${formatINR(floor)}`,
+        priceMinError: "",
+      });
       return;
     }
 
     const updated = [newMin, newMax];
     setState({
       priceRange: updated,
-      priceMinInput: formatINR(newMin),
-      priceMaxInput: formatINR(newMax),
+      // priceMinInput: formatINR(newMin),
+      // priceMaxInput: formatINR(newMax),
       priceMinError: "",
       priceMaxError: "",
     });
     handleChange("priceRange", updated);
   };
 
-  console.log("listingTypeList", listingTypeList);
+ 
+
   
+
+  const maxPriceOptions = state.priceMinInput
+    ? priceOptions.filter((item) => item.value >= state.priceMinInput)
+    : priceOptions;
+
+  const maxSqftOptions = state.sqftMin
+    ? sqftOptions.filter((item) => item.value >= state.sqftMin)
+    : sqftOptions;
 
   return (
     <motion.div
@@ -396,7 +431,10 @@ export function PropertyView(props: any) {
                 Listing Status
               </div>
               <div className="space-y-2">
-                {([{ label: "All", value: "All" }, ...( listingTypeList || [])]).map((option) => (
+                {[
+                  { label: "All", value: "All" },
+                  ...(listingTypeList || []),
+                ].map((option) => (
                   <label
                     key={option.value}
                     className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
@@ -405,182 +443,405 @@ export function PropertyView(props: any) {
                       type="radio"
                       name="listingStatus"
                       checked={state.listingStatus === option.label}
-                      onChange={() => handleChange("listingStatus", option.label)}
+                      onChange={() =>
+                        handleChange("listingStatus", option.label)
+                      }
                     />
                     {option.label}
                   </label>
                 ))}
               </div>
             </div>
-
-            <div>
-              <div className="mb-2 font-semibold text-gray-900">
-                Property Type
+            {categoryList.length > 0 && (
+              <div>
+                <div className="mb-2 font-semibold text-gray-900">
+                  Property Type
+                </div>
+                <div className="space-y-2">
+                  {categoryList?.map((option) => (
+                    <label
+                      key={option?.value}
+                      className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        className="cursor-pointer"
+                        checked={state.propertyType?.some(
+                          (t) => t.value === option.value,
+                        )}
+                        onChange={(e) => {
+                          const updated = e.target.checked
+                            ? [...state.propertyType, option]
+                            : state.propertyType.filter(
+                                (t) => t.value !== option.value,
+                              );
+                          handleChange("propertyType", updated);
+                        }}
+                      />
+                      <span>{option?.label}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
-              <div className="space-y-2">
-                {categoryList?.map((option) => (
-                  <label
-                    key={option?.value}
-                    className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
+            )}
+            {locationList.length > 0 && (
+              <div>
+                <div className="mb-2 font-semibold text-gray-900">Location</div>
+                <div className="space-y-2">
+                  {(locationList || []).map((option) => (
+                    <label
+                      key={option.value}
+                      className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        className="cursor-pointer"
+                        checked={state.location.some(
+                          (t) => t.value === option.value,
+                        )}
+                        onChange={(e) =>
+                          handleChange(
+                            "location",
+                            e.target.checked
+                              ? [...state.location, option]
+                              : state.location.filter(
+                                  (t) => t.value !== option.value,
+                                ),
+                          )
+                        }
+                      />
+                      <span>{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+            {areaList.length > 0 && (
+              <div>
+                <div className="mb-2 font-semibold text-gray-900">Area</div>
+                <div className="space-y-2">
+                  {(areaList || []).map((option) => (
+                    <label
+                      key={option.value}
+                      className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        className="cursor-pointer"
+                        checked={state.area.some(
+                          (t) => t.value === option.value,
+                        )}
+                        onChange={(e) =>
+                          handleChange(
+                            "area",
+                            e.target.checked
+                              ? [...state.area, option]
+                              : state.area.filter(
+                                  (t) => t.value !== option.value,
+                                ),
+                          )
+                        }
+                      />
+                      <span>{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+            {developerList.length > 0 && (
+              <div>
+                <div className="mb-2 font-semibold text-gray-900">
+                  Developer
+                </div>
+                <div className="space-y-2">
+                  {(developerList || []).map((option) => (
+                    <label
+                      key={option.value}
+                      className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        className="cursor-pointer"
+                        checked={state.developer.some(
+                          (t) => t.value === option.value,
+                        )}
+                        onChange={(e) =>
+                          handleChange(
+                            "developer",
+                            e.target.checked
+                              ? [...state.developer, option]
+                              : state.developer.filter(
+                                  (t) => t.value !== option.value,
+                                ),
+                          )
+                        }
+                      />
+                      <span>{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+            {projectList.length > 0 && (
+              <div>
+                <div className="mb-2 font-semibold text-gray-900">Project</div>
+                <div className="space-y-2">
+                  {(projectList || []).map((option) => (
+                    <label
+                      key={option.value}
+                      className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        className="cursor-pointer"
+                        checked={state.project.some(
+                          (t) => t.value === option.value,
+                        )}
+                        onChange={(e) =>
+                          handleChange(
+                            "project",
+                            e.target.checked
+                              ? [...state.project, option]
+                              : state.project.filter(
+                                  (t) => t.value !== option.value,
+                                ),
+                          )
+                        }
+                      />
+                      <span>{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div>
+              {/* <PriceRangeSlider
+                  min={state.minPrice || 0}
+                  max={state.maxPrice || 50000000}
+                  value={state.priceRange}
+                  onChange={(val) => {
+                    setState({ priceRange: val });
+                    handleChange("minPrice", val[0]);
+                    handleChange("maxPrice", val[1]);
+                  }}
+                /> */}
+              <div className=" font-semibold text-gray-900">Budget</div>
+
+              <div className="flex gap-4 mt-4">
+                {/* MIN */}
+                <div className="relative w-full">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setState({
+                        openPriceDropdown:
+                          state.openPriceDropdown === "min" ? null : "min",
+                      })
+                    }
+                    className="
+        w-full px-5 py-2 rounded-full
+        border border-gray-300 bg-white
+        flex items-center justify-between
+        text-gray-700
+      "
                   >
-                    <input
-                      type="checkbox"
-                      className="cursor-pointer"
-                      checked={state.propertyType?.some(
-                        (t) => t.value === option.value
-                      )}
-                      onChange={(e) => {
-                        const updated = e.target.checked
-                          ? [...state.propertyType, option]
-                          : state.propertyType.filter((t) => t.value !== option.value);
-                        handleChange("propertyType", updated);
-                      }}
-                    />
-                    <span>{option?.label}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-2 font-semibold text-gray-900">Location</div>
-              <div className="space-y-2">
-                {(locationList || []).map((option) => (
-                  <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                    <input type="checkbox" className="cursor-pointer"
-                      checked={state.location.some((t) => t.value === option.value)}
-                      onChange={(e) => handleChange("location", e.target.checked ? [...state.location, option] : state.location.filter((t) => t.value !== option.value))}
-                    />
-                    <span>{option.label}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-2 font-semibold text-gray-900">Area</div>
-              <div className="space-y-2">
-                {(areaList || []).map((option) => (
-                  <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                    <input type="checkbox" className="cursor-pointer"
-                      checked={state.area.some((t) => t.value === option.value)}
-                      onChange={(e) => handleChange("area", e.target.checked ? [...state.area, option] : state.area.filter((t) => t.value !== option.value))}
-                    />
-                    <span>{option.label}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            
-
-            <div>
-              <div className="mb-2 font-semibold text-gray-900">Developer</div>
-              <div className="space-y-2">
-                {(developerList || []).map((option) => (
-                  <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                    <input type="checkbox" className="cursor-pointer"
-                      checked={state.developer.some((t) => t.value === option.value)}
-                      onChange={(e) => handleChange("developer", e.target.checked ? [...state.developer, option] : state.developer.filter((t) => t.value !== option.value))}
-                    />
-                    <span>{option.label}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-
-            {projectList.length > 0 &&  
-            <div>
-              <div className="mb-2 font-semibold text-gray-900">Project</div>
-              <div className="space-y-2">
-                {(projectList || []).map((option) => (
-                  <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                    <input type="checkbox" className="cursor-pointer"
-                      checked={state.project.some((t) => t.value === option.value)}
-                      onChange={(e) => handleChange("project", e.target.checked ? [...state.project, option] : state.project.filter((t) => t.value !== option.value))}
-                    />
-                    <span>{option.label}</span>
-                  </label>
-                ))}
-              </div>
-            </div>}
-
-            <div>
-              <PriceRangeSlider
-                min={state.minPrice || 0}
-                max={state.maxPrice || 50000000}
-                value={state.priceRange}
-                onChange={(val) => {
-                  setState({ priceRange: val });
-                  handleChange("minPrice", val[0]);
-                  handleChange("maxPrice", val[1]);
-                }}
-              />
-
-              <div className="flex gap-3 mt-4 items-start">
-                {/* Min Input */}
-                <div className="w-full">
-                  <div className="relative">
-                    <span className="absolute left-3 top-2 text-gray-600">₹</span>
-                    <Input
-                      type="text"
-                      className={`pl-6 pr-0 bg-white ${state.priceMinError ? 'border-red-400' : ''}`}
-                      placeholder="Min."
-                      value={state.priceMinInput}
-                      onChange={(e) => setState({ priceMinInput: e.target.value, priceMinError: "" })}
-                    />
-                  </div>
-                  {state.priceMinError && (
-                    <p className="text-red-500 text-xs mt-1">{state.priceMinError}</p>
-                  )}
-                </div>
-
-                <span className="flex items-center mt-2">-</span>
-
-                {/* Max Input */}
-                <div className="w-full">
-                  <div className="relative">
-                    <span className="absolute left-3 top-2 text-gray-600">₹</span>
-                    <Input
-                      type="text"
-                      className={`pl-6 pr-0 bg-white ${state.priceMaxError ? 'border-red-400' : ''}`}
-                      placeholder="Max."
-                      value={state.priceMaxInput}
-                      onChange={(e) => setState({ priceMaxInput: e.target.value, priceMaxError: "" })}
-                    />
-                  </div>
-                  {state.priceMaxError && (
-                    <p className="text-red-500 text-xs mt-1">{state.priceMaxError}</p>
-                  )}
-                </div>
-
-                {/* Apply Button */}
-                <button
-                  onClick={applyPriceInputs}
-                  className="mt-1 w-8 h-9 flex items-center justify-center rounded-md bg-[#9b0f09] text-white hover:bg-red-800 transition-colors shrink-0"
-                >
-                  ›
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-2 font-semibold text-gray-900">Unit Configuration</div>
-              <div className="flex flex-wrap gap-2">
-                {(floorPlanList || []).map((option) => (
-                  <label key={option.value}>
-                    <input
-                      type="checkbox"
-                      checked={state.floorPlan.some((t) => t.value === option.value)}
-                      onChange={(e) => handleChange("floorPlan", e.target.checked ? [...state.floorPlan, option] : state.floorPlan.filter((t) => t.value !== option.value))}
-                      className="peer hidden"
-                    />
-                    <span className="flex items-center justify-center px-3 py-1.5 border rounded-md text-sm text-gray-700 cursor-pointer hover:border-red-400 peer-checked:border-dred peer-checked:bg-dred/10">
-                      {option.label}
+                    <span>
+                      {state.priceMinInput
+                        ? getPriceLabel(state.priceMinInput, priceOptions)
+                        : "No min"}
                     </span>
-                  </label>
-                ))}
+
+                    <ChevronDown
+                      size={18}
+                      className={`transition-transform ${
+                        state.openPriceDropdown === "min" ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {state.openPriceDropdown === "min" && (
+                    <div className="absolute z-50 mt-2 w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto">
+                      <button
+                        className="w-full px-5 py-2 text-left hover:bg-gray-100"
+                        onClick={() =>
+                          setState({
+                            priceMinInput: "",
+                            priceMaxInput: "",
+                            openPriceDropdown: null,
+                          })
+                        }
+                      >
+                        No min
+                      </button>
+
+                      {priceOptions.map((item) => (
+                        <button
+                          key={item.value}
+                          className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                          onClick={() =>
+                            setState({
+                              priceMinInput: item.value,
+                              priceMaxInput: "",
+                              openPriceDropdown: null,
+                            })
+                          }
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* MAX */}
+                <div className="relative w-full">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setState({
+                        openPriceDropdown:
+                          state.openPriceDropdown === "max" ? null : "max",
+                      })
+                    }
+                    className="
+        w-full px-5 py-2 rounded-full
+        border border-gray-300 bg-white
+        flex items-center justify-between
+        text-gray-700
+      "
+                  >
+                    <span>
+                      {state.priceMaxInput
+                        ? getPriceLabel(state.priceMaxInput, maxPriceOptions)
+                        : "No max"}
+                    </span>
+
+                    <ChevronDown
+                      size={18}
+                      className={`transition-transform ${
+                        state.openPriceDropdown === "max" ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {state.openPriceDropdown === "max" && (
+                    <div className="absolute z-50 mt-2 w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto">
+                      <button
+                        className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                        onClick={() =>
+                          setState({
+                            priceMaxInput: "",
+                            openPriceDropdown: null,
+                          })
+                        }
+                      >
+                        No max
+                      </button>
+
+                      {maxPriceOptions.map((item) => (
+                        <button
+                          key={item.value}
+                          className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                          onClick={() =>
+                            setState({
+                              priceMaxInput: item.value,
+                              openPriceDropdown: null,
+                            })
+                          }
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            {floorPlanList.length > 0 && (
+              <div>
+                <div className="mb-2 font-semibold text-gray-900">
+                  Unit Configuration
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(floorPlanList || []).map((option) => (
+                    <label key={option.value}>
+                      <input
+                        type="checkbox"
+                        checked={state.floorPlan.some(
+                          (t) => t.value === option.value,
+                        )}
+                        onChange={(e) =>
+                          handleChange(
+                            "floorPlan",
+                            e.target.checked
+                              ? [...state.floorPlan, option]
+                              : state.floorPlan.filter(
+                                  (t) => t.value !== option.value,
+                                ),
+                          )
+                        }
+                        className="peer hidden"
+                      />
+
+                      <span
+                        className="
+              flex items-center justify-center
+              px-4 py-2 rounded-lg border
+              text-sm font-medium cursor-pointer
+              transition-all duration-200
+              border-gray-300 text-gray-700 bg-white
+              peer-checked:border-red-600
+              peer-checked:text-red-500
+            "
+                      >
+                        {option.label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div>
+              <div className="mb-2 font-semibold text-gray-900">Bathrooms</div>
+
+              <div className="flex flex-wrap gap-2">
+                {["Any", "2+", "3+", "4+", "5+"].map((option) => {
+                  const isSelected =
+                    option === "Any"
+                      ? state.bathrooms === ""
+                      : state.bathrooms === option;
+
+                  return (
+                    <button
+                      key={option}
+                      type="button"
+                      onClick={() => {
+                        if (option === "Any") {
+                          handleChange("bathrooms", "");
+                        } else {
+                          handleChange(
+                            "bathrooms",
+                            state.bathrooms === option ? "" : option,
+                          );
+                        }
+                      }}
+                      className={`
+            flex items-center justify-center
+            px-4 py-2 rounded-md border
+            text-sm font-medium cursor-pointer
+            transition-all duration-200
+
+            ${
+              isSelected
+                ? "border-red-500 text-red-500 "
+                : "border-gray-300 text-gray-700 bg-white hover:border-red-400 hover:text-red-500"
+            }
+          `}
+                    >
+                      {option}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -616,10 +877,13 @@ export function PropertyView(props: any) {
                       type="checkbox"
                       className="cursor-pointer"
                       checked={state.furnishing.some(
-                        (t) => t.value === option.value
+                        (t) => t.value === option.value,
                       )}
                       onChange={(e) => {
-                        handleChange("furnishing", e.target.checked ? [option] : []);
+                        handleChange(
+                          "furnishing",
+                          e.target.checked ? [option] : [],
+                        );
                       }}
                     />
                     <span>{option?.label}</span>
@@ -630,9 +894,153 @@ export function PropertyView(props: any) {
 
             <div>
               <div className="mb-2 font-semibold text-gray-900">
-                Square Feet
+                Area (sqft)
               </div>
-              <div className="flex gap-3">
+
+              <div className="flex gap-4 mt-4">
+                {/* Min Dropdown */}
+                <div className="relative w-full">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setState({
+                        openDropdown:
+                          state.openDropdown === "min" ? null : "min",
+                      })
+                    }
+                    className="
+        w-full px-5 py-2 rounded-full
+        border border-gray-300 bg-white
+        flex items-center justify-between
+        text-gray-700
+      "
+                  >
+                    <span>{state.sqftMin || "No min"}</span>
+
+                    <ChevronDown
+                      size={18}
+                      className={`transition-transform ${
+                        state.openDropdown === "min" ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {state.openDropdown === "min" && (
+                    <div
+                    className="
+                      absolute z-50 bottom-full mb-2 w-full
+                      bg-white border border-gray-200
+                      rounded-2xl shadow-lg
+                      max-h-72 overflow-y-auto
+                    "
+                  >
+                      <button
+                        className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                        onClick={() => {
+                          setState({
+                            sqftMin: "",
+                            sqftMax: "",
+                          });
+                          setState({
+                            openDropdown: null,
+                          });
+                        }}
+                      >
+                        No min
+                      </button>
+
+                      {sqftOptions.map((item) => (
+                        <button
+                          key={item.value}
+                          className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                          onClick={() => {
+                            setState({
+                              sqftMin: item.value,
+                              sqftMax: "",
+                            });
+                            setState({
+                              openDropdown: null,
+                            });
+                          }}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Max Dropdown */}
+                <div className="relative w-full">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setState({
+                        openDropdown:
+                          state.openDropdown === "max" ? null : "max",
+                      })
+                    }
+                    className="
+        w-full px-5 py-2 rounded-full
+        border border-gray-300 bg-white
+        flex items-center justify-between
+        text-gray-700
+      "
+                  >
+                    <span>{state.sqftMax || "No max"}</span>
+
+                    <ChevronDown
+                      size={18}
+                      className={`transition-transform ${
+                        state.openDropdown === "max" ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {state.openDropdown === "max" && (
+                  <div
+                  className="
+                    absolute z-50 bottom-full mb-2 w-full
+                    bg-white border border-gray-200
+                    rounded-2xl shadow-lg
+                    max-h-72 overflow-y-auto
+                  "
+                >
+                      <button
+                        className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                        onClick={() => {
+                          setState({
+                            sqftMax: "",
+                          });
+                          setState({
+                            openDropdown: null,
+                          });
+                        }}
+                      >
+                        No max
+                      </button>
+
+                      {maxSqftOptions.map((item) => (
+                        <button
+                          key={item.value}
+                          className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                          onClick={() => {
+                            setState({
+                              sqftMax: item.value,
+                            });
+                            setState({
+                              openDropdown: null,
+                            });
+                          }}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+              {/* <div className="flex gap-3">
                 <Input
                   className="bg-white"
                   type="number"
@@ -648,7 +1056,7 @@ export function PropertyView(props: any) {
                   value={state.sqftMax}
                   onChange={(e) => handleChange("sqftMax", e.target.value)}
                 />
-              </div>
+              </div> */}
             </div>
 
             {/* <div>
@@ -764,21 +1172,21 @@ export function PropertyView(props: any) {
 
               <div className="flex items-center gap-4 justify-between md:justify-normal  w-auto">
                 <Button
-                    variant="outline"
-                    className="px-4 py-2 h-9 rounded-lg text-sm font-medium text-gray-600 hover:text-dred 
+                  variant="outline"
+                  className="px-4 py-2 h-9 rounded-lg text-sm font-medium text-gray-600 hover:text-dred 
                       border-none 
                       md:border 
                       md:border-gray-300 
                       hover:border-red-200 bg-transparent md:bg-white px-0 md:px-3 shadow-none md:shadow-sm"
-                      onClick={()=>{
-                        setState({
-                          prefferedLocation: !state.prefferedLocation
-                        })
-                      }}
-                  >
-                    <MapPinHouseIcon />
-                    Preffered Location
-                  </Button>
+                  onClick={() => {
+                    setState({
+                      prefferedLocation: !state.prefferedLocation,
+                    });
+                  }}
+                >
+                  <MapPinHouseIcon />
+                  Preffered Location
+                </Button>
 
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600 whitespace-nowrap">

@@ -493,3 +493,9 @@ export const formatPriceRange = (
 
   return `${formattedMin} - ${formattedMax}`;
 };
+
+
+export  const getPriceLabel = (value, options) => {
+  const found = options.find((item) => item.value === value);
+  return found ? found.label : "No min";
+};

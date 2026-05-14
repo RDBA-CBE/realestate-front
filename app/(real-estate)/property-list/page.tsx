@@ -295,12 +295,14 @@ export default function Page() {
       bodyData.search = data?.search;
     }
 
-    if (data?.priceRange?.length > 0) {
-      bodyData.minPrice = data?.priceRange[0];
+    if (data?.priceMinInput) {
+      bodyData.min_price = data?.priceMinInput;
+      bodyData.minimum_price = data?.priceMinInput;
     }
 
-    if (data?.priceRange?.length >= 1) {
-      bodyData.maxPrice = data?.priceRange[1];
+    if (data?.priceMaxInput) {
+      bodyData.max_price = data?.priceMaxInput;
+      bodyData.maximum_price = data?.priceMaxInput;
     }
 
     if (data?.bedrooms) {
