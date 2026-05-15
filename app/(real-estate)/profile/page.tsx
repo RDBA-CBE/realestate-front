@@ -436,7 +436,7 @@ const handleNewsletterSubmit = async (e) => {
               </CardContent>
             </Card> */}
 
-            <Card className="bg-white border-none text-white rounded-xl flex-1">
+            {/* <Card className="bg-white border-none text-white rounded-xl flex-1">
               <CardContent className="flex items-start gap-4 p-5 h-full">
                 <div className="bg-emerald-500/10 p-3 rounded-md">
                   <Search size={22} className="text-emerald-400" />
@@ -450,7 +450,7 @@ const handleNewsletterSubmit = async (e) => {
                   </p>
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
             {state.user?.newsletter !== undefined && (
   <div className="mt-3 rounded-xl border border-dashed border-gray-300 bg-white/80 p-3 text-sm text-gray-700">
@@ -560,7 +560,7 @@ const handleNewsletterSubmit = async (e) => {
               </Button>
             </div>
 
-            <Card className="bg-white border-none text-white rounded-xl flex-1">
+            {/* <Card className="bg-white border-none text-white rounded-xl flex-1">
               <CardContent className="flex items-start justify-between gap-4 p-5 h-full">
                 <div className="flex gap-4">
                   <div className="bg-emerald-500/10 p-3 rounded-md">
@@ -580,7 +580,7 @@ const handleNewsletterSubmit = async (e) => {
                   Find one
                 </Button>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
         </div>
       </div>

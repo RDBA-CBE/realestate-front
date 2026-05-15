@@ -1,5 +1,5 @@
 import CustomSelect from "@/components/common-components/dropdown";
-import { MapPin, Search } from "lucide-react";
+import { Home, MapPin, Search } from "lucide-react";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -48,7 +48,7 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
             Easy way to find dream <br /> perfect property now
           </h1>
           <p className="adv-subtitle">
-            With us, your trip is filled with amazing experiences.
+          With us, your trip is filled with amazing, memorable, and truly unforgettable experiences.
           </p>
           <button className="adv-btn lg:mb-12"  > <a href="/property-list">Find Your Home</a></button>
 
@@ -67,10 +67,30 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
 
           {/* Search Bar */}
           <div className="adv-searchbar flex items-center justify-between gap-2 mt-6">
-            <div className="flex  flex-1 gap-3 px-4">
-              <MapPin className="text-[#383838] w-4 h-4 md:w-5 md:h-5 mt-1 md:mt-0 shrink-0" />
+             <div className="flex  flex-1 gap-3 px-4">
+              <Search className="text-[#383838] w-4 h-4 md:w-5 md:h-5  md:mt-0.5 shrink-0" />
               <div>
-                <p className="adv-field-label">Location</p>
+                <input
+                  type="text"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                  placeholder={`Search ${
+                    activeTab === "All"
+                      ? "properties"
+                      : activeTab === "Sale"
+                        ? "properties for sale"
+                        : "properties for lease"
+                  }...`}
+                  className="adv-field-input"
+                />
+              </div>
+            </div>
+
+            <div className="flex  flex-1 gap-3 px-4">
+              <MapPin className="text-[#383838] w-4 h-4 md:w-5 md:h-5  md:mt-1.5 shrink-0" />
+              <div>
+                {/* <p className="adv-field-label">Location</p> */}
                 <CustomSelect
                   options={cityOptions}
                   value={selectedCity}
@@ -84,9 +104,9 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
             <div className="adv-divider"></div>
 
             <div className="flex flex-1 gap-3 px-4">
-              <MapPin className="text-[#383838] w-4 h-4 md:w-5 md:h-5 mt-1 md:mt-0 shrink-0" />
+              <Home className="text-[#383838] w-4 h-4 md:w-5 md:h-5 md:mt-1.5 shrink-0" />
               <div>
-                <p className="adv-field-label">Property Type</p>
+                {/* <p className="adv-field-label">Property Type</p> */}
                 <CustomSelect
                   options={propertyTypeOptions}
                   value={selectedType}
@@ -104,26 +124,7 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
 
             <div className="adv-divider"></div>
 
-            <div className="flex  flex-1 gap-3 px-4">
-              <Search className="text-[#383838] w-4 h-4 md:w-5 md:h-5 mt-1 md:mt-0 shrink-0" />
-              <div>
-                <p className="adv-field-label">Property Name</p>
-                <input
-                  type="text"
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  placeholder={`Search ${
-                    activeTab === "All"
-                      ? "properties"
-                      : activeTab === "Sale"
-                        ? "properties for sale"
-                        : "properties for lease"
-                  }...`}
-                  className="adv-field-input"
-                />
-              </div>
-            </div>
+           
 
             <button className="adv-search-btn" onClick={handleSearch}>
               <Search className="w-5 h-5 search-ico" />

@@ -1,7 +1,7 @@
 import { PropertyCard } from "./property-card";
 import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   Select,
   SelectContent,
@@ -42,6 +42,9 @@ import {
 import { SidebarContent } from "../../SidebarContent.components";
 import DeveloperCard from "../../developerProfile.component";
 import { priceOptions, sqftOptions } from "@/utils/constant.utils";
+import ContactAgentForm from "../../property-detail/ContactAgentForm.component";
+import { ActiveFilters } from "./ActiveFilters.component";
+import { useRouter } from "next/navigation";
 
 export function PropertyView(props: any) {
   const {
@@ -73,6 +76,8 @@ export function PropertyView(props: any) {
     onFilterChange,
   } = props;
 
+  const router = useRouter();
+
   const [state, setState] = useSetState({
     isOpen: false,
     search: "",
@@ -102,6 +107,9 @@ export function PropertyView(props: any) {
     view: "grid",
     sort: null,
     prefferedLocation: false,
+    userLoggedIn: false,
+    isMobileFormOpen: false,
+    selectedProperty: null,
   });
 
   console.log("state", state);
@@ -131,6 +139,14 @@ export function PropertyView(props: any) {
     },
     [isLoadingMore, handNext, loadMore],
   );
+
+  useEffect(() => {
+    const userLoggedIn = localStorage.getItem("token");
+    setState({
+      userLoggedIn : userLoggedIn ? true : false
+    })
+  }, []);
+
 
   useEffect(() => {
     if (propertyTypeFilter) setState({ propertyType: propertyTypeFilter });
@@ -305,6 +321,10 @@ export function PropertyView(props: any) {
       priceRange: [minPrice, maxPrice],
       minPrice: "",
       maxPrice: "",
+      priceMinInput: "",
+      priceMaxInput: "",
+      priceMinError: "",
+      priceMaxError: "",
       bedrooms: "",
       bathrooms: "",
       location: [],
@@ -399,6 +419,10 @@ export function PropertyView(props: any) {
     ? sqftOptions.filter((item) => item.value >= state.sqftMin)
     : sqftOptions;
 
+    const redirect = () => {
+    router.push(`/property-list?developerId=${state.detail?.developer?.id}`);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -406,7 +430,7 @@ export function PropertyView(props: any) {
       transition={{ duration: 0.6 }}
       className="xl:max-w-[110rem] max-w-[85rem] mx-auto p-6"
     >
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-8 items-start min-h-screen">
+      <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 items-start min-h-screen">
         <aside className="space-y-6 lg:col-span-1 xl:sticky md:top-16 lg:top-16  hidden xl:block ">
           <div className="p-4 pb-8 border rounded-lg space-y-6 bg-color1 border-none h-[91vh] overflow-auto thin-scrollbar">
             <div className="w-full flex justify-end">
@@ -1081,7 +1105,7 @@ export function PropertyView(props: any) {
           </div>
         </aside>
 
-        <section className="xl:col-span-3 space-y-6">
+        <section className="xl:col-span-4 space-y-6">
           <div className="sticky top-16 z-10">
             <div className="flex flex-wrap items-center justify-between gap-1 md:gap-4 p-4 bg-color1 border-none rounded-lg border shadow-sm">
               <div className="flex items-center justify-between md:justify-normal gap-4 w-auto">
@@ -1171,13 +1195,14 @@ export function PropertyView(props: any) {
               </div>
 
               <div className="flex items-center gap-4 justify-between md:justify-normal  w-auto">
-                <Button
+               { state.userLoggedIn && 
+               state.prefferedLocation == true ? ( 
+               <Button
                   variant="outline"
-                  className="px-4 py-2 h-9 rounded-lg text-sm font-medium text-gray-600 hover:text-dred 
-                      border-none 
-                      md:border 
-                      md:border-gray-300 
-                      hover:border-red-200 bg-transparent md:bg-white px-0 md:px-3 shadow-none md:shadow-sm"
+                  className="px-4 py-2 h-8 rounded-2xl text-sm  
+                      border-dred  bg-dred text-white
+                      hover:bg-dred hover:text-white
+                         px-0 md:px-3 shadow-none "
                   onClick={() => {
                     setState({
                       prefferedLocation: !state.prefferedLocation,
@@ -1187,6 +1212,24 @@ export function PropertyView(props: any) {
                   <MapPinHouseIcon />
                   Preffered Location
                 </Button>
+                ) :
+                (
+                   <Button
+                  variant="outline"
+                  className="px-4 py-2 h-8 rounded-2xl text-sm  text-dred 
+                      border-dred hover:text-dred
+                     
+                      px-0 md:px-3 shadow-none "
+                  onClick={() => {
+                    setState({
+                      prefferedLocation: !state.prefferedLocation,
+                    });
+                  }}
+                >
+                  <MapPinHouseIcon />
+                  Preffered Location
+                </Button>
+                )}
 
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600 whitespace-nowrap">
@@ -1264,6 +1307,14 @@ export function PropertyView(props: any) {
             </div> */}
           </div>
 
+          <ActiveFilters
+            state={state}
+            handleChange={handleChange}
+            resetFilter={resetFilter}
+            onClearPrice={() => setState({ priceMinInput: "", priceMaxInput: "" })}
+            onClearSqft={() => setState({ sqftMin: "", sqftMax: "" })}
+          />
+
           {loading ? (
             <div
               className={
@@ -1291,6 +1342,7 @@ export function PropertyView(props: any) {
                     view={state.view}
                     list={properties}
                     updateList={(data) => updateList(data)}
+                    onContactClick={(prop) => setState({ isMobileFormOpen: true, selectedProperty: prop })}
                   />
                 </div>
               ))}
@@ -1326,6 +1378,7 @@ export function PropertyView(props: any) {
                       view={state.view}
                       list={properties}
                       updateList={(data) => updateList(data)}
+                      onContactClick={(prop) => setState({ isMobileFormOpen: true, selectedProperty: prop })}
                     />
                   </div>
                 ))}
@@ -1360,6 +1413,37 @@ export function PropertyView(props: any) {
         width="700px"
         renderComponent={() => <div>...same filter options...</div>}
       />
+
+      <AnimatePresence>
+        {state.isMobileFormOpen && (
+          <>
+            {/* Overlay */}
+            <motion.div
+              className="fixed inset-0 bg-black/50 z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setState({ isMobileFormOpen: false })}
+            />
+
+            {/* Modal Wrapper */}
+            <motion.div
+              className="fixed inset-0 flex items-center justify-center z-50 p-4 "
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+            >
+              <ContactAgentForm
+                data={state.selectedProperty}
+                token={state.token}
+                onClose={() => setState({ isMobileFormOpen: false })}
+                industryClick={() => redirect()}
+              />
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

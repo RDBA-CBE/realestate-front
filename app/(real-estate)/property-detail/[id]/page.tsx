@@ -291,17 +291,6 @@ export default function PropertyDetailPage() {
     { id: "overview", component: <PropertyDetails data={state.detail} /> },
     { id: "description", component: <PropertyDesc data={state.detail} /> },
 
-    // 👇 Add className control for MapSection visibility
-    {
-      id: "map",
-      component: <MapSection data={state.detail} />,
-      className: "hidden xl:block", // only show on xl+
-    },
-
-    {
-      id: "amenities",
-      component: <Amenities data={state.detail?.amenities} />,
-    },
     ...(state.detail?.floor_plans?.length > 0
       ? [
           {
@@ -310,6 +299,21 @@ export default function PropertyDetailPage() {
           },
         ]
       : []),
+
+      {
+      id: "amenities",
+      component: <Amenities data={state.detail?.amenities} />,
+    },
+
+    // 👇 Add className control for MapSection visibility
+    {
+      id: "map",
+      component: <MapSection data={state.detail} />,
+      className: "hidden xl:block", // only show on xl+
+    },
+
+   
+    
     ...(state.detail?.videos?.length > 0
       ? [{ id: "video", component: <Video data={state.detail?.videos?.[0]} /> }]
       : []),
@@ -318,7 +322,7 @@ export default function PropertyDetailPage() {
       : []),
     { id: "nearby", component: <Nearby /> },
     { id: "walkscore", component: <WalkScore /> },
-    { id: "reviews", component: <Reviews /> },
+    // { id: "reviews", component: <Reviews /> },
   ];
 
   const tabSections = sections

@@ -120,7 +120,7 @@ const Header = () => {
           <div className="  flex justify-between items-center gap-20 ">
             <div className="flex items-center gap-20">
               {/* Logo */}
-              <div className="flex justify-center gap-3 py-4">
+              <Link className="flex justify-center gap-3 py-4" href="/">
                 {/* <Link href="home">
                   <Image
                     src="/assets/images/logo.png"
@@ -141,7 +141,7 @@ const Header = () => {
                     ESTATE
                   </p>
                 </div>
-              </div>
+              </Link>
 
               {/* Left Menu (Desktop) */}
               <nav className="hidden lg:flex space-x-6">

@@ -12,6 +12,9 @@ import {
   ChevronLeft,
   ChevronRight,
   IndianRupee,
+  IndianRupeeIcon,
+  Maximize2,
+  Star,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -70,6 +73,7 @@ interface Property {
     area?: string;
   }>;
   developer_name?: string;
+  developer: any;
   broker_name?: string;
   // Additional price fields
   deposit?: number;
@@ -80,6 +84,7 @@ interface Property {
   possession_date?: string;
   total_area?: any;
   floor_plans?: any;
+  user_preferred_locations?: any;
 }
 
 interface PropertyCardProps {
@@ -88,6 +93,7 @@ interface PropertyCardProps {
   updateList?: any;
   list?: any;
   handleClick?: any;
+  onContactClick?: (property: Property) => void;
 }
 
 // Add helper functions
@@ -174,6 +180,7 @@ export function PropertyCard({
   list,
   updateList,
   handleClick,
+  onContactClick,
 }: PropertyCardProps) {
   const router = useRouter();
   const [hover, setHover] = useState(false);
@@ -415,7 +422,7 @@ export function PropertyCard({
               </Badge>
 
               {/* Action Buttons */}
-              {hover && (
+              {/* {hover && ( */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -447,16 +454,14 @@ export function PropertyCard({
                     );
                   })}
                 </motion.div>
-              )}
+              {/* )} */}
 
               {/* Price Badge */}
-              <Badge className="absolute top-2 right-2 bg-white text-black font-bold px-2 py-1 text-sm shadow-md">
-                {formatPriceRange(
-                  property?.price_range?.minimum_price,
-                  property?.price_range?.maximum_price,
-                )}{" "}
-                {property.listing_type === "rent" && "/ mo"}
-              </Badge>
+              {property?.user_preferred_locations &&
+               <Badge className="absolute top-2 right-2 bg-lred rounded-2xl text-dred  px-2 py-1 text-sm shadow-md flex gap-1 hover:bg-lred ">
+                <Star className="text-dred w-3.5 h-3.5"/>
+                Preffered Location
+              </Badge>}
             </div>
           </div>
 
@@ -475,20 +480,19 @@ export function PropertyCard({
                 </div>
               )}
 
-              <div className="flex items-center gap-4 text-gray-500 mb-2 flex-wrap text-md">
-                <div className="flex items-center space-x-1">
+              <div className="flex items-center lg:justify-between gap-4  mb-2 flex-wrap text-md">
+                <div className="flex items-center space-x-2">
                   <Bed className="h-5 w-5 text-dred" />
 
                   {property.floor_plans && property.floor_plans.length > 0 ? (
                     <span>
-                      {[
+                      {`${[
                         ...new Set(
-                          property.floor_plans.map((floor_plan: any) => {
-                            const bhk = floor_plan.category?.match(/\d+/)?.[0];
-                            return bhk ? `${bhk} BHK` : floor_plan.category;
-                          }),
+                          property.floor_plans.map((floor_plan: any) =>
+                            floor_plan.category?.match(/\d+/)?.[0]
+                          )
                         ),
-                      ].join(", ")}
+                      ].join(", ")} BHK`}
                     </span>
                   ) : (
                     <span>{property.bedrooms} Bed</span>
@@ -498,11 +502,54 @@ export function PropertyCard({
                   <Bath className='h-5 w-5 text-dred' />
                   <span>{property.bathrooms} bath</span>
                 </div> */}
-                <div className="flex items-center space-x-1">
-                  <Square className="h-5 w-5 text-dred" />
+                <div className="flex items-center space-x-2">
+                  <Maximize2 className="h-4 w-4 text-dred" />
                   <span>{property?.built_up_area} sqft</span>
                 </div>
               </div>
+
+              <div className="flex items-center gap-2 mt-4">
+                 <IndianRupeeIcon className="h-5 w-5 text-dred"/>
+                 {formatPriceRange(
+                  property?.price_range?.minimum_price,
+                  property?.price_range?.maximum_price,
+                )}{" "}
+                {property.listing_type === "rent" && "/ mo"}
+              </div>
+              
+
+               <div className="flex flex-col   pt-3 border-t border-gray-200 mt-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                  <span className="text-xs font-semibold text-gray-600">
+                    {getInitials(
+                      property?.developer?.industry || "",
+                    )}
+                  </span>
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-gray-900">
+                    {property?.developer?.industry ||
+                      "Property Owner"}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {property?.developer?.industry
+                      ? "Developer"
+                        : "Owner"}
+                  </div>
+                </div>
+              </div>
+
+              <Button
+                className="border-gray bg-tranparent hover:bg-green-700 text-gray-600 hover:text-white px-4 py-2 text-sm font-medium mt-5 shadow-none"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onContactClick) onContactClick(property);
+                }}
+              >
+                Contact
+              </Button>
+            </div>
             </div>
           </CardContent>
         </Card>
@@ -597,7 +644,7 @@ export function PropertyCard({
             </Badge>
 
             {/* Action Buttons */}
-            {hover && (
+            {/* {hover && ( */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -629,15 +676,14 @@ export function PropertyCard({
                   );
                 })}
               </motion.div>
-            )}
+            {/* )} */}
 
             {/* Price Badge */}
-            <Badge className="absolute top-2 right-2 bg-white text-black font-bold px-2 py-1 text-sm shadow-md">
-              {formatPriceRange(
-                property?.price_range?.minimum_price,
-                property?.price_range?.maximum_price,
-              )}
-            </Badge>
+            {property?.user_preferred_locations &&
+               <Badge className="absolute top-2 right-2 bg-lred rounded-2xl text-dred  px-2 py-1 text-sm shadow-md flex gap-1 hover:bg-lred ">
+                <Star className="text-dred w-3.5 h-3.5"/>
+                Preffered Location
+              </Badge>}
           </div>
         </div>
 
@@ -742,18 +788,18 @@ export function PropertyCard({
                     // Fallback to regular price display
                     <div className="mb-3">
                       <div className="flex items-baseline gap-2 mb-1">
-                        <span className="text-l text-gray-900 flex gap-2">
-                          <IndianRupee className="h-5 w-5 mr-1 flex-shrink-0 text-dred" />
+                        <span className="text-l text-gray-900 gap-2 flex ">
+                          <IndianRupee className="h-5 w-5 flex-shrink-0 text-dred" />
                           {formatPriceRange(
                             property?.price_range?.minimum_price,
                             property?.price_range?.maximum_price,
                           )}
                         </span>
-                        {property.price_per_sqft && (
+                        {/* {property.price_per_sqft && (
                           <span className="text-sm text-gray-600">
                             ({formatPrice(property.price_per_sqft)}/sq.ft)
                           </span>
-                        )}
+                        )} */}
                       </div>
                     </div>
                   )}
@@ -783,17 +829,29 @@ export function PropertyCard({
               )}
 
               {/* Property Features */}
-              <div className="flex items-center gap-4 text-gray-500 mb-2 flex-wrap text-md">
-                <div className="flex items-center space-x-1">
+              <div className="flex items-center gap-4  mb-2 flex-wrap text-md">
+                <div className="flex items-center gap-2">
                   <Bed className="h-5 w-5 text-dred" />
-                  <span>{property.bedrooms} bed</span>
+                   {property.floor_plans && property.floor_plans.length > 0 ? (
+                    <span>
+                      {`${[
+                        ...new Set(
+                          property.floor_plans.map((floor_plan: any) =>
+                            floor_plan.category?.match(/\d+/)?.[0]
+                          )
+                        ),
+                      ].join(", ")} BHK`}
+                    </span>
+                  ) : (
+                    <span>{property.bedrooms} Bed</span>
+                  )}
                 </div>
-                <div className="flex items-center space-x-1">
+                {/* <div className="flex items-center space-x-1">
                   <Bath className="h-5 w-5 text-dred" />
                   <span>{property.bathrooms} bath</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Square className="h-5 w-5 text-dred" />
+                </div> */}
+                <div className="flex items-center gap-2">
+                  <Maximize2 className="h-4 w-4 text-dred" />
                   <span>{property.built_up_area} sqft</span>
                 </div>
               </div>
@@ -807,7 +865,19 @@ export function PropertyCard({
                   </div>
                 </div>
               )}
+
+              {/* <div className="flex items-center gap-2 mt-4">
+                 <IndianRupeeIcon className="h-5 w-5 text-dred"/>
+                 {formatPriceRange(
+                  property?.price_range?.minimum_price,
+                  property?.price_range?.maximum_price,
+                )}{" "}
+                {property.listing_type === "rent" && "/ mo"}
+              </div> */}
+
             </div>
+
+            
 
             {/* Developer/Broker Info */}
             <div className="flex items-center justify-between pt-3 border-t border-gray-200 mt-4">
@@ -815,18 +885,18 @@ export function PropertyCard({
                 <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
                   <span className="text-xs font-semibold text-gray-600">
                     {getInitials(
-                      property.developer_name || property.broker_name || "",
+                      property?.developer?.industry || property.broker_name || "",
                     )}
                   </span>
                 </div>
                 <div>
                   <div className="text-sm font-semibold text-gray-900">
-                    {property.developer_name ||
+                    {property?.developer?.industry ||
                       property.broker_name ||
                       "Property Owner"}
                   </div>
                   <div className="text-xs text-gray-500">
-                    {property.developer_name
+                    {property?.developer?.industry
                       ? "Developer"
                       : property.broker_name
                         ? property.listing_type === "rent" ||
@@ -842,7 +912,7 @@ export function PropertyCard({
                 className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm font-medium"
                 onClick={(e) => {
                   e.stopPropagation();
-                  // Handle contact action
+                  if (onContactClick) onContactClick(property);
                 }}
               >
                 Contact

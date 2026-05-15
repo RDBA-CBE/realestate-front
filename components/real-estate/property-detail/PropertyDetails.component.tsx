@@ -222,7 +222,17 @@ export default function PropertyDetails({ data }: any) {
   //   ];
   // }
 
+  const uniConfig = data?.floor_plans?.length
+    ? `${[...new Set(data.floor_plans.map((fp: any) => fp.category?.match(/\d+/)?.[0]))].filter(Boolean).join(", ")} BHK`
+    : "-";
+  
+
   const details = [
+
+    ...(data.floor_plans
+      ? [{ icon: Bed, label: "Unit Configuration", value: uniConfig }]
+      : []),
+
     {
       icon: Maximize2,
       label: "Total Area",
@@ -261,21 +271,19 @@ export default function PropertyDetails({ data }: any) {
       value: capitalizeFLetter(data?.status) ?? "-",
     },
 
-    ...(data?.bedrooms
-      ? [{ icon: Bed, label: "Bedroom", value: data?.bedrooms }]
-      : []),
+  
 
-    ...(data?.bathrooms
-      ? [
-          {
-            icon:
-              data?.property_type?.name === "Residential" ? Bath : ToiletIcon,
-            label:
-              data?.property_type?.name === "Residential" ? "Bath" : "Washroom",
-            value: data?.bathrooms,
-          },
-        ]
-      : []),
+    // ...(data?.bathrooms
+    //   ? [
+    //       {
+    //         icon:
+    //           data?.property_type?.name === "Residential" ? Bath : ToiletIcon,
+    //         label:
+    //           data?.property_type?.name === "Residential" ? "Bath" : "Washroom",
+    //         value: data?.bathrooms,
+    //       },
+    //     ]
+    //   : []),
 
     ...(data?.balcony
       ? [{ icon: Building2, label: "Balcony", value: data?.balcony }]

@@ -15,8 +15,8 @@ const FeaturedListings = (props) => {
   const breakpoints = {
     320: { slidesPerView: 1, spaceBetween: 16 },
     640: { slidesPerView: 2, spaceBetween: 30 },
-    1024: { slidesPerView: 3, spaceBetween: 60 },
-    1200: { slidesPerView: 4, spaceBetween: 30 },
+    1180: { slidesPerView: 3, spaceBetween: 30 },
+    1300: { slidesPerView: 4, spaceBetween: 30 },
   };
 
   const handleSlideChange = (swiper) => {

@@ -9,6 +9,7 @@ import {
   Bath,
   Square,
   GitCompareArrowsIcon,
+  BedDouble,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -108,22 +109,24 @@ export default function PropertyHeader(props: any) {
     <div className=" mt-5 md:mt-0 px-2">
       <div className="flex flex-row items-between md:items-start justify-between gap-4">
         <div className="space-y-2">
-          <h1 className="text-xl md:text-3xl font-bold">{data?.title}</h1>
+          <h1 className="section-ti">{data?.title}</h1>
+          <p>By <span className="text-dred">{data?.developer?.industry} </span></p>
+          <p className="text-black font-semibold">{data?.address}</p>
           <div className="block sm:hidden">
-            <span className="text-xl md:text-2xl font-bold">
+            <span className="section-in-ti">
               {formatPriceRange(
                 data?.price_range?.minimum_price,
                 data?.price_range?.maximum_price
               )}{" "}
             </span>
-            <span className="text-sm text-gray-600">
+            {/* <span className="text-sm text-gray-600">
               ({formatToINR(data?.price_per_sqft)}/sq ft)
-            </span>
+            </span> */}
           </div>
           <div className="flex items-center flex-wrap gap-3 text-sm text-gray-600 ">
-            <span>{`${capitalizeFLetter(data?.city)} , ${capitalizeFLetter(
-              data?.state
-            )} `}</span>
+            {/* <span>{`${capitalizeFLetter(data?.area?.name)} , ${capitalizeFLetter(
+              data?.location?.name
+            )} `}</span> */}
             <span className="flex items-center gap-1 text-dred font-medium">
               ● For {capitalizeFLetter(data?.listing_type)}
             </span>
@@ -133,23 +136,29 @@ export default function PropertyHeader(props: any) {
             {/* <span className="flex items-center gap-1">🔗 8721</span> */}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 xs:gap-6 text-gray-700 pt-2">
-            <div className="flex items-center gap-1 bg-color1 px-2 py-0.5 rounded-md">
-              <Bed size={18} /> <span>{data?.bedrooms} bed</span>
+          {/* <div className="flex flex-wrap items-center gap-2 xs:gap-6 text-gray-700 pt-2">
+            <div className="flex items-center gap-1  py-0.5 rounded-md">
+               {data.floor_plans && data.floor_plans.length > 0 && (
+               <span className="flex items-center gap-1 text-dred border border-dred px-3 rounded-md"><BedDouble className="w-4 h-4 text-dred" />   {`${[
+                        ...new Set(
+                          data.floor_plans.map((floor_plan: any) =>
+                            floor_plan.category?.match(/\d+/)?.[0]
+                          )
+                        ),
+                      ].join(", ")} BHK Appartment`}</span>
+            )}
             </div>
-            <div className="flex items-center gap-1 bg-color1 px-2 py-0.5 rounded-md">
-              <Bath size={18} /> <span>{data?.bathrooms} bath</span>
+           
+            <div className="flex items-center gap-1 text-dred border border-dred px-3 rounded-md">
+              <Square size={18} className="text-dred" />{" "}
+              <span className="text-dred">{(data?.built_up_area)} sqft</span>
             </div>
-            <div className="flex items-center gap-1 bg-color1 px-2 py-0.5 rounded-md">
-              <Square size={18} />{" "}
-              <span>{(data?.total_area)} sqft</span>
-            </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Right side */}
         <div className="flex flex-col items-end  gap-1 hidden sm:block">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between gap-2">
             <Button
               onClick={() => handleWishList()}
               size="icon"
@@ -196,7 +205,7 @@ export default function PropertyHeader(props: any) {
           </Button> */}
           </div>
           <div>
-            <p className="text-xl md:text-2xl font-bold mt-2">
+            <p className="section-ti mt-2">
               {formatPriceRange(
                 data?.price_range?.minimum_price,
                 data?.price_range?.maximum_price

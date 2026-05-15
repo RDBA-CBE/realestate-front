@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { MapPin, BedDouble, Bath, Maximize2, Heart, GitCompare } from "lucide-react";
-import { formatPriceRange, Success } from "@/utils/function.utils";
+import { capitalizeFLetter, formatPriceRange, Success } from "@/utils/function.utils";
 import { useRouter } from "next/navigation";
 import Models from "@/imports/models.import";
 
@@ -103,11 +103,22 @@ const PropertyCard = ({ listing }) => {
           </p>
           <h3 className="section-in-ti mb-2">{listing?.title}</h3>
           <p className="flex items-center gap-1 mb-4 min-h-[24px]">
-            {listing?.city && (<><MapPin className="w-3.5 h-3.5" />{listing?.city}</>)}
+            {listing?.location?.name && (<><MapPin className="w-3.5 h-3.5" />{`${capitalizeFLetter(
+                                listing.area?.name,
+                              )}, ${capitalizeFLetter(listing.location?.name)}`}</>)}
           </p>
-          <div className="flex items-center gap-4 border-t pt-5 pb-4 border-[#ededed] mt-auto">
-            <span className="flex items-center gap-1"><BedDouble className="w-4 h-4" /> {listing?.bedrooms}</span>
-            <span className="flex items-center gap-1"><Bath className="w-4 h-4" /> {listing?.bathrooms}</span>
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-t pt-5 pb-4 border-[#ededed] mt-auto">
+            {listing.floor_plans && listing.floor_plans.length > 0 && (
+               <span className="flex items-center gap-1"><BedDouble className="w-4 h-4" />   {`${[
+                        ...new Set(
+                          listing.floor_plans.map((floor_plan: any) =>
+                            floor_plan.category?.match(/\d+/)?.[0]
+                          )
+                        ),
+                      ].join(", ")} BHK`}</span>
+            )}
+           
+            {/* <span className="flex items-center gap-1"><Bath className="w-4 h-4" /> {listing?.bathrooms}</span> */}
             <span className="flex items-center gap-1"><Maximize2 className="w-4 h-4" /> {listing?.price_per_sqft} sqft</span>
           </div>
         </div>

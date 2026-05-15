@@ -31,7 +31,7 @@ const HowItWorks = () => {
       buttonText: "Get Started",
       image: "/assets/images/real-estate/property-rent.png",
       type: "Lease",
-      url: "login",
+      url: "/post-property",
       bg: "#fff6f6",
     },
   ];

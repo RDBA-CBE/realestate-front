@@ -20,6 +20,7 @@ export default function Page() {
   const propertyType = searchParams.get("propertyType");
   const locationParam = searchParams.get("location");
 
+
   const [state, setState] = useSetState({
     propertyList: [],
     loading: false,
@@ -82,6 +83,12 @@ export default function Page() {
     // listing type param
     if (type && type !== "all") {
       urlFilter.listingStatus = type === "sale" ? "For Sale" : "For Lease";
+    }
+
+    if (developerId) {
+      const typeId = Number(developerId);
+      const matched = (res?.developer || []).find((item: any) => item.id == typeId);
+      if (matched) urlFilter.developer = [{ label: matched.name, value: matched.id }];
     }
 
     return urlFilter;

@@ -53,9 +53,10 @@ export default function ContactAgentForm({
         phone: state.phone,
         email: state.email,
         interested_property: [data?.id],
-        lead_source: "website",
-        status: "new",
-        requirements: state.inquiry ? state.inquiry : "New Requirements",
+        lead_source:1,
+        status: 1,
+        inquiry_detail: state.inquiry ? state.inquiry : "New Requirements",
+        website : true
       };
 
       console.log("body", body);
@@ -69,6 +70,7 @@ export default function ContactAgentForm({
         phone: "",
         email: "",
         inquiry: "",
+        
       });
     } catch (error) {
       if (error?.email?.length > 0) {
@@ -96,7 +98,7 @@ export default function ContactAgentForm({
         interested_property: [data?.id],
         lead_source:1,
         status: 1,
-        requirements: state.inquiry ? state.inquiry : "New Requirements",
+        inquiry_detail: state.inquiry ? state.inquiry : "New Requirements",
         website : true
       };
       if(response.phone){
@@ -159,10 +161,11 @@ export default function ContactAgentForm({
           </div>
 
           <div className="text-left">
-            <h3 className="font-bold text-gray-900 text-lg">
-              {`${capitalizeFLetter(data?.developer?.first_name)} ${
+            <h3 className="font-semibold">
+              {/* {`${capitalizeFLetter(data?.developer?.first_name)} ${
                 data?.developer?.last_name
-              } `}
+              } `} */}
+               {capitalizeFLetter(data?.developer?.industry)}
             </h3>
             <p className="text-gray-600 text-sm">
               {capitalizeFLetter(data?.developer?.user_type)}
@@ -171,12 +174,12 @@ export default function ContactAgentForm({
               {formatPhoneNumber(data?.developer?.phone)}
             </p>
 
-            <p
-              className="text-blue-800 font-medium mt-1 underline cursor-pointer"
-              onClick={() => industryClick()}
+            {/* <p
+              className="font-medium mt-1  cursor-pointer"
+              // onClick={() => industryClick()}
             >
               {capitalizeFLetter(data?.developer?.industry)}
-            </p>
+            </p> */}
           </div>
         </div>
 

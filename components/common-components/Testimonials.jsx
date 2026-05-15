@@ -61,7 +61,7 @@ const Testimonials = () => {
 
   return (
     <section className="section-pad bg-[#f8f8f8]">
-      <div className="section-wid px-4 pb-5">
+      <div className="section-wid  pb-5">
         <div className="text-center mb-12">
           <h2 className="section-ti mb-3">
             People Love Living with Realton

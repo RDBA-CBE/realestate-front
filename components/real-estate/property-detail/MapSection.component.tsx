@@ -223,7 +223,7 @@ const GoogleMaps = (props) => {
       {data?.address && (
         <div
           className="w-full h-full"
-          dangerouslySetInnerHTML={{ __html: data?.address }}
+          dangerouslySetInnerHTML={{ __html: data?.location_url }}
         />
       )}
       {/* <div

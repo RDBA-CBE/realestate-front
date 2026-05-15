@@ -773,7 +773,7 @@ export const SidebarContent = (props: any) => {
               </div> */}
       </div>
 
-      <div>
+      {/* <div>
         <div className="mb-2 font-semibold text-gray-900">Year Built</div>
         <div className="flex gap-3">
           <Input
@@ -791,7 +791,7 @@ export const SidebarContent = (props: any) => {
             onChange={(e) => handleChange("yearBuiltMax", e.target.value)}
           />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

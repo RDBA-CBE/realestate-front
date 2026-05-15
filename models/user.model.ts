@@ -10,6 +10,9 @@ const user = {
        if (body?.search) {
         url += `&search=${encodeURIComponent(body.search)}`;
       }
+      if (body?.has_complete_developer_profile) {
+        url += `&has_complete_developer_profile=${encodeURIComponent(body.has_complete_developer_profile)}`;
+      }
       instance()
         .get(url)
         .then((res) => {
@@ -122,6 +125,25 @@ const user = {
         .catch((error) => {
           if (error.response) {
             reject(error.response.data.message);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
+
+  newsletter: (data: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `newsletters/`;
+      instance()
+        .post(url, data)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response.data);
           } else {
             reject(error);
           }
