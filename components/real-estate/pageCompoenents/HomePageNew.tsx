@@ -18,6 +18,9 @@ import NewPopuplarProperties from '../InnerComponents/NewPopuplarProperties';
 import Testimonials from '@/components/common-components/Testimonials';
 import ExploreDreamHomeSection from '../InnerComponents/ExploreDreamHomeSection';
 import FAQSection from '../InnerComponents/FAQSection';
+import AboutSection from '../InnerComponents/AboutSection';
+import SectionTestimonial from '../InnerComponents/SectionTestimonial';
+
 
 
 const HomePageNew = () => {
@@ -194,22 +197,24 @@ const HomePageNew = () => {
 
         <DeveloperRegistrationSection/>
 
+
+        
         <NewPopuplarProperties
             propertyList={state.propertyList}
             updatePropertyType={(type) => propertyList(type)}
           />
 
+
+        {/* <AboutSection /> */}
+         <SellingOptionsSection/>
         
-
-        <SellingOptionsSection/>
-
-        
-
-
-        <ExploreDreamHomeSection/>
         {/* <HelpServicesSection/> */}
 
         <FAQSection/>
+
+        <ExploreDreamHomeSection/>
+
+        <SectionTestimonial/>
 
         {/* <Testimonials /> */}
 
@@ -217,7 +222,7 @@ const HomePageNew = () => {
 
         {/* <NewTestimonial/> */}
 
-        <NewFooter/>
+        {/* <NewFooter/> */}
 
 
       </motion.div>

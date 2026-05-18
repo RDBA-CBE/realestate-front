@@ -137,7 +137,7 @@ export default function ContactAgentForm({
 
   return (
     <Card
-      className={`rounded-2xl shadow-lg border border-gray-200 max-w-md mx-auto  !bg-gray ${
+      className={`rounded-2xl shadow-none border border-gray max-w-md mx-auto  !bg-gray ${
         onClose ? "w-[500px]" : "me-0"
       }`}
     >
@@ -148,7 +148,7 @@ export default function ContactAgentForm({
           </button>
         </div>
       )}
-      <CardContent className={`p-6 space-y-6 ${onClose ? "pt-0" : ""}`}>
+      <CardContent className={`p-6  space-y-6 ${onClose ? "pt-0" : ""}`}>
         <div className="flex items-center gap-4 border-b border-gray-200 pb-4">
           <div className="flex-shrink-0">
             <Image

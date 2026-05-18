@@ -73,11 +73,25 @@ const FeaturedListings = (props) => {
           className="featured-listings-swiper pb-10"
         >
           {list.map((listing, index) => (
-            <SwiperSlide key={index} className="h-auto">
+            <SwiperSlide key={index} className="h-full flex">
               <PropertyCard listing={listing} />
             </SwiperSlide>
           ))}
         </Swiper>
+        <style jsx global>{`
+          .featured-listings-swiper .swiper-wrapper {
+            align-items: stretch;
+          }
+
+          .featured-listings-swiper .swiper-slide {
+            display: flex;
+            height: auto !important;
+          }
+
+          .featured-listings-swiper .swiper-slide > div {
+            width: 100%;
+          }
+        `}</style>
       </div>
     </div>
   );

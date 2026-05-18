@@ -304,7 +304,7 @@ export default function PropertyDetails({ data }: any) {
 
   return (
     <>
-      <h3 className="text-xl font-semibold mb-3">Overview</h3>
+      <h3 className="section-in-ti mb-3">Overview</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
         {details.map((item, idx) => (
           <div

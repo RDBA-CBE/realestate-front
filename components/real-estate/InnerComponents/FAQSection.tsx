@@ -36,7 +36,7 @@ const faqs = [
 export default function FAQSection() {
   return (
     <section className="section-pad">
-      <div className="section-wid">
+      <div className="section-wid pb-5">
         <div className="grid gap-14 lg:grid-cols-[0.8fr_1.4fr]">
           
           {/* Left Content */}

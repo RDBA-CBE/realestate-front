@@ -205,7 +205,7 @@ export default function PropertyTabs({ sections }) {
       {/* Floating tab bar */}
       <div
         className={cn(
-          "sticky top-[65px] z-40 bg-white shadow-md border-b rounded-b-lg transition-all duration-500 overflow-hidden ",
+          "sticky top-[65px] z-40 bg-white  border-b border-sec rounded-b-lg transition-all duration-500 overflow-hidden ",
           showTabs
             ? "opacity-100 translate-y-0 pointer-events-auto h-auto mt-5 mb-5"
             : "opacity-0 -translate-y-5 pointer-events-none h-0 mt-2 mb-2 xl:mt-3 xl:mb-3"
@@ -221,7 +221,7 @@ export default function PropertyTabs({ sections }) {
                   "text-sm font-medium border-b transition-colors whitespace-nowrap",
                   active === s.id
                     ? "border-dred text-dred"
-                    : "border-transparent text-gray-500 hover:text-gray-800"
+                    : "border-transparent  hover:text-gray-800"
                 )}
               >
                 {capitalizeFLetter(s.label)}

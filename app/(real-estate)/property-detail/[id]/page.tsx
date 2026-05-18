@@ -314,14 +314,14 @@ export default function PropertyDetailPage() {
 
    
     
-    ...(state.detail?.videos?.length > 0
-      ? [{ id: "video", component: <Video data={state.detail?.videos?.[0]} /> }]
-      : []),
+    // ...(state.detail?.videos?.length > 0
+    //   ? [{ id: "video", component: <Video data={state.detail?.videos?.[0]} /> }]
+    //   : []),
     ...(state.detail?.virtual_tours?.length > 0
       ? [{ id: "virtualtour", component: <VirtualTour /> }]
       : []),
-    { id: "nearby", component: <Nearby /> },
-    { id: "walkscore", component: <WalkScore /> },
+    // { id: "nearby", component: <Nearby /> },
+    // { id: "walkscore", component: <WalkScore /> },
     // { id: "reviews", component: <Reviews /> },
   ];
 
@@ -367,7 +367,7 @@ export default function PropertyDetailPage() {
               <div
                 key={sec.id}
                 id={sec.id}
-                className={`${bgClass} border rounded-2xl shadow p-6 ${
+                className={`${bgClass} border border-gray rounded-2xl  p-6 ${
                   sec.className || ""
                 }`}
               >

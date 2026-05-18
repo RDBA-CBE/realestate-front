@@ -2,28 +2,26 @@
 import React, { useEffect, useState } from "react";
 import { Facebook, Twitter, Instagram, Linkedin, Home } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Models from "@/imports/models.import";
-import { Failure, Success, useSetState } from "@/utils/function.utils";
+import { Dropdown, Failure, Success, useSetState } from "@/utils/function.utils";
 import * as Yup from "yup";
 
-const popular = [
-  "Apartment for Sale",
-  "Apartment for Rent",
-  "Offices for Sale",
-  "Offices for Rent",
-];
 const links = [
-  "About Us",
-  "Our Properties",
-  "Location",
-  "Compare",
-  "Contact Us",
+  { url: "about", text: "About Us" },
+  { url: "property-list", text: "Our Properties" },
+  { url: "compare", text: "Compare" },
 ];
-const discovery = ["Coimbatore", "Chennai", "Trichy", "Madurai", "Pondy"];
+
+const popularSearch = [
+  { label: "Apartment for Sale", params: { type: "sale", search: "Apartment" } },
+  { label: "Apartment for Lease", params: { type: "lease", search: "Apartment" } },
+  { label: "Villas for Sale", params: { type: "sale", search: "Villa" } },
+  { label: "Villas for Lease", params: { type: "lease", search: "Villa" } },
+];
 
 export default function NewFooter() {
-  const [email, setEmail] = useState("");
-
+  const router = useRouter();
   const [state, setState] = useSetState({
     loading: false,
     email: "",
@@ -34,6 +32,10 @@ export default function NewFooter() {
     setState({ id: userId });
   }, []);
 
+  useEffect(() => {
+    cityList(1);
+  }, []);
+
   const handleSubscribe = async () => {
     try {
       const body = {
@@ -42,41 +44,54 @@ export default function NewFooter() {
       };
 
       const schema = Yup.object({
-        email: Yup.string()
-          .trim()
-          .email("Please enter a valid email")
-          .required("Email is required"),
+        email: Yup.string().trim().email("Please enter a valid email").required("Email is required"),
       });
 
-      await schema.validate({
-        email: state.email,
-      });
+      await schema.validate({ email: state.email });
 
       const res: any = await Models.user.newsletter(body);
-
-      console.log("res", res);
-
-      Success(res || "Subscribed to newsletter successfully");
+      Success(res?.message || "Subscribed to newsletter successfully");
     } catch (error) {
-      console.log("error", error);
-
-      // validation error
       if (error.name === "ValidationError") {
         return Failure(error.message);
       }
-
-      // api error
       Failure(error?.detail || "Something went wrong");
-
       setState({ loading: false });
     }
+  };
+
+  const cityList = async (page) => {
+    try {
+      const body: any = {};
+      if (state.search) body.search = state.search;
+      const res: any = await Models.dropdowns.city(page, body);
+      const locationdd = res?.results?.filter((item) => item?.property_count != 0);
+      const droprdown = Dropdown(locationdd, "name");
+
+      setState({
+        locationList: droprdown,
+        cityList: res?.results,
+        total: res?.count,
+        page,
+        next: res.next,
+        previous: res.previous,
+        totalRecords: res.count,
+      });
+    } catch (error) {
+      console.log("error -->", error);
+    }
+  };
+
+  const handlePropertyListNavigate = (params: Record<string, string>) => {
+    const searchParams = new URLSearchParams(params).toString();
+    router.push(`/property-list?${searchParams}`);
   };
 
   return (
     <footer className="section-pad bg-dred text-white">
       <div className="section-wid">
         <div className="flex flex-col gap-6 border-b border-white/15 pb-8 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3">
             <div className="rounded-lg bg-white/10 p-2">
               <Home className="h-6 w-6" />
             </div>
@@ -84,14 +99,14 @@ export default function NewFooter() {
               <p className="text-xs font-semibold tracking-[0.1em]">REAL</p>
               <p className="text-sm font-bold tracking-[0.1em]">ESTATE</p>
             </div>
-          </div>
+          </Link>
 
           <div className="flex items-center gap-4 text-sm">
             <span className="font-medium">Follow Us</span>
-            <Facebook className="h-4 w-4" />
-            <Twitter className="h-4 w-4" />
-            <Instagram className="h-4 w-4" />
-            <Linkedin className="h-4 w-4" />
+            <Link href="#"><Facebook className="h-4 w-4" /></Link>
+            <Link href="#"><Twitter className="h-4 w-4" /></Link>
+            <Link href="#"><Instagram className="h-4 w-4" /></Link>
+            <Link href="#"><Linkedin className="h-4 w-4" /></Link>
           </div>
         </div>
 
@@ -99,9 +114,15 @@ export default function NewFooter() {
           <div>
             <h3 className="mb-4 section-in-ti !text-white">Popular Search</h3>
             <ul className="space-y-3 text-white/80">
-              {popular.map((i) => (
-                <li key={i}>
-                  <a href="/property-list">{i}</a>
+              {popularSearch.map((item) => (
+                <li key={item.label}>
+                  <button
+                    type="button"
+                    onClick={() => handlePropertyListNavigate(item.params)}
+                    className="text-left hover:text-white"
+                  >
+                    {item.label}
+                  </button>
                 </li>
               ))}
             </ul>
@@ -110,9 +131,21 @@ export default function NewFooter() {
           <div>
             <h3 className="mb-4 section-in-ti !text-white">Quick Links</h3>
             <ul className="space-y-3 text-white/80">
-              {links.map((i) => (
+              {links?.map((item, i) => (
                 <li key={i}>
-                  <a href="/property-list">{i}</a>
+                  {item.url === "property-list" ? (
+                    <button
+                      type="button"
+                      onClick={() => router.push(`/${item.url}`)}
+                      className="text-left hover:text-white"
+                    >
+                      {item.text}
+                    </button>
+                  ) : (
+                    <Link href={`/${item.url}`} className="hover:text-white">
+                      {item.text}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -121,9 +154,15 @@ export default function NewFooter() {
           <div>
             <h3 className="mb-4 section-in-ti !text-white">Discovery</h3>
             <ul className="space-y-3 text-white/80">
-              {discovery.map((i) => (
+              {state.locationList?.slice(0, 5).map((item, i) => (
                 <li key={i}>
-                  <a href="/property-list">{i}</a>
+                  <button
+                    type="button"
+                    onClick={() => handlePropertyListNavigate({ location: item.value })}
+                    className="text-left hover:text-white"
+                  >
+                    {item?.label}
+                  </button>
                 </li>
               ))}
             </ul>
@@ -158,16 +197,10 @@ export default function NewFooter() {
         </div>
 
         <div className="flex flex-col gap-6 border-b border-white/15 py-8 md:flex-row md:items-center md:justify-center">
-          <h3 className="section-ti !text-white !font-medium">
-            Get Mobile App
-          </h3>
+          <h3 className="section-ti !text-white !font-medium">Get Mobile App</h3>
           <div className="flex gap-4">
-            <button className="rounded-lg bg-white px-5 py-3 text-black">
-              App Store
-            </button>
-            <button className="rounded-lg bg-white px-5 py-3 text-black">
-              Google Play
-            </button>
+            <button className="rounded-lg bg-white px-5 py-3 text-black">App Store</button>
+            <button className="rounded-lg bg-white px-5 py-3 text-black">Google Play</button>
           </div>
         </div>
 
@@ -179,8 +212,8 @@ export default function NewFooter() {
             </Link>
           </p>
           <div className="flex gap-4">
-            <span>Privacy</span>
-            <span>Terms</span>
+            <Link href="/privacy-policy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
           </div>
         </div>
       </div>

@@ -1,12 +1,18 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Models from "@/imports/models.import";
 import { Failure, Success, useSetState } from "@/utils/function.utils";
-import { MailCheck, RefreshCw, ShieldCheck } from "lucide-react";
+import { Loader, Home, ArrowRight, MailCheck, RefreshCw, ShieldCheck } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+
+const tips = [
+  "Click 'Verify Email' to confirm your account",
+  "Link expired? Resend a new verification email",
+  "Check your spam folder if not received",
+];
 
 export default function VerifyEmailPage() {
   const router = useRouter();
@@ -47,128 +53,153 @@ export default function VerifyEmailPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-[#164e63] font-sans overflow-hidden">
+    <div className="min-h-screen flex bg-white font-sans relative">
 
-      {/* Left Panel */}
-      <div className="hidden lg:flex flex-col justify-center items-center lg:w-1/2 p-12">
-        <div className="text-center">
-          <div className="flex items-center justify-center mb-8">
-            <svg className="w-6 h-6 mr-2 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-            </svg>
-            <span className="font-extrabold text-xl tracking-wider text-white cursor-pointer" onClick={() => router.push("/")}>
-              Real Estate
-            </span>
+      {/* Top-right: View Properties */}
+      <div className="absolute top-5 right-5 z-30">
+        <button
+          type="button"
+          onClick={() => router.push("/property-list")}
+          className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 bg-white text-sm font-medium text-black hover:border-[#9b0f09] hover:text-[#9b0f09] transition-all shadow-sm"
+        >
+          <Home className="w-4 h-4" />
+          View Properties
+          <ArrowRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
+      {/* Left panel */}
+      <div className="hidden lg:flex flex-col justify-between w-1/2 bg-[#9b0f09] px-16 py-12 relative overflow-hidden">
+        <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-white/5" />
+        <div className="absolute bottom-0 right-0 w-72 h-72 rounded-full bg-white/5 translate-x-1/3 translate-y-1/3" />
+
+        {/* Logo */}
+        <div className="flex items-center gap-2 cursor-pointer z-10" onClick={() => router.push("/")}>
+          <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center">
+            <Home className="w-5 h-5 text-white" />
           </div>
+          <span className="text-white font-bold text-xl tracking-wide">Real Estate</span>
+        </div>
 
-          <div className="w-48 h-48 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-8">
-            <MailCheck className="w-24 h-24 text-amber-400" />
-          </div>
-
-          <h1 className="text-4xl font-extrabold text-white mb-4 leading-tight">
-            Verify Your Email
+        {/* Headline */}
+        <div className="z-10 space-y-6">
+          {/* <div className="w-20 h-20 rounded-2xl bg-white/15 flex items-center justify-center">
+            <MailCheck className="w-10 h-10 text-white" />
+          </div> */}
+          <h1 className="text-5xl font-semibold  text-white leading-tight">
+            Almost there! Verify now.
           </h1>
-          <p className="text-lg text-amber-300 font-medium mb-8">
-            One click away from accessing your account
+          <p className="text-white/70 text-lg max-w-xs">
+            One quick step to unlock your full account access.
           </p>
-
-          <div className="space-y-4 text-left max-w-xs mx-auto">
-            {[
-              "Click 'Verify Email' to confirm your account",
-              "If link expired, resend a new verification email",
-              "Check spam folder if email not received",
-            ].map((tip, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="w-6 h-6 flex items-center justify-center text-xs font-bold text-white bg-[#3d767d] rounded-full flex-shrink-0">{i + 1}</div>
-                <p className="text-white text-sm">{tip}</p>
-              </div>
+          <ul className="space-y-4 pt-2">
+            {tips.map((tip, i) => (
+              <li key={i} className="flex items-center gap-3">
+                <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                  {i + 1}
+                </div>
+                <span className="text-white/90 text-sm font-medium">{tip}</span>
+              </li>
             ))}
-          </div>
+          </ul>
+        </div>
+
+        {/* Bottom illustration */}
+        <div className="z-10">
+          <svg viewBox="0 0 400 160" className="w-full opacity-20" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="60" width="80" height="90" rx="4" fill="white" />
+            <polygon points="60,20 100,60 20,60" fill="white" />
+            <rect x="45" y="100" width="30" height="50" rx="2" fill="#9b0f09" />
+            <rect x="130" y="40" width="100" height="110" rx="4" fill="white" />
+            <polygon points="180,5 230,40 130,40" fill="white" />
+            <rect x="160" y="90" width="40" height="60" rx="2" fill="#9b0f09" />
+            <rect x="260" y="70" width="70" height="80" rx="4" fill="white" />
+            <polygon points="295,35 330,70 260,70" fill="white" />
+            <rect x="278" y="110" width="25" height="40" rx="2" fill="#9b0f09" />
+            <rect x="0" y="148" width="400" height="4" rx="2" fill="white" />
+          </svg>
         </div>
       </div>
 
-      {/* Right Panel */}
-      <div className="w-full lg:w-1/2 flex justify-center items-center min-h-screen p-6">
-        <Card className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm mx-auto">
-          <CardHeader className="p-0 mb-6">
-            {/* Mobile logo */}
-            <div className="flex items-center mb-4 lg:hidden">
-              <svg className="w-5 h-5 mr-2 text-[#164e63]" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-              </svg>
-              <span className="font-bold text-[#164e63]">Real Estate</span>
-            </div>
+      {/* Right panel */}
+      <div className="flex-1 flex items-center justify-center px-6 py-12 bg-white">
+        <div className="w-full max-w-md">
 
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
-                <ShieldCheck className="w-5 h-5 text-emerald-600" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900">Email Verification</h3>
+          {/* Mobile logo */}
+          <div className="flex lg:hidden items-center gap-2 mb-8 cursor-pointer" onClick={() => router.push("/")}>
+            <div className="w-8 h-8 rounded-lg bg-[#9b0f09] flex items-center justify-center">
+              <Home className="w-4 h-4 text-white" />
             </div>
-            <p className="text-sm text-gray-500">
-              {token
-                ? "Your verification link is ready. Click the button below to verify your email."
-                : "No token found. Please use the link sent to your email or resend below."}
-            </p>
-          </CardHeader>
+            <span className="text-black font-bold text-lg">Real Estate</span>
+          </div>
 
-          {/* Token status */}
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-11 h-11 rounded-xl bg-[#fff6f6] flex items-center justify-center">
+              <ShieldCheck className="w-6 h-6 text-[#9b0f09]" />
+            </div>
+            <h2 className="text-3xl font-bold text-black">Verify Email</h2>
+          </div>
+          <p className="text-gray-500 text-sm mb-8">
+            {token
+              ? "Your verification link is ready. Click below to confirm your email."
+              : "No token found. Use the link sent to your email or resend below."}
+          </p>
+
+          {/* Token badge */}
           {token && (
-            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 mb-6">
-              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-              <p className="text-sm text-emerald-700 font-medium truncate">Token detected</p>
+            <div className="flex items-center gap-2 bg-[#fff6f6] border border-[#9b0f09]/20 rounded-xl px-4 py-3 mb-6">
+              <ShieldCheck className="w-4 h-4 text-[#9b0f09] shrink-0" />
+              <p className="text-sm text-[#9b0f09] font-medium">Verification token detected</p>
             </div>
           )}
 
-          {/* Verify Button */}
+          {/* Verify button */}
           <Button
             onClick={handleVerify}
             disabled={state.loading || !token}
-            className="w-full py-6 rounded-xl font-semibold bg-emerald-500 hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed mb-8"
+            className="w-full py-6 rounded-xl font-semibold text-white bg-[#9b0f09] hover:bg-[#7d0c07] transition-colors shadow-md shadow-[#9b0f09]/30 disabled:opacity-40 disabled:cursor-not-allowed mb-8"
           >
-            {state.loading ? "Verifying..." : "Verify Email"}
+            {state.loading
+              ? <span className="flex items-center gap-2"><Loader className="w-4 h-4 animate-spin" /> Verifying...</span>
+              : <span className="flex items-center gap-2"><MailCheck className="w-4 h-4" /> Verify Email</span>
+            }
           </Button>
 
           {/* Divider */}
           <div className="flex items-center gap-3 mb-6">
-            <div className="flex-1 border-t border-gray-200" />
-            <span className="text-xs text-gray-400 font-medium">OR</span>
-            <div className="flex-1 border-t border-gray-200" />
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="text-xs text-gray-400 font-medium">DIDN'T GET THE EMAIL?</span>
+            <div className="flex-1 h-px bg-gray-200" />
           </div>
 
-          {/* Resend Section */}
-          <div>
-            <p className="text-sm font-semibold text-gray-700 mb-3">Resend Verification Email</p>
+          {/* Resend section */}
+          <div className="space-y-3">
+            <p className="text-sm font-semibold text-black">Resend Verification Email</p>
             <Input
               type="email"
               placeholder="Enter your email address"
               value={state.email}
               onChange={(e) => setState({ email: e.target.value })}
-              className="rounded-xl mb-3"
+              className="rounded-xl border-gray-200 text-black placeholder:text-gray-400"
             />
             <Button
               onClick={handleResend}
               disabled={state.resendLoading || !state.email}
-              className="w-full py-5 rounded-xl font-semibold bg-[#164e63] hover:bg-[#0f3a4a] text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-5 rounded-xl font-semibold border-2 border-[#9b0f09] text-[#9b0f09] bg-white hover:bg-[#fff6f6] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              {state.resendLoading ? (
-                <span className="flex items-center gap-2">
-                  <RefreshCw className="w-4 h-4 animate-spin" /> Sending...
-                </span>
-              ) : (
-                <span className="flex items-center gap-2">
-                  <RefreshCw className="w-4 h-4" /> Resend Email
-                </span>
-              )}
+              {state.resendLoading
+                ? <span className="flex items-center gap-2"><RefreshCw className="w-4 h-4 animate-spin" /> Sending...</span>
+                : <span className="flex items-center gap-2"><RefreshCw className="w-4 h-4" /> Resend Email</span>
+              }
             </Button>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-gray-100 text-center">
-            <button onClick={() => router.push("/login")} className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
-              ← Back to Login
-            </button>
-          </div>
-        </Card>
+          <p className="text-center text-sm text-gray-500 mt-8">
+            Back to{" "}
+            <Link href="/login" className="text-[#9b0f09] font-semibold hover:underline">Sign In</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

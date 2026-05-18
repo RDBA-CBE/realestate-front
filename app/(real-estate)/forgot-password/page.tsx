@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardDescription, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Models from "@/imports/models.import";
 import Link from "next/link";
@@ -9,7 +8,13 @@ import * as Yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Failure, Success, useSetState } from "@/utils/function.utils";
-import { Loader, MailCheck } from "lucide-react";
+import { Loader, Home, CheckCircle2, ArrowRight, MailCheck } from "lucide-react";
+
+const steps = [
+  "Enter your registered email address",
+  "Check your inbox for the reset link",
+  "Set a new password and sign in",
+];
 
 const ForgotPasswordPage = () => {
   const router = useRouter();
@@ -22,18 +27,14 @@ const ForgotPasswordPage = () => {
     errors: {},
   });
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  useEffect(() => { setIsMounted(true); }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setState({ btnLoading: true, errors: {} });
-
       await Yup.object({ email: Yup.string().email("Enter a valid email").required("Email is required") })
         .validate({ email: state.email }, { abortEarly: false });
-
       const res: any = await Models.auth.forget_password({ email: state.email });
       Success(res?.message || "Reset link sent to your email");
       setState({ btnLoading: false, submitted: true });
@@ -51,118 +52,138 @@ const ForgotPasswordPage = () => {
 
   if (!isMounted) return null;
 
-  const LeftPanel = () => (
-    <div className="hidden lg:flex lg:flex-col justify-between lg:w-1/2 relative z-10 p-12">
-      <div className="mb-12 flex items-center text-white">
-        <svg className="w-6 h-6 mr-2 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-        </svg>
-        <span className="font-extrabold text-xl tracking-wider cursor-pointer" onClick={() => router.push("/")}>
-          Real Estate
-        </span>
+  return (
+    <div className="min-h-screen flex bg-white font-sans relative">
+
+      {/* Top-right: View Properties */}
+      <div className="absolute top-5 right-5 z-30">
+        <button
+          type="button"
+          onClick={() => router.push("/property-list")}
+          className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 bg-white text-sm font-medium text-black hover:border-[#9b0f09] hover:text-[#9b0f09] transition-all shadow-sm"
+        >
+          <Home className="w-4 h-4" />
+          View Properties
+          <ArrowRight className="w-3.5 h-3.5" />
+        </button>
       </div>
 
-      <div>
-        <h1 className="text-5xl font-extrabold text-white mb-6 leading-tight">Forgot your password?</h1>
-        <p className="text-xl text-amber-300 font-semibold mb-10">No worries, we'll send you reset instructions.</p>
-        <div className="space-y-6">
-          {["Enter your registered email", "Check your inbox for the reset link", "Set a new password and login"].map((step, i) => (
-            <div key={i} className="flex items-center space-x-3">
-              <div className="w-6 h-6 flex items-center justify-center text-xs font-bold text-white bg-[#3d767d] rounded-full flex-shrink-0">{i + 1}</div>
-              <p className="text-lg text-white font-medium">{step}</p>
-            </div>
-          ))}
+      {/* Left panel */}
+      <div className="hidden lg:flex flex-col justify-between w-1/2 bg-[#9b0f09] px-16 py-12 relative overflow-hidden">
+        <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-white/5" />
+        <div className="absolute bottom-0 right-0 w-72 h-72 rounded-full bg-white/5 translate-x-1/3 translate-y-1/3" />
+
+        <div className="flex items-center gap-2 cursor-pointer z-10" onClick={() => router.push("/")}>
+          <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center">
+            <Home className="w-5 h-5 text-white" />
+          </div>
+          <span className="text-white font-bold text-xl tracking-wide">Real Estate</span>
+        </div>
+
+        <div className="z-10 space-y-6">
+          <h1 className="text-5xl font-semibold text-white leading-tight">
+            Forgot your password? No worries.
+          </h1>
+          <p className="text-white/70 text-lg max-w-xs">
+            We'll send you a secure link to reset it in seconds.
+          </p>
+          <ul className="space-y-4 pt-2">
+            {steps.map((step, i) => (
+              <li key={i} className="flex items-center gap-3">
+                <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                  {i + 1}
+                </div>
+                <span className="text-white/90 text-sm font-medium">{step}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="z-10">
+          <svg viewBox="0 0 400 160" className="w-full opacity-20" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="60" width="80" height="90" rx="4" fill="white" />
+            <polygon points="60,20 100,60 20,60" fill="white" />
+            <rect x="45" y="100" width="30" height="50" rx="2" fill="#9b0f09" />
+            <rect x="130" y="40" width="100" height="110" rx="4" fill="white" />
+            <polygon points="180,5 230,40 130,40" fill="white" />
+            <rect x="160" y="90" width="40" height="60" rx="2" fill="#9b0f09" />
+            <rect x="260" y="70" width="70" height="80" rx="4" fill="white" />
+            <polygon points="295,35 330,70 260,70" fill="white" />
+            <rect x="278" y="110" width="25" height="40" rx="2" fill="#9b0f09" />
+            <rect x="0" y="148" width="400" height="4" rx="2" fill="white" />
+          </svg>
         </div>
       </div>
 
-      <div className="mt-16 flex justify-center lg:justify-start">
-        <svg className="w-full h-auto max-w-md" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-          <rect x="0" y="270" width="500" height="30" fill="#1d8d95ff" />
-          <ellipse cx="250" cy="280" rx="200" ry="20" fill="#22c3ceff" opacity="0.5" />
-          <g transform="translate(100, 50)">
-            <path d="M50 200 C 50 150, 150 150, 150 200 L 150 250 L 50 250 Z" fill="#22ceceff" stroke="#1d7d95ff" strokeWidth="4" />
-            <circle cx="100" cy="130" r="25" fill="#f59e0b" />
-            <rect x="70" y="155" width="60" height="80" rx="10" fill="#b5fbfdff" />
-            <rect x="250" y="50" width="100" height="180" rx="15" fill="#22c8ceff" stroke="#fff" strokeWidth="2" />
-            <rect x="258" y="58" width="84" height="164" rx="10" fill="#1d8395ff" />
-            <g transform="translate(265, 80)">
-              <rect x="0" y="40" width="70" height="50" fill="#f59e0b" rx="5" />
-              <polygon points="35 0, 70 40, 0 40" fill="#d97706" />
-              <rect x="30" y="55" width="10" height="20" fill="#ef4444" />
-            </g>
-            <circle cx="300" cy="50" r="30" fill="#10b981" stroke="#fff" strokeWidth="3" />
-            <path d="M285 50 L 295 60 L 315 40" stroke="#fff" strokeWidth="4" fill="none" />
-          </g>
-        </svg>
-      </div>
-    </div>
-  );
+      {/* Right panel */}
+      <div className="flex-1 flex items-center justify-center px-6 py-12 bg-white">
+        <div className="w-full max-w-md">
 
-  return (
-    <div className="min-h-screen flex flex-col lg:flex-row lg:justify-between px-4 sm:p-8 bg-[#164e63] font-sans relative overflow-hidden items-center">
-      <LeftPanel />
+          {/* mobile logo */}
+          <div className="flex lg:hidden items-center gap-2 mb-8 cursor-pointer" onClick={() => router.push("/")}>
+            <div className="w-8 h-8 rounded-lg bg-[#9b0f09] flex items-center justify-center">
+              <Home className="w-4 h-4 text-white" />
+            </div>
+            <span className="text-black font-bold text-lg">Real Estate</span>
+          </div>
 
-      <div className="w-full min-h-screen lg:min-h-0 lg:w-1/2 flex justify-center items-center lg:justify-end lg:pt-12 relative z-20 lg:self-start">
-        <Card className="relative z-30 bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm mx-auto">
           {state.submitted ? (
-            <div className="flex flex-col items-center text-center space-y-4 py-4">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center">
-                <MailCheck className="w-8 h-8 text-emerald-600" />
+            <div className="flex flex-col items-center text-center space-y-5 py-8">
+              <div className="w-16 h-16 rounded-full bg-[#fff6f6] flex items-center justify-center">
+                <MailCheck className="w-8 h-8 text-[#9b0f09]" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">Check your email</h3>
-              <p className="text-sm text-gray-500">
-                We sent a password reset link to <span className="font-medium text-gray-800">{state.email}</span>
+              <h2 className="text-2xl font-bold text-black">Check your email</h2>
+              <p className="text-gray-500 text-sm max-w-xs">
+                We sent a password reset link to{" "}
+                <span className="font-semibold text-black">{state.email}</span>
               </p>
-              <p className="text-xs text-gray-400">Didn't receive the email? Check your spam folder or</p>
+              <p className="text-xs text-gray-400">Didn't receive it? Check your spam folder or</p>
               <button
                 onClick={() => setState({ submitted: false, email: "" })}
-                className="text-sm font-medium text-emerald-600 hover:underline"
+                className="text-sm font-semibold text-[#9b0f09] hover:underline"
               >
                 Try a different email
               </button>
-              <Link href="/login" className="w-full mt-2">
-                <Button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg">
-                  Back to Login
+              <Link href="/login" className="w-full">
+                <Button className="w-full py-6 rounded-xl font-semibold text-white bg-[#9b0f09] hover:bg-[#7d0c07]">
+                  Back to Sign In
                 </Button>
               </Link>
             </div>
           ) : (
             <>
-              <CardHeader className="flex flex-col space-y-2 mb-6 p-0">
-                <h3 className="text-xl font-bold tracking-tight text-gray-900">Forgot Password</h3>
-                <CardDescription>Enter your email to receive a password reset link</CardDescription>
-              </CardHeader>
+              <h2 className="text-3xl font-bold text-black mb-1">Forgot Password</h2>
+              <p className="text-gray-500 text-sm mb-8">
+                Enter your email and we'll send you a reset link.
+              </p>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <Input
                   title="Email"
-                  id="email"
                   type="email"
                   placeholder="you@example.com"
-                  className="rounded-xl"
                   value={state.email}
                   onChange={(e) => setState({ email: e.target.value, errors: { ...state.errors, email: "" } })}
                   error={state.errors?.email}
+                  className="rounded-xl border-gray-200 text-black placeholder:text-gray-400"
                 />
 
                 <Button
                   type="submit"
-                  className="w-full py-3 rounded-lg font-semibold bg-emerald-500 text-white hover:bg-emerald-600 shadow-md shadow-emerald-500/30"
                   disabled={state.btnLoading}
+                  className="w-full py-6 rounded-xl font-semibold text-white bg-[#9b0f09] hover:bg-[#7d0c07] transition-colors shadow-md shadow-[#9b0f09]/30"
                 >
                   {state.btnLoading ? <Loader className="w-4 h-4 animate-spin" /> : "Send Reset Link"}
                 </Button>
               </form>
 
-              <p className="text-center text-sm text-gray-600 mt-5">
+              <p className="text-center text-sm text-gray-500 mt-6">
                 Remember your password?{" "}
-                <Link href="/login" className="font-medium text-black hover:underline">
-                  Login
-                </Link>
+                <Link href="/login" className="text-[#9b0f09] font-semibold hover:underline">Sign in</Link>
               </p>
             </>
           )}
-        </Card>
+        </div>
       </div>
     </div>
   );

@@ -189,6 +189,7 @@ export function PropertyCard({
   const [state, setState] = useSetState({
     is_compare: false,
     is_liked: false,
+    showLoginPopup: false,
   });
 
   // Get all images for the slider
@@ -227,8 +228,10 @@ export function PropertyCard({
   const handleWishList = async () => {
     try {
       const token = localStorage.getItem("token");
-      if (!token)
-        return Failure("Please log in to add properties to your wishlist!");
+      if (!token) {
+        setState({ showLoginPopup: true });
+        return;
+      }
 
       if (!property?.user_wishlists) {
         await Models.wishlist.add_property({ property_id: property?.id });
@@ -330,9 +333,26 @@ export function PropertyCard({
   //   return `${formatPrice(minPrice)} - ${formatPrice(maxPrice)}`;
   // };
 
+  const LoginPopup = () => (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center" onClick={() => setState({ showLoginPopup: false })}>
+      <div className="bg-white rounded-2xl p-8 max-w-sm w-full mx-4 text-center shadow-xl" onClick={(e) => e.stopPropagation()}>
+        <div className="w-14 h-14 bg-[#fff6f6] rounded-full flex items-center justify-center mx-auto mb-4">
+          <Heart className="w-7 h-7 text-[#9b0f09]" />
+        </div>
+        <h3 className="text-lg font-bold text-black mb-2">Login Required</h3>
+        <p className="text-gray-500 text-sm mb-6">Please sign in to save properties to your wishlist.</p>
+        <div className="flex gap-3">
+          <button onClick={() => setState({ showLoginPopup: false })} className="flex-1 border border-gray-200 text-gray-700 py-2.5 rounded-xl font-medium hover:bg-gray-50 transition-colors">Cancel</button>
+          <button onClick={() => { setState({ showLoginPopup: false }); router.push("/login"); }} className="flex-1 bg-[#9b0f09] text-white py-2.5 rounded-xl font-medium hover:bg-[#7d0c07] transition-colors">Sign In</button>
+        </div>
+      </div>
+    </div>
+  );
+
   // GRID VIEW - UNCHANGED
   if (view === "grid") {
     return (
+      <>
       <motion.div
         whileHover={{ scale: 1.02 }}
         onMouseEnter={() => setHover(true)}
@@ -341,7 +361,7 @@ export function PropertyCard({
       >
         <Card
           onClick={() => onClick()}
-          className="bg-color1 border-none overflow-hidden p-3 border shadow-sm hover:shadow-lg cursor-pointer h-full flex flex-col"
+          className="bg-color1 border-gray overflow-hidden p-3 border shadow-sm hover:shadow-lg cursor-pointer h-full flex flex-col"
         >
           {/* Image Slider - Fixed Height */}
           <div className="relative">
@@ -439,11 +459,11 @@ export function PropertyCard({
                         className={`rounded-full p-2 shadow hover:bg-color1 transition-colors ${
                           isCompareIcon
                             ? state.is_compare || property?.is_compare
-                              ? "bg-green-500 text-white"
+                              ? "bg-dred text-white hover:bg-dred hover:text-white"
                               : "bg-white text-black"
                             : like
                               ? property?.user_wishlists
-                                ? "bg-color2 text-white"
+                                ? "bg-color2 text-white hover:bg-color2 hover:text-white"
                                 : "bg-white text-black"
                               : "bg-white text-black"
                         }`}
@@ -471,12 +491,12 @@ export function PropertyCard({
               <h3 className="text-gray-900 pb-1 text-xl mb-2 line-clamp-2">
                 {property.title}
               </h3>
-              {property.location?.name && (
+              {(property.location?.name || property.location?.label) && (
                 <div className="flex items-center text-gray-600 mb-4">
                   <MapPin className="h-5 w-5 mr-1 flex-shrink-0 text-dred" />
                   <span className="text-md line-clamp-1">{`${capitalizeFLetter(
-                    property.area?.name,
-                  )}, ${capitalizeFLetter(property.location?.name)}`}</span>
+                    property.area?.name || property.area?.label,
+                  )}, ${capitalizeFLetter(property.location?.name || property.location?.label)}`}</span>
                 </div>
               )}
 
@@ -541,7 +561,7 @@ export function PropertyCard({
               </div>
 
               <Button
-                className="border-gray bg-tranparent hover:bg-green-700 text-gray-600 hover:text-white px-4 py-2 text-sm font-medium mt-5 shadow-none"
+                className="border-gray bg-tranparent hover:bg-dred text-gray-600 hover:text-white px-4 py-2 text-sm font-medium mt-5 shadow-none"
                 onClick={(e) => {
                   e.stopPropagation();
                   if (onContactClick) onContactClick(property);
@@ -554,11 +574,14 @@ export function PropertyCard({
           </CardContent>
         </Card>
       </motion.div>
+      {state.showLoginPopup && <LoginPopup />}
+      </>
     );
   }
 
   // LIST VIEW - ENHANCED SALE PROPERTIES DISPLAY
   return (
+    <>
     <motion.div
       whileHover={{ scale: 1.02 }}
       onMouseEnter={() => setHover(true)}
@@ -697,8 +720,8 @@ export function PropertyCard({
               <div className="flex items-center text-gray-600 mb-4">
                 <MapPin className="h-5 w-5 mr-1 flex-shrink-0 text-dred" />
                 <span className="text-md line-clamp-1">{`${capitalizeFLetter(
-                  property?.area?.name,
-                )}, ${capitalizeFLetter(property?.location?.name)}`}</span>
+                  property?.area?.name || property?.area?.label,
+                )}, ${capitalizeFLetter(property?.location?.name || property?.location?.label)}`}</span>
               </div>
 
               {/* Enhanced Sale Property Display */}
@@ -922,5 +945,7 @@ export function PropertyCard({
         </CardContent>
       </Card>
     </motion.div>
+    {state.showLoginPopup && <LoginPopup />}
+    </>
   );
 }

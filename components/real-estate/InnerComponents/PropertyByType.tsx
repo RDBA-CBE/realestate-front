@@ -27,7 +27,7 @@ const PropertyByType = ({ propertyTypeList = [] }) => {
 
   return (
     <section className="bg-[#f8f8f8] section-pad">
-      <div className="section-wid mx-auto">
+      <div className="section-wid mx-auto pb-5">
 
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between md:items-center mb-10 md:mb-14">
@@ -36,7 +36,7 @@ const PropertyByType = ({ propertyTypeList = [] }) => {
             <p className="section-cap">Lorem ipsum dolor sit amet</p>
           </div>
           {/* Nav Arrows */}
-          <div className="flex items-center gap-3 mt-4 md:mt-0">
+         {propertyTypeList.length > 6 && <div className="flex items-center gap-3 mt-4 md:mt-0">
             <button
               onClick={() => swiperInstance?.slidePrev()}
               className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center hover:bg-[#9b0f09] hover:border-[#9b0f09] hover:text-white text-gray-500 transition-colors"
@@ -49,7 +49,7 @@ const PropertyByType = ({ propertyTypeList = [] }) => {
             >
               <ChevronRight className="w-5 h-5" />
             </button>
-          </div>
+          </div>}
         </div>
 
         {/* Swiper Cards */}

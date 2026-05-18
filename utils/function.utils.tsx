@@ -1,6 +1,6 @@
 import moment from "moment";
 import { useState } from "react";
-import Swal, { SweetAlertPosition } from "sweetalert2";
+import { toastEmitter } from "@/components/common-components/ToastProvider";
 
 export const useSetState = (initialState: any) => {
   const [state, setState] = useState(initialState);
@@ -11,60 +11,12 @@ export const useSetState = (initialState: any) => {
   return [state, newSetState];
 };
 
-export const Success = (message: string, positions?: SweetAlertPosition) => {
-  const toast = Swal.mixin({
-    toast: true,
-    position: positions || "top-end",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    background: "#000000",
-    customClass: {
-      popup: "custom-success-toast",
-      title: "custom-success-title",
-      icon: "custom-success-icon",
-    },
-    didOpen: (toast) => {
-      // Ensure text is white and medium font weight
-      const title = toast.querySelector(".swal2-title");
-      if (title) {
-        title.classList.add("text-white", "font-medium");
-      }
-    },
-  });
-
-  toast.fire({
-    icon: "success",
-    title: message,
-  });
+export const Success = (message: string) => {
+  toastEmitter.emit("success", message);
 };
 
-export const Failure = (message: string, positions?: SweetAlertPosition) => {
-  const toast = Swal.mixin({
-    toast: true,
-    position: positions || "top-end",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    background: "#000000",
-    customClass: {
-      popup: "custom-success-toast",
-      title: "custom-success-title",
-      icon: "custom-success-icon",
-    },
-    didOpen: (toast) => {
-      // Ensure text is white and medium font weight
-      const title = toast.querySelector(".swal2-title");
-      if (title) {
-        title.classList.add("text-white", "font-medium");
-      }
-    },
-  });
-  toast.fire({
-    icon: "error",
-    title: message,
-    padding: "10px 20px",
-  });
+export const Failure = (message: string) => {
+  toastEmitter.emit("error", message);
 };
 
 export const objIsEmpty = (obj: object) => {

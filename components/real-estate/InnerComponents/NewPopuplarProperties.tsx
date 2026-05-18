@@ -51,7 +51,7 @@ router.push(`property-detail/${property?.id}`)
                 updatePropertyType("all");
                 setActiveFilter("all");
               }}
-              className={`px-4 md:px-6 py-2 rounded-full transition-colors ${
+              className={`px-3 md:px-6 py-2 text-sm rounded-full transition-colors ${
                 activeFilter === "all"
                   ? "bg-color2 text-white"
                   : "border border-[#d1d0d0]  hover:text-dred"
@@ -65,7 +65,7 @@ router.push(`property-detail/${property?.id}`)
 
                 setActiveFilter("lease");
               }}
-              className={`px-6 py-2 rounded-full transition-colors ${
+              className={`px-6 py-2 text-sm rounded-full transition-colors ${
                 activeFilter === "lease"
                   ? "bg-color2 text-white"
                   : "border border-[#d1d0d0]  hover:text-dred"
@@ -79,7 +79,7 @@ router.push(`property-detail/${property?.id}`)
 
                 setActiveFilter("sale");
               }}
-              className={`px-6 py-2 rounded-full transition-colors ${
+              className={`px-6 py-2 text-sm rounded-full transition-colors ${
                 activeFilter === "sale"
                   ? "bg-color2 text-white"
                   : "border border-[#d1d0d0]  hover:text-dred"
