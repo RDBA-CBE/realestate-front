@@ -164,7 +164,7 @@ const AboutPage = () => {
               <div className="relative z-10 max-w-3xl mx-auto">
                 <h2 className="text-3xl md:text-5xl font-bold text-white mb-8 leading-[1.2]">Ready to Find Your Perfect Place?</h2>
                 <p className="text-white/80 text-lg md:text-xl mb-12 font-light">
-                  Whether you're looking for a cozy apartment or a sprawling estate, our team is ready to help you find precisely what you're looking for.
+                  Whether you&apos;re looking for a cozy apartment or a sprawling estate, our team is ready to help you find precisely what you&apos;re looking for.
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-6">
                   <Link

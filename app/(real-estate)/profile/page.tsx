@@ -643,7 +643,7 @@ const getPropertyTypeNames = (ids: string[]) => {
   <div className="mt-3 rounded-xl border border-dashed border-gray-300 bg-white/80 p-3 text-sm text-gray-700">
     {state.user?.newsletter ? (
       <>
-        <p className="font-medium text-black">You're subscribed!</p>
+        <p className="font-medium text-black">You&apos;re subscribed!</p>
         <p>
           Enjoy regular property post updates, featured listings, and exclusive alerts.
         </p>

@@ -85,7 +85,7 @@ const ForgotPasswordPage = () => {
             Forgot your password? No worries.
           </h1>
           <p className="text-white/70 text-lg max-w-xs">
-            We'll send you a secure link to reset it in seconds.
+            We&apos;ll send you a secure link to reset it in seconds.
           </p>
           <ul className="space-y-4 pt-2">
             {steps.map((step, i) => (
@@ -137,7 +137,7 @@ const ForgotPasswordPage = () => {
                 We sent a password reset link to{" "}
                 <span className="font-semibold text-black">{state.email}</span>
               </p>
-              <p className="text-xs text-gray-400">Didn't receive it? Check your spam folder or</p>
+              <p className="text-xs text-gray-400">Didn&apos;t receive it? Check your spam folder or</p>
               <button
                 onClick={() => setState({ submitted: false, email: "" })}
                 className="text-sm font-semibold text-[#9b0f09] hover:underline"
@@ -154,7 +154,7 @@ const ForgotPasswordPage = () => {
             <>
               <h2 className="text-3xl font-bold text-black mb-1">Forgot Password</h2>
               <p className="text-gray-500 text-sm mb-8">
-                Enter your email and we'll send you a reset link.
+                Enter your email and we&apos;ll send you a reset link.
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-4">

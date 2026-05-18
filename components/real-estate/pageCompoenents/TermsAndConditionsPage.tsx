@@ -34,14 +34,14 @@ const TermsAndConditionsPage = () => {
             <h2 className="section-ti mb-8 text-center">Agreement to Our Terms</h2>
 
             <p className="text-gray-700 mb-6 leading-relaxed">
-              Welcome to Real Estate! These Terms and Conditions ("Terms") govern your use of our website, services, and applications (collectively, the "Services"). By accessing or using our Services, you agree to be bound by these Terms and our Privacy Policy. If you do not agree to these Terms, please do not use our Services.
+              Welcome to Real Estate! These Terms and Conditions (&quot;Terms&quot;) govern your use of our website, services, and applications (collectively, the &quot;Services&quot;). By accessing or using our Services, you agree to be bound by these Terms and our Privacy Policy. If you do not agree to these Terms, please do not use our Services.
             </p>
 
             <div className="space-y-8">
               <div>
                 <h3 className="section-in-ti mb-3 text-2xl">1. Use of Services</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  You must be at least 18 years old to use our Services. You agree to use the Services only for lawful purposes and in a way that does not infringe the rights of, restrict, or inhibit anyone else's use and enjoyment of the Services. Prohibited behavior includes harassing or causing distress or inconvenience to any other user, transmitting obscene or offensive content, or disrupting the normal flow of dialogue within our Services.
+                  You must be at least 18 years old to use our Services. You agree to use the Services only for lawful purposes and in a way that does not infringe the rights of, restrict, or inhibit anyone else&apos;s use and enjoyment of the Services. Prohibited behavior includes harassing or causing distress or inconvenience to any other user, transmitting obscene or offensive content, or disrupting the normal flow of dialogue within our Services.
                 </p>
               </div>
 
@@ -62,7 +62,7 @@ const TermsAndConditionsPage = () => {
               <div>
                 <h3 className="section-in-ti mb-3 text-2xl">4. Disclaimers and Limitation of Liability</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  Our Services are provided "as is" without any warranties, express or implied. We do not guarantee the accuracy, completeness, or reliability of any content or information provided through our Services. To the fullest extent permitted by law, Real Estate shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising out of or in connection with your use of the Services.
+                  Our Services are provided &quot;as is&quot; without any warranties, express or implied. We do not guarantee the accuracy, completeness, or reliability of any content or information provided through our Services. To the fullest extent permitted by law, Real Estate shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising out of or in connection with your use of the Services.
                 </p>
               </div>
 

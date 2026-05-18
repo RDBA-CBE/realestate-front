@@ -34,7 +34,7 @@ const PrivacyPolicyPage = () => {
             <h2 className="section-ti mb-8 text-center">Our Commitment to Your Privacy</h2>
 
             <p className="text-gray-700 mb-6 leading-relaxed">
-              This Privacy Policy describes how Real Estate ("we," "us," or "our") collects, uses, and shares your personal information when you use our website, services, and applications (collectively, the "Services"). By using our Services, you agree to the collection and use of information in accordance with this policy.
+              This Privacy Policy describes how Real Estate (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) collects, uses, and shares your personal information when you use our website, services, and applications (collectively, the &quot;Services&quot;). By using our Services, you agree to the collection and use of information in accordance with this policy.
             </p>
 
             <div className="space-y-8">
@@ -45,7 +45,7 @@ const PrivacyPolicyPage = () => {
                 </p>
                 <ul className="list-disc list-inside text-gray-700 ml-4 mt-2 space-y-1">
                   <li><strong>Personal Data:</strong> While using our Services, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you. This may include, but is not limited to, your email address, name, phone number, and address.</li>
-                  <li><strong>Usage Data:</strong> We may also collect information on how the Services are accessed and used. This Usage Data may include information such as your computer's Internet Protocol address (e.g., IP address), browser type, browser version, the pages of our Services that you visit, the time and date of your visit, the time spent on those pages, unique device identifiers, and other diagnostic data.</li>
+                  <li><strong>Usage Data:</strong> We may also collect information on how the Services are accessed and used. This Usage Data may include information such as your computer&apos;s Internet Protocol address (e.g., IP address), browser type, browser version, the pages of our Services that you visit, the time and date of your visit, the time spent on those pages, unique device identifiers, and other diagnostic data.</li>
                   <li><strong>Tracking & Cookies Data:</strong> We use cookies and similar tracking technologies to track the activity on our Services and hold certain information.</li>
                 </ul>
               </div>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { CheckCircle, XCircle, X } from "lucide-react";
+import { toastEmitter } from "@/utils/toast.utils";
 
 type ToastType = "success" | "error";
 
@@ -11,23 +12,6 @@ interface Toast {
   type: ToastType;
   message: string;
 }
-
-// Simple event emitter — works outside React (called from function.utils)
-type Listener = (type: ToastType, message: string) => void;
-const listeners: Listener[] = [];
-
-export const toastEmitter = {
-  emit(type: ToastType, message: string) {
-    listeners.forEach((fn) => fn(type, message));
-  },
-  subscribe(fn: Listener) {
-    listeners.push(fn);
-    return () => {
-      const idx = listeners.indexOf(fn);
-      if (idx > -1) listeners.splice(idx, 1);
-    };
-  },
-};
 
 let idCounter = 0;
 const DURATION = 3500;

@@ -1,6 +1,6 @@
 import moment from "moment";
 import { useState } from "react";
-import { toastEmitter } from "@/components/common-components/ToastProvider";
+import { toastEmitter } from "@/utils/toast.utils";
 
 export const useSetState = (initialState: any) => {
   const [state, setState] = useState(initialState);

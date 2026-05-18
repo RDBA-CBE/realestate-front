@@ -6,7 +6,7 @@ import Models from "@/imports/models.import";
 import Link from "next/link";
 import * as Yup from "yup";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { Failure, Success, useSetState } from "@/utils/function.utils";
 import { Loader, Home, ArrowRight, ShieldCheck, AlertTriangle } from "lucide-react";
 
@@ -24,9 +24,11 @@ const resetSchema = Yup.object({
     .required("Please confirm your password"),
 });
 
-export default function ResetPasswordPage({ params }: { params: { uid: string; token: string } }) {
+export default function ResetPasswordPage() {
   const router = useRouter();
-  const { uid, token } = params;
+  const params = useParams();
+  const uid = params?.uid as string | undefined;
+  const token = params?.token as string | undefined;
   const [isMounted, setIsMounted] = useState(false);
 
   const [state, setState] = useSetState({
