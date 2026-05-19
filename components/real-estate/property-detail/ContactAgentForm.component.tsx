@@ -186,7 +186,7 @@ export default function ContactAgentForm({
       };
       console.log("Callback Payload:", payload);
 
-      let res: any = await Models.chat.callback(payload);
+      const res: any = await Models.chat.callback(payload);
       console.log("Callback Response:", res);
       setInquiryMode("done");
       setCallbackLoading(false);
@@ -223,7 +223,7 @@ export default function ContactAgentForm({
       schedule_date_time:bookingForm?.date?moment(bookingForm?.date).format("YYYY-MM-DD HH:mm:ss"):null,
       user_id:state.userId,
     };
-    let res: any = await Models.chat.booking_inquiry(payload);
+    const res: any = await Models.chat.booking_inquiry(payload);
 
     setInquiryMode("done");
     setBookingLoading(false);
