@@ -219,46 +219,42 @@ export default function Page() {
   };
 
   const filterList = async (page = 1, append = false, data = null) => {
-    if (filterTimeoutRef.current) {
-      clearTimeout(filterTimeoutRef.current);
-    }
-
-    filterTimeoutRef.current = setTimeout(async () => {
-      try {
-        if (append) {
-          setState({ isLoadingMore: true });
-        } else {
-          setState({ loading: true });
-        }
-
-        const bodys = bodyData(data);
-        const res: any = await Models.property.list(page, bodys);
-
-        const compareList: string[] = JSON.parse(
-          localStorage.getItem("compare") || "[]"
-        );
-
-        const resultsWithCompare = res?.results.map((item: any) => ({
-          ...item,
-          is_compare: compareList.includes(item.id),
-        }));
-
-        setState({
-          propertyList: append
-            ? [...state.propertyList, ...resultsWithCompare]
-            : resultsWithCompare,
-          handNext: res?.next,
-          page: page,
-          loading: false,
-          isLoadingMore: false,
-        });
-      } catch (error) {
-        setState({
-          loading: false,
-          isLoadingMore: false,
-        });
+    try {
+      if (append) {
+        setState({ isLoadingMore: true });
+      } else {
+        setState({ isFilterLoading: true });
       }
-    }, 300); // 300ms debounce
+
+      const bodys = bodyData(data);
+      const res: any = await Models.property.list(page, bodys);
+
+      const compareList: string[] = JSON.parse(
+        localStorage.getItem("compare") || "[]"
+      );
+
+      const resultsWithCompare = res?.results.map((item: any) => ({
+        ...item,
+        is_compare: compareList.includes(item.id),
+      }));
+
+      setState({
+        propertyList: append
+          ? [...state.propertyList, ...resultsWithCompare]
+          : resultsWithCompare,
+        handNext: res?.next,
+        page: page,
+        loading: false,
+        isFilterLoading: false,
+        isLoadingMore: false,
+      });
+    } catch (error) {
+      setState({
+        loading: false,
+        isFilterLoading: false,
+        isLoadingMore: false,
+      });
+    }
   };
 
   const bodyData = (data) => {
@@ -405,6 +401,7 @@ export default function Page() {
         filters={(data) => filterList(1, false, data)}
         onFilterChange={(data) => dynamicFilterList(data)}
         loading={state.loading}
+        isFilterLoading={state.isFilterLoading}
         isLoadingMore={state.isLoadingMore}
         handNext={state.handNext}
         loadMore={(data) => filterList(state.page + 1, true, data)}

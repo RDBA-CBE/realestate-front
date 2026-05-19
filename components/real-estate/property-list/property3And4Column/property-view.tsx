@@ -75,6 +75,7 @@ export function PropertyView(props: any) {
     initialDeveloper,
     propertyTypeFilter,
     onFilterChange,
+    isFilterLoading = false,
   } = props;
 
   const router = useRouter();
@@ -115,7 +116,7 @@ export function PropertyView(props: any) {
 
   // console.log("state", state); // Commented out for cleaner console
 
-  const initialLoadRef = useRef(false);
+  const initialLoadRef = useRef(true);
   const filterTimeoutRef = useRef(null);
   const previousFiltersRef = useRef({});
   const priceFloorRef = useRef(0);
@@ -157,6 +158,9 @@ export function PropertyView(props: any) {
     if (initialLocation?.length > 0) setState({ location: initialLocation });
     if (initialPropertyType?.length > 0) setState({ propertyType: initialPropertyType });
     if (initialDeveloper?.length > 0) setState({ developer: initialDeveloper });
+    // Mark initial load done after all initial props are applied
+    const t = setTimeout(() => { initialLoadRef.current = false; }, 500);
+    return () => clearTimeout(t);
   }, [
     propertyTypeFilter,
     initialSearch,
@@ -234,18 +238,16 @@ export function PropertyView(props: any) {
       floorPlan: state.floorPlan,
       furnishing: state.furnishing,
       search: debouncedSearch,
-      priceRange: state.priceRange,
       sqftMin: debouncedSqftMin,
       sqftMax: debouncedSqftMax,
       yearBuiltMin: debouncedYearBuiltMin,
       yearBuiltMax: debouncedYearBuiltMax,
       sort: state.sort,
       prefferedLocation: state.prefferedLocation,
-      priceMinInput: state.priceMinInput,
-      priceMaxInput: state.priceMaxInput,
+      priceMinInput: debouncedPriceMinInput,
+      priceMaxInput: debouncedPriceMaxInput,
     };
 
-    console.log("PropertyView sending filters:", currentFilters); // Debug log
 
     // Check if filters actually changed
     const hasFiltersChanged =
@@ -277,11 +279,12 @@ export function PropertyView(props: any) {
     state.floorPlan,
     state.furnishing,
     debouncedSearch,
-    state.priceRange,
     debouncedSqftMin,
     debouncedSqftMax,
     debouncedYearBuiltMin,
     debouncedYearBuiltMax,
+    debouncedPriceMinInput,
+    debouncedPriceMaxInput,
   ]);
 
   const handleChange = (name, value) => {
@@ -651,14 +654,9 @@ export function PropertyView(props: any) {
                           state.openPriceDropdown === "min" ? null : "min",
                       })
                     }
-                    className="
-        w-full px-5 py-1 rounded-full
-        border border-gray-300 bg-white
-        flex items-center justify-between
-        text-gray-700
-      "
+                    className="w-full px-3 py-1 rounded-full border border-gray-300 bg-white flex items-center justify-between text-gray-700 whitespace-nowrap"
                   >
-                    <span>
+                    <span className="whitespace-nowrap text-sm">
                       {state.priceMinInput
                         ? getPriceLabel(state.priceMinInput, priceOptions)
                         : "No min"}
@@ -673,9 +671,9 @@ export function PropertyView(props: any) {
                   </button>
 
                   {state.openPriceDropdown === "min" && (
-                    <div className="absolute z-50 mt-2 w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto">
+                    <div className="absolute z-50 bottom-full mb-2 min-w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto">
                       <button
-                        className="w-full px-5 py-1 text-left hover:bg-gray-100"
+                        className="w-full px-5 py-1 text-left hover:bg-gray-100 whitespace-nowrap"
                         onClick={() =>
                           setState({
                             priceMinInput: "",
@@ -690,7 +688,7 @@ export function PropertyView(props: any) {
                       {priceOptions.map((item) => (
                         <button
                           key={item.value}
-                          className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                          className="w-full px-5 py-3 text-left hover:bg-gray-100 whitespace-nowrap"
                           onClick={() =>
                             setState({
                               priceMinInput: item.value,
@@ -716,14 +714,9 @@ export function PropertyView(props: any) {
                           state.openPriceDropdown === "max" ? null : "max",
                       })
                     }
-                    className="
-        w-full px-5 py-2 rounded-full
-        border border-gray-300 bg-white
-        flex items-center justify-between
-        text-gray-700
-      "
+                    className="w-full px-3 py-1 rounded-full border border-gray-300 bg-white flex items-center justify-between text-gray-700 whitespace-nowrap"
                   >
-                    <span>
+                    <span className="whitespace-nowrap text-sm">
                       {state.priceMaxInput
                         ? getPriceLabel(state.priceMaxInput, maxPriceOptions)
                         : "No max"}
@@ -738,9 +731,9 @@ export function PropertyView(props: any) {
                   </button>
 
                   {state.openPriceDropdown === "max" && (
-                    <div className="absolute z-50 mt-2 w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto">
+                    <div className="absolute z-50 bottom-full mb-2 min-w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto">
                       <button
-                        className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                        className="w-full px-5 py-3 text-left hover:bg-gray-100 whitespace-nowrap"
                         onClick={() =>
                           setState({
                             priceMaxInput: "",
@@ -754,7 +747,7 @@ export function PropertyView(props: any) {
                       {maxPriceOptions.map((item) => (
                         <button
                           key={item.value}
-                          className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                          className="w-full px-5 py-3 text-left hover:bg-gray-100 whitespace-nowrap"
                           onClick={() =>
                             setState({
                               priceMaxInput: item.value,
@@ -921,14 +914,9 @@ export function PropertyView(props: any) {
                           state.openDropdown === "min" ? null : "min",
                       })
                     }
-                    className="
-        w-full px-5 py-1 rounded-full
-        border border-gray-300 bg-white
-        flex items-center justify-between
-        text-gray-700
-      "
+                    className="w-full px-3 py-1 rounded-full border border-gray-300 bg-white flex items-center justify-between text-gray-700 whitespace-nowrap"
                   >
-                    <span>{state.sqftMin || "No min"}</span>
+                    <span className="whitespace-nowrap text-sm">{state.sqftMin || "No min"}</span>
 
                     <ChevronDown
                       size={18}
@@ -940,15 +928,10 @@ export function PropertyView(props: any) {
 
                   {state.openDropdown === "min" && (
                     <div
-                    className="
-                      absolute z-50 bottom-full mb-2 w-full
-                      bg-white border border-gray-200
-                      rounded-2xl shadow-lg
-                      max-h-72 overflow-y-auto
-                    "
+                    className="absolute z-50 bottom-full mb-2 min-w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto"
                   >
                       <button
-                        className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                        className="w-full px-5 py-3 text-left hover:bg-gray-100 whitespace-nowrap"
                         onClick={() => {
                           setState({
                             sqftMin: "",
@@ -965,7 +948,7 @@ export function PropertyView(props: any) {
                       {sqftOptions.map((item) => (
                         <button
                           key={item.value}
-                          className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                          className="w-full px-5 py-3 text-left hover:bg-gray-100 whitespace-nowrap"
                           onClick={() => {
                             setState({
                               sqftMin: item.value,
@@ -993,14 +976,9 @@ export function PropertyView(props: any) {
                           state.openDropdown === "max" ? null : "max",
                       })
                     }
-                    className="
-        w-full px-5 py-1 rounded-full
-        border border-gray-300 bg-white
-        flex items-center justify-between
-        text-gray-700
-      "
+                    className="w-full px-3 py-1 rounded-full border border-gray-300 bg-white flex items-center justify-between text-gray-700 whitespace-nowrap"
                   >
-                    <span>{state.sqftMax || "No max"}</span>
+                    <span className="whitespace-nowrap text-sm">{state.sqftMax || "No max"}</span>
 
                     <ChevronDown
                       size={18}
@@ -1012,15 +990,10 @@ export function PropertyView(props: any) {
 
                   {state.openDropdown === "max" && (
                   <div
-                  className="
-                    absolute z-50 bottom-full mb-2 w-full
-                    bg-white border border-gray-200
-                    rounded-2xl shadow-lg
-                    max-h-72 overflow-y-auto
-                  "
+                  className="absolute z-50 bottom-full mb-2 min-w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto"
                 >
                       <button
-                        className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                        className="w-full px-5 py-3 text-left hover:bg-gray-100 whitespace-nowrap"
                         onClick={() => {
                           setState({
                             sqftMax: "",
@@ -1036,7 +1009,7 @@ export function PropertyView(props: any) {
                       {maxSqftOptions.map((item) => (
                         <button
                           key={item.value}
-                          className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                          className="w-full px-5 py-3 text-left hover:bg-gray-100 whitespace-nowrap"
                           onClick={() => {
                             setState({
                               sqftMax: item.value,
@@ -1306,7 +1279,8 @@ export function PropertyView(props: any) {
             onClearSqft={() => setState({ sqftMin: "", sqftMax: "" })}
           />
 
-          {loading ? (
+          {/* Initial load skeleton — only when no properties yet */}
+          {loading && properties?.length === 0 ? (
             <div
               className={
                 state.view === "grid"
@@ -1322,7 +1296,7 @@ export function PropertyView(props: any) {
                 />
               ))}
             </div>
-          ) : properties?.length === 0 ? (
+          ) : properties?.length === 0 && !loading ? (
             <div className="flex flex-col justify-center items-center w-full py-12">
               <svg
                 className="w-20 h-20 text-gray-300 mb-4"
@@ -1350,9 +1324,10 @@ export function PropertyView(props: any) {
             <>
               <div
                 className={
-                  state.view === "grid"
+                  `transition-opacity duration-200 ${(loading || isFilterLoading) ? "opacity-50 pointer-events-none" : "opacity-100"} ` +
+                  (state.view === "grid"
                     ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 !gap-5"
-                    : "flex flex-col !gap-5"
+                    : "flex flex-col !gap-5")
                 }
               >
                 {properties?.map((property: any, index: number) => (
