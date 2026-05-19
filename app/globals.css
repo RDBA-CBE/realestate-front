@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Antd reset — prevent antd base styles from conflicting with Tailwind */
+@import 'antd/dist/reset.css';
+
 
 body {
   font-family: "Roboto Flex", sans-serif;

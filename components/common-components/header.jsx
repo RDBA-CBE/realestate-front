@@ -282,12 +282,13 @@ const Header = () => {
                   </div>
                 )}
 
-                {/* <Button
-                onClick={() => router.push("/ai-search")}
-                className="bg-color2 hover:bg-color2 text-white"
-              >
-                AI Search
-              </Button> */}
+<Button
+                      onClick={() => router.push("/ai-search")}
+                      variant="outline"
+                      className="px-6 rounded-full bg-lred hover:bg-color2 border-[#9b0f09]  text-dred hover:text-gray-900"
+                    >
+                      AI Search
+                    </Button>
 
                 <div className="block lg:hidden">
                   <Sheet open={open} onOpenChange={setOpen}>
