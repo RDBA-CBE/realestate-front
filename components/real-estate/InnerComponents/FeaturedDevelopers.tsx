@@ -104,7 +104,7 @@ export default function FeaturedDevelopers({
   const hasDevelopers = !!developerList?.length;
 
   return (
-    <section className="section-pad bg-white !pt-0">
+    <section className="section-pad bg-white ">
       <div className="section-wid pb-5">
         
         {/* Heading */}

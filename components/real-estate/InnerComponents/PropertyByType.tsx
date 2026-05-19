@@ -82,7 +82,7 @@ const PropertyByType = ({ propertyTypeList = [] }) => {
               <SwiperSlide key={index}>
                 <div
                   onClick={() => handleClick(item)}
-                  className="bg-white rounded-2xl h-[180px] flex flex-col items-center justify-center text-center border border-gray bg-lred hover:shadow-lg transition duration-300 cursor-pointer"
+                  className="bg-white rounded-2xl h-[180px] flex flex-col items-center justify-center text-center border border-dred bg-lred hover:shadow-lg transition duration-300 cursor-pointer"
                 >
                   <div className="w-14 h-14 rounded-2xl bg-dred flex text-white items-center justify-center mb-5 border border-[#9b0f09]">
                     <Icon size={22} className="text-white" />

@@ -240,7 +240,7 @@ const HomePageNew = () => {
 
         <PropertyByType propertyTypeList={state.propertyTypeList} />
 
-        <HowItWorks />
+        
 
         <FeaturedDevelopers developerList={state.developerList} />
 
@@ -253,8 +253,11 @@ const HomePageNew = () => {
             locationLabel={state.selectedLocation?.label}
           />
 
+          
+
         {/* <AboutSection /> */}
          <SellingOptionsSection/>
+         <HowItWorks />
 
         {/* <FAQSection/> */}
         <FAQSectionNew/>

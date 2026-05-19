@@ -23,7 +23,11 @@ const HowItWorks = () => {
       image: "/assets/images/real-estate/property-buy.png",
       type: "Sale",
       url: "/property-list?type=Sale",
-      bg: "#f7f7f7",
+      bg: "#9b0f09",
+      border:"none",
+      text:"#ffff",
+      buttonClr:"#fff",
+      buttonTextClr:"#9b0f09"
     },
     {
       title: "Want to sell your home?",
@@ -32,23 +36,25 @@ const HowItWorks = () => {
       image: "/assets/images/real-estate/property-rent.png",
       type: "Lease",
       url: "/post-property",
-      bg: "#fff6f6",
+      
+      bg: "####",
+      border:"1px solid #9b0f09"
     },
   ];
 
   return (
     <div className="section-pad bg-white">
-      <div className="  section-wid py-5">
+      <div className="  section-wid">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {cards.map((card, index) => (
             <div
               key={index}
               className="flex items-center justify-between rounded-2xl px-12 py-16 gap-6"
-              style={{ backgroundColor: card.bg }}
+              style={{ backgroundColor: card.bg, border:card.border, color:card.text }}
             >
               {/* Left Content */}
               <div className="flex-1">
-                <h3 className="section-ti mb-3 ">
+                <h3 className="section-ti mb-3 "  style={{  color:card.text }}>
                   {card.title}
                 </h3>
                 <p className=" mb-6 max-w-xs">
@@ -57,6 +63,7 @@ const HowItWorks = () => {
                 <button
                   onClick={() => OnTypeClick(card)}
                   className="flex items-center gap-2 bg-dred hover:bg-[#fff6f6] hover:text-[#9b0f09] text-white hover:border hover:border-[#9b0f09] px-5 py-2.5 rounded-full transition-colors"
+                  style={{  backgroundColor: card.buttonClr , color:card.buttonTextClr}}
                 >
                   {card.buttonText} <ArrowRight size={14} />
                 </button>
