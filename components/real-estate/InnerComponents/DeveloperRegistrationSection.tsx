@@ -46,7 +46,7 @@ export default function DeveloperRegistrationSection() {
             </p>
             <button
               onClick={() => router.push("/post-property")}
-              className="inline-flex items-center gap-2 bg-dred hover:bg-red-800 text-white font-semibold px-8 py-3 rounded-full transition-colors duration-200 shadow-md"
+              className="inline-flex items-center gap-2 bg-dred hover:bg-red-800 text-white px-8 py-3 rounded-full transition-colors duration-200 shadow-md"
             >
               <Building2 className="w-5 h-5" />
               Register &amp; Post Property

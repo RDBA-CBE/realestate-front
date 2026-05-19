@@ -9,10 +9,7 @@ import Models from "@/imports/models.import";
 
 import { Button } from "@/components/ui/button";
 
-import {
-  ArrowLeft,
-  Building2,
-} from "lucide-react";
+import { ArrowLeft, Building2 } from "lucide-react";
 
 import { PropertyCard } from "@/components/real-estate/property-list/property3And4Column/property-card";
 
@@ -85,54 +82,50 @@ export default function DeveloperDetailPage() {
     developer?.company_name ||
     `${developer?.first_name ?? ""} ${developer?.last_name ?? ""}`.trim();
 
-  const developerImage =
-    developer?.developer_image || developer?.profile_image;
+  const developerImage = developer?.developer_image || developer?.profile_image;
 
   return (
     <div className="min-h-screen bg-[#fff]">
       {/* HEADER */}
       <div className="border-b border-[#ebe7e1] bg-[#f8f8f8]">
-        <div className="section-wid py-10">
+        <div className="section-wid py-5">
           {/* BREADCRUMB */}
-          <div className="flex lg:justify-between">
-             <div className="mb-6 flex flex-wrap items-center gap-2 text-sm text-gray-500">
-            <span
-              className="cursor-pointer hover:text-black"
-              onClick={() => router.push("/")}
+          <div className="flex lg:justify-between items-center">
+            <div className=" flex flex-wrap items-center gap-2 text-sm text-gray-500">
+              <span
+                className="cursor-pointer hover:text-black"
+                onClick={() => router.push("/")}
+              >
+                Home
+              </span>
+
+              <span>/</span>
+
+              <span
+                className="cursor-pointer hover:text-black"
+                onClick={() => router.push("/developers")}
+              >
+                Developers
+              </span>
+
+              <span>/</span>
+
+              <span className="text-black">{developerName || "Developer"}</span>
+            </div>
+
+            {/* BACK BUTTON */}
+            <Button
+              variant="outline"
+              onClick={() => router.back()}
+              className="mb-8 rounded-full border-dred bg-white px-5 text-dred shadow-none hover:bg-dred hover:text-white"
             >
-              Home
-            </span>
-
-            <span>/</span>
-
-            <span
-              className="cursor-pointer hover:text-black"
-              onClick={() => router.push("/developers")}
-            >
-              Developers
-            </span>
-
-            <span>/</span>
-
-            <span className="text-black">
-              {developerName || "Developer"}
-            </span>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Button>
           </div>
-
-          {/* BACK BUTTON */}
-          <Button
-            variant="outline"
-            onClick={() => router.back()}
-            className="mb-8 rounded-full border-dred bg-white px-5 text-dred shadow-none hover:bg-dred hover:text-white"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Button>
-          </div>
-         
 
           {/* HEADER CONTENT */}
-          <div className="flex flex-col gap-6 md:flex-row md:items-center">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center">
             {/* IMAGE */}
             <div className="relative h-[80px] w-[80px] overflow-hidden rounded-2xl border border-[#e7e5e4] bg-white shadow-sm">
               {developerImage ? (
@@ -151,11 +144,9 @@ export default function DeveloperDetailPage() {
 
             {/* TEXT */}
             <div>
-              <p className="text-sm text-gray-500">
-                Property For Sale by
-              </p>
+              <p className="text-sm text-gray-500">Property For Sale by</p>
 
-              <h1 className="mt-2 section-ti ">
+              <h1 className=" section-ti ">
                 {developerName || "Developer"}
               </h1>
             </div>
@@ -178,35 +169,29 @@ export default function DeveloperDetailPage() {
       <div className="section-wid py-5">
         {/* ABOUT */}
         <div className="max-w-7xl">
-          <h2 className="section-in-ti">
+          {/* <h2 className="section-in-ti">
             About {developerName}
           </h2>
 
           <p className="mt-3 ">
             {developer?.company_name || developerName}
-          </p>
+          </p> */}
 
           {/* DESCRIPTION */}
-          <div className="mt-5">
-            <h3 className="section-in-ti">
-              Description
-            </h3>
+          <div className="">
+            <h3 className="section-in-ti">Description</h3>
 
             <p className="mt-4 ">
               {developer?.description ||
                 `${developerName} is a leading real estate and property development company delivering premium residential and commercial projects with modern architecture and quality lifestyle amenities.`}
             </p>
           </div>
-
-          
         </div>
 
         <div>
-            {/* FILTERS */}
-          <div className="mt-10 border-t border-[#ebe7e1] pt-8 ">
-            <h3 className="section-in-ti ">
-              Explore {developerName} Projects
-            </h3>
+          {/* FILTERS */}
+          <div className="mt-5 border-t border-[#ebe7e1] pt-4 ">
+            <h3 className="section-in-ti ">Explore {developerName} Projects</h3>
 
             {/* <div className="mt-6 flex flex-wrap gap-4">
               <button className="rounded-full border border-[#f97316] bg-[#fff7ed] px-8 py-3 text-base font-medium text-[#f97316]">
@@ -239,9 +224,7 @@ export default function DeveloperDetailPage() {
                 Loading properties...
               </p>
             ) : error ? (
-              <p className="py-10 text-center text-red-500">
-                {error}
-              </p>
+              <p className="py-10 text-center text-red-500">{error}</p>
             ) : properties.length === 0 ? (
               <div className="py-10 text-center text-gray-500">
                 No properties found for this developer.

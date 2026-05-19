@@ -67,7 +67,7 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
 
           {/* Search Bar */}
           <div className="adv-searchbar flex items-center justify-between gap-2 mt-6">
-             <div className="flex  flex-1 gap-3 px-4">
+             <div className="flex  flex-1 gap-3 items-center lg:items-start px-4">
               <Search className="text-[#383838] w-4 h-4 md:w-5 md:h-5  md:mt-0.5 shrink-0" />
               <div>
                 <input
@@ -87,7 +87,7 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
               </div>
             </div>
 
-            <div className="flex  flex-1 gap-3 px-4">
+            <div className="flex  flex-1 gap-3 items-center lg:items-start px-4">
               <MapPin className="text-[#383838] w-4 h-4 md:w-5 md:h-5  md:mt-1.5 shrink-0" />
               <div>
                 {/* <p className="adv-field-label">Location</p> */}
@@ -104,7 +104,7 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
 
             <div className="adv-divider"></div>
 
-            <div className="flex flex-1 gap-3 px-4">
+            <div className="flex flex-1 gap-3 items-center lg:items-start px-4">
               <Home className="text-[#383838] w-4 h-4 md:w-5 md:h-5 md:mt-1.5 shrink-0" />
               <div>
                 {/* <p className="adv-field-label">Property Type</p> */}

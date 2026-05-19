@@ -23,6 +23,7 @@ import {
   LogIn,
   LogOut,
   Mail,
+  MapPin,
   MenuIcon,
   Settings,
   User,
@@ -46,7 +47,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useSetState } from "@/utils/function.utils";
-import Models from "@/imports/models.import";
+import { usePathname } from "next/navigation";
 
 const Header = () => {
   const username = useSelector((state) => state.auth.username);
@@ -59,16 +60,35 @@ const Header = () => {
 
   const [state, setState] = useSetState({
     token: null,
-    group: null,
-    username: null,
     logoutLoading: false,
+    selectedLocation: null,
   });
+
+  const pathname = usePathname();
+  const isHomePage = pathname === "/" || pathname === "/home";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const savedLocation = localStorage.getItem("userLocation");
+    setState({
+      token,
+      selectedLocation: savedLocation ? JSON.parse(savedLocation) : null,
+    });
 
-    setState({ token });
+    const onLocationChanged = (e) => {
+      setState({ selectedLocation: e.detail });
+    };
+    window.addEventListener("locationChanged", onLocationChanged);
+    return () => window.removeEventListener("locationChanged", onLocationChanged);
   }, []);
+
+  const handleLocationClick = () => {
+    if (isHomePage) {
+      window.dispatchEvent(new Event("openLocationPicker"));
+    } else {
+      router.push("/");
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -209,6 +229,23 @@ const Header = () => {
                     support@realestate.com
                   </Link>
                 </div>
+                {/* {state.token && state.selectedLocation ? (
+                  <button
+                    onClick={handleLocationClick}
+                    className="hidden lg:flex items-center gap-1.5 me-2 px-3 py-1 rounded-full bg-[#9b0f09]/10 hover:bg-[#9b0f09]/20 transition-colors cursor-pointer"
+                  >
+                    <MapPin className="w-3.5 h-3.5 text-dred shrink-0" />
+                    <span className="text-sm font-medium text-dred">{state.selectedLocation.label}</span>
+                  </button>
+                ) : state.token && !state.selectedLocation ? (
+                  <button
+                    onClick={handleLocationClick}
+                    className="hidden lg:flex items-center gap-1.5 me-2 px-3 py-1 rounded-full border border-dashed border-[#9b0f09]/50 hover:bg-[#9b0f09]/10 transition-colors"
+                  >
+                    <MapPin className="w-3.5 h-3.5 text-dred shrink-0" />
+                    <span className="text-sm font-medium text-dred">Choose Location</span>
+                  </button>
+                ) : null} */}
                 {state.token ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>

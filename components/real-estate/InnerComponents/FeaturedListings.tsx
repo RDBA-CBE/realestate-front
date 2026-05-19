@@ -5,11 +5,11 @@ import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import { useRouter } from "next/navigation";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, MapPin } from "lucide-react";
 import PropertyCard from "./PropertyCard";
 
 const FeaturedListings = (props) => {
-  const { list } = props;
+  const { list, locationEmpty, locationLabel } = props;
   const swiperRef = useRef(null);
 
   const breakpoints = {
@@ -40,6 +40,12 @@ const FeaturedListings = (props) => {
             <h2 className="section-ti">Discover Our Fully Furnished Sale Properties</h2>
             <p className="section-cap">Aliquam lacinia diam quis lacus euismod</p>
           </div>
+          {locationEmpty && (
+            <div className="flex items-center gap-2 mt-2 px-4 py-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 text-sm">
+              <MapPin className="w-4 h-4 shrink-0" />
+              No properties found in <span className="font-semibold mx-1">{locationLabel}</span> — showing all available properties.
+            </div>
+          )}
           <a
             href="property-list"
             className="flex items-center gap-4 mt-4 md:mt-0  transition-colors font-medium"
