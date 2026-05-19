@@ -349,8 +349,11 @@ export function PropertyCard({
     </div>
   );
 
-  // GRID VIEW - UNCHANGED
+  // GRID VIEW
   if (view === "grid") {
+    const amenities = (property as any)?.amenities?.slice(0, 3) || [];
+    const locationUrl = (property as any)?.location_url;
+
     return (
       <>
       <motion.div
@@ -441,42 +444,37 @@ export function PropertyCard({
                 For {property.listing_type}
               </Badge>
 
-              {/* Action Buttons */}
-              {/* {hover && ( */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
-                  className="absolute bottom-2 right-2 flex gap-2"
-                >
-                  {[Heart, GitCompareArrowsIcon, Share].map((Icon, i) => {
-                    const isCompareIcon = Icon === GitCompareArrowsIcon;
-                    const like = Icon === Heart;
-
-                    return (
-                      <button
-                        key={i}
-                        className={`rounded-full p-2 shadow hover:bg-color1 transition-colors ${
-                          isCompareIcon
-                            ? state.is_compare || property?.is_compare
-                              ? "bg-dred text-white hover:bg-dred hover:text-white"
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                className="absolute bottom-2 right-2 flex gap-2"
+              >
+                {[Heart, GitCompareArrowsIcon, Share].map((Icon, i) => {
+                  const isCompareIcon = Icon === GitCompareArrowsIcon;
+                  const like = Icon === Heart;
+                  return (
+                    <button
+                      key={i}
+                      className={`rounded-full p-2 shadow hover:bg-color1 transition-colors ${
+                        isCompareIcon
+                          ? state.is_compare || property?.is_compare
+                            ? "bg-dred text-white hover:bg-dred hover:text-white"
+                            : "bg-white text-black"
+                          : like
+                            ? property?.user_wishlists
+                              ? "bg-color2 text-white hover:bg-color2 hover:text-white"
                               : "bg-white text-black"
-                            : like
-                              ? property?.user_wishlists
-                                ? "bg-color2 text-white hover:bg-color2 hover:text-white"
-                                : "bg-white text-black"
-                              : "bg-white text-black"
-                        }`}
-                        onClick={(e) => handleIconClick(i, e)}
-                      >
-                        <Icon size={16} />
-                      </button>
-                    );
-                  })}
-                </motion.div>
-              {/* )} */}
+                            : "bg-white text-black"
+                      }`}
+                      onClick={(e) => handleIconClick(i, e)}
+                    >
+                      <Icon size={16} />
+                    </button>
+                  );
+                })}
+              </motion.div>
 
-              {/* Price Badge */}
               {property?.user_preferred_locations &&
                <Badge className="absolute top-2 right-2 bg-lred rounded-2xl text-dred  px-2 py-1 text-sm shadow-md flex gap-1 hover:bg-lred ">
                 <Star className="text-dred w-3.5 h-3.5"/>
@@ -488,11 +486,11 @@ export function PropertyCard({
           {/* Property Content */}
           <CardContent className="flex flex-col justify-between mx-2 pt-3 flex-grow">
             <div>
-              <h3 className="text-gray-900 pb-1 text-xl mb-2 line-clamp-2">
+              <h3 className="text-gray-900 pb-1 text-xl mb-1 line-clamp-2">
                 {property.title}
               </h3>
               {(property.location?.name || property.location?.label) && (
-                <div className="flex items-center text-gray-600 mb-4">
+                <div className="flex items-center text-gray-600 mb-2">
                   <MapPin className="h-5 w-5 mr-1 flex-shrink-0 text-dred" />
                   <span className="text-md line-clamp-1">{`${capitalizeFLetter(
                     property.area?.name || property.area?.label,
@@ -500,10 +498,9 @@ export function PropertyCard({
                 </div>
               )}
 
-              <div className="flex items-center lg:justify-between gap-4  mb-2 flex-wrap text-md">
+              <div className="flex items-center lg:justify-between gap-4  flex-wrap text-md">
                 <div className="flex items-center space-x-2">
                   <Bed className="h-5 w-5 text-dred" />
-
                   {property.floor_plans && property.floor_plans.length > 0 ? (
                     <span>
                       {`${[
@@ -518,58 +515,73 @@ export function PropertyCard({
                     <span>{property.bedrooms} Bed</span>
                   )}
                 </div>
-                {/* <div className='flex items-center space-x-1'>
-                  <Bath className='h-5 w-5 text-dred' />
-                  <span>{property.bathrooms} bath</span>
-                </div> */}
                 <div className="flex items-center space-x-2">
                   <Maximize2 className="h-4 w-4 text-dred" />
                   <span>{property?.built_up_area} sqft</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 mt-4">
-                 <IndianRupeeIcon className="h-5 w-5 text-dred"/>
-                 {formatPriceRange(
+              <div className="flex items-center gap-2 mt-2">
+                <IndianRupeeIcon className="h-5 w-5 text-dred"/>
+                {formatPriceRange(
                   property?.price_range?.minimum_price,
                   property?.price_range?.maximum_price,
                 )}{" "}
                 {property.listing_type === "rent" && "/ mo"}
               </div>
-              
 
-               <div className="flex flex-col   pt-3 border-t border-gray-200 mt-4">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                  <span className="text-xs font-semibold text-gray-600">
-                    {getInitials(
-                      property?.developer?.industry || "",
-                    )}
-                  </span>
+              {/* Amenities — dot separated, max 3 */}
+              {/* {amenities.length > 0 && (
+                <div className="flex items-center gap-1 mt-3 text-sm text-gray-500 flex-wrap">
+                  {amenities.map((a: any, i: number) => (
+                    <span key={i} className="flex items-center gap-1">
+                      {i > 0 && <span className="text-gray-300">•</span>}
+                      <span>{a?.name || a}</span>
+                    </span>
+                  ))}
                 </div>
-                <div>
-                  <div className="text-sm font-semibold text-gray-900">
-                    {property?.developer?.industry ||
-                      "Property Owner"}
+              )} */}
+
+              {/* Map view link — only if location_url present */}
+              {locationUrl && (
+               <div
+  className="group flex items-center gap-1.5 mt-3 bg-dred text-sm text-white font-medium hover:bg-lred hover:text-dred w-fit py-1 px-3 rounded-full"
+  onClick={(e) => {
+    e.stopPropagation();
+    window.open(locationUrl, "_blank");
+  }}
+>
+  <MapPin className="h-4 w-4 text-white group-hover:text-dred " />
+  <span>Map View</span>
+</div>
+              )}
+
+              <div className="flex flex-col pt-3 border-t border-gray-200 mt-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                    <span className="text-xs font-semibold text-gray-600">
+                      {getInitials(property?.developer?.industry || "")}
+                    </span>
                   </div>
-                  <div className="text-xs text-gray-500">
-                    {property?.developer?.industry
-                      ? "Developer"
-                        : "Owner"}
+                  <div>
+                    <div className="text-sm font-semibold text-gray-900">
+                      {property?.developer?.industry || "Property Owner"}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {property?.developer?.industry ? "Developer" : "Owner"}
+                    </div>
                   </div>
                 </div>
+                <Button
+                  className="border-gray bg-tranparent hover:bg-dred text-gray-600 hover:text-white px-4 py-2 text-sm font-medium mt-5 shadow-none"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onContactClick) onContactClick(property);
+                  }}
+                >
+                  Contact
+                </Button>
               </div>
-
-              <Button
-                className="border-gray bg-tranparent hover:bg-dred text-gray-600 hover:text-white px-4 py-2 text-sm font-medium mt-5 shadow-none"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (onContactClick) onContactClick(property);
-                }}
-              >
-                Contact
-              </Button>
-            </div>
             </div>
           </CardContent>
         </Card>
@@ -717,7 +729,7 @@ export function PropertyCard({
               <h3 className="text-gray-900 pb-1 text-xl mb-2 line-clamp-2">
                 {property.title}
               </h3>
-              <div className="flex items-center text-gray-600 mb-4">
+              <div className="flex items-center text-gray-600 mb-2">
                 <MapPin className="h-5 w-5 mr-1 flex-shrink-0 text-dred" />
                 <span className="text-md line-clamp-1">{`${capitalizeFLetter(
                   property?.area?.name || property?.area?.label,
