@@ -12,6 +12,8 @@ import { usePathname } from "next/navigation";
 import NewHeader from "@/components/real-estate/NewHeader";
 import ChatWidget from "@/components/common-components/ChatWidget";
 import PropertyFinderChat from "@/components/common-components/ChatWidget";
+import NewFooter from "@/components/real-estate/NewFooter";
+import { ToastProvider } from "@/components/common-components/ToastProvider";
 
 
 
@@ -34,6 +36,10 @@ export default function RootLayout({ children }) {
   const isLoginPath = pathname?.startsWith("/login");
   const isSigninPath = pathname?.startsWith("/signin");
   const isForgetPassword = pathname?.startsWith("/forgot-password");
+  const isSignup = pathname?.startsWith("/signin");
+  const isPostProperty = pathname?.startsWith("/post-property");
+  const isResetPassword = pathname?.startsWith("/reset-password");
+  const isVerifyEmail = pathname?.startsWith("/verify-email");
 
 
   return (
@@ -42,14 +48,16 @@ export default function RootLayout({ children }) {
         <body className="font-sans antialiased bg-[#f9f9f9]">
           <Suspense fallback={<div>Loading...</div>}>
             <div className="flex flex-col w-full min-h-screen">
-              {!isLoginPath && !isSigninPath && !isForgetPassword && <Header />}
+              {!isLoginPath && !isSigninPath && !isForgetPassword && !isSignup && !isPostProperty && !isResetPassword && !isVerifyEmail && <Header />}
               {/* {!isLoginPath && !isSigninPath && !isForgetPassword && <NewHeader />} */}
 
 
               <main className="w-full">{children}</main>
+              <NewFooter/>
             </div>
             {/* <PropertyFinderChat /> */}
             <Toaster position="top-center" />
+            <ToastProvider />
           </Suspense>
         </body>
       </html>

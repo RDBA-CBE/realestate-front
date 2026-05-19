@@ -24,6 +24,7 @@ export default {
 
         borderColor: {
           dred: "#9b0f09",
+          sec:"#d1d0d0",
         },
 
         textColor: {

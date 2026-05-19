@@ -128,6 +128,7 @@ export default function Page() {
         maxPrice: res?.price_range?.maximum_price || 0,
         initialLocation: urlFilter.location || [],
         initialPropertyType: urlFilter.propertyType || [],
+        initialDeveloper: urlFilter.developer || [],
       });
 
       // 3. fetch property list with validated URL params
@@ -390,6 +391,7 @@ export default function Page() {
         furnishingList={state.furnishingList}
         listingTypeList={state.listingTypeList}
         bedroomList={state.bedroomList}
+        initialDeveloper={state.initialDeveloper}
         filters={(data) => filterList(1, false, data)}
         onFilterChange={(data) => dynamicFilterList(data)}
         loading={state.loading}

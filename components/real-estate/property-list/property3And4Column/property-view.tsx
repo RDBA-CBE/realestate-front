@@ -55,15 +55,15 @@ export function PropertyView(props: any) {
     isLoadingMore,
     handNext,
     loadMore,
-    categoryList,
-    locationList,
-    areaList,
-    projectList,
-    developerList,
-    floorPlanList,
-    furnishingList,
-    listingTypeList,
-    bedroomList,
+    categoryList = [],
+    locationList = [],
+    areaList = [],
+    projectList = [],
+    developerList = [],
+    floorPlanList = [],
+    furnishingList = [],
+    listingTypeList = [],
+    bedroomList = [],
     minPrice,
     maxPrice,
     updateList,
@@ -72,6 +72,7 @@ export function PropertyView(props: any) {
     initialListingStatus,
     initialLocation,
     initialPropertyType,
+    initialDeveloper,
     propertyTypeFilter,
     onFilterChange,
   } = props;
@@ -119,6 +120,7 @@ export function PropertyView(props: any) {
   const previousFiltersRef = useRef({});
   const priceFloorRef = useRef(0);
   const priceCeilingRef = useRef(0);
+  const isResettingRef = useRef(false);
 
   const skeletonCount = state.view == "grid" ? 3 : 1;
 
@@ -153,14 +155,17 @@ export function PropertyView(props: any) {
     if (initialSearch) setState({ search: initialSearch });
     if (initialListingStatus) setState({ listingStatus: initialListingStatus });
     if (initialLocation?.length > 0) setState({ location: initialLocation });
-    if (initialPropertyType?.length > 0)
-      setState({ propertyType: initialPropertyType });
+    if (initialPropertyType?.length > 0) setState({ propertyType: initialPropertyType });
+    if (initialDeveloper?.length > 0) setState({ developer: initialDeveloper });
+    // Mark initial load as complete to prevent duplicate API calls from filter effect
+    initialLoadRef.current = true;
   }, [
     propertyTypeFilter,
     initialSearch,
     initialListingStatus,
     initialLocation,
     initialPropertyType,
+    initialDeveloper,
   ]);
 
   useEffect(() => {
@@ -222,8 +227,8 @@ export function PropertyView(props: any) {
   // ]);
 
   useEffect(() => {
-    // Skip initial load
-    if (initialLoadRef.current) {
+    // Skip initial load or if currently resetting filters
+    if (initialLoadRef.current || isResettingRef.current) {
       return;
     }
 
@@ -314,6 +319,9 @@ export function PropertyView(props: any) {
   // };
 
   const resetFilter = () => {
+    // Set flag to prevent filter effect from firing during reset
+    isResettingRef.current = true;
+    
     setState({
       search: "",
       listingStatus: "",
@@ -340,10 +348,15 @@ export function PropertyView(props: any) {
     });
     previousFiltersRef.current = {};
 
-    // Call parent clear filter
+    // Call parent clear filter (which calls propertyList)
     if (clearFilter) {
       clearFilter();
     }
+    
+    // Reset the flag after state updates and parent call
+    setTimeout(() => {
+      isResettingRef.current = false;
+    }, 0);
   };
 
   const formatINR = (value: number) => {
@@ -428,11 +441,11 @@ export function PropertyView(props: any) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="xl:max-w-[110rem] max-w-[85rem] mx-auto p-6"
+      className="xl:max-w-[110rem] max-w-[85rem] mx-auto px-3 py-6 lg:p-6"
     >
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 items-start min-h-screen">
         <aside className="space-y-6 lg:col-span-1 xl:sticky md:top-16 lg:top-16  hidden xl:block ">
-          <div className="p-4 pb-8 border rounded-lg space-y-6 bg-color1 border-none h-[91vh] overflow-auto thin-scrollbar">
+          <div className="p-4 pb-8 border rounded-lg space-y-6 bg-color1 border-gray h-[91vh] overflow-auto thin-scrollbar">
             <div className="w-full flex justify-end">
               <Button
                 onClick={() => resetFilter()}
@@ -1107,7 +1120,7 @@ export function PropertyView(props: any) {
 
         <section className="xl:col-span-4 space-y-6">
           <div className="sticky top-16 z-10">
-            <div className="flex flex-wrap items-center justify-between gap-1 md:gap-4 p-4 bg-color1 border-none rounded-lg border shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-1 md:gap-4 px-2 py-4 md:p-4 bg-color1 border-gray  rounded-lg border">
               <div className="flex items-center justify-between md:justify-normal gap-4 w-auto">
                 {/* --------responsive filter sidebar start---------- */}
 
@@ -1119,7 +1132,7 @@ export function PropertyView(props: any) {
                     <SheetTrigger asChild>
                       <Button
                         variant="outline"
-                        className="flex items-center gap-2 border-none bg-transparent shadow-none px-0 "
+                        className="flex items-center gap-2 border-gray bg-transparent shadow-none px-2 "
                       >
                         <SlidersHorizontal className="h-4 w-4" />
                         Filters
@@ -1181,11 +1194,11 @@ export function PropertyView(props: any) {
                 >
                   <Button
                     variant="outline"
-                    className="px-4 py-2 h-9 rounded-lg text-sm font-medium text-gray-600 hover:text-dred 
-                      border-none 
-                      md:border 
-                      md:border-gray-300 
-                      hover:border-red-200 bg-transparent md:bg-white px-0 md:px-3 shadow-none md:shadow-sm"
+                    className="px-4 py-2 h-9  rounded-lg text-sm font-medium text-gray-600 hover:text-dred 
+                      border-gray 
+                      md:!border 
+                      md:!border-theme 
+                      hover:border-red-200 bg-transparent md:bg-white px-2 md:px-3 shadow-none"
                   >
                     <MapPinHouseIcon />
                     Map View
@@ -1195,14 +1208,14 @@ export function PropertyView(props: any) {
               </div>
 
               <div className="flex items-center gap-4 justify-between md:justify-normal  w-auto">
-               { state.userLoggedIn && 
-               state.prefferedLocation == true ? ( 
+               {  state.userLoggedIn &&
+               (state.prefferedLocation == true ? ( 
                <Button
                   variant="outline"
                   className="px-4 py-2 h-8 rounded-2xl text-sm  
                       border-dred  bg-dred text-white
                       hover:bg-dred hover:text-white
-                         px-0 md:px-3 shadow-none "
+                         px-2 md:px-3 shadow-none "
                   onClick={() => {
                     setState({
                       prefferedLocation: !state.prefferedLocation,
@@ -1219,7 +1232,7 @@ export function PropertyView(props: any) {
                   className="px-4 py-2 h-8 rounded-2xl text-sm  text-dred 
                       border-dred hover:text-dred
                      
-                      px-0 md:px-3 shadow-none "
+                      px-2 md:px-3 shadow-none "
                   onClick={() => {
                     setState({
                       prefferedLocation: !state.prefferedLocation,
@@ -1229,9 +1242,9 @@ export function PropertyView(props: any) {
                   <MapPinHouseIcon />
                   Preffered Location
                 </Button>
-                )}
+                ))}
 
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600 whitespace-nowrap">
                     Sort by:
                   </span>
@@ -1271,7 +1284,7 @@ export function PropertyView(props: any) {
                       </SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
+                </div> */}
 
                 <div className="hidden sm:flex items-center gap-0 rounded-md overflow-hidden md:bg-white/70 md:shadow-sm">
                   <Button

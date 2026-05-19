@@ -181,7 +181,7 @@ export default function PropertyHeader(props: any) {
               variant="outline"
               className={`rounded-full ${
                 state?.is_compare
-                  ? "bg-green-500 border-green-500 text-white hover:bg-green-600 hover:border-green-600"
+                  ? "bg-color2 border-dred text-white hover:bg-green-600 hover:bg-[#9b0f09]"
                   : "bg-white text-black"
               }`}
             >
@@ -195,7 +195,7 @@ export default function PropertyHeader(props: any) {
               }}
               onClick={() => console.log("shared successfully!")}
             >
-              <Button size="icon" variant="outline" className="rounded-full">
+              <Button size="icon" variant="outline" className="rounded-full hover:border-dred hover:text-dred" >
                 <Share2 size={18} />
               </Button>
             </RWebShare>

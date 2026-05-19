@@ -82,7 +82,7 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
                         ? "properties for sale"
                         : "properties for lease"
                   }...`}
-                  className="adv-field-input"
+                  className="adv-field-input placeholder:lg:text-[16px]"
                 />
               </div>
             </div>
@@ -95,8 +95,9 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
                   options={cityOptions}
                   value={selectedCity}
                   onChange={(selected) => setSelectedCity(selected ? selected.value : "")}
-                  className="custom-select"
+                  className="custom-select placeholder:lg:text-[16px]"
                   placeholder="Choose City"
+                  
                 />
               </div>
             </div>
@@ -111,7 +112,7 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
                   options={propertyTypeOptions}
                   value={selectedType}
                   onChange={(selected) => setSelectedType(selected ? selected.value : "")}
-                  className="custom-select"
+                  className="custom-select placeholder:lg:text-[16px]"
                   placeholder="Choose Property Type"
                 />
                 {/* <select className="adv-field-input cursor-pointer">

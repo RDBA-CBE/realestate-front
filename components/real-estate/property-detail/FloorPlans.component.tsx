@@ -101,7 +101,7 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
 
   return (
     <div className="bg-transparent">
-      <h3 className="text-xl font-semibold mb-6">
+      <h3 className="section-in-ti mb-6">
         Price & Floor Plan
       </h3>
 
@@ -118,7 +118,7 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
               }}
               className={`px-4 py-2 rounded-lg border transition ${
                 activeCategory === cat && activeType === type
-                  ? "bg-indigo-600 text-white"
+                  ? "bg-dred text-white"
                   : "bg-color1 text-gray-700"
               }`}
             >
@@ -143,7 +143,7 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
               onClick={() => setSelectedSqft(plan.square_feet)}
               className={`px-3 py-1 border-b-2 ${
                 selectedSqft === plan.square_feet
-                  ? "border-indigo-600 text-indigo-600"
+                  ? "border-dred text-dred"
                   : "border-transparent text-gray-500"
               }`}
             >
@@ -155,7 +155,7 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
 
       {/* ✅ Price */}
       {selectedPlan && (
-        <div className="mt-4 text-lg font-bold">
+        <div className="mt-4 text-lg font-semibold text-black">
           {formatPrice(selectedPlan.price)}
         </div>
       )}

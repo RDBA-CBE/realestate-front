@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import ContactAgentForm from "@/components/real-estate/property-detail/ContactAgentForm.component";
-import { Dropdown, Failure, Success, useSetState } from "@/utils/function.utils";
+import { Dropdown, Failure, Success, useSetState, formatToINRS } from "@/utils/function.utils";
 
 import { Input } from "@/components/ui/input";
 import CustomPhoneInput from "@/components/common-components/phoneInput";
@@ -47,20 +47,40 @@ export default function ProfilePage() {
     isChangePassword: false,
     isPrefferedLocation:false,
     id: null,
+    propertyTypeList: [], // New: for property types dropdown
+    preferredPropertyTypes: [], // New: for user's preferred property types (IDs)
+    isPreferredPropertyType: false, // New: for property type modal visibility
+    preferredMinPrice: 0, // New: for price range preference
+    preferredMaxPrice: 0, // New: for price range preference
+    isPreferredPriceRange: false, // New: for price range modal visibility
     loading: false,
     error: null,
-    locationList : []
+    locationList : [],
+    showAuthAlert: false,
+    authAlertMessage: "",
   });
 
   useEffect(() => {
     const id = localStorage.getItem("userId");
-    setState({ id: id });
+    const token = localStorage.getItem("token");
+
+    if (!id || !token) {
+      setState({
+        showAuthAlert: true,
+        authAlertMessage: !token
+          ? "You are not logged in. Please sign in to view your profile."
+          : "User session not found. Please sign in again.",
+      });
+      return;
+    }
+    setState({ id });
   }, []);
 
   useEffect(() => {
     getUser();
     wishlist();
     cityList(1)
+    getPropertyTypes(); // New: Fetch property types
   }, []);
 
   console.log("state.id", state.id);
@@ -85,14 +105,33 @@ export default function ProfilePage() {
         }
       };
 
+  // New: Fetch property types
+  const getPropertyTypes = async () => {
+    try {
+      // Check if Models.dropdowns and the 'category' method exist before calling
+      if (Models.dropdowns && typeof (Models.dropdowns as any).category === 'function') {
+        const res: any = await (Models.dropdowns as any).category(); // Assuming 'category' is the correct method name for property types
+        const dropdown = Dropdown(res?.results, "name");
+        setState({ propertyTypeList: dropdown });
+      } else {
+        console.error("Error: Models.dropdowns.category is not a function or does not exist. Please check your dropdowns model file.");
+        // Optionally, you might want to set an error state or provide a fallback for propertyTypeList
+      }
+    } catch (error) {
+      console.error("Error fetching property types:", error);
+    }
+  };
       console.log("locationList", state.locationList);
       
 
   const getUser = async () => {
     try {
       const id = localStorage.getItem("userId");
+      if (!id) {
+        setState({ showAuthAlert: true, authAlertMessage: "User session not found. Please sign in again." });
+        return;
+      }
       setState({ loading: true });
-
       const res: any = await Models.user.details(id);
       setState({
         loading: false,
@@ -102,15 +141,17 @@ export default function ProfilePage() {
         email: res?.email || "",
         phone: res?.phone || "",
         address: res?.address || "",
+        preferredPropertyTypes: res?.preferred_property_types?.map((type) => String(type.id)) || [], // Assuming API returns this
+        preferredMaxPrice: res?.preferred_max_price || 0,
+        preferredMinPrice: res?.preferred_min_price || 0, // Assuming API returns this
         location: res?.preferred_locations?.map((loc) => String(loc.id)) || [],
       });
-
-      console.log("user detail", res);
     } catch (error) {
       setState({
         loading: false,
+        showAuthAlert: true,
+        authAlertMessage: "Failed to load your profile. Please sign in again.",
       });
-
       console.log("✌️error --->", error);
     }
   };
@@ -182,7 +223,7 @@ export default function ProfilePage() {
         });
         console.log("✌️validationErrors --->", validationErrors);
 
-        setState({ error: validationErrors, loading: false });
+        setState({ errors: validationErrors, loading: false });
       } else {
         Failure(error?.error);
       }
@@ -190,6 +231,9 @@ export default function ProfilePage() {
       setState({ loading: false });
     }
   };
+
+  console.log("state.error", state.error);
+  
 
   const handlePasswordSubmit = async (e) => {
     try {
@@ -219,7 +263,7 @@ export default function ProfilePage() {
         });
         console.log("✌️validationErrors --->", validationErrors);
 
-        setState({ error: validationErrors, loading: false });
+        setState({ errors: validationErrors, loading: false });
       } else {
         Failure(error?.error);
       }
@@ -259,7 +303,7 @@ export default function ProfilePage() {
         });
         console.log("✌️validationErrors --->", validationErrors);
 
-        setState({ error: validationErrors, loading: false });
+        setState({ errors: validationErrors, loading: false });
       } else {
         Failure(error?.error);
       }
@@ -303,7 +347,7 @@ const handleNewsletterSubmit = async (e) => {
         validationErrors[err.path] = err.message;
       });
 
-      setState({ error: validationErrors, loading: false });
+      setState({ errors: validationErrors, loading: false });
     } else {
       Failure(error?.error);
     }
@@ -311,6 +355,63 @@ const handleNewsletterSubmit = async (e) => {
     setState({ loading: false });
   }
 };
+
+// New: Handle Preferred Property Type Submit
+const handlePreferredPropertyTypeSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const body = {
+      preferred_property_types: state.preferredPropertyTypes,
+    };
+    await Models.user.update(body, state.id);
+    setState({ isPreferredPropertyType: false });
+    Success("Preferred Property Types Updated");
+    getUser();
+  } catch (error) {
+    Failure(error?.error || "Failed to update property types.");
+  }
+};
+
+// New: Handle Preferred Price Range Submit
+const handlePreferredPriceRangeSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const body = {
+      preferred_min_price: state.preferredMinPrice,
+      preferred_max_price: state.preferredMaxPrice,
+    };
+    await Models.user.update(body, state.id);
+    setState({ isPreferredPriceRange: false });
+    Success("Preferred Price Range Updated");
+    getUser();
+  } catch (error) {
+    Failure(error?.error || "Failed to update price range.");
+  }
+};
+
+// Helper to get property type names from IDs
+const getPropertyTypeNames = (ids: string[]) => {
+  return ids.map(id => {
+    const type = state.propertyTypeList.find(item => item.value === id);
+    return type ? type.label : '';
+  }).filter(Boolean).join(', ');
+};
+
+
+
+  const handleAuthAlertOk = async () => {
+    try {
+      const refresh = localStorage.getItem("refresh");
+      if (refresh) {
+        await Models.auth.logout({ refresh });
+      }
+    } catch (error) {
+      console.log("Logout failed, clearing session and redirecting home", error);
+    } finally {
+      localStorage.clear();
+      window.location.href = "/";
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -327,17 +428,51 @@ const handleNewsletterSubmit = async (e) => {
       transition={{ duration: 0.6 }}
       className="min-h-[93vh]  px-8"
     >
+      {/* Auth Alert Modal */}
+      {state.showAuthAlert && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-8 flex flex-col items-center text-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-[#fff6f6] flex items-center justify-center">
+              <UserCircle2 className="w-7 h-7 text-[#9b0f09]" />
+            </div>
+            <h3 className="text-lg font-bold text-black">Access Restricted</h3>
+            <p className="text-sm text-gray-500">{state.authAlertMessage}</p>
+            <Button
+              className="w-full py-5 rounded-xl font-semibold text-white bg-[#9b0f09] hover:bg-[#7d0c07]"
+              onClick={handleAuthAlertOk}
+            >
+              OK, Go to Home
+            </Button>
+          </div>
+        </div>
+      )}
       <div className="container mt-6">
-        <div className="w-full bg-color1  text-white rounded-xl flex flex-col md:flex-row items-center justify-between p-4 md:p-6 shadow-sm">
+        <div className="w-full bg-color1 border-gray shadow-none text-white rounded-xl flex flex-col md:flex-row items-center justify-between p-4 md:p-6 ">
           {/* Left Section */}
           <div className="flex items-center space-x-4">
-            <Image
-              src="/assets/images/real-estate/dummy.png" // change to your image path
-              alt="Profile"
-              width={60}
-              height={60}
-              className="rounded-full  "
-            />
+            {state.user?.profile_image ? (
+              <Image
+                src={state.user.profile_image}
+                alt="Profile"
+                width={60}
+                height={60}
+                className="rounded-full object-cover w-16 h-16"
+              />
+            ) : (
+              <div
+                className="w-16 h-16 rounded-full flex items-center justify-center bg-dred text-white text-xl font-bold"
+                style={{
+                  backgroundColor: '#9b0f09', // Ensure primary color for avatar background
+                  color: 'white',
+                  fontSize: '1.5rem', // Adjust font size as needed
+                }}
+              >
+                {state.user?.first_name
+                  ? state.user.first_name.charAt(0).toUpperCase()
+                  : ''}
+              </div>
+            )}
+
 
             <div>
               <div className="flex flex-col">
@@ -380,34 +515,60 @@ const handleNewsletterSubmit = async (e) => {
           </div>
         </div>
 
-        <div className="w-full bg-color1 mt-5 text-white p-6 rounded-2xl grid md:grid-cols-2 gap-6 items-stretch">
+        <div className="w-full bg-color1 mt-5 text-white p-6 rounded-2xl grid md:grid-cols-2 gap-6 items-stretch border-gray shadow-none">
           {/* Left Column - My Dream Home */}
-          <div className="space-y-5 flex flex-col h-full">
+          <div className="space-y-5 flex flex-col h-full ">
             <h2 className="text-lg text-black font-semibold">My Preference</h2>
 
-            <Card className="bg-white border-none text-white rounded-xl flex-1">
-              <CardContent className="flex justify-between items-center p-4 h-full">
-                <div className="flex items-start gap-3">
-                  <div className="bg-emerald-500/10 p-2 rounded-md">
-                    <MapPin size={20} className="text-emerald-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Location</p>
-                    {/* <h3 className="text-black font-medium"> */}
-                    <h3 className="text-black font-medium">
-                    {state.user?.preferred_locations?.length > 0 ? state.user.preferred_locations.map((l) => l.name).join("," ) : "No locations set"}
-                    </h3>
-                  </div>
-                </div>
-                <Button
-                  variant="outline"
-                  className="text-emerald-400 border-emerald-500 hover:bg-emerald-500/10 text-sm px-3 py-0 rounded-md"
-                   onClick={() => setState({ isPrefferedLocation: true })}
-                >
-                  Edit
-                </Button>
-              </CardContent>
-            </Card>
+            <Card className="bg-white border-gray shadow-none text-white rounded-xl flex-1">
+  <CardContent className="flex justify-between  py-4 h-full">
+    <div className="flex items-start gap-3">
+      <div className=" rounded-md">
+        <MapPin size={20} className="text-dred" />
+      </div>
+
+      <div>
+        <p className="text-sm text-gray-600">Location</p>
+
+        {/* Added Title */}
+        <h3 className="text-black font-medium mt-1">
+          Preferred Location
+        </h3>
+
+        {/* Added Content */}
+        <p className="text-sm text-gray-500 mt-1 mb-3">
+          Add your preferred location so that you can view the
+          properties in your preferred location.
+        </p>
+
+        <div className="text-black font-medium flex flex-wrap gap-2">
+          {state.user?.preferred_locations?.length > 0 ? (
+            state.user.preferred_locations.map((l) => (
+              <span
+                key={l.id}
+                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-dred"
+              >
+                {l.name}
+              </span>
+            ))
+          ) : (
+            <span className="text-sm text-gray-500">
+              No locations set
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <Button
+      variant="outline"
+      className="text-dred border-dred hover:bg-lred text-sm px-3 py-0 rounded-md hover:bg-dred hover:text-white"
+      onClick={() => setState({ isPrefferedLocation: true })}
+    >
+      Edit
+    </Button>
+  </CardContent>
+</Card>
 
             
             
@@ -434,7 +595,33 @@ const handleNewsletterSubmit = async (e) => {
                   Edit
                 </Button>
               </CardContent>
-            </Card> */}
+            </Card>
+
+            <Card className="bg-white border-gray shadow-none text-white rounded-xl flex-1">
+              <CardContent className="flex justify-between items-center p-4 h-full">
+                <div className="flex items-start gap-3">
+                  <div className="border border-[#9b0f09] p-2 rounded-md">
+                    <Home size={20} className="text-dred" />
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-gray-600">Construction Status</p>
+                    <h3 className="text-black font-medium flex flex-wrap gap-2 mt-1">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-dred">
+                        {state.user?.preferred_status || "Ready to Move"}
+                      </span>
+                    </h3>
+                  </div>
+                </div>
+
+                <Button
+                  variant="outline"
+                  className="text-dred border-dred hover:bg-lred text-sm px-3 py-0 rounded-md hover:bg-dred hover:text-white"
+                >
+                  Edit
+                </Button>
+              </CardContent>
+            </Card>
 
             {/* <Card className="bg-white border-none text-white rounded-xl flex-1">
               <CardContent className="flex items-start gap-4 p-5 h-full">
@@ -456,7 +643,7 @@ const handleNewsletterSubmit = async (e) => {
   <div className="mt-3 rounded-xl border border-dashed border-gray-300 bg-white/80 p-3 text-sm text-gray-700">
     {state.user?.newsletter ? (
       <>
-        <p className="font-medium text-black">You're subscribed!</p>
+        <p className="font-medium text-black">You&apos;re subscribed!</p>
         <p>
           Enjoy regular property post updates, featured listings, and exclusive alerts.
         </p>
@@ -494,19 +681,19 @@ const handleNewsletterSubmit = async (e) => {
             <h2 className="text-lg font-semibold text-black">My Activity</h2>
 
             {state?.properties?.length > 0 ? (
-              <div className="grid grid-cols-3 !gap-2 flex-1">
-                {state?.properties?.slice(0, 3).map((property, index) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2  !gap-2 flex-1">
+                {state?.properties?.slice(0, 2).map((property, index) => (
                   <div
                     key={index}
-                    className="relative rounded-md overflow-hidden bg-gray-700 aspect-[4/3]"
+                    className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
                   >
-                    <div className="relative">
+                    <div className="relative overflow-hidden">
                       <Image
                         src={property.primary_image}
-                        alt={property.title}
+                        alt={property.title || property.name || "Saved property"}
                         width={400}
                         height={250}
-                        className="w-full h-48 object-cover"
+                        className="w-full h-38 object-cover"
                       />
                       <button
                         onClick={() => handleRemoveFromWishlist(property.id)}
@@ -514,6 +701,14 @@ const handleNewsletterSubmit = async (e) => {
                       >
                         <Heart className="w-4 h-4 fill-current text-dred" />
                       </button>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-black font-semibold text-base truncate">
+                        {property.title || property.name || "Untitled Property"}
+                      </h3>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {property.price ? formatToINRS(property.price) : "Price on request"}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -633,23 +828,35 @@ const handleNewsletterSubmit = async (e) => {
 
                     {/* Upload Profile Image - Full Width */}
                     <div className="flex flex-col items-center space-y-3 col-span-2">
-                      <label htmlFor="profileImage" className="cursor-pointer">
+                      {/* <label htmlFor="profileImage" className="cursor-pointer"> */}
                         <div className="relative w-24 h-24">
-                          <Image
-                            src={
-                              state.profileImage ||
-                              "/assets/images/real-estate/dummy.png"
-                            }
-                            alt="Profile"
-                            width={96}
-                            height={96}
-                            className="rounded-full object-cover border-2 border-gray-300 w-24 h-24"
-                          />
-                          <div className="absolute bottom-0 right-0 bg-color2 text-white rounded-full p-1.5 text-xs">
+                          {/* {state.profileImage || state.user?.profile_image ? (
+                            <Image
+                              src={
+                                state.profileImage || state.user?.profile_image
+                              }
+                              alt="Profile"
+                              width={96}
+                              height={96}
+                              className="rounded-full object-cover border-2 border-gray-300 w-24 h-24"
+                            />
+                          ) : ( */}
+                            <div
+                              className="w-24 h-24 rounded-full flex items-center justify-center bg-dred text-white text-4xl font-bold border-2 border-gray-300"
+                              style={{
+                                backgroundColor: '#9b0f09', // Ensure primary color for avatar background
+                                color: 'white',
+                                fontSize: '2.5rem', // Adjust font size as needed
+                              }}
+                            >
+                              {state.first_name ? state.first_name.charAt(0).toUpperCase() : ''}
+                            </div>
+                          {/* )} */}
+                          {/* <div className="absolute bottom-0 right-0 bg-color2 text-white rounded-full p-1.5 text-xs">
                             <Pencil size={14} />
-                          </div>
+                          </div> */}
                         </div>
-                      </label>
+                      {/* </label> */}
                       <input
                         type="file"
                         id="profileImage"

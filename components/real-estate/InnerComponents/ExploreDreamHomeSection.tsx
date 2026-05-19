@@ -4,7 +4,7 @@ import React from "react";
 export default function ExploreDreamHomeSection() {
   return (
     <section className="section-pad bg-white">
-      <div className="section-wid pb-5">
+      <div className="section-wid py-5">
         <div className="relative overflow-hidden rounded-3xl">
           {/* Background Image */}
           <img

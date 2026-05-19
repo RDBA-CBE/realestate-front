@@ -20,7 +20,7 @@ const user = {
         })
         .catch((error) => {
           if (error.response) {
-            reject(error.response.message);
+            reject(error.response.data);
           } else {
             reject(error);
           }

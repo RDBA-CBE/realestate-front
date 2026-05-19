@@ -31,7 +31,7 @@ export default function DeveloperRegistrationSection() {
   return (
     <section className="section-pad bg-white">
       <div className="section-wid py-5">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+        <div className="flex flex-col lg:flex-row  gap-12 lg:gap-20">
 
           {/* Left content */}
           <div className="flex-1 text-center lg:text-left">
