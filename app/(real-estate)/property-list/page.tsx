@@ -372,7 +372,13 @@ export default function Page() {
   };
 
   const clearAllFilters = () => {
-    propertyList(); // Reset to initial load without filters
+    // Reset filters and fetch properties without any filters
+    setState({
+      propertyList: [],
+      loading: true,
+    });
+    // Call propertyList with no filter data to get all properties
+    propertyList(1, false, null);
   };
 
   return (

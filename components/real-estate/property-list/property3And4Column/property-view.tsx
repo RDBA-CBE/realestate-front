@@ -348,15 +348,13 @@ export function PropertyView(props: any) {
     });
     previousFiltersRef.current = {};
 
+    // Reset the flag immediately before calling parent
+    isResettingRef.current = false;
+
     // Call parent clear filter (which calls propertyList)
     if (clearFilter) {
       clearFilter();
     }
-    
-    // Reset the flag after state updates and parent call
-    setTimeout(() => {
-      isResettingRef.current = false;
-    }, 0);
   };
 
   const formatINR = (value: number) => {
@@ -1334,41 +1332,41 @@ export function PropertyView(props: any) {
             <div
               className={
                 state.view === "grid"
-                  ? "flex flex-wrap gap-6"
-                  : "flex flex-col gap-6"
+                  ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5"
+                  : "flex flex-col gap-5"
               }
             >
-              {properties?.map((property: any, index: number) => (
-                <div
-                  key={index}
-                  className={
-                    state.view === "grid"
-                      ? "flex-1 min-w-[300px] md:min-w-[calc(33.333%-1rem)]"
-                      : "w-full"
-                  }
-                  ref={
-                    index === properties.length - 1
-                      ? lastPropertyElementRef
-                      : null
-                  }
-                >
-                  <PropertyCard
-                    property={property}
-                    view={state.view}
-                    list={properties}
-                    updateList={(data) => updateList(data)}
-                    onContactClick={(prop) => setState({ isMobileFormOpen: true, selectedProperty: prop })}
-                  />
-                </div>
+              {Array.from({ length: skeletonCount }).map((_, index) => (
+                <PropertyCardSkeleton
+                  key={`skeleton-${index}`}
+                  view={state.view}
+                  row={1}
+                />
               ))}
             </div>
-          ) : properties?.length == 0 ? (
-            <div className="flex flex-col justify-center items-center w-full ">
-              <img
-                src="/assets/images/not_founds.jpg"
-                alt="No Property Found"
-                className="w-65 h-auto mb-4"
-              />
+          ) : properties?.length === 0 ? (
+            <div className="flex flex-col justify-center items-center w-full py-12">
+              <svg
+                className="w-20 h-20 text-gray-300 mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M3 12a9 9 0 110-18 9 9 0 010 18zm0 0a9.001 9.001 0 008.154-14.856m0 0A9 9 0 1122.154 9.144m0 0a9.001 9.001 0 00-8.154 14.856"
+                />
+              </svg>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">No Properties Available</h3>
+              <p className="text-gray-600 mb-6 text-center max-w-md">We couldn&apos;t find any properties matching your criteria. Try adjusting your filters or search terms.</p>
+              <Button
+                className="bg-dred hover:bg-[#7d0c07] text-white px-6 py-2 rounded-lg"
+                onClick={resetFilter}
+              >
+                Clear All Filters
+              </Button>
             </div>
           ) : (
             <>

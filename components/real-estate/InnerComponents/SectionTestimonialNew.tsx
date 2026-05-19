@@ -81,7 +81,7 @@ export default function SectionTestimonialNew() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
             <div className="relative z-10 flex flex-col justify-end h-full p-6">
-              <span className="text-white/60 text-3xl font-serif leading-none mb-3">"</span>
+              <span className="text-white/60 text-3xl font-serif leading-none mb-3">&quot;</span>
               <p className="text-white text-[15px] leading-relaxed font-medium">
                 {testimonials[0].text}
               </p>
@@ -128,7 +128,7 @@ export default function SectionTestimonialNew() {
             <div>
               <Stars />
               <p className="text-gray-700 text-sm leading-relaxed mt-3">
-                "{testimonials[2].text}"
+                &quot;{testimonials[2].text}&quot;
               </p>
             </div>
             <div className="mt-5">
@@ -139,7 +139,7 @@ export default function SectionTestimonialNew() {
           {/* Card 5 — Quote card (col 2, row 2) */}
           <div className="bg-[#fff] rounded-2xl p-6 flex flex-col justify-between shadow-sm min-h-[180px]">
             <div>
-              <span className="text-[#9b0f09] text-3xl font-serif leading-none">"</span>
+              <span className="text-[#9b0f09] text-3xl font-serif leading-none">&quot;</span>
               <p className="text-gray-700 text-sm leading-relaxed mt-1">
                 {testimonials[1].text}
               </p>
@@ -161,7 +161,7 @@ export default function SectionTestimonialNew() {
             <div className="relative z-10 flex flex-col justify-end h-full p-6 max-w-xs">
               <Stars />
               <p className="text-white text-[15px] font-semibold leading-snug mt-3">
-                "{testimonials[3].text}"
+                &quot;{testimonials[3].text}&quot;
               </p>
               <div className="mt-4">
                 <p className="text-white text-sm font-bold">{testimonials[3].author}</p>
