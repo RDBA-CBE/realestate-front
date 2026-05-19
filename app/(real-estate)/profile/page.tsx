@@ -79,8 +79,7 @@ export default function ProfilePage() {
   useEffect(() => {
     getUser();
     wishlist();
-    cityList(1)
-    getPropertyTypes(); // New: Fetch property types
+    cityList(1);
   }, []);
 
   console.log("state.id", state.id);
@@ -105,22 +104,6 @@ export default function ProfilePage() {
         }
       };
 
-  // New: Fetch property types
-  const getPropertyTypes = async () => {
-    try {
-      // Check if Models.dropdowns and the 'category' method exist before calling
-      if (Models.dropdowns && typeof (Models.dropdowns as any).category === 'function') {
-        const res: any = await (Models.dropdowns as any).category(); // Assuming 'category' is the correct method name for property types
-        const dropdown = Dropdown(res?.results, "name");
-        setState({ propertyTypeList: dropdown });
-      } else {
-        console.error("Error: Models.dropdowns.category is not a function or does not exist. Please check your dropdowns model file.");
-        // Optionally, you might want to set an error state or provide a fallback for propertyTypeList
-      }
-    } catch (error) {
-      console.error("Error fetching property types:", error);
-    }
-  };
       console.log("locationList", state.locationList);
       
 

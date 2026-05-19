@@ -137,7 +137,7 @@ export default function SectionTestimonialNew() {
           </div>
 
           {/* Card 5 — Quote card (col 2, row 2) */}
-          <div className="bg-[#f0f4ff] rounded-2xl p-6 flex flex-col justify-between shadow-sm min-h-[180px]">
+          <div className="bg-[#fff] rounded-2xl p-6 flex flex-col justify-between shadow-sm min-h-[180px]">
             <div>
               <span className="text-[#9b0f09] text-3xl font-serif leading-none">"</span>
               <p className="text-gray-700 text-sm leading-relaxed mt-1">

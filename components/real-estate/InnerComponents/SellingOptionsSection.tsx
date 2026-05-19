@@ -40,7 +40,7 @@ export default function SellingOptionsSection() {
           {/* Left Big Image */}
           <div className="relative h-full overflow-hidden rounded-3xl">
             <img
-              src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1400&auto=format&fit=crop"
+              src="/assets/images/real-estate/home/About.png"
               alt="Property"
               className="h-full w-full object-cover"
             />

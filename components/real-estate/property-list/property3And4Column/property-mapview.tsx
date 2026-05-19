@@ -160,9 +160,9 @@ export function MapView(props) {
   return (
     <div className="min-h-[91vh] bg-white">
       <div className="grid grid-cols-1 xl:grid-cols-12 !gap-0 min-h-[91vh]">
-        <div className=" xl:col-span-3 p-6 lg:py-8 px-3 overflow-y-auto h-[calc(100vh-65px)] flex flex-col items-start">
+        <div className=" xl:col-span-3 p-6 lg:py-3 px-3 overflow-y-auto h-[calc(100vh-65px)] flex flex-col items-start">
           {/* First sticky header */}
-          <div className="sticky top-0 lg:-top-8 z-10 w-full p-3 rounded-lg mb-3 bg-color1">
+          <div className="sticky top-3 lg:-top-8 z-10 w-full p-3 rounded-lg mb-3 bg-color1">
             {/* First sticky header */}
             <div className="flex items-center justify-between  w-full">
               <Button

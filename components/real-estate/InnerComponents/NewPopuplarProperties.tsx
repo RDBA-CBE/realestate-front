@@ -31,7 +31,7 @@ router.push(`property-detail/${property?.id}`)
   console.log("propertyList com", propertyList);
 
   return (
-    <div className="section-pad bg-[#f8f8f8] !pt-3">
+    <div className="section-pad bg-[#f8f8f8] ">
       <div className="section-wid ">
         {/* Header Section with Filter Buttons on the right */}
         <div className="flex flex-col md:flex-row justify-between items-start lg:items-center mb-12 text-start">

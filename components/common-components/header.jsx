@@ -147,17 +147,11 @@ const Header = () => {
                   />
                 </Link> */}
 
-                <div className="rounded-lg bg-[#9b0f09]/10 p-2">
-                  <Home className="h-6 w-6 text-dred" />
-                </div>
-                <div>
-                  <p className="text-xs font-semibolod tracking-[0.1em] text-dred">
-                    REAL
-                  </p>
-                  <p className="text-sm font-bold tracking-[0.1em] text-dred">
-                    ESTATE
-                  </p>
-                </div>
+                <img
+                  src="/assets/images/real-estate/home/boom-logo.png"
+                  alt="Logo"
+                  className="h-12 w-auto object-contain"
+                />
               </Link>
 
               {/* Left Menu (Desktop) */}
@@ -356,17 +350,11 @@ const Header = () => {
                           />
                         </Link> */}
                         <div className="flex justify-center gap-3 py-4">
-                          <div className="rounded-lg bg-[#9b0f09]/10 p-2">
-                            <Home className="h-6 w-6 text-dred" />
-                          </div>
-                          <div>
-                            <p className="text-xs font-semibolod tracking-[0.1em] text-dred">
-                              REAL
-                            </p>
-                            <p className="text-sm font-bold tracking-[0.1em] text-dred">
-                              ESTATE
-                            </p>
-                          </div>
+                          <img
+                            src="/assets/images/real-estate/home/boom-logo.png"
+                            alt="Logo"
+                            className="h-10 w-auto object-contain"
+                          />
                         </div>
 
                         {/* {!state.token && (

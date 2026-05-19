@@ -88,7 +88,7 @@ export default function DeveloperDetailPage() {
     <div className="min-h-screen bg-[#fff]">
       {/* HEADER */}
       <div className="border-b border-[#ebe7e1] bg-[#f8f8f8]">
-        <div className="section-wid py-5">
+        <div className="section-wid pb-5 pt-4">
           {/* BREADCRUMB */}
           <div className="flex lg:justify-between items-center">
             <div className=" flex flex-wrap items-center gap-2 text-sm text-gray-500">
@@ -133,7 +133,7 @@ export default function DeveloperDetailPage() {
                   src={developerImage}
                   alt={developerName || "Developer"}
                   fill
-                  className="object-cover"
+                  className="object-contain"
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center">
@@ -151,7 +151,17 @@ export default function DeveloperDetailPage() {
               </h1>
             </div>
           </div>
+          <div className=" mt-4">
+            {/* <h3 className="section-in-ti">Description</h3> */}
+
+            <p className="mt-2 ">
+              {developer?.description ||
+                `${developerName} is a leading real estate and property development company delivering premium residential and commercial projects with modern architecture and quality lifestyle amenities.`}
+            </p>
+          </div>
         </div>
+
+        
       </div>
 
       {/* TAB */}
@@ -178,19 +188,12 @@ export default function DeveloperDetailPage() {
           </p> */}
 
           {/* DESCRIPTION */}
-          <div className="">
-            <h3 className="section-in-ti">Description</h3>
-
-            <p className="mt-4 ">
-              {developer?.description ||
-                `${developerName} is a leading real estate and property development company delivering premium residential and commercial projects with modern architecture and quality lifestyle amenities.`}
-            </p>
-          </div>
+          
         </div>
 
         <div>
           {/* FILTERS */}
-          <div className="mt-5 border-t border-[#ebe7e1] pt-4 ">
+          <div className="  pt-4  flex justify-between">
             <h3 className="section-in-ti ">Explore {developerName} Projects</h3>
 
             {/* <div className="mt-6 flex flex-wrap gap-4">
