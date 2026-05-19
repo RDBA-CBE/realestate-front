@@ -113,7 +113,7 @@ export function PropertyView(props: any) {
     selectedProperty: null,
   });
 
-  console.log("state", state);
+  // console.log("state", state); // Commented out for cleaner console
 
   const initialLoadRef = useRef(false);
   const filterTimeoutRef = useRef(null);
@@ -157,8 +157,6 @@ export function PropertyView(props: any) {
     if (initialLocation?.length > 0) setState({ location: initialLocation });
     if (initialPropertyType?.length > 0) setState({ propertyType: initialPropertyType });
     if (initialDeveloper?.length > 0) setState({ developer: initialDeveloper });
-    // Mark initial load as complete to prevent duplicate API calls from filter effect
-    initialLoadRef.current = true;
   }, [
     propertyTypeFilter,
     initialSearch,
@@ -201,30 +199,11 @@ export function PropertyView(props: any) {
   const debouncedSqftMin = useDebounce(state.sqftMin, 500);
   const debouncedSqftMax = useDebounce(state.sqftMax, 500);
   const debouncedYearBuiltMin = useDebounce(state.yearBuiltMin, 500);
-  const debouncedYearBuiltMax = useDebounce(state.yearBuiltMax, 500);
-  const debouncedPriceRange = useDebounce(state.priceRange, 500);
-  const debouncedMinPrice = useDebounce(state.minPrice, 500);
-  const debouncedMaxPrice = useDebounce(state.maxPrice, 500);
-
-  // useEffect(() => {
-  //   filters({ ...state, ...debouncedState });
-  // }, [
-  //   state.listingStatus,
-  //   state.propertyType,
-  //   state.bedrooms,
-  //   state.bathrooms,
-  //   state.location,
-  //   state.furnishing,
-  //   debouncedState.search,
-  //   debouncedState.priceRange,
-  //   debouncedState.minPrice,
-  //   debouncedState.maxPrice,
-  //   debouncedState.sqftMin,
-  //   debouncedState.sqftMax,
-  //   debouncedState.yearBuiltMin,
-  //   debouncedState.yearBuiltMax,
-  //   state.sort,
-  // ]);
+  const debouncedYearBuiltMax = useDebounce(state.yearBuiltMax, 500); // Keep this one
+  
+  // Debounced price inputs
+  const debouncedPriceMinInput = useDebounce(state.priceMinInput, 500);
+  const debouncedPriceMaxInput = useDebounce(state.priceMaxInput, 500);
 
   useEffect(() => {
     // Skip initial load or if currently resetting filters
@@ -235,6 +214,11 @@ export function PropertyView(props: any) {
     // Clear any existing timeout
     if (filterTimeoutRef.current) {
       clearTimeout(filterTimeoutRef.current);
+    }
+
+    // If resetting, skip this filter execution
+    if (isResettingRef.current) {
+      return;
     }
 
     // Create current filter object
@@ -260,6 +244,8 @@ export function PropertyView(props: any) {
       priceMinInput: state.priceMinInput,
       priceMaxInput: state.priceMaxInput,
     };
+
+    console.log("PropertyView sending filters:", currentFilters); // Debug log
 
     // Check if filters actually changed
     const hasFiltersChanged =
@@ -296,14 +282,6 @@ export function PropertyView(props: any) {
     debouncedSqftMax,
     debouncedYearBuiltMin,
     debouncedYearBuiltMax,
-    state.sort,
-    state.prefferedLocation,
-    state.priceMinInput,
-    state.priceMaxInput,
-
-    debouncedPriceRange,
-    debouncedMinPrice,
-    debouncedMaxPrice,
   ]);
 
   const handleChange = (name, value) => {
@@ -312,7 +290,7 @@ export function PropertyView(props: any) {
   };
 
   //   const handleChange = (name: string, value: any) => {
-  //   setState((prev) => ({
+  //   setState((prev) => ({ // This is the correct way to use setState with a functional update
   //     ...prev,
   //     [name]: value,
   //   }));
@@ -320,7 +298,7 @@ export function PropertyView(props: any) {
 
   const resetFilter = () => {
     // Set flag to prevent filter effect from firing during reset
-    isResettingRef.current = true;
+    isResettingRef.current = true; // Set flag to true
     
     setState({
       search: "",

@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import {
-  capitalizeFLetter, formatPriceRange, Success, useSetState,
+  capitalizeFLetter, formatPriceRange, Success, truncateText, useSetState,
 } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 
@@ -237,11 +237,11 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
               {/* Developer + Contact */}
               <div className="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-[#9b0f09]/10 rounded-full flex items-center justify-center">
-                    <span className="text-xs font-bold text-[#9b0f09]">{getInitials(property?.developer?.industry || "")}</span>
+                  <div className="w-8 h-8 bg-[#9b0f09]/10 rounded-full flex items-center justify-center -mt-3">
+                    <span className="text-xs font-bold text-[#9b0f09] ">{getInitials(property?.developer?.industry) || ""}</span> 
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-gray-800 leading-tight">{property?.developer?.industry || "Property Owner"}</p>
+                    <p className="text-xs font-semibold text-gray-800 leading-tight mb-1">{truncateText(property?.developer?.industry, 30) || "Property Owner"}</p>
                     <p className="text-xs text-gray-400">{property?.developer?.industry ? "Developer" : "Owner"}</p>
                   </div>
                 </div>
