@@ -79,7 +79,8 @@ const Header = () => {
       setState({ selectedLocation: e.detail });
     };
     window.addEventListener("locationChanged", onLocationChanged);
-    return () => window.removeEventListener("locationChanged", onLocationChanged);
+    return () =>
+      window.removeEventListener("locationChanged", onLocationChanged);
   }, []);
 
   const handleLocationClick = () => {
@@ -290,56 +291,57 @@ const Header = () => {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ) : (
-                  /* <Button
+                  <>
+                    {/* // !username && ( */}
+                    <div className="hidden lg:flex items-center gap-3">
+                      <Button
                         onClick={() => router.push("/login")}
                         variant="outline"
-                        className="rounded-full border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900"
+                        className="px-6 rounded-full bg-lred hover:bg-color2 border-[#9b0f09]  text-dred hover:text-white"
                       >
-                        Add Property
-                      </Button> */
-                  // !username && (
-                  <div className="hidden lg:flex items-center gap-3">
-                    <Button
-                      onClick={() => router.push("/login")}
-                      variant="outline"
-                      className="px-6 rounded-full bg-lred hover:bg-color2 border-[#9b0f09]  text-dred hover:text-white"
-                    >
-                      Login
-                    </Button>
-                    {/* <Button
+                        Login
+                      </Button>
+                      {/* <Button
                         onClick={() => router.push("/signin")}
                         className="rounded-full bg-color2 hover:bg-color2 text-white"
                       >
                         Register
                       </Button> */}
-                  </div>
+                    </div>
+                  </>
                 )}
 
-                {/* <Button
-                onClick={() => router.push("/ai-search")}
-                className="bg-color2 hover:bg-color2 text-white"
-              >
-                AI Search
-              </Button> */}
+                <Button
+                  onClick={() => router.push("/ai-search")}
+                  className="bg-color2 hover:bg-color2 text-white rounded-full  hover:text-white hidden md:block"
+                >
+                  AI Search
+                </Button>
+                <Button
+                  onClick={() => router.push("/post-property")}
+                  variant="outline"
+                  className="bg-color2 hover:bg-color2 text-white hover:text-white rounded-full hidden md:block"
+                >
+                  Post Property
+                </Button>
 
                 <div className="block lg:hidden">
                   <Sheet open={open} onOpenChange={setOpen}>
                     <div className="flex items-center gap-3">
-                      {!state.token && 
-                      <Button
-                      onClick={() => router.push("/login")}
-                      variant="outline"
-                      className="px-5 h-7 py-0 rounded-full bg-lred hover:bg-color2 border-[#9b0f09]  text-dred hover:text-white"
-                    >
-                      Login
-                    </Button>
-                    }
-                    <SheetTrigger asChild>
-                      
-                      <MenuIcon className="text-dred"/>
-                    </SheetTrigger>
+                      {!state.token && (
+                        <Button
+                          onClick={() => router.push("/login")}
+                          variant="outline"
+                          className="px-5 h-7 py-0 rounded-full bg-lred hover:bg-color2 border-[#9b0f09]  text-dred hover:text-white"
+                        >
+                          Login
+                        </Button>
+                      )}
+                      <SheetTrigger asChild>
+                        <MenuIcon className="text-dred" />
+                      </SheetTrigger>
                     </div>
-                    
+
                     <SheetContent>
                       <SheetHeader>
                         <SheetTitle></SheetTitle>
@@ -354,17 +356,17 @@ const Header = () => {
                           />
                         </Link> */}
                         <div className="flex justify-center gap-3 py-4">
-                        <div className="rounded-lg bg-[#9b0f09]/10 p-2">
-                          <Home className="h-6 w-6 text-dred" />
-                        </div>
-                        <div>
-                          <p className="text-xs font-semibolod tracking-[0.1em] text-dred">
-                            REAL
-                          </p>
-                          <p className="text-sm font-bold tracking-[0.1em] text-dred">
-                            ESTATE
-                          </p>
-                        </div>
+                          <div className="rounded-lg bg-[#9b0f09]/10 p-2">
+                            <Home className="h-6 w-6 text-dred" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibolod tracking-[0.1em] text-dred">
+                              REAL
+                            </p>
+                            <p className="text-sm font-bold tracking-[0.1em] text-dred">
+                              ESTATE
+                            </p>
+                          </div>
                         </div>
 
                         {/* {!state.token && (
@@ -456,20 +458,18 @@ const Header = () => {
                                   )}
                                 </AccordionContent>
                               )}
-
-                              
                             </AccordionItem>
                           </Accordion>
                         ))}
                         <div className="flex items-center gap-3 me-4 mt-5 lg:flex">
-                  <Mail className="w-4 h-4 text-dred" />
-                  <Link
-                    href={"mailto:support@realestate.com"}
-                    className="font-normal text-[16px]"
-                  >
-                    support@realestate.com
-                  </Link>
-                </div>
+                          <Mail className="w-4 h-4 text-dred" />
+                          <Link
+                            href={"mailto:support@realestate.com"}
+                            className="font-normal text-[16px]"
+                          >
+                            support@realestate.com
+                          </Link>
+                        </div>
                       </div>
                     </SheetContent>
                   </Sheet>
@@ -580,7 +580,9 @@ const Header = () => {
                   <DialogTitle className="text-lg font-bold text-black">
                     Sign Out
                   </DialogTitle>
-                  <p className="text-sm text-gray-500">Are you sure you want to sign out of your account?</p>
+                  <p className="text-sm text-gray-500">
+                    Are you sure you want to sign out of your account?
+                  </p>
                   <div className="flex gap-3 w-full pt-2">
                     <Button
                       onClick={handleCancel}
@@ -593,7 +595,11 @@ const Header = () => {
                       onClick={handleLogout}
                       className="flex-1 rounded-xl bg-[#9b0f09] hover:bg-[#7d0c07] text-white"
                     >
-                      {state.logoutLoading ? <Loader className="w-4 h-4 animate-spin" /> : "Sign Out"}
+                      {state.logoutLoading ? (
+                        <Loader className="w-4 h-4 animate-spin" />
+                      ) : (
+                        "Sign Out"
+                      )}
                     </Button>
                   </div>
                 </div>

@@ -13,7 +13,7 @@ const faqs = [
   {
     question: "How can I post my house for sale?",
     answer:
-      "You can easily list your property by contacting our team or filling out the property listing form on our website.",
+      "You can easily list your property by contacting our team or filling out the property listing form on our website. You can easily list your property by contacting our team or filling out the property listing form on our website.",
   },
   {
     question: "What is your realtor sale commission?",
@@ -35,7 +35,7 @@ const faqs = [
 export default function FAQSectionNew() {
   return (
     <section className="section-pad bg-white overflow-hidden">
-      <div className="section-wid">
+      <div className="section-wid pb-5">
         <div className="grid lg:grid-cols-2 gap-0  overflow-hidden  ">
 
          
@@ -47,7 +47,7 @@ export default function FAQSectionNew() {
             
               <h3 className="section-ti mb-5">Frequently Asked Questions</h3>
 
-              <Accordion type="single" collapsible className="w-full">
+              <Accordion type="single" collapsible defaultValue="item-0" className="w-full">
                 {faqs.map((faq, index) => (
                   <AccordionItem
                     key={index}
@@ -99,6 +99,16 @@ export default function FAQSectionNew() {
               <p className="!text-white section-cap leading-relaxed max-w-xs">
                 Everything you need to know about buying, selling, and renting properties with us.
               </p>
+
+              <div className="mt-8 flex flex-wrap gap-4">
+                <Link href={"/propert-list"} className="rounded-full bg-white px-7 py-3 text-sm font-medium text-black transition hover:bg-gray-100">
+                  Browse all properties
+                </Link>
+
+                {/* <button className="rounded-full border border-white bg-transparent px-7 py-3 text-sm font-medium text-white transition hover:bg-white hover:text-black">
+                  Start exploring
+                </button> */}
+              </div>
             </div>
           </div>
         </div>

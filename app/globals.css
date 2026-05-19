@@ -1759,7 +1759,7 @@ body {
   border-radius: 50px;
   padding: 18px 20px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-  width: 160%;
+  width: 100%;
   position: relative;
   z-index: 10;
 }

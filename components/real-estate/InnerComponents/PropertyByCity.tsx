@@ -39,7 +39,7 @@ const PropertyByCity = ({ cityList = [] }) => {
 
   return (
     <section className="section-pad bg-white overflow-hidden">
-      <div className="section-wid">
+      <div className="section-wid pb-5">
          <div className="flex flex-col md:flex-row justify-between items-start mb-10 ">
         <div className=" ">
           <h2 className="section-ti">Properties by Cities</h2>

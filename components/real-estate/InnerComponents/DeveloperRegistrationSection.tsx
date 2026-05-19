@@ -29,9 +29,9 @@ export default function DeveloperRegistrationSection() {
   const router = useRouter();
 
   return (
-    <section className="section-pad bg-white">
-      <div className="section-wid py-5">
-        <div className="flex flex-col lg:flex-row  gap-12 lg:gap-20">
+    <section className="section-pad bg-[#f8f8f8]">
+      <div className="section-wid pt-5">
+        <div className="flex flex-col xl:flex-row  gap-10  xl:gap-20">
 
           {/* Left content */}
           <div className="flex-1 text-center lg:text-left">
@@ -41,7 +41,7 @@ export default function DeveloperRegistrationSection() {
             <h2 className="section-ti mb-4">
               Register as a Developer &amp; List Your Properties
             </h2>
-            <p className="section-cap mb-8 max-w-lg mx-auto lg:mx-0">
+            <p className="section-cap mb-4 xl:mb-8 max-w-lg mx-auto lg:mx-0">
               Join our growing network of trusted real estate developers. Post your projects, reach verified buyers, and grow your business with ease.
             </p>
             <button

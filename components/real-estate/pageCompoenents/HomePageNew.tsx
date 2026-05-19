@@ -259,7 +259,7 @@ const HomePageNew = () => {
         {/* <FAQSection/> */}
         <FAQSectionNew/>
 
-        <ExploreDreamHomeSection/>
+        {/* <ExploreDreamHomeSection/> */}
 
         {/* <SectionTestimonial/> */}
         <SectionTestimonialNew/>

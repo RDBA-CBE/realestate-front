@@ -82,7 +82,7 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
                         ? "properties for sale"
                         : "properties for lease"
                   }...`}
-                  className="adv-field-input placeholder:lg:text-[16px]"
+                  className="adv-field-input placeholder:lg:text-[15px] placeholder:text-[#737373]"
                 />
               </div>
             </div>

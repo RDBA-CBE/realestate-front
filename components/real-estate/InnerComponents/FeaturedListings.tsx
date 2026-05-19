@@ -31,7 +31,7 @@ const FeaturedListings = (props) => {
   };
 
   return (
-    <div className="hm-fea-list bg-white">
+    <div className="hm-fea-list bg-[#f8f8f8]">
       <div className="section-wid mx-auto ">
 
         {/* Header */}

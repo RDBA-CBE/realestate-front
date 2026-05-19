@@ -545,7 +545,7 @@ export function PropertyCard({
               {/* Map view link — only if location_url present */}
               {locationUrl && (
                <div
-  className="group flex items-center gap-1.5 mt-3 bg-dred text-sm text-white font-medium hover:bg-lred hover:text-dred w-fit py-1 px-3 rounded-full"
+  className="group flex items-center gap-1.5 mt-3 bg-dred text-sm text-white font-medium hover:bg-lred hover:text-dred hover:border hover:border-dred w-fit py-1 px-3 rounded-full"
   onClick={(e) => {
     e.stopPropagation();
     window.open(locationUrl, "_blank");

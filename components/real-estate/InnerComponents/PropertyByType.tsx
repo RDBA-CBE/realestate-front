@@ -26,7 +26,7 @@ const PropertyByType = ({ propertyTypeList = [] }) => {
   };
 
   return (
-    <section className="bg-[#f8f8f8] section-pad">
+    <section className="bg-[#f8f8f8] section-pad !pt-0">
       <div className="section-wid mx-auto pb-5">
 
         {/* Header */}

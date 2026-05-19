@@ -31,7 +31,7 @@ router.push(`property-detail/${property?.id}`)
   console.log("propertyList com", propertyList);
 
   return (
-    <div className="section-pad bg-[#f8f8f8]">
+    <div className="section-pad bg-[#f8f8f8] !pt-3">
       <div className="section-wid ">
         {/* Header Section with Filter Buttons on the right */}
         <div className="flex flex-col md:flex-row justify-between items-start lg:items-center mb-12 text-start">
@@ -115,28 +115,35 @@ router.push(`property-detail/${property?.id}`)
         )} */}
 
         {/* Conditional Rendering: Swiper for "All Properties", Grid for filtered views */}
-        <Swiper
-          modules={[Autoplay]}
-          spaceBetween={24}
-          slidesPerView={1}
-          breakpoints={breakpoints}
-          navigation={{
-            nextEl: ".properties-swiper-next",
-            prevEl: ".properties-swiper-prev",
-          }}
-          autoplay={{
-            delay: 4000,
-            disableOnInteraction: false,
-          }}
-          loop={true}
-          className="featured-listings-swiper pb-10"
-        >
-          {propertyList?.map((property, index) => (
-           <SwiperSlide key={index} className="h-auto">
-              <PropertyCard listing={property} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        {propertyList?.length > 0 ? (
+          <Swiper
+            modules={[Autoplay]}
+            spaceBetween={24}
+            slidesPerView={1}
+            breakpoints={breakpoints}
+            navigation={{
+              nextEl: ".properties-swiper-next",
+              prevEl: ".properties-swiper-prev",
+            }}
+            autoplay={{ delay: 4000, disableOnInteraction: false }}
+            loop={true}
+            className="featured-listings-swiper pb-10"
+          >
+            {propertyList.map((property, index) => (
+              <SwiperSlide key={index} className="h-auto">
+                <PropertyCard listing={property} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+              <MapPin className="w-7 h-7 text-gray-400" />
+            </div>
+            <p className="text-gray-500 font-medium">No properties available</p>
+            <p className="text-gray-400 text-sm mt-1">Try a different filter or check back later.</p>
+          </div>
+        )}
       </div>
     </div>
   );

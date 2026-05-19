@@ -22,7 +22,7 @@ const items = [
 export default function SellingOptionsSection() {
   return (
     <section className="section-pad bg-[#fff]">
-      <div className="section-wid pb-5">
+      <div className="section-wid ">
         {/* Heading */}
         <div className="mx-auto mb-14 max-w-2xl text-center">
           <h2 className="section-ti">

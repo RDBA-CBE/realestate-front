@@ -59,7 +59,7 @@ function DeveloperCard({ developer }: { developer: any }) {
             <img
               src={logo}
               alt={name}
-              className="w-full h-full object-cover p-0"
+              className="w-full h-full object-contain p-0"
             />
           ) : (
             <Building2 className="w-8 h-8 text-gray-400" />
@@ -104,7 +104,7 @@ export default function FeaturedDevelopers({
   const hasDevelopers = !!developerList?.length;
 
   return (
-    <section className="section-pad bg-[#f8f8f8] ">
+    <section className="section-pad bg-white !pt-0">
       <div className="section-wid pb-5">
         
         {/* Heading */}
