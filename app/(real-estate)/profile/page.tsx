@@ -405,7 +405,7 @@ const getPropertyTypeNames = (ids: string[]) => {
   };
 
   return (
-    <motion.div
+   <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
@@ -430,20 +430,20 @@ const getPropertyTypeNames = (ids: string[]) => {
         </div>
       )}
       <div className="container mx-auto max-w-7xl mt-6">
-        <div className="w-full bg-color1 border-gray shadow-none text-white rounded-xl flex flex-col md:flex-row items-start justify-between p-4 md:p-6 gap-4">
+        <div className="w-full bg-color1 border-gray shadow-none text-white rounded-xl flex flex-col md:flex-row items-center sm:items-start md:items-start justify-between p-4 md:p-6 gap-4">
           {/* Left Section */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 w-full md:w-auto text-center sm:text-left">
             {state.user?.profile_image ? (
               <Image
                 src={state.user.profile_image}
                 alt="Profile"
                 width={60}
                 height={60}
-                className="rounded-full object-cover w-16 h-16"
+                className="rounded-full object-cover w-16 h-16 flex-shrink-0"
               />
             ) : (
               <div
-                className="w-16 h-16 rounded-full flex items-center justify-center bg-dred text-white text-xl font-bold"
+                className="w-16 h-16 rounded-full flex items-center justify-center bg-dred text-white text-xl font-bold flex-shrink-0"
                 style={{
                   backgroundColor: '#9b0f09', // Ensure primary color for avatar background
                   color: 'white',
@@ -457,13 +457,13 @@ const getPropertyTypeNames = (ids: string[]) => {
             )}
 
 
-            <div>
+            <div className="w-full">
               <div className="flex flex-col">
                 <h2 className="text-lg text-black font-semibold">
                   {state.user?.first_name} {state.user?.last_name}
                 </h2>
-                <div className="flex gap-2 px-0 mx-0">
-                  <p className="text-gray-600">{state.user?.email} |</p>
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-1 sm:gap-2 px-0 mx-0 justify-center sm:justify-start flex-wrap">
+                  <p className="text-gray-600">{state.user?.email} <span className="hidden sm:inline">|</span></p>
                   <p className="text-gray-600">{state.user?.phone}</p>
                 </div>
               </div>
@@ -477,10 +477,10 @@ const getPropertyTypeNames = (ids: string[]) => {
           </div>
 
           {/* Right Section */}
-          <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0 w-full md:w-auto">
             <Button
               variant="outline"
-              className="w-full sm:w-auto rounded-full border-dred bg-transparent text-dred hover:text-white hover:bg-[#9b0f09]"
+              className="w-full md:w-auto rounded-full border-dred bg-transparent text-dred hover:text-white hover:bg-[#9b0f09]"
               onClick={() => setState({ isEditProfile: true })}
             >
               <Pencil size={16} />
@@ -489,7 +489,7 @@ const getPropertyTypeNames = (ids: string[]) => {
 
             <Button
               variant="outline"
-              className="w-full sm:w-auto rounded-full border-dred bg-transparent text-dred hover:text-white hover:bg-[#9b0f09]"
+              className="w-full md:w-auto rounded-full border-dred bg-transparent text-dred hover:text-white hover:bg-[#9b0f09]"
               onClick={() => setState({ isChangePassword: true })}
             >
               <MessageCircle size={16} />
@@ -498,15 +498,15 @@ const getPropertyTypeNames = (ids: string[]) => {
           </div>
         </div>
 
-        <div className="w-full bg-color1 mt-5 text-white p-6 rounded-2xl grid md:grid-cols-2 gap-6 items-stretch border-gray shadow-none">
+        <div className="w-full bg-color1 mt-5 text-white p-4 sm:p-6 rounded-2xl grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch border-gray shadow-none">
           {/* Left Column - My Dream Home */}
           <div className="space-y-5 flex flex-col h-full ">
             <h2 className="text-lg text-black font-semibold">My Preference</h2>
 
             <Card className="bg-white border-gray shadow-none text-white rounded-xl flex-1">
-  <CardContent className="flex justify-between  py-4 h-full">
+  <CardContent className="flex flex-col lg:flex-row justify-between p-4 h-full gap-4">
     <div className="flex items-start gap-3">
-      <div className=" rounded-md">
+      <div className=" rounded-md flex-shrink-0">
         <MapPin size={20} className="text-dred" />
       </div>
 
@@ -545,7 +545,7 @@ const getPropertyTypeNames = (ids: string[]) => {
 
     <Button
       variant="outline"
-      className="text-dred border-dred hover:bg-lred text-sm px-3 py-0 rounded-md hover:bg-dred hover:text-white"
+      className="text-dred border-dred hover:bg-lred text-sm px-3 py-2 lg:py-0 rounded-md hover:bg-dred hover:text-white w-full lg:w-auto self-start lg:self-auto flex-shrink-0"
       onClick={() => setState({ isPrefferedLocation: true })}
     >
       Edit
@@ -623,7 +623,7 @@ const getPropertyTypeNames = (ids: string[]) => {
             </Card> */}
 
             {state.user?.newsletter !== undefined && (
-  <div className="mt-3 rounded-xl border border-dashed border-gray-300 bg-white/80 p-3 text-sm text-gray-700">
+  <div className="mt-3 rounded-xl border border-dashed border-gray-300 bg-white/80 p-4 text-sm text-gray-700">
     {state.user?.newsletter ? (
       <>
         <p className="font-medium text-black">You&apos;re subscribed!</p>
@@ -633,7 +633,7 @@ const getPropertyTypeNames = (ids: string[]) => {
 
         <Button
           variant="outline"
-          className="mt-4 text-red-400 border-red-500 hover:bg-red-500/10 text-sm px-3 py-0 rounded-md"
+          className="mt-4 text-red-400 border-red-500 hover:bg-red-500/10 text-sm px-3 py-2 rounded-md w-full sm:w-auto"
           onClick={handleNewsletterSubmit}
         >
           Unsubscribe
@@ -648,7 +648,7 @@ const getPropertyTypeNames = (ids: string[]) => {
 
         <Button
           variant="outline"
-          className="mt-4 text-emerald-400 border-emerald-500 hover:bg-emerald-500/10 text-sm px-3 py-0 rounded-md"
+          className="mt-4 text-emerald-400 border-emerald-500 hover:bg-emerald-500/10 text-sm px-3 py-2 rounded-md w-full sm:w-auto"
           onClick={handleNewsletterSubmit}
         >
           Subscribe
@@ -664,7 +664,7 @@ const getPropertyTypeNames = (ids: string[]) => {
             <h2 className="text-lg font-semibold text-black">My Activity</h2>
 
             {state?.properties?.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2  !gap-2 flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 !gap-3 flex-1">
                 {state?.properties?.slice(0, 2).map((property, index) => (
                   <div
                     key={index}
@@ -697,8 +697,8 @@ const getPropertyTypeNames = (ids: string[]) => {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col justify-center gap-4 items-center w-full rounded-md overflow-hidden bg-white h-48 ">
-              <div className="flex justify-center items-center gap-8 w-full ">
+              <div className="flex flex-col justify-center gap-4 items-center w-full rounded-md overflow-hidden bg-white p-6 min-h-[12rem] h-auto md:h-48">
+              <div className="flex justify-center items-center gap-4 sm:gap-8 w-full flex-wrap">
                 {" "}
                 {[1, 2, 3].map((i) => (
                   <svg
@@ -710,7 +710,7 @@ const getPropertyTypeNames = (ids: string[]) => {
                     strokeWidth="24"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="w-16 h-16"
+                    className="w-12 h-12 sm:w-16 sm:h-16"
                   >
                     <path d="M64 240L256 64l192 176" />
                     <path d="M112 224v224h288V224" />
@@ -718,7 +718,7 @@ const getPropertyTypeNames = (ids: string[]) => {
                   </svg>
                 ))}
               </div>
-              <p className="font-xl text-black font-semibold">No Properties added to Wishlist</p>
+              <p className="text-base sm:text-xl text-black font-semibold text-center">No Properties added to Wishlist</p>
               </div>
               
             )}
@@ -777,14 +777,14 @@ const getPropertyTypeNames = (ids: string[]) => {
 
             {/* Modal Wrapper */}
             <motion.div
-              className="fixed inset-0 flex items-center justify-center z-50 p-4 "
+              className="fixed inset-0 flex items-center justify-center z-50 p-4 overflow-y-auto"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
             >
               <Card
-                className="rounded-2xl shadow-lg border border-gray-200 w-full max-w-xl mx-auto !bg-gray"
+                className="rounded-2xl shadow-lg border border-gray-200 w-full max-w-xl mx-auto !bg-gray max-h-[90vh] overflow-y-auto"
               >
                 {state.isEditProfile && (
                   <div className="w-full text-right">
@@ -798,7 +798,7 @@ const getPropertyTypeNames = (ids: string[]) => {
                 )}
 
                 <CardContent
-                  className={`p-6 space-y-6 ${
+                  className={`p-4 sm:p-6 space-y-6 ${
                     state.isEditProfile ? "pt-0" : ""
                   }`}
                 >
@@ -941,7 +941,7 @@ const getPropertyTypeNames = (ids: string[]) => {
                     </div>
 
                     {/* About Me - Full Width */}
-                    <div className="col-span-2">
+                    <div className="col-span-1 md:col-span-2">
                       <TextArea
                         title="Address"
                         name="address"
@@ -983,14 +983,14 @@ const getPropertyTypeNames = (ids: string[]) => {
 
             {/* Modal Wrapper */}
             <motion.div
-              className="fixed inset-0 flex items-center justify-center z-50 p-4 "
+              className="fixed inset-0 flex items-center justify-center z-50 p-4 overflow-y-auto"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
             >
               <Card
-                className="rounded-2xl shadow-lg border border-gray-200 w-full max-w-xl mx-auto !bg-gray"
+                className="rounded-2xl shadow-lg border border-gray-200 w-full max-w-xl mx-auto !bg-gray max-h-[90vh] overflow-y-auto"
               >
                 {state.isChangePassword && (
                   <div className="w-full text-right">
@@ -1004,7 +1004,7 @@ const getPropertyTypeNames = (ids: string[]) => {
                 )}
 
                 <CardContent
-                  className={`p-6 space-y-6 ${
+                  className={`p-4 sm:p-6 space-y-6 ${
                     state.isChangePassword ? "pt-0" : ""
                   }`}
                 >
@@ -1079,14 +1079,14 @@ const getPropertyTypeNames = (ids: string[]) => {
 
             {/* Modal Wrapper */}
             <motion.div
-              className="fixed inset-0 flex items-center justify-center z-50 p-4 "
+              className="fixed inset-0 flex items-center justify-center z-50 p-4 overflow-y-auto"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
             >
               <Card
-                className="rounded-2xl shadow-lg border border-gray-200 w-full max-w-xl mx-auto !bg-gray"
+                className="rounded-2xl shadow-lg border border-gray-200 w-full max-w-xl mx-auto !bg-gray max-h-[90vh] overflow-y-auto"
               >
                 {state.isPrefferedLocation && (
                   <div className="w-full text-right">
@@ -1100,7 +1100,7 @@ const getPropertyTypeNames = (ids: string[]) => {
                 )}
 
                 <CardContent
-                  className={`p-6 space-y-6 ${
+                  className={`p-4 sm:p-6 space-y-6 ${
                     state.isPrefferedLocation ? "pt-0" : ""
                   }`}
                 >
