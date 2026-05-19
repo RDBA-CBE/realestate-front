@@ -185,8 +185,8 @@ const SigninPage = () => {
                 <Building2 className="w-5 h-5 text-white" />
               </div>
               <div className="text-left">
-                <p className="text-sm font-semibold text-black leading-tight">Post Property / Register as Developer</p>
-                <p className="text-xs text-gray-500 mt-0.5">List your property and reach thousands of buyers</p>
+                <div className="text-sm font-semibold text-black leading-tight">Post Property / Register as Developer</div>
+                <p className="text-xs text-gray-500 mt-1 ">List your property and reach thousands of buyers</p>
               </div>
             </div>
             <ArrowRight className="w-4 h-4 text-[#9b0f09] shrink-0 group-hover:translate-x-1 transition-transform" />

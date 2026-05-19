@@ -67,7 +67,6 @@ export default function AISearchComponent() {
   const router = useRouter();
   const [chatMode, setChatMode] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
-  console.log("messages", messages);
   const [state, setState] = useState<Record<string, any>>({});
   const [currentStep, setCurrentStep] = useState<Step | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
@@ -103,6 +102,7 @@ export default function AISearchComponent() {
     email: "",
     phone: "",
     message: "",
+    user_id: "",
   });
   const [callbackErrors, setCallbackErrors] = useState({
     email: "",
@@ -115,6 +115,7 @@ export default function AISearchComponent() {
     email: "",
     phone: "",
     message: "",
+    user_id: "",
   });
   const [bookingErrors, setBookingErrors] = useState({
     date: "",
@@ -123,11 +124,29 @@ export default function AISearchComponent() {
     phone: "",
   });
   const [bookingLoading, setBookingLoading] = useState(false);
+  const [profileData, setProfileData] = useState({ email: "", phone: "", id: "" });
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loading]);
+  }, [messages, loading, currentStep]);
+
+  useEffect(() => {
+    profile();
+  }, []);
+
+  const profile = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+      if (userId) {
+        const response: any = await Models.user.details(userId);
+        setProfileData({ email: response?.email ?? "", phone: response?.phone ?? "", id: response?.id ?? "" });
+      }
+    }
+    catch (error) {
+      console.log("error", error);
+    }
+  };
 
   const handleResponse = (res: any) => {
     console.log("Response:", res);
@@ -346,6 +365,7 @@ export default function AISearchComponent() {
       setInquiryMode("done");
       setBookingLoading(false);
       await sendContactForm(payload);
+      await profile();
       // TODO: replace with actual API call
     } catch (e) {
       setBookingLoading(false);
@@ -380,7 +400,9 @@ export default function AISearchComponent() {
       console.log("Callback Response:", res);
       setInquiryMode("done");
       await sendContactForm(payload);
+      await profile();
       setCallbackLoading(false);
+
     } catch (e) {
       setCallbackLoading(false);
 
@@ -414,10 +436,12 @@ export default function AISearchComponent() {
               type="text"
               value={freeInput}
               onChange={(e) => setFreeInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && startChat(freeInput)}
+              onKeyDown={(e) => e.key === "Enter" && freeInput.trim().length >= 20 && startChat(freeInput)}
               placeholder="e.g. 3BHK apartment in Chennai under 1 Cr..."
               className="flex-1 bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground"
               autoFocus
+              maxLength={20}
+            
             />
             <button
               onClick={() => startChat(freeInput)}
@@ -609,25 +633,10 @@ export default function AISearchComponent() {
                                       propTitle: prop.title,
                                     });
                                     setInquiryMode("menu");
-                                    setCallbackForm({
-                                      email: "",
-                                      phone: "",
-                                      message: "",
-                                    });
+                                    setCallbackForm({ email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
                                     setCallbackErrors({ email: "", phone: "" });
-                                    setBookingForm({
-                                      date: "",
-                                      time: "",
-                                      email: "",
-                                      phone: "",
-                                      message: "",
-                                    });
-                                    setBookingErrors({
-                                      date: "",
-                                      time: "",
-                                      email: "",
-                                      phone: "",
-                                    });
+                                    setBookingForm({ date: "", time: "", email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
+                                    setBookingErrors({ date: "", time: "", email: "", phone: "" });
                                   }}
                                   className="p-1.5 rounded-full hover:bg-themeColor1/10 text-themeColor1 transition-colors"
                                   title="Inquiry"
@@ -657,16 +666,9 @@ export default function AISearchComponent() {
                             <div className="flex flex-row gap-2">
                               <button
                                 onClick={() => {
-                                  setInquiryPopup({
-                                    propId: null,
-                                    propTitle: "General Inquiry",
-                                  });
+                                  setInquiryPopup({ propId: null, propTitle: "General Inquiry" });
                                   setInquiryMode("callback");
-                                  setCallbackForm({
-                                    email: "",
-                                    phone: "",
-                                    message: "",
-                                  });
+                                  setCallbackForm({ email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
                                   setCallbackErrors({ email: "", phone: "" });
                                 }}
                                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-xs font-medium text-foreground"
@@ -676,24 +678,10 @@ export default function AISearchComponent() {
                               </button>
                               <button
                                 onClick={() => {
-                                  setInquiryPopup({
-                                    propId: null,
-                                    propTitle: "General Inquiry",
-                                  });
+                                  setInquiryPopup({ propId: null, propTitle: "General Inquiry" });
                                   setInquiryMode("booking");
-                                  setBookingForm({
-                                    date: "",
-                                    time: "",
-                                    email: "",
-                                    phone: "",
-                                    message: "",
-                                  });
-                                  setBookingErrors({
-                                    date: "",
-                                    time: "",
-                                    email: "",
-                                    phone: "",
-                                  });
+                                  setBookingForm({ date: "", time: "", email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
+                                  setBookingErrors({ date: "", time: "", email: "", phone: "" });
                                 }}
                                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-xs font-medium text-foreground"
                               >
@@ -839,16 +827,9 @@ export default function AISearchComponent() {
                           <div className="flex flex-row gap-2">
                             <button
                               onClick={() => {
-                                setInquiryPopup({
-                                  propId: null,
-                                  propTitle: "General Inquiry",
-                                });
+                                setInquiryPopup({ propId: null, propTitle: "General Inquiry" });
                                 setInquiryMode("callback");
-                                setCallbackForm({
-                                  email: "",
-                                  phone: "",
-                                  message: "",
-                                });
+                                setCallbackForm({ email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
                                 setCallbackErrors({ email: "", phone: "" });
                               }}
                               className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-xs font-medium text-foreground"
@@ -858,24 +839,10 @@ export default function AISearchComponent() {
                             </button>
                             <button
                               onClick={() => {
-                                setInquiryPopup({
-                                  propId: null,
-                                  propTitle: "General Inquiry",
-                                });
+                                setInquiryPopup({ propId: null, propTitle: "General Inquiry" });
                                 setInquiryMode("booking");
-                                setBookingForm({
-                                  date: "",
-                                  time: "",
-                                  email: "",
-                                  phone: "",
-                                  message: "",
-                                });
-                                setBookingErrors({
-                                  date: "",
-                                  time: "",
-                                  email: "",
-                                  phone: "",
-                                });
+                                setBookingForm({ date: "", time: "", email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
+                                setBookingErrors({ date: "", time: "", email: "", phone: "" });
                               }}
                               className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-xs font-medium text-foreground"
                             >
