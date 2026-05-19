@@ -445,8 +445,8 @@ export function PropertyView(props: any) {
     >
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 items-start min-h-screen">
         <aside className="space-y-6 lg:col-span-1 xl:sticky md:top-16 lg:top-16  hidden xl:block ">
-          <div className="p-4 pb-8 border rounded-lg space-y-6 bg-color1 border-gray h-[91vh] overflow-auto thin-scrollbar">
-            <div className="w-full flex justify-end">
+          <div className="p-4 pb-8 border rounded-2xl space-y-6 bg-color1 border-gray h-[91vh] overflow-auto thin-scrollbar">
+            {/* <div className="w-full flex justify-end">
               <Button
                 onClick={() => resetFilter()}
                 variant="ghost"
@@ -455,7 +455,7 @@ export function PropertyView(props: any) {
                 <RotateCcw className="h-4 w-4" />
                 Reset
               </Button>
-            </div>
+            </div> */}
 
             <TextInput
               placeholder="What are you looking for?"
@@ -664,7 +664,7 @@ export function PropertyView(props: any) {
                 /> */}
               <div className=" font-semibold text-gray-900">Budget</div>
 
-              <div className="flex gap-4 mt-4">
+              <div className="flex gap-4 mt-2">
                 {/* MIN */}
                 <div className="relative w-full">
                   <button
@@ -676,7 +676,7 @@ export function PropertyView(props: any) {
                       })
                     }
                     className="
-        w-full px-5 py-2 rounded-full
+        w-full px-5 py-1 rounded-full
         border border-gray-300 bg-white
         flex items-center justify-between
         text-gray-700
@@ -699,7 +699,7 @@ export function PropertyView(props: any) {
                   {state.openPriceDropdown === "min" && (
                     <div className="absolute z-50 mt-2 w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto">
                       <button
-                        className="w-full px-5 py-2 text-left hover:bg-gray-100"
+                        className="w-full px-5 py-1 text-left hover:bg-gray-100"
                         onClick={() =>
                           setState({
                             priceMinInput: "",
@@ -823,7 +823,7 @@ export function PropertyView(props: any) {
                       <span
                         className="
               flex items-center justify-center
-              px-4 py-2 rounded-lg border
+              px-4 py-1 rounded-lg border
               text-sm font-medium cursor-pointer
               transition-all duration-200
               border-gray-300 text-gray-700 bg-white
@@ -864,7 +864,7 @@ export function PropertyView(props: any) {
                       }}
                       className={`
             flex items-center justify-center
-            px-4 py-2 rounded-md border
+            px-4 py-1 rounded-md border
             text-sm font-medium cursor-pointer
             transition-all duration-200
 
@@ -934,7 +934,7 @@ export function PropertyView(props: any) {
                 Area (sqft)
               </div>
 
-              <div className="flex gap-4 mt-4">
+              <div className="flex gap-4 mt-2">
                 {/* Min Dropdown */}
                 <div className="relative w-full">
                   <button
@@ -946,7 +946,7 @@ export function PropertyView(props: any) {
                       })
                     }
                     className="
-        w-full px-5 py-2 rounded-full
+        w-full px-5 py-1 rounded-full
         border border-gray-300 bg-white
         flex items-center justify-between
         text-gray-700
@@ -1018,7 +1018,7 @@ export function PropertyView(props: any) {
                       })
                     }
                     className="
-        w-full px-5 py-2 rounded-full
+        w-full px-5 py-1 rounded-full
         border border-gray-300 bg-white
         flex items-center justify-between
         text-gray-700
@@ -1119,8 +1119,8 @@ export function PropertyView(props: any) {
         </aside>
 
         <section className="xl:col-span-4 space-y-6">
-          <div className="sticky top-16 z-10">
-            <div className="flex flex-wrap items-center justify-between gap-1 md:gap-4 px-2 py-4 md:p-4 bg-color1 border-gray  rounded-lg border">
+          <div className="sticky top-[75px] z-10">
+            <div className="flex flex-wrap items-center justify-between gap-1 md:gap-4 px-2 py-2  bg-color1 border-gray  rounded-full border">
               <div className="flex items-center justify-between md:justify-normal gap-4 w-auto">
                 {/* --------responsive filter sidebar start---------- */}
 
@@ -1188,7 +1188,7 @@ export function PropertyView(props: any) {
 
                 {/* --------responsive filter sidebar end---------- */}
 
-                <Link
+                {/* <Link
                   href="/property-listmv"
                   className="no-underline hidden xl:block"
                 >
@@ -1203,12 +1203,10 @@ export function PropertyView(props: any) {
                     <MapPinHouseIcon />
                     Map View
                   </Button>
-                </Link>
+                </Link> */}
                 {/* <span className="text-sm text-gray-600"></span> */}
-              </div>
 
-              <div className="flex items-center gap-4 justify-between md:justify-normal  w-auto">
-               {  state.userLoggedIn &&
+                    {  state.userLoggedIn &&
                (state.prefferedLocation == true ? ( 
                <Button
                   variant="outline"
@@ -1243,8 +1241,12 @@ export function PropertyView(props: any) {
                   Preffered Location
                 </Button>
                 ))}
+              </div>
 
-                {/* <div className="flex items-center gap-2">
+              <div className="flex items-center gap-4 justify-between md:justify-normal  w-auto">
+           
+
+                <div className="flex items-center gap-2 hidden md:flex">
                   <span className="text-sm text-gray-600 whitespace-nowrap">
                     Sort by:
                   </span>
@@ -1284,13 +1286,13 @@ export function PropertyView(props: any) {
                       </SelectItem>
                     </SelectContent>
                   </Select>
-                </div> */}
+                </div>
 
-                <div className="hidden sm:flex items-center gap-0 rounded-md overflow-hidden md:bg-white/70 md:shadow-sm">
+                <div className="hidden sm:flex items-center gap-0 overflow-hidden md:bg-white/70 md:shadow-sm border-gray rounded-full">
                   <Button
                     onClick={() => setState({ view: "grid" })}
                     variant="ghost"
-                    className={`px-2 md:px-3 py-2 text-sm font-medium flex items-center gap-1 transition-colors ${
+                    className={`px-2 md:px-3 py-2 text-sm font-medium flex items-center gap-1 transition-colors  ${
                       state.view === "grid"
                         ? "text-dred hover:text-dred hover:bg-transparent"
                         : "text-gray-600  hover:text-dred hover:bg-transparent"

@@ -12,7 +12,7 @@ import PropertyCard from "./PropertyCard";
 const NewPopuplarProperties = (props) => {
 
   const router=useRouter()
-  const { propertyList, updatePropertyType } = props;
+  const { propertyList, updatePropertyType, locationEmpty, locationLabel } = props;
   const [activeFilter, setActiveFilter] = useState("all"); // 'all', 'rent', 'sale'
 
   // Swiper breakpoints configuration
@@ -31,7 +31,7 @@ router.push(`property-detail/${property?.id}`)
   console.log("propertyList com", propertyList);
 
   return (
-    <div className="section-pad bg-[#f8f8f8]">
+    <div className="section-pad bg-[#f8f8f8] ">
       <div className="section-wid ">
         {/* Header Section with Filter Buttons on the right */}
         <div className="flex flex-col md:flex-row justify-between items-start lg:items-center mb-12 text-start">
@@ -42,6 +42,12 @@ router.push(`property-detail/${property?.id}`)
             <p className="section-cap">
               Aliquam lacinia diam quis lacus euismod
             </p>
+            {locationEmpty && (
+              <div className="flex items-center gap-2 mt-2 px-4 py-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 text-sm">
+                <MapPin className="w-4 h-4 shrink-0" />
+                No properties found in <span className="font-semibold mx-1">{locationLabel}</span> — showing all available properties.
+              </div>
+            )}
           </div>
 
           {/* Filter Buttons - Moved to right end */}
@@ -109,28 +115,35 @@ router.push(`property-detail/${property?.id}`)
         )} */}
 
         {/* Conditional Rendering: Swiper for "All Properties", Grid for filtered views */}
-        <Swiper
-          modules={[Autoplay]}
-          spaceBetween={24}
-          slidesPerView={1}
-          breakpoints={breakpoints}
-          navigation={{
-            nextEl: ".properties-swiper-next",
-            prevEl: ".properties-swiper-prev",
-          }}
-          autoplay={{
-            delay: 4000,
-            disableOnInteraction: false,
-          }}
-          loop={true}
-          className="featured-listings-swiper pb-10"
-        >
-          {propertyList?.map((property, index) => (
-           <SwiperSlide key={index} className="h-auto">
-              <PropertyCard listing={property} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        {propertyList?.length > 0 ? (
+          <Swiper
+            modules={[Autoplay]}
+            spaceBetween={24}
+            slidesPerView={1}
+            breakpoints={breakpoints}
+            navigation={{
+              nextEl: ".properties-swiper-next",
+              prevEl: ".properties-swiper-prev",
+            }}
+            autoplay={{ delay: 4000, disableOnInteraction: false }}
+            loop={true}
+            className="featured-listings-swiper pb-10"
+          >
+            {propertyList.map((property, index) => (
+              <SwiperSlide key={index} className="h-auto">
+                <PropertyCard listing={property} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+              <MapPin className="w-7 h-7 text-gray-400" />
+            </div>
+            <p className="text-gray-500 font-medium">No properties available</p>
+            <p className="text-gray-400 text-sm mt-1">Try a different filter or check back later.</p>
+          </div>
+        )}
       </div>
     </div>
   );

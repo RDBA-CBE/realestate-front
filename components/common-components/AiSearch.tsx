@@ -128,7 +128,7 @@ export default function AISearchComponent() {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, loading, currentStep]);
 
   useEffect(() => {
@@ -477,8 +477,7 @@ export default function AISearchComponent() {
   // ── CHAT MODE ──────────────────────────────────────────────────────────────
   return (
     <div
-      className="flex flex-col w-full max-w-2xl mx-auto"
-      style={{ minHeight: "80vh" }}
+      className="flex flex-col w-full max-w-2xl mx-auto pb-6"
     >
       {/* Header */}
       <div className="flex items-center gap-3 px-2 py-4 border-b border-border shrink-0">

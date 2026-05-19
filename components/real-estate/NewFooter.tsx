@@ -88,17 +88,17 @@ export default function NewFooter() {
   };
 
   return (
-    <footer className="section-pad bg-dred text-white">
+    <footer className="section-pad  text-white" 
+    style={{background:`url(/assets/images/real-estate/home/Footer.png)`, backgroundPosition:"bottom", backgroundSize:"cover", backgroundRepeat:"no-repeat", width:"100%", height:"100%"}}
+    >
       <div className="section-wid">
         <div className="flex flex-col gap-6 border-b border-white/15 pb-8 md:flex-row md:items-center md:justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <div className="rounded-lg bg-white/10 p-2">
-              <Home className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="text-xs font-semibold tracking-[0.1em]">REAL</p>
-              <p className="text-sm font-bold tracking-[0.1em]">ESTATE</p>
-            </div>
+            <img
+              src="/assets/images/real-estate/home/boom-logo-wt.png"
+              alt="Logo"
+              className="h-12 w-auto object-contain"
+            />
           </Link>
 
           <div className="flex items-center gap-4 text-sm">
@@ -199,8 +199,13 @@ export default function NewFooter() {
         <div className="flex flex-col gap-6 border-b border-white/15 py-8 md:flex-row md:items-center md:justify-center">
           <h3 className="section-ti !text-white !font-medium">Get Mobile App</h3>
           <div className="flex gap-4">
-            <button className="rounded-lg bg-white px-5 py-3 text-black">App Store</button>
-            <button className="rounded-lg bg-white px-5 py-3 text-black">Google Play</button>
+            <button className="rounded-xl  w-[150px] h-15 text-black">
+              <img src="/assets/images/real-estate/home/app-store.png" alt="" className="rounded-xl object-cover w-[100%] h-[100%]" />
+            </button>
+            <button className="rounded-xl  w-[150px] h-15 text-black">
+                            <img src="/assets/images/real-estate/home/play-store.png" alt="" className="rounded-xl object-cover w-[100%] h-[100%]" />
+
+            </button>
           </div>
         </div>
 

@@ -79,8 +79,7 @@ export default function ProfilePage() {
   useEffect(() => {
     getUser();
     wishlist();
-    cityList(1)
-    getPropertyTypes(); // New: Fetch property types
+    cityList(1);
   }, []);
 
   console.log("state.id", state.id);
@@ -105,22 +104,6 @@ export default function ProfilePage() {
         }
       };
 
-  // New: Fetch property types
-  const getPropertyTypes = async () => {
-    try {
-      // Check if Models.dropdowns and the 'category' method exist before calling
-      if (Models.dropdowns && typeof (Models.dropdowns as any).category === 'function') {
-        const res: any = await (Models.dropdowns as any).category(); // Assuming 'category' is the correct method name for property types
-        const dropdown = Dropdown(res?.results, "name");
-        setState({ propertyTypeList: dropdown });
-      } else {
-        console.error("Error: Models.dropdowns.category is not a function or does not exist. Please check your dropdowns model file.");
-        // Optionally, you might want to set an error state or provide a fallback for propertyTypeList
-      }
-    } catch (error) {
-      console.error("Error fetching property types:", error);
-    }
-  };
       console.log("locationList", state.locationList);
       
 
@@ -426,7 +409,7 @@ const getPropertyTypeNames = (ids: string[]) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="min-h-[93vh]  px-8"
+      className="min-h-[93vh] px-4 md:px-8"
     >
       {/* Auth Alert Modal */}
       {state.showAuthAlert && (
@@ -446,10 +429,10 @@ const getPropertyTypeNames = (ids: string[]) => {
           </div>
         </div>
       )}
-      <div className="container mt-6">
-        <div className="w-full bg-color1 border-gray shadow-none text-white rounded-xl flex flex-col md:flex-row items-center justify-between p-4 md:p-6 ">
+      <div className="container mx-auto max-w-7xl mt-6">
+        <div className="w-full bg-color1 border-gray shadow-none text-white rounded-xl flex flex-col md:flex-row items-start justify-between p-4 md:p-6 gap-4">
           {/* Left Section */}
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             {state.user?.profile_image ? (
               <Image
                 src={state.user.profile_image}
@@ -494,10 +477,10 @@ const getPropertyTypeNames = (ids: string[]) => {
           </div>
 
           {/* Right Section */}
-          <div className="flex space-x-3 mt-4 md:mt-0">
+          <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0 w-full sm:w-auto">
             <Button
               variant="outline"
-              className="w-full rounded-full border-dred bg-transparent text-dred hover:text-white hover:bg-[#9b0f09]"
+              className="w-full sm:w-auto rounded-full border-dred bg-transparent text-dred hover:text-white hover:bg-[#9b0f09]"
               onClick={() => setState({ isEditProfile: true })}
             >
               <Pencil size={16} />
@@ -506,7 +489,7 @@ const getPropertyTypeNames = (ids: string[]) => {
 
             <Button
               variant="outline"
-              className="w-full rounded-full border-dred bg-transparent text-dred hover:text-white hover:bg-[#9b0f09]"
+              className="w-full sm:w-auto rounded-full border-dred bg-transparent text-dred hover:text-white hover:bg-[#9b0f09]"
               onClick={() => setState({ isChangePassword: true })}
             >
               <MessageCircle size={16} />
@@ -740,7 +723,7 @@ const getPropertyTypeNames = (ids: string[]) => {
               
             )}
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 className="bg-color2 hover:bg-red-700 text-white w-full"
                 onClick={() => router.push("/property-list")}
@@ -801,9 +784,7 @@ const getPropertyTypeNames = (ids: string[]) => {
               transition={{ duration: 0.25, ease: "easeOut" }}
             >
               <Card
-                className={`rounded-2xl shadow-lg border border-gray-200 max-w-md mx-auto !bg-gray ${
-                  state.isEditProfile ? "w-[500px]" : "me-0"
-                }`}
+                className="rounded-2xl shadow-lg border border-gray-200 w-full max-w-xl mx-auto !bg-gray"
               >
                 {state.isEditProfile && (
                   <div className="w-full text-right">
@@ -1009,9 +990,7 @@ const getPropertyTypeNames = (ids: string[]) => {
               transition={{ duration: 0.25, ease: "easeOut" }}
             >
               <Card
-                className={`rounded-2xl shadow-lg border border-gray-200 max-w-md mx-auto !bg-gray ${
-                  state.isChangePassword ? "w-[500px]" : "me-0"
-                }`}
+                className="rounded-2xl shadow-lg border border-gray-200 w-full max-w-xl mx-auto !bg-gray"
               >
                 {state.isChangePassword && (
                   <div className="w-full text-right">
@@ -1033,7 +1012,7 @@ const getPropertyTypeNames = (ids: string[]) => {
                     {/* Upload Profile Image - Full Width */}
 
                     {/* Two-column grid for form fields */}
-                    <div className=" grid grid-col !gap-3">
+                    <div className="grid grid-cols-1 gap-3">
                       {/* Full Name */}
                       <Input
                         name="current_password"
@@ -1107,9 +1086,7 @@ const getPropertyTypeNames = (ids: string[]) => {
               transition={{ duration: 0.25, ease: "easeOut" }}
             >
               <Card
-                className={`rounded-2xl shadow-lg border border-gray-200 max-w-md mx-auto !bg-gray ${
-                  state.isPrefferedLocation ? "w-[500px]" : "me-0"
-                }`}
+                className="rounded-2xl shadow-lg border border-gray-200 w-full max-w-xl mx-auto !bg-gray"
               >
                 {state.isPrefferedLocation && (
                   <div className="w-full text-right">
@@ -1131,7 +1108,7 @@ const getPropertyTypeNames = (ids: string[]) => {
                     {/* Upload Profile Image - Full Width */}
 
                     {/* Two-column grid for form fields */}
-                    <div className=" grid grid-col !gap-3">
+                    <div className="grid grid-cols-1 gap-3">
                       {/* Full Name */}
                       <CustomMultiSelect
                       className="border border-gray-200 bg-white " 

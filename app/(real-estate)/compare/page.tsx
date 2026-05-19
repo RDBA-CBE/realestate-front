@@ -415,11 +415,11 @@ const PropertyComparisonGrid = () => {
                       />
                     </svg>
                   </button>
-                  <div className="relative overflow-hidden rounded-lg shadow-md mb-2">
+                  <div className="relative overflow-hidden rounded-lg shadow-md w-fit mb-2">
                     <img
                       src={property?.primary_image?.image}
                       alt={property.title}
-                      className="w-full h-28 object-cover"
+                      className="w-auto h-28 object-cover"
                     />
                   </div>
                   <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">

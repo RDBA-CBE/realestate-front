@@ -74,12 +74,8 @@ const ForgotPasswordPage = () => {
         <div className="absolute bottom-0 right-0 w-72 h-72 rounded-full bg-white/5 translate-x-1/3 translate-y-1/3" />
 
         <div className="flex items-center gap-2 cursor-pointer z-10" onClick={() => router.push("/")}>
-          <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center">
-            <Home className="w-5 h-5 text-white" />
-          </div>
-          <span className="text-white font-bold text-xl tracking-wide">Real Estate</span>
-        </div>
-
+          <img src="/assets/images/real-estate/home/boom-logo-wt.png" alt="Logo" className="h-12 w-auto object-contain" />
+      </div>
         <div className="z-10 space-y-6">
           <h1 className="text-5xl font-semibold text-white leading-tight">
             Forgot your password? No worries.
@@ -120,11 +116,8 @@ const ForgotPasswordPage = () => {
         <div className="w-full max-w-md">
 
           {/* mobile logo */}
-          <div className="flex lg:hidden items-center gap-2 mb-8 cursor-pointer" onClick={() => router.push("/")}>
-            <div className="w-8 h-8 rounded-lg bg-[#9b0f09] flex items-center justify-center">
-              <Home className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-black font-bold text-lg">Real Estate</span>
+          <div className="flex lg:hidden items-center justify-center gap-2 mb-8 cursor-pointer" onClick={() => router.push("/")}>
+<img src="/assets/images/real-estate/home/boom-logo.png" alt="Logo" className="h-12 w-auto object-contain" />
           </div>
 
           {state.submitted ? (
