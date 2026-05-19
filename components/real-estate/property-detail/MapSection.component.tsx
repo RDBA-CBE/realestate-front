@@ -202,7 +202,7 @@ const GoogleMaps = (props) => {
 
   return (
     <Card className="border-none shadow-none bg-transparent ">
-      <h3 className="text-xl font-semibold mb-4">
+      <h3 className="section-in-ti mb-4">
         Location & Nearby Amenities
       </h3>
 
@@ -213,7 +213,7 @@ const GoogleMaps = (props) => {
         </div> */}
         <div className="flex gap-2">
           <span className="font-semibold w-24 text-gray-500">City</span>
-          <span>{data?.city || "Not specified"}</span>
+          <span>{data?.location?.name || "Not specified"}</span>
         </div>
         <div className="flex gap-2">
           <span className="font-semibold w-24 text-gray-500">State</span>
@@ -223,7 +223,7 @@ const GoogleMaps = (props) => {
       {data?.address && (
         <div
           className="w-full h-full"
-          dangerouslySetInnerHTML={{ __html: data?.address }}
+          dangerouslySetInnerHTML={{ __html: data?.location_url }}
         />
       )}
       {/* <div

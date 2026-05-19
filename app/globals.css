@@ -1574,7 +1574,7 @@ body {
 
 
 .bg-color1{
-  background:#f3f4f6 ;
+  background:#fff ;
 }
 
 .bg-dred{
@@ -1604,11 +1604,16 @@ body {
   border-radius: 5px;
 }
 
+.border-gray{
+  border: 1px solid;
+  border-color: #d1d0d0;
+}
+
 
 /* new home  layout */
 
 .section-wid {
-  width: 75%;
+  width: 80%;
   margin: auto;
 }
 
@@ -1618,7 +1623,7 @@ body {
 
 @media (max-width: 1500px) {
   .section-wid {
-    width: 80%;
+    width: 85%;
   }
 }
 
@@ -1671,7 +1676,8 @@ body {
 
 .adv-wrapper {
   /* background: #f7f7f7; */
-  background-image: url(/assets/images/real-estate/home/home-banner1.jpg);
+  /* background-image: url(/assets/images/real-estate/home/home-banner1.jpg); */
+  background-image: url(/assets/images/real-estate/home/banner-4.png);
   font-family: "Inter", sans-serif;
   position: relative;
   background-repeat: no-repeat;
@@ -1691,7 +1697,7 @@ body {
 }
 
 .adv-title {
-  font-size: 72px;
+  font-size: 60px;
   font-weight: 600;
   line-height: 1.05;
 
@@ -1706,7 +1712,7 @@ body {
   margin-top: 24px;
   font-size: 24px;
   color: #383838;
-  max-width: 430px;
+  max-width: 500px;
 }
 
 .adv-btn {
@@ -2069,4 +2075,29 @@ body {
 }
 
 
+.property-swiper .swiper-wrapper {
+  align-items: stretch;
+}
 
+.property-swiper .swiper-slide {
+  height: auto !important;
+  display: flex;
+}
+
+.property-swiper .swiper-slide > div {
+  width: 100%;
+}
+
+.property-swiper .swiper-slide > div > div {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(100%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.25s ease-out forwards;
+}

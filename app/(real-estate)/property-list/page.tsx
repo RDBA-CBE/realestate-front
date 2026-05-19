@@ -20,6 +20,7 @@ export default function Page() {
   const propertyType = searchParams.get("propertyType");
   const locationParam = searchParams.get("location");
 
+
   const [state, setState] = useSetState({
     propertyList: [],
     loading: false,
@@ -84,6 +85,12 @@ export default function Page() {
       urlFilter.listingStatus = type === "sale" ? "For Sale" : "For Lease";
     }
 
+    if (developerId) {
+      const typeId = Number(developerId);
+      const matched = (res?.developer || []).find((item: any) => item.id == typeId);
+      if (matched) urlFilter.developer = [{ label: matched.name, value: matched.id }];
+    }
+
     return urlFilter;
   };
 
@@ -121,6 +128,7 @@ export default function Page() {
         maxPrice: res?.price_range?.maximum_price || 0,
         initialLocation: urlFilter.location || [],
         initialPropertyType: urlFilter.propertyType || [],
+        initialDeveloper: urlFilter.developer || [],
       });
 
       // 3. fetch property list with validated URL params
@@ -295,12 +303,14 @@ export default function Page() {
       bodyData.search = data?.search;
     }
 
-    if (data?.priceRange?.length > 0) {
-      bodyData.minPrice = data?.priceRange[0];
+    if (data?.priceMinInput) {
+      bodyData.min_price = data?.priceMinInput;
+      bodyData.minimum_price = data?.priceMinInput;
     }
 
-    if (data?.priceRange?.length >= 1) {
-      bodyData.maxPrice = data?.priceRange[1];
+    if (data?.priceMaxInput) {
+      bodyData.max_price = data?.priceMaxInput;
+      bodyData.maximum_price = data?.priceMaxInput;
     }
 
     if (data?.bedrooms) {
@@ -381,6 +391,7 @@ export default function Page() {
         furnishingList={state.furnishingList}
         listingTypeList={state.listingTypeList}
         bedroomList={state.bedroomList}
+        initialDeveloper={state.initialDeveloper}
         filters={(data) => filterList(1, false, data)}
         onFilterChange={(data) => dynamicFilterList(data)}
         loading={state.loading}

@@ -291,17 +291,6 @@ export default function PropertyDetailPage() {
     { id: "overview", component: <PropertyDetails data={state.detail} /> },
     { id: "description", component: <PropertyDesc data={state.detail} /> },
 
-    // 👇 Add className control for MapSection visibility
-    {
-      id: "map",
-      component: <MapSection data={state.detail} />,
-      className: "hidden xl:block", // only show on xl+
-    },
-
-    {
-      id: "amenities",
-      component: <Amenities data={state.detail?.amenities} />,
-    },
     ...(state.detail?.floor_plans?.length > 0
       ? [
           {
@@ -310,15 +299,30 @@ export default function PropertyDetailPage() {
           },
         ]
       : []),
-    ...(state.detail?.videos?.length > 0
-      ? [{ id: "video", component: <Video data={state.detail?.videos?.[0]} /> }]
-      : []),
+
+      {
+      id: "amenities",
+      component: <Amenities data={state.detail?.amenities} />,
+    },
+
+    // 👇 Add className control for MapSection visibility
+    {
+      id: "map",
+      component: <MapSection data={state.detail} />,
+      className: "hidden xl:block", // only show on xl+
+    },
+
+   
+    
+    // ...(state.detail?.videos?.length > 0
+    //   ? [{ id: "video", component: <Video data={state.detail?.videos?.[0]} /> }]
+    //   : []),
     ...(state.detail?.virtual_tours?.length > 0
       ? [{ id: "virtualtour", component: <VirtualTour /> }]
       : []),
-    { id: "nearby", component: <Nearby /> },
-    { id: "walkscore", component: <WalkScore /> },
-    { id: "reviews", component: <Reviews /> },
+    // { id: "nearby", component: <Nearby /> },
+    // { id: "walkscore", component: <WalkScore /> },
+    // { id: "reviews", component: <Reviews /> },
   ];
 
   const tabSections = sections
@@ -363,7 +367,7 @@ export default function PropertyDetailPage() {
               <div
                 key={sec.id}
                 id={sec.id}
-                className={`${bgClass} border rounded-2xl shadow p-6 ${
+                className={`${bgClass} border border-gray rounded-2xl  p-6 ${
                   sec.className || ""
                 }`}
               >

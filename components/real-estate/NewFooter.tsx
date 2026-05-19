@@ -1,56 +1,171 @@
 "use client";
-import React, { useState } from 'react';
-import { Facebook, Twitter, Instagram, Linkedin, Home } from 'lucide-react';
-import Link from 'next/link';
+import React, { useEffect, useState } from "react";
+import { Facebook, Twitter, Instagram, Linkedin, Home } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Models from "@/imports/models.import";
+import { Dropdown, Failure, Success, useSetState } from "@/utils/function.utils";
+import * as Yup from "yup";
 
-const popular = ['Apartment for Sale', 'Apartment for Rent', 'Offices for Sale', 'Offices for Rent'];
-const links = ['About Us', 'Our Properties', 'Location', 'Compare', 'Contact Us'];
-const discovery = ['Chicago', 'Los Angeles', 'New Jersey', 'New York', 'California'];
+const links = [
+  { url: "about", text: "About Us" },
+  { url: "property-list", text: "Our Properties" },
+  { url: "compare", text: "Compare" },
+];
+
+const popularSearch = [
+  { label: "Apartment for Sale", params: { type: "sale", search: "Apartment" } },
+  { label: "Apartment for Lease", params: { type: "lease", search: "Apartment" } },
+  { label: "Villas for Sale", params: { type: "sale", search: "Villa" } },
+  { label: "Villas for Lease", params: { type: "lease", search: "Villa" } },
+];
 
 export default function NewFooter() {
-  const [email, setEmail] = useState("");
+  const router = useRouter();
+  const [state, setState] = useSetState({
+    loading: false,
+    email: "",
+  });
 
-  const handleSubscribe = () => {
-    if (!email) return;
-    // TODO: integrate subscribe API
-    setEmail("");
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    setState({ id: userId });
+  }, []);
+
+  useEffect(() => {
+    cityList(1);
+  }, []);
+
+  const handleSubscribe = async () => {
+    try {
+      const body = {
+        user: state.id,
+        email: state.email,
+      };
+
+      const schema = Yup.object({
+        email: Yup.string().trim().email("Please enter a valid email").required("Email is required"),
+      });
+
+      await schema.validate({ email: state.email });
+
+      const res: any = await Models.user.newsletter(body);
+      Success(res?.message || "Subscribed to newsletter successfully");
+    } catch (error) {
+      if (error.name === "ValidationError") {
+        return Failure(error.message);
+      }
+      Failure(error?.detail || "Something went wrong");
+      setState({ loading: false });
+    }
+  };
+
+  const cityList = async (page) => {
+    try {
+      const body: any = {};
+      if (state.search) body.search = state.search;
+      const res: any = await Models.dropdowns.city(page, body);
+      const locationdd = res?.results?.filter((item) => item?.property_count != 0);
+      const droprdown = Dropdown(locationdd, "name");
+
+      setState({
+        locationList: droprdown,
+        cityList: res?.results,
+        total: res?.count,
+        page,
+        next: res.next,
+        previous: res.previous,
+        totalRecords: res.count,
+      });
+    } catch (error) {
+      console.log("error -->", error);
+    }
+  };
+
+  const handlePropertyListNavigate = (params: Record<string, string>) => {
+    const searchParams = new URLSearchParams(params).toString();
+    router.push(`/property-list?${searchParams}`);
   };
 
   return (
     <footer className="section-pad bg-dred text-white">
       <div className="section-wid">
         <div className="flex flex-col gap-6 border-b border-white/15 pb-8 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-white/10 p-2"><Home className="h-6 w-6" /></div>
+          <Link href="/" className="flex items-center gap-3">
+            <div className="rounded-lg bg-white/10 p-2">
+              <Home className="h-6 w-6" />
+            </div>
             <div>
               <p className="text-xs font-semibold tracking-[0.1em]">REAL</p>
               <p className="text-sm font-bold tracking-[0.1em]">ESTATE</p>
             </div>
-          </div>
+          </Link>
 
           <div className="flex items-center gap-4 text-sm">
             <span className="font-medium">Follow Us</span>
-            <Facebook className="h-4 w-4" />
-            <Twitter className="h-4 w-4" />
-            <Instagram className="h-4 w-4" />
-            <Linkedin className="h-4 w-4" />
+            <Link href="#"><Facebook className="h-4 w-4" /></Link>
+            <Link href="#"><Twitter className="h-4 w-4" /></Link>
+            <Link href="#"><Instagram className="h-4 w-4" /></Link>
+            <Link href="#"><Linkedin className="h-4 w-4" /></Link>
           </div>
         </div>
 
         <div className="grid gap-10 border-b border-white/15 py-10 md:grid-cols-5">
           <div>
             <h3 className="mb-4 section-in-ti !text-white">Popular Search</h3>
-            <ul className="space-y-3 text-white/80">{popular.map(i => <li key={i}><a href="/property-list">{i}</a></li>)}</ul>
+            <ul className="space-y-3 text-white/80">
+              {popularSearch.map((item) => (
+                <li key={item.label}>
+                  <button
+                    type="button"
+                    onClick={() => handlePropertyListNavigate(item.params)}
+                    className="text-left hover:text-white"
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div>
             <h3 className="mb-4 section-in-ti !text-white">Quick Links</h3>
-            <ul className="space-y-3 text-white/80">{links.map(i => <li key={i}><a href="/property-list">{i}</a></li>)}</ul>
+            <ul className="space-y-3 text-white/80">
+              {links?.map((item, i) => (
+                <li key={i}>
+                  {item.url === "property-list" ? (
+                    <button
+                      type="button"
+                      onClick={() => router.push(`/${item.url}`)}
+                      className="text-left hover:text-white"
+                    >
+                      {item.text}
+                    </button>
+                  ) : (
+                    <Link href={`/${item.url}`} className="hover:text-white">
+                      {item.text}
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div>
             <h3 className="mb-4 section-in-ti !text-white">Discovery</h3>
-            <ul className="space-y-3 text-white/80">{discovery.map(i => <li key={i}><a href="/property-list">{i}</a></li>)}</ul>
+            <ul className="space-y-3 text-white/80">
+              {state.locationList?.slice(0, 5).map((item, i) => (
+                <li key={i}>
+                  <button
+                    type="button"
+                    onClick={() => handlePropertyListNavigate({ location: item.value })}
+                    className="text-left hover:text-white"
+                  >
+                    {item?.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div className="space-y-6 md:col-span-2">
@@ -64,8 +179,8 @@ export default function NewFooter() {
                 <input
                   type="email"
                   placeholder="Your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={state.email}
+                  onChange={(e) => setState({ email: e.target.value })}
                   onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
                   style={{ color: "#000", backgroundColor: "transparent" }}
                   className="w-full px-4 outline-none placeholder:text-gray-400"
@@ -90,10 +205,15 @@ export default function NewFooter() {
         </div>
 
         <div className="flex flex-col gap-4 pt-6 text-sm text-white md:flex-row md:items-center md:justify-between">
-          <p>Copyright 2026 © Realestate. Concept by <Link href='https://irepute.in/' target='_blank'>repute</Link></p>
+          <p>
+            Copyright 2026 © Realestate. Concept by{" "}
+            <Link href="https://irepute.in/" target="_blank">
+              repute
+            </Link>
+          </p>
           <div className="flex gap-4">
-            <span>Privacy</span>
-            <span>Terms</span>
+            <Link href="/privacy-policy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
           </div>
         </div>
       </div>

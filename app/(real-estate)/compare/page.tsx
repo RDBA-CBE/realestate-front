@@ -74,11 +74,32 @@ const PropertyComparisonGrid = () => {
     {
       group: "Property Information",
       attributes: [
-        { label: "Location", key: "city" },
         {
-          label: "Property Type",
-          key: "property_type",
-          format: (value: any) => value?.name,
+          label: "Area",
+          key: "area",
+          format: (value: any) => value?.label || value?.name || "-",
+        },
+        {
+          label: "City",
+          key: "location",
+          format: (value: any) => value?.label || value?.name || "-",
+        },
+        // { label: "City", key: "city" },
+        // {
+        //   label: "Property Type",
+        //   key: "property_type",
+        //   format: (value: any) => value?.name,
+        // },
+        {
+          label: "Floor Plans",
+          key: "floor_plans",
+          format: (value: any) => {
+            if (!value || value.length === 0) return "-";
+            const bhkSet = new Set(
+              value.map((fp: any) => fp.category?.match(/\d+/)?.[0]).filter(Boolean)
+            );
+            return bhkSet.size > 0 ? `${[...bhkSet].join(", ")} BHK` : "-";
+          },
         },
         { label: "Status", key: "status" },
         { label: "Listing Type", key: "listing_type" },
@@ -87,8 +108,8 @@ const PropertyComparisonGrid = () => {
     {
       group: "Property Details",
       attributes: [
-        { label: "Bedrooms", key: "bedrooms" },
-        { label: "Bathrooms", key: "bathrooms" },
+        // { label: "Bedrooms", key: "bedrooms" },
+        // { label: "Bathrooms", key: "bathrooms" },
         {
           label: "Total Area",
           key: "total_area",
@@ -99,6 +120,7 @@ const PropertyComparisonGrid = () => {
           key: "built_up_area",
           format: (value: any) => `${value} Sq Ft`,
         },
+        
         { label: "Built Year", key: "built_year" },
         { label: "Floor Number", key: "floor_number" },
         { label: "Total Floors", key: "total_floors" },
@@ -125,26 +147,44 @@ const PropertyComparisonGrid = () => {
           format: (value: any) => formatToINR(value),
           highlight: true,
         },
-        {
-          label: "Price Per Sq Ft",
-          key: "price_per_sqft",
-          format: (value: any) => `₹${value}`,
-        },
-        {
-          label: "Maintenance Charges",
-          key: "maintenance_charges",
-          format: (value: any) => (value ? formatToINR(value) : "-"),
-        },
-        {
-          label: "Security Deposit",
-          key: "security_deposit",
-          format: (value: any) => (value ? formatToINR(value) : "-"),
-        },
+        // {
+        //   label: "Price Per Sq Ft",
+        //   key: "price_per_sqft",
+        //   format: (value: any) => `₹${value}`,
+        // },
+        // {
+        //   label: "Maintenance Charges",
+        //   key: "maintenance_charges",
+        //   format: (value: any) => (value ? formatToINR(value) : "-"),
+        // },
+        // {
+        //   label: "Security Deposit",
+        //   key: "security_deposit",
+        //   format: (value: any) => (value ? formatToINR(value) : "-"),
+        // },
       ],
     },
     {
       group: "Features",
       attributes: [{ label: "Furnishing", key: "furnishing" }],
+    },
+    {
+      group: "Developer/Contact",
+      attributes: [
+        {
+          label: "Developer",
+          key: "developer",
+          format: (value: any) => {
+            if (!value) return "-";
+            if (typeof value === "object") {
+              return value.label || value.name || value.industry || "-";
+            }
+            return value;
+          },
+        },
+        // { label: "Broker Name", key: "broker_name" },
+        // { label: "Developer Name", key: "developer_name" },
+      ],
     },
   ];
 
@@ -157,6 +197,11 @@ const PropertyComparisonGrid = () => {
 
     if (attr.format) {
       return attr.format(value);
+    }
+
+    // Handle objects with id/label structure from filter dropdowns
+    if (typeof value === "object" && value !== null) {
+      return value.label || value.name || "-";
     }
 
     return value;
@@ -282,9 +327,9 @@ const PropertyComparisonGrid = () => {
                     property?.price_range?.maximum_price
                   )}{" "}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
+                {/* <p className="text-xs text-gray-500 mt-1">
                   {property.city}, {property.state}
-                </p>
+                </p> */}
               </div>
               <button
                 className="text-gray-400 hover:text-dred transition ml-2"
@@ -386,9 +431,9 @@ const PropertyComparisonGrid = () => {
                       property?.price_range?.maximum_price
                     )}{" "}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">
+                  {/* <p className="text-xs text-gray-500 mt-1">
                     {property.city}, {property.state}
-                  </p>
+                  </p> */}
                 </div>
               </th>
             ))}
@@ -472,7 +517,7 @@ const PropertyComparisonGrid = () => {
             </div>
           ) : (
             <>
-              <h1 className="text-2xl font-extrabold text-gray-900 text-center mb-12">
+              <h1 className="section-ti  text-center mb-12">
                 Compare Properties
               </h1>
               <div className="lg:hidden mb-6">

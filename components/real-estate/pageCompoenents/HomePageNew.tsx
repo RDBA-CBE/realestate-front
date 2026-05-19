@@ -5,15 +5,23 @@ import { motion } from "framer-motion";
 import HomeBanner from '../InnerComponents/HomeBanner';
 import { Dropdown, useSetState } from '@/utils/function.utils';
 import Models from '@/imports/models.import';
+import { toastEmitter } from '@/utils/toast.utils';
 import PropertyByCity from '../InnerComponents/PropertyByCity';
 import PropertyByType from '../InnerComponents/PropertyByType';
 import FeaturedListings from '../InnerComponents/FeaturedListings';
 import HowItWorks from '../InnerComponents/HowItWorks';
 import NewTestimonial from '../InnerComponents/NewTestimonial';
 import SellingOptionsSection from '../InnerComponents/SellingOptionsSection';
+import DeveloperRegistrationSection from '../InnerComponents/DeveloperRegistrationSection';
+import FeaturedDevelopers from '../InnerComponents/FeaturedDevelopers';
 import NewFooter from '../NewFooter';
 import NewPopuplarProperties from '../InnerComponents/NewPopuplarProperties';
 import Testimonials from '@/components/common-components/Testimonials';
+import ExploreDreamHomeSection from '../InnerComponents/ExploreDreamHomeSection';
+import FAQSection from '../InnerComponents/FAQSection';
+import AboutSection from '../InnerComponents/AboutSection';
+import SectionTestimonial from '../InnerComponents/SectionTestimonial';
+
 
 
 const HomePageNew = () => {
@@ -23,21 +31,41 @@ const HomePageNew = () => {
       propertyTypeList: [],
       saleWithFurnishedList:[],
       cityList: [],
+      developerList: [],
     });
   
     useEffect(() => {
       propertyList("");
       propertyTypeList();
        saleWithFurnishedList();
-      cityList(1)
+      cityList(1);
+      developerList();
     }, []);
+
+    const developerList = async () => {
+      try {
+        const res: any = await Models.user.list(1, { group: "Developer", has_complete_developer_profile: true});
+        setState({ developerList: res?.results || [] });
+      } catch (error: any) {
+        const msg = error?.error || error?.response?.data?.error || "";
+        if (msg === "Given token not valid for any token type") {
+          toastEmitter.emit("error", "Session expired. Please login again.");
+          localStorage.clear();
+          window.location.href = "/login";
+          return;
+        }
+        console.log("✌️error --->", error);
+      }
+    };
 
     const cityList = async (page) => {
       try {
         const body: any = {};
         if (state.search) body.search = state.search;
         const res: any = await Models.dropdowns.city(page, body);
-        const droprdown = Dropdown(res?.results, "name");
+        const locationdd = res?.results?.filter((item)=>item?.property_count != 0)
+        const droprdown = Dropdown(locationdd, "name");
+        
   
         setState({
           locationList: droprdown,
@@ -173,22 +201,36 @@ const HomePageNew = () => {
 
         <HowItWorks />
 
+        <FeaturedDevelopers developerList={state.developerList} />
+
+        <DeveloperRegistrationSection/>
+
+
+        
         <NewPopuplarProperties
             propertyList={state.propertyList}
             updatePropertyType={(type) => propertyList(type)}
           />
 
-        <SellingOptionsSection/>
 
-
-
+        {/* <AboutSection /> */}
+         <SellingOptionsSection/>
+        
         {/* <HelpServicesSection/> */}
 
-        <Testimonials />
+        <FAQSection/>
+
+        <ExploreDreamHomeSection/>
+
+        <SectionTestimonial/>
+
+        {/* <Testimonials /> */}
+
+
 
         {/* <NewTestimonial/> */}
 
-        <NewFooter/>
+        {/* <NewFooter/> */}
 
 
       </motion.div>

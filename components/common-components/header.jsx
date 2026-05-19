@@ -74,17 +74,13 @@ const Header = () => {
     try {
       setState({ logoutLoading: true });
       const refresh = localStorage.getItem("refresh");
-      const res = await Models.auth.logout({ refresh });
-      setState({ logoutLoading: true });
-      setDialogOpen(false);
+      await Models.auth.logout({ refresh });
       localStorage.clear();
-
       window.location.href = "/login";
     } catch (error) {
       localStorage.clear();
-
       window.location.href = "/login";
-
+    } finally {
       setState({ logoutLoading: false });
     }
   };
@@ -120,7 +116,7 @@ const Header = () => {
           <div className="  flex justify-between items-center gap-20 ">
             <div className="flex items-center gap-20">
               {/* Logo */}
-              <div className="flex justify-center gap-3 py-4">
+              <Link className="flex justify-center gap-3 py-4" href="/">
                 {/* <Link href="home">
                   <Image
                     src="/assets/images/logo.png"
@@ -141,7 +137,7 @@ const Header = () => {
                     ESTATE
                   </p>
                 </div>
-              </div>
+              </Link>
 
               {/* Left Menu (Desktop) */}
               <nav className="hidden lg:flex space-x-6">
@@ -248,7 +244,7 @@ const Header = () => {
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
-                        onClick={handleLogout}
+                        onClick={() => setDialogOpen(true)}
                         className="text-dred focus:text-dred"
                       >
                         <LogOut className="mr-2 h-4 w-4 text-dred" />
@@ -269,7 +265,7 @@ const Header = () => {
                     <Button
                       onClick={() => router.push("/login")}
                       variant="outline"
-                      className="px-6 rounded-full bg-lred hover:bg-color2 border-[#9b0f09]  text-dred hover:text-gray-900"
+                      className="px-6 rounded-full bg-lred hover:bg-color2 border-[#9b0f09]  text-dred hover:text-white"
                     >
                       Login
                     </Button>
@@ -296,7 +292,7 @@ const Header = () => {
                       <Button
                       onClick={() => router.push("/login")}
                       variant="outline"
-                      className="px-5 h-7 py-0 rounded-full bg-lred hover:bg-color2 border-[#9b0f09]  text-dred hover:text-gray-900"
+                      className="px-5 h-7 py-0 rounded-full bg-lred hover:bg-color2 border-[#9b0f09]  text-dred hover:text-white"
                     >
                       Login
                     </Button>
@@ -539,25 +535,30 @@ const Header = () => {
 
             {/* Logout Confirmation Dialog */}
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogContent className="bg-white p-6 rounded-lg md:w-96 w-full">
-                <DialogTitle className="text-[20px] font-semibold">
-                  Confirm Logout
-                </DialogTitle>
-                <div className="mb-4">Are you sure you want to log out?</div>
-                <div className="flex justify-end gap-4">
-                  <Button
-                    onClick={handleCancel}
-                    variant={"outline"}
-                    className="px-4 py-2 border-themeGreen hover:border-themeGreen text-themeGreen hover:text-themeGreen bg-none rounded text-sm"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleLogout}
-                    className="px-4 py-2 bg-themeGreen hover:bg-themeGreen text-white rounded text-sm"
-                  >
-                    {state.logoutLoading ? <Loader /> : "Confirm"}
-                  </Button>
+              <DialogContent className="bg-white p-8 rounded-2xl max-w-sm w-full">
+                <div className="flex flex-col items-center text-center gap-4">
+                  <div className="w-14 h-14 rounded-full bg-[#fff6f6] flex items-center justify-center">
+                    <LogOut className="w-6 h-6 text-[#9b0f09]" />
+                  </div>
+                  <DialogTitle className="text-lg font-bold text-black">
+                    Sign Out
+                  </DialogTitle>
+                  <p className="text-sm text-gray-500">Are you sure you want to sign out of your account?</p>
+                  <div className="flex gap-3 w-full pt-2">
+                    <Button
+                      onClick={handleCancel}
+                      variant="outline"
+                      className="flex-1 rounded-xl border-gray-200 text-black hover:bg-gray-50"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleLogout}
+                      className="flex-1 rounded-xl bg-[#9b0f09] hover:bg-[#7d0c07] text-white"
+                    >
+                      {state.logoutLoading ? <Loader className="w-4 h-4 animate-spin" /> : "Sign Out"}
+                    </Button>
+                  </div>
                 </div>
               </DialogContent>
             </Dialog>

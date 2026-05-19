@@ -10,11 +10,27 @@ export default {
   theme: {
     extend: {
       screens: {
-        xs: '500px', // custom breakpoint at 500px
+        xs: "500px", // custom breakpoint at 500px
       },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+
+        // custom colors
+        color1: "#fff",
+        color2: "#9b0f09",
+        dred: "#9b0f09",
+        lred: "#fff6f6",
+
+        borderColor: {
+          dred: "#9b0f09",
+          sec:"#d1d0d0",
+        },
+
+        textColor: {
+          dred: "#9b0f09",
+        },
+
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",

@@ -23,6 +23,8 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
   onChange,
 }) => {
   const [range, setRange] = useState<[number, number]>(value || [min, max]);
+  console.log("min,max,value,",
+  min, max, value);
 
   // Adjust internal state when props change
   useEffect(() => {

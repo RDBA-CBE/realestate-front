@@ -26,7 +26,7 @@ const getIcon = (name) => {
    <Card className="border-none shadow-none bg-transparent p-0">
         {/* Title remains clear and prominent */}
 
-        <h3 className="text-xl font-semibold mb-4">
+        <h3 className="section-in-ti mb-4">
          Features & Amenities
       </h3>
         
@@ -47,7 +47,7 @@ const getIcon = (name) => {
                         </div>
 
                         {/* Feature Name - bold and easy to read */}
-                        <p className="text-sm font-medium text-gray-700 leading-snug">
+                        <p className="text-sm font-medium text-black leading-snug">
                             {item.name}
                         </p>
                     </div>

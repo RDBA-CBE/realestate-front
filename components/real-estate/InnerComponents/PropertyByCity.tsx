@@ -72,7 +72,7 @@ const PropertyByCity = ({ cityList = [] }) => {
               <img src="https://images.unsplash.com/photo-1515896769750-31548aa180ed?w=400&h=300&fit=crop" alt={item.name} className="exp-img" />
               <div className="exp-content">
                 <h4 className="section-in-ti">{item.name}</h4>
-                {/* <p>{item.count} {item.count === 1 ? "Property" : "Properties"}</p> */}
+                <p>{item.property_count} {item.property_count === 1 ? "Property" : "Properties"}</p>
               </div>
             </div>
           ))}
