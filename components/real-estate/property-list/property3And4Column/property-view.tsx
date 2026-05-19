@@ -113,7 +113,7 @@ export function PropertyView(props: any) {
     selectedProperty: null,
   });
 
-  console.log("state", state);
+  // console.log("state", state); // Commented out for cleaner console
 
   const initialLoadRef = useRef(false);
   const filterTimeoutRef = useRef(null);
@@ -157,8 +157,6 @@ export function PropertyView(props: any) {
     if (initialLocation?.length > 0) setState({ location: initialLocation });
     if (initialPropertyType?.length > 0) setState({ propertyType: initialPropertyType });
     if (initialDeveloper?.length > 0) setState({ developer: initialDeveloper });
-    // Mark initial load as complete to prevent duplicate API calls from filter effect
-    initialLoadRef.current = true;
   }, [
     propertyTypeFilter,
     initialSearch,
@@ -201,30 +199,11 @@ export function PropertyView(props: any) {
   const debouncedSqftMin = useDebounce(state.sqftMin, 500);
   const debouncedSqftMax = useDebounce(state.sqftMax, 500);
   const debouncedYearBuiltMin = useDebounce(state.yearBuiltMin, 500);
-  const debouncedYearBuiltMax = useDebounce(state.yearBuiltMax, 500);
-  const debouncedPriceRange = useDebounce(state.priceRange, 500);
-  const debouncedMinPrice = useDebounce(state.minPrice, 500);
-  const debouncedMaxPrice = useDebounce(state.maxPrice, 500);
-
-  // useEffect(() => {
-  //   filters({ ...state, ...debouncedState });
-  // }, [
-  //   state.listingStatus,
-  //   state.propertyType,
-  //   state.bedrooms,
-  //   state.bathrooms,
-  //   state.location,
-  //   state.furnishing,
-  //   debouncedState.search,
-  //   debouncedState.priceRange,
-  //   debouncedState.minPrice,
-  //   debouncedState.maxPrice,
-  //   debouncedState.sqftMin,
-  //   debouncedState.sqftMax,
-  //   debouncedState.yearBuiltMin,
-  //   debouncedState.yearBuiltMax,
-  //   state.sort,
-  // ]);
+  const debouncedYearBuiltMax = useDebounce(state.yearBuiltMax, 500); // Keep this one
+  
+  // Debounced price inputs
+  const debouncedPriceMinInput = useDebounce(state.priceMinInput, 500);
+  const debouncedPriceMaxInput = useDebounce(state.priceMaxInput, 500);
 
   useEffect(() => {
     // Skip initial load or if currently resetting filters
@@ -235,6 +214,11 @@ export function PropertyView(props: any) {
     // Clear any existing timeout
     if (filterTimeoutRef.current) {
       clearTimeout(filterTimeoutRef.current);
+    }
+
+    // If resetting, skip this filter execution
+    if (isResettingRef.current) {
+      return;
     }
 
     // Create current filter object
@@ -260,6 +244,8 @@ export function PropertyView(props: any) {
       priceMinInput: state.priceMinInput,
       priceMaxInput: state.priceMaxInput,
     };
+
+    console.log("PropertyView sending filters:", currentFilters); // Debug log
 
     // Check if filters actually changed
     const hasFiltersChanged =
@@ -296,14 +282,6 @@ export function PropertyView(props: any) {
     debouncedSqftMax,
     debouncedYearBuiltMin,
     debouncedYearBuiltMax,
-    state.sort,
-    state.prefferedLocation,
-    state.priceMinInput,
-    state.priceMaxInput,
-
-    debouncedPriceRange,
-    debouncedMinPrice,
-    debouncedMaxPrice,
   ]);
 
   const handleChange = (name, value) => {
@@ -312,7 +290,7 @@ export function PropertyView(props: any) {
   };
 
   //   const handleChange = (name: string, value: any) => {
-  //   setState((prev) => ({
+  //   setState((prev) => ({ // This is the correct way to use setState with a functional update
   //     ...prev,
   //     [name]: value,
   //   }));
@@ -320,7 +298,7 @@ export function PropertyView(props: any) {
 
   const resetFilter = () => {
     // Set flag to prevent filter effect from firing during reset
-    isResettingRef.current = true;
+    isResettingRef.current = true; // Set flag to true
     
     setState({
       search: "",
@@ -348,15 +326,13 @@ export function PropertyView(props: any) {
     });
     previousFiltersRef.current = {};
 
+    // Reset the flag immediately before calling parent
+    isResettingRef.current = false;
+
     // Call parent clear filter (which calls propertyList)
     if (clearFilter) {
       clearFilter();
     }
-    
-    // Reset the flag after state updates and parent call
-    setTimeout(() => {
-      isResettingRef.current = false;
-    }, 0);
   };
 
   const formatINR = (value: number) => {
@@ -445,8 +421,8 @@ export function PropertyView(props: any) {
     >
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 items-start min-h-screen">
         <aside className="space-y-6 lg:col-span-1 xl:sticky md:top-16 lg:top-16  hidden xl:block ">
-          <div className="p-4 pb-8 border rounded-lg space-y-6 bg-color1 border-gray h-[91vh] overflow-auto thin-scrollbar">
-            <div className="w-full flex justify-end">
+          <div className="p-4 pb-8 border rounded-2xl space-y-6 bg-color1 border-gray h-[91vh] overflow-auto thin-scrollbar">
+            {/* <div className="w-full flex justify-end">
               <Button
                 onClick={() => resetFilter()}
                 variant="ghost"
@@ -455,7 +431,7 @@ export function PropertyView(props: any) {
                 <RotateCcw className="h-4 w-4" />
                 Reset
               </Button>
-            </div>
+            </div> */}
 
             <TextInput
               placeholder="What are you looking for?"
@@ -664,7 +640,7 @@ export function PropertyView(props: any) {
                 /> */}
               <div className=" font-semibold text-gray-900">Budget</div>
 
-              <div className="flex gap-4 mt-4">
+              <div className="flex gap-4 mt-2">
                 {/* MIN */}
                 <div className="relative w-full">
                   <button
@@ -676,7 +652,7 @@ export function PropertyView(props: any) {
                       })
                     }
                     className="
-        w-full px-5 py-2 rounded-full
+        w-full px-5 py-1 rounded-full
         border border-gray-300 bg-white
         flex items-center justify-between
         text-gray-700
@@ -699,7 +675,7 @@ export function PropertyView(props: any) {
                   {state.openPriceDropdown === "min" && (
                     <div className="absolute z-50 mt-2 w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto">
                       <button
-                        className="w-full px-5 py-2 text-left hover:bg-gray-100"
+                        className="w-full px-5 py-1 text-left hover:bg-gray-100"
                         onClick={() =>
                           setState({
                             priceMinInput: "",
@@ -823,7 +799,7 @@ export function PropertyView(props: any) {
                       <span
                         className="
               flex items-center justify-center
-              px-4 py-2 rounded-lg border
+              px-4 py-1 rounded-lg border
               text-sm font-medium cursor-pointer
               transition-all duration-200
               border-gray-300 text-gray-700 bg-white
@@ -864,7 +840,7 @@ export function PropertyView(props: any) {
                       }}
                       className={`
             flex items-center justify-center
-            px-4 py-2 rounded-md border
+            px-4 py-1 rounded-md border
             text-sm font-medium cursor-pointer
             transition-all duration-200
 
@@ -934,7 +910,7 @@ export function PropertyView(props: any) {
                 Area (sqft)
               </div>
 
-              <div className="flex gap-4 mt-4">
+              <div className="flex gap-4 mt-2">
                 {/* Min Dropdown */}
                 <div className="relative w-full">
                   <button
@@ -946,7 +922,7 @@ export function PropertyView(props: any) {
                       })
                     }
                     className="
-        w-full px-5 py-2 rounded-full
+        w-full px-5 py-1 rounded-full
         border border-gray-300 bg-white
         flex items-center justify-between
         text-gray-700
@@ -1018,7 +994,7 @@ export function PropertyView(props: any) {
                       })
                     }
                     className="
-        w-full px-5 py-2 rounded-full
+        w-full px-5 py-1 rounded-full
         border border-gray-300 bg-white
         flex items-center justify-between
         text-gray-700
@@ -1119,8 +1095,8 @@ export function PropertyView(props: any) {
         </aside>
 
         <section className="xl:col-span-4 space-y-6">
-          <div className="sticky top-16 z-10">
-            <div className="flex flex-wrap items-center justify-between gap-1 md:gap-4 px-2 py-4 md:p-4 bg-color1 border-gray  rounded-lg border">
+          <div className="sticky top-[75px] z-10">
+            <div className="flex flex-wrap items-center justify-between gap-1 md:gap-4 px-2 py-2  bg-color1 border-gray  rounded-full border">
               <div className="flex items-center justify-between md:justify-normal gap-4 w-auto">
                 {/* --------responsive filter sidebar start---------- */}
 
@@ -1188,7 +1164,7 @@ export function PropertyView(props: any) {
 
                 {/* --------responsive filter sidebar end---------- */}
 
-                <Link
+                {/* <Link
                   href="/property-listmv"
                   className="no-underline hidden xl:block"
                 >
@@ -1203,12 +1179,10 @@ export function PropertyView(props: any) {
                     <MapPinHouseIcon />
                     Map View
                   </Button>
-                </Link>
+                </Link> */}
                 {/* <span className="text-sm text-gray-600"></span> */}
-              </div>
 
-              <div className="flex items-center gap-4 justify-between md:justify-normal  w-auto">
-               {  state.userLoggedIn &&
+                    {  state.userLoggedIn &&
                (state.prefferedLocation == true ? ( 
                <Button
                   variant="outline"
@@ -1243,8 +1217,12 @@ export function PropertyView(props: any) {
                   Preffered Location
                 </Button>
                 ))}
+              </div>
 
-                {/* <div className="flex items-center gap-2">
+              <div className="flex items-center gap-4 justify-between md:justify-normal  w-auto">
+           
+
+                <div className="flex items-center gap-2 hidden md:flex">
                   <span className="text-sm text-gray-600 whitespace-nowrap">
                     Sort by:
                   </span>
@@ -1284,13 +1262,13 @@ export function PropertyView(props: any) {
                       </SelectItem>
                     </SelectContent>
                   </Select>
-                </div> */}
+                </div>
 
-                <div className="hidden sm:flex items-center gap-0 rounded-md overflow-hidden md:bg-white/70 md:shadow-sm">
+                <div className="hidden sm:flex items-center gap-0 overflow-hidden md:bg-white/70 md:shadow-sm border-gray rounded-full">
                   <Button
                     onClick={() => setState({ view: "grid" })}
                     variant="ghost"
-                    className={`px-2 md:px-3 py-2 text-sm font-medium flex items-center gap-1 transition-colors ${
+                    className={`px-2 md:px-3 py-2 text-sm font-medium flex items-center gap-1 transition-colors  ${
                       state.view === "grid"
                         ? "text-dred hover:text-dred hover:bg-transparent"
                         : "text-gray-600  hover:text-dred hover:bg-transparent"
@@ -1332,41 +1310,41 @@ export function PropertyView(props: any) {
             <div
               className={
                 state.view === "grid"
-                  ? "flex flex-wrap gap-6"
-                  : "flex flex-col gap-6"
+                  ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5"
+                  : "flex flex-col gap-5"
               }
             >
-              {properties?.map((property: any, index: number) => (
-                <div
-                  key={index}
-                  className={
-                    state.view === "grid"
-                      ? "flex-1 min-w-[300px] md:min-w-[calc(33.333%-1rem)]"
-                      : "w-full"
-                  }
-                  ref={
-                    index === properties.length - 1
-                      ? lastPropertyElementRef
-                      : null
-                  }
-                >
-                  <PropertyCard
-                    property={property}
-                    view={state.view}
-                    list={properties}
-                    updateList={(data) => updateList(data)}
-                    onContactClick={(prop) => setState({ isMobileFormOpen: true, selectedProperty: prop })}
-                  />
-                </div>
+              {Array.from({ length: skeletonCount }).map((_, index) => (
+                <PropertyCardSkeleton
+                  key={`skeleton-${index}`}
+                  view={state.view}
+                  row={1}
+                />
               ))}
             </div>
-          ) : properties?.length == 0 ? (
-            <div className="flex flex-col justify-center items-center w-full ">
-              <img
-                src="/assets/images/not_founds.jpg"
-                alt="No Property Found"
-                className="w-65 h-auto mb-4"
-              />
+          ) : properties?.length === 0 ? (
+            <div className="flex flex-col justify-center items-center w-full py-12">
+              <svg
+                className="w-20 h-20 text-gray-300 mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M3 12a9 9 0 110-18 9 9 0 010 18zm0 0a9.001 9.001 0 008.154-14.856m0 0A9 9 0 1122.154 9.144m0 0a9.001 9.001 0 00-8.154 14.856"
+                />
+              </svg>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">No Properties Available</h3>
+              <p className="text-gray-600 mb-6 text-center max-w-md">We couldn&apos;t find any properties matching your criteria. Try adjusting your filters or search terms.</p>
+              <Button
+                className="bg-dred hover:bg-[#7d0c07] text-white px-6 py-2 rounded-lg"
+                onClick={resetFilter}
+              >
+                Clear All Filters
+              </Button>
             </div>
           ) : (
             <>

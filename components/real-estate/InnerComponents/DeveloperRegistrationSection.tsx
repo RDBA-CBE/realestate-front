@@ -29,26 +29,26 @@ export default function DeveloperRegistrationSection() {
   const router = useRouter();
 
   return (
-    <section className="section-pad bg-white">
-      <div className="section-wid py-5">
-        <div className="flex flex-col lg:flex-row  gap-12 lg:gap-20">
+    <section className="section-pad py-10" style={{background:`url(/assets/images/real-estate/home/dev-reg-1.png)`, backgroundSize:"cover", width:"100%", height:"100%", backgroundPosition:"center", backgroundRepeat:"no-repeat"}}>
+      <div className="section-wid pt-5">
+        <div className="flex flex-col xl:flex-row  gap-10  xl:gap-20">
 
           {/* Left content */}
           <div className="flex-1 text-center lg:text-left">
-            <span className="inline-block text-sm font-semibold text-dred uppercase tracking-widest mb-3">
+            <span className="inline-block text-sm  text-white uppercase tracking-widest mb-3">
               For Developers
             </span>
-            <h2 className="section-ti mb-4">
+            <h2 className="section-ti mb-4 !text-white">
               Register as a Developer &amp; List Your Properties
             </h2>
-            <p className="section-cap mb-8 max-w-lg mx-auto lg:mx-0">
+            <p className="section-cap mb-4 xl:mb-8 max-w-lg mx-auto lg:mx-0 !text-white">
               Join our growing network of trusted real estate developers. Post your projects, reach verified buyers, and grow your business with ease.
             </p>
             <button
               onClick={() => router.push("/post-property")}
-              className="inline-flex items-center gap-2 bg-dred hover:bg-red-800 text-white font-semibold px-8 py-3 rounded-full transition-colors duration-200 shadow-md"
+              className="inline-flex items-center gap-2 bg-dred hover:bg-red-800 text-white px-8 py-3 rounded-full transition-colors duration-200 shadow-md "
             >
-              <Building2 className="w-5 h-5" />
+              <Building2 className="w-5 h-5 !text-white" />
               Register &amp; Post Property
             </button>
           </div>

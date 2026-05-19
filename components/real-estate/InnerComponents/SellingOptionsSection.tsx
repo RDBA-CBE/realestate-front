@@ -22,7 +22,7 @@ const items = [
 export default function SellingOptionsSection() {
   return (
     <section className="section-pad bg-[#fff]">
-      <div className="section-wid pb-5">
+      <div className="section-wid ">
         {/* Heading */}
         <div className="mx-auto mb-14 max-w-2xl text-center">
           <h2 className="section-ti">
@@ -40,7 +40,7 @@ export default function SellingOptionsSection() {
           {/* Left Big Image */}
           <div className="relative h-full overflow-hidden rounded-3xl">
             <img
-              src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1400&auto=format&fit=crop"
+              src="/assets/images/real-estate/home/About.png"
               alt="Property"
               className="h-full w-full object-cover"
             />

@@ -92,13 +92,10 @@ const SigninPage = () => {
 
         {/* logo */}
         <div
-          className="flex items-center gap-2 cursor-pointer z-10"
+          className="flex items-center  gap-2 cursor-pointer z-10"
           onClick={() => router.push("/")}
         >
-          <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center">
-            <Home className="w-5 h-5 text-white" />
-          </div>
-          <span className="text-white font-bold text-xl tracking-wide">Real Estate</span>
+          <img src="/assets/images/real-estate/home/boom-logo-wt.png" alt="Logo" className="h-12 w-auto object-contain" />
         </div>
 
         {/* headline */}
@@ -143,13 +140,10 @@ const SigninPage = () => {
 
           {/* mobile logo */}
           <div
-            className="flex lg:hidden items-center gap-2 mb-8 cursor-pointer"
+            className="flex lg:hidden items-center justify-center gap-2 mb-8 cursor-pointer"
             onClick={() => router.push("/")}
           >
-            <div className="w-8 h-8 rounded-lg bg-[#9b0f09] flex items-center justify-center">
-              <Home className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-black font-bold text-lg">Real Estate</span>
+            <img src="/assets/images/real-estate/home/boom-logo.png" alt="Logo" className="h-12 w-auto object-contain" />
           </div>
 
           <h2 className="text-3xl font-bold text-black mb-1">Create account</h2>
@@ -185,8 +179,8 @@ const SigninPage = () => {
                 <Building2 className="w-5 h-5 text-white" />
               </div>
               <div className="text-left">
-                <p className="text-sm font-semibold text-black leading-tight">Post Property / Register as Developer</p>
-                <p className="text-xs text-gray-500 mt-0.5">List your property and reach thousands of buyers</p>
+                <div className="text-sm font-semibold text-black leading-tight">Post Property / Register as Developer</div>
+                <p className="text-xs text-gray-500 mt-1 ">List your property and reach thousands of buyers</p>
               </div>
             </div>
             <ArrowRight className="w-4 h-4 text-[#9b0f09] shrink-0 group-hover:translate-x-1 transition-transform" />

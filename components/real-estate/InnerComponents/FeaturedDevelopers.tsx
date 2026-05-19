@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
-import { Building2 } from "lucide-react";
+import { Building2, ArrowUpRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { truncateText } from "@/utils/function.utils";
 
@@ -12,7 +12,7 @@ const breakpoints = {
   320: { slidesPerView: 1, spaceBetween: 16 },
   640: { slidesPerView: 2, spaceBetween: 30 },
   1180: { slidesPerView: 3, spaceBetween: 30 },
-  1300: { slidesPerView: 4, spaceBetween: 30 },
+  1300: { slidesPerView: 3, spaceBetween: 30 },
 };
 
 function DeveloperCard({ developer }: { developer: any }) {
@@ -45,73 +45,53 @@ function DeveloperCard({ developer }: { developer: any }) {
       onClick={() =>
         router.push(`/developer/${developer?.id}`)
       }
-      className="cursor-pointer border border-[#e0e0e0] rounded-2xl bg-white overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full w-full"
+      className="group cursor-pointer border border-gray-100 rounded-2xl bg-dred p-7 transition-all duration-500 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.12)] hover:-translate-y-2 hover:z-20 flex flex-col h-full w-full relative"
     >
-      {/* Top */}
-      <div className="flex  gap-3 p-4 border-b border-gray-100">
-        
-        <div className="w-16 h-16 flex-shrink-0 rounded-lg border border-gray-200 bg-gray-50 overflow-hidden flex items-center justify-center">
+      {/* Action Indicator */}
+      <div className="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 transition-all duration-500 group-hover:bg-white/30 group-hover:text-white group-hover:rotate-45">
+        <ArrowUpRight className="w-5 h-5" />
+      </div>
+
+      {/* Logo Branding */}
+      <div className="w-20 h-20 mb-4 flex-shrink-0 rounded-xl border border-gray-100 bg-gray-50 overflow-hidden flex items-center justify-center transition-all duration-500 group-hover:scale-105 group-hover:shadow-md">
+        <div className="relative w-full h-full flex items-center justify-center">
           {logo ? (
             <img
               src={logo}
               alt={name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain p-0"
             />
           ) : (
-            <Building2 className="w-7 h-7 text-gray-400" />
+            <Building2 className="w-8 h-8 text-gray-400" />
           )}
         </div>
-
-        <div className="min-w-0 flex-1">
-          <h3 className="section-in-ti leading-[25px] break-words">
-            {name}
-          </h3>
-
-          <div className="flex flex-wrap gap-x-3 gap-y-1 mt-0.5 text-sm text-gray-600">
-            <p>{projectCount} Project</p>
-            <p>{propertyCount} Properties</p>
-          </div>
-        </div>
-
       </div>
 
-      {/* Description */}
-      <div className="px-4 py-3 flex-grow flex">
+      {/* Content Area */}
+      <div className="flex-grow flex flex-col">
+        <h3 className="section-in-ti !text-white mb-2 break-words">
+          {name}
+        </h3>
+
+        <div className="flex flex-wrap items-center gap-2 mb-4">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">
+            {projectCount} Projects
+          </span>
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-dred">
+            {propertyCount} Listings
+          </span>
+        </div>
+
         {description ? (
-          <p className="line-clamp-3 text-gray-700 break-words">
+          <p className="text-white/80 break-words">
             {truncateText(description, 130)}
           </p>
         ) : (
-          <p className="text-sm text-gray-400 italic">
+          <p className="text-xs text-gray-400 italic">
             No description available.
           </p>
         )}
       </div>
-
-      {/* Optional Bottom Section */}
-      {/* 
-      <div className="px-4 pb-4 mt-auto">
-        {projectName && (
-          <h4 className="text-sm font-bold text-gray-900 mb-2">
-            {projectName}
-          </h4>
-        )}
-
-        <div className="rounded-xl overflow-hidden h-36 bg-gray-100">
-          {projectImage ? (
-            <img
-              src={projectImage}
-              alt={projectName || name}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-300">
-              <Building2 className="w-10 h-10" />
-            </div>
-          )}
-        </div>
-      </div>
-      */}
     </div>
   );
 }
@@ -124,13 +104,13 @@ export default function FeaturedDevelopers({
   const hasDevelopers = !!developerList?.length;
 
   return (
-    <section className="section-pad bg-[#f8f8f8]">
+    <section className="section-pad bg-white ">
       <div className="section-wid pb-5">
         
         {/* Heading */}
-        <div className="flex flex-col md:flex-row justify-between items-start lg:items-center mb-12">
+        <div className="flex flex-col md:flex-row justify-between items-start lg:items-center mb-5">
           
-          <div className="mb-6 lg:mb-0">
+          <div className=" lg:mb-0">
             <h2 className="section-ti">
               Featured Developers
             </h2>
@@ -152,7 +132,7 @@ export default function FeaturedDevelopers({
               disableOnInteraction: false,
             }}
             loop={developerList.length > 4}
-            className="developer-swiper pb-10"
+            className="developer-swiper !overflow-visible pt-12 pb-16"
           >
             {developerList.map((developer, index) => (
               <SwiperSlide

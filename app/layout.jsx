@@ -10,6 +10,8 @@ import { Suspense } from "react";
 import PageTransition from "@/components/common-components/PageTransition";
 import { usePathname } from "next/navigation";
 import NewHeader from "@/components/real-estate/NewHeader";
+import ChatWidget from "@/components/common-components/ChatWidget";
+import PropertyFinderChat from "@/components/common-components/ChatWidget";
 import NewFooter from "@/components/real-estate/NewFooter";
 import { ToastProvider } from "@/components/common-components/ToastProvider";
 
@@ -53,6 +55,7 @@ export default function RootLayout({ children }) {
               <main className="w-full">{children}</main>
               <NewFooter/>
             </div>
+            {/* <PropertyFinderChat /> */}
             <Toaster position="top-center" />
             <ToastProvider />
           </Suspense>

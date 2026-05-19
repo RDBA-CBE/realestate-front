@@ -23,6 +23,7 @@ import {
   LogIn,
   LogOut,
   Mail,
+  MapPin,
   MenuIcon,
   Settings,
   User,
@@ -46,7 +47,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useSetState } from "@/utils/function.utils";
-import Models from "@/imports/models.import";
+import { usePathname } from "next/navigation";
 
 const Header = () => {
   const username = useSelector((state) => state.auth.username);
@@ -59,16 +60,36 @@ const Header = () => {
 
   const [state, setState] = useSetState({
     token: null,
-    group: null,
-    username: null,
     logoutLoading: false,
+    selectedLocation: null,
   });
+
+  const pathname = usePathname();
+  const isHomePage = pathname === "/" || pathname === "/home";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const savedLocation = localStorage.getItem("userLocation");
+    setState({
+      token,
+      selectedLocation: savedLocation ? JSON.parse(savedLocation) : null,
+    });
 
-    setState({ token });
+    const onLocationChanged = (e) => {
+      setState({ selectedLocation: e.detail });
+    };
+    window.addEventListener("locationChanged", onLocationChanged);
+    return () =>
+      window.removeEventListener("locationChanged", onLocationChanged);
   }, []);
+
+  const handleLocationClick = () => {
+    if (isHomePage) {
+      window.dispatchEvent(new Event("openLocationPicker"));
+    } else {
+      router.push("/");
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -126,17 +147,11 @@ const Header = () => {
                   />
                 </Link> */}
 
-                <div className="rounded-lg bg-[#9b0f09]/10 p-2">
-                  <Home className="h-6 w-6 text-dred" />
-                </div>
-                <div>
-                  <p className="text-xs font-semibolod tracking-[0.1em] text-dred">
-                    REAL
-                  </p>
-                  <p className="text-sm font-bold tracking-[0.1em] text-dred">
-                    ESTATE
-                  </p>
-                </div>
+                <img
+                  src="/assets/images/real-estate/home/boom-logo.png"
+                  alt="Logo"
+                  className="h-12 w-auto object-contain"
+                />
               </Link>
 
               {/* Left Menu (Desktop) */}
@@ -209,6 +224,23 @@ const Header = () => {
                     support@realestate.com
                   </Link>
                 </div>
+                {/* {state.token && state.selectedLocation ? (
+                  <button
+                    onClick={handleLocationClick}
+                    className="hidden lg:flex items-center gap-1.5 me-2 px-3 py-1 rounded-full bg-[#9b0f09]/10 hover:bg-[#9b0f09]/20 transition-colors cursor-pointer"
+                  >
+                    <MapPin className="w-3.5 h-3.5 text-dred shrink-0" />
+                    <span className="text-sm font-medium text-dred">{state.selectedLocation.label}</span>
+                  </button>
+                ) : state.token && !state.selectedLocation ? (
+                  <button
+                    onClick={handleLocationClick}
+                    className="hidden lg:flex items-center gap-1.5 me-2 px-3 py-1 rounded-full border border-dashed border-[#9b0f09]/50 hover:bg-[#9b0f09]/10 transition-colors"
+                  >
+                    <MapPin className="w-3.5 h-3.5 text-dred shrink-0" />
+                    <span className="text-sm font-medium text-dred">Choose Location</span>
+                  </button>
+                ) : null} */}
                 {state.token ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -253,56 +285,57 @@ const Header = () => {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ) : (
-                  /* <Button
+                  <>
+                    {/* // !username && ( */}
+                    <div className="hidden lg:flex items-center gap-3">
+                      <Button
                         onClick={() => router.push("/login")}
                         variant="outline"
-                        className="rounded-full border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900"
+                        className="px-6 rounded-full bg-lred hover:bg-color2 border-[#9b0f09]  text-dred hover:text-white"
                       >
-                        Add Property
-                      </Button> */
-                  // !username && (
-                  <div className="hidden lg:flex items-center gap-3">
-                    <Button
-                      onClick={() => router.push("/login")}
-                      variant="outline"
-                      className="px-6 rounded-full bg-lred hover:bg-color2 border-[#9b0f09]  text-dred hover:text-white"
-                    >
-                      Login
-                    </Button>
-                    {/* <Button
+                        Login
+                      </Button>
+                      {/* <Button
                         onClick={() => router.push("/signin")}
                         className="rounded-full bg-color2 hover:bg-color2 text-white"
                       >
                         Register
                       </Button> */}
-                  </div>
+                    </div>
+                  </>
                 )}
 
-                {/* <Button
-                onClick={() => router.push("/ai-search")}
-                className="bg-color2 hover:bg-color2 text-white"
-              >
-                AI Search
-              </Button> */}
+                <Button
+                  onClick={() => router.push("/ai-search")}
+                  className="bg-color2 hover:bg-color2 text-white rounded-full  hover:text-white hidden md:block"
+                >
+                  AI Search
+                </Button>
+                <Button
+                  onClick={() => router.push("/post-property")}
+                  variant="outline"
+                  className="bg-color2 hover:bg-color2 text-white hover:text-white rounded-full hidden md:block"
+                >
+                  Post Property
+                </Button>
 
                 <div className="block lg:hidden">
                   <Sheet open={open} onOpenChange={setOpen}>
                     <div className="flex items-center gap-3">
-                      {!state.token && 
-                      <Button
-                      onClick={() => router.push("/login")}
-                      variant="outline"
-                      className="px-5 h-7 py-0 rounded-full bg-lred hover:bg-color2 border-[#9b0f09]  text-dred hover:text-white"
-                    >
-                      Login
-                    </Button>
-                    }
-                    <SheetTrigger asChild>
-                      
-                      <MenuIcon className="text-dred"/>
-                    </SheetTrigger>
+                      {!state.token && (
+                        <Button
+                          onClick={() => router.push("/login")}
+                          variant="outline"
+                          className="px-5 h-7 py-0 rounded-full bg-lred hover:bg-color2 border-[#9b0f09]  text-dred hover:text-white"
+                        >
+                          Login
+                        </Button>
+                      )}
+                      <SheetTrigger asChild>
+                        <MenuIcon className="text-dred" />
+                      </SheetTrigger>
                     </div>
-                    
+
                     <SheetContent>
                       <SheetHeader>
                         <SheetTitle></SheetTitle>
@@ -317,17 +350,11 @@ const Header = () => {
                           />
                         </Link> */}
                         <div className="flex justify-center gap-3 py-4">
-                        <div className="rounded-lg bg-[#9b0f09]/10 p-2">
-                          <Home className="h-6 w-6 text-dred" />
-                        </div>
-                        <div>
-                          <p className="text-xs font-semibolod tracking-[0.1em] text-dred">
-                            REAL
-                          </p>
-                          <p className="text-sm font-bold tracking-[0.1em] text-dred">
-                            ESTATE
-                          </p>
-                        </div>
+                          <img
+                            src="/assets/images/real-estate/home/boom-logo.png"
+                            alt="Logo"
+                            className="h-10 w-auto object-contain"
+                          />
                         </div>
 
                         {/* {!state.token && (
@@ -419,20 +446,18 @@ const Header = () => {
                                   )}
                                 </AccordionContent>
                               )}
-
-                              
                             </AccordionItem>
                           </Accordion>
                         ))}
                         <div className="flex items-center gap-3 me-4 mt-5 lg:flex">
-                  <Mail className="w-4 h-4 text-dred" />
-                  <Link
-                    href={"mailto:support@realestate.com"}
-                    className="font-normal text-[16px]"
-                  >
-                    support@realestate.com
-                  </Link>
-                </div>
+                          <Mail className="w-4 h-4 text-dred" />
+                          <Link
+                            href={"mailto:support@realestate.com"}
+                            className="font-normal text-[16px]"
+                          >
+                            support@realestate.com
+                          </Link>
+                        </div>
                       </div>
                     </SheetContent>
                   </Sheet>
@@ -543,7 +568,9 @@ const Header = () => {
                   <DialogTitle className="text-lg font-bold text-black">
                     Sign Out
                   </DialogTitle>
-                  <p className="text-sm text-gray-500">Are you sure you want to sign out of your account?</p>
+                  <p className="text-sm text-gray-500">
+                    Are you sure you want to sign out of your account?
+                  </p>
                   <div className="flex gap-3 w-full pt-2">
                     <Button
                       onClick={handleCancel}
@@ -556,7 +583,11 @@ const Header = () => {
                       onClick={handleLogout}
                       className="flex-1 rounded-xl bg-[#9b0f09] hover:bg-[#7d0c07] text-white"
                     >
-                      {state.logoutLoading ? <Loader className="w-4 h-4 animate-spin" /> : "Sign Out"}
+                      {state.logoutLoading ? (
+                        <Loader className="w-4 h-4 animate-spin" />
+                      ) : (
+                        "Sign Out"
+                      )}
                     </Button>
                   </div>
                 </div>

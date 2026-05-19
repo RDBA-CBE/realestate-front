@@ -264,6 +264,7 @@ export default function Page() {
   const bodyData = (data) => {
 
     console.log("data", data);
+    console.log("bodyData received data:", data); // Debug log
     
     const bodyData: any = {};
 
@@ -274,6 +275,7 @@ export default function Page() {
     }
 
     if (data.prefferedLocation){
+      console.log("bodyData sending prefferedLocation:", data.prefferedLocation); // Debug log
       bodyData.user_preferred_locations = data.prefferedLocation;
     }
 
@@ -291,6 +293,7 @@ export default function Page() {
       }
     }
     if (data?.propertyType?.length > 0) {
+      console.log("bodyData sending property_type:", data.propertyType.map((item) => item?.value)); // Debug log
       bodyData.property_type = data?.propertyType?.map((item) => item?.value);
     }
   
@@ -324,6 +327,7 @@ export default function Page() {
       }
     }
     if (data?.location?.length > 0) {
+      console.log("bodyData sending location:", data.location.map((item) => item?.value)); // Debug log
       bodyData.location = data?.location?.map((item) => item?.value);
     }
     if (data?.area?.length > 0) {
@@ -372,7 +376,13 @@ export default function Page() {
   };
 
   const clearAllFilters = () => {
-    propertyList(); // Reset to initial load without filters
+    // Reset filters and fetch properties without any filters
+    setState({
+      propertyList: [],
+      loading: true,
+    });
+    // Call propertyList with no filter data to get all properties
+    propertyList(1, false, null);
   };
 
   return (
