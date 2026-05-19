@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import HomeBanner from '../InnerComponents/HomeBanner';
 import { Dropdown, useSetState } from '@/utils/function.utils';
 import Models from '@/imports/models.import';
+import { toastEmitter } from '@/utils/toast.utils';
 import PropertyByCity from '../InnerComponents/PropertyByCity';
 import PropertyByType from '../InnerComponents/PropertyByType';
 import FeaturedListings from '../InnerComponents/FeaturedListings';
@@ -45,7 +46,14 @@ const HomePageNew = () => {
       try {
         const res: any = await Models.user.list(1, { group: "Developer", has_complete_developer_profile: true});
         setState({ developerList: res?.results || [] });
-      } catch (error) {
+      } catch (error: any) {
+        const msg = error?.error || error?.response?.data?.error || "";
+        if (msg === "Given token not valid for any token type") {
+          toastEmitter.emit("error", "Session expired. Please login again.");
+          localStorage.clear();
+          window.location.href = "/login";
+          return;
+        }
         console.log("✌️error --->", error);
       }
     };
