@@ -192,10 +192,10 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
               <ImageSlider height={GRID_IMAGE_HEIGHT} />
             </div>
 
-            <CardContent className="flex flex-col flex-grow py-4 gap-2">
+            <CardContent className="flex flex-col flex-grow py-4 gap-1">
 
               {/* Title */}
-              <h3 className="font-semibold text-gray-900 text-base leading-snug line-clamp-2">{property.title}</h3>
+              <h3 className="font-semibold text-gray-900 text-base leading-snug line-clamp-2 mb-0">{property.title}</h3>
 
               {/* Location */}
               {(property.location?.name || property.location?.label) && (
@@ -241,7 +241,7 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
                     <span className="text-xs font-bold text-[#9b0f09] ">{getInitials(property?.developer?.industry) || ""}</span> 
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-gray-800 leading-tight mb-1">{truncateText(property?.developer?.industry, 30) || "Property Owner"}</p>
+                    <p className="text-xs font-semibold text-gray-800 leading-tight mb-1" title={property?.developer?.industry}>{truncateText(property?.developer?.industry, 30) || "Property Owner"}</p>
                     <p className="text-xs text-gray-400">{property?.developer?.industry ? "Developer" : "Owner"}</p>
                   </div>
                 </div>
@@ -272,10 +272,10 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
           </div>
 
           {/* Content */}
-          <CardContent className="flex flex-col flex-grow p-5 gap-2">
+          <CardContent className="flex flex-col flex-grow p-5 gap-1">
 
             {/* Title */}
-            <h3 className="font-semibold text-gray-900 text-lg leading-snug line-clamp-2">{property.title}</h3>
+            <h3 className="font-semibold text-gray-900 text-lg leading-snug line-clamp-2 mb-0">{property.title}</h3>
 
             {/* Location */}
             {(property.location?.name || property.location?.label) && (
@@ -329,11 +329,11 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
             {/* Developer + Contact */}
             <div className="flex items-center justify-between pt-3 border-t border-gray-100 mt-3">
               <div className="flex items-center gap-2">
-                <div className="w-9 h-9 bg-[#9b0f09]/10 rounded-full flex items-center justify-center">
+                <div className="w-9 h-9 bg-[#9b0f09]/10 rounded-full flex items-center justify-center -mt-3">
                   <span className="text-xs font-bold text-[#9b0f09]">{getInitials(property?.developer?.industry || property.broker_name || "")}</span>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-800">{property?.developer?.industry || property.broker_name || "Property Owner"}</p>
+                  <p className="text-sm font-semibold text-gray-800 mb-1">{property?.developer?.industry || property.broker_name || "Property Owner"}</p>
                   <p className="text-xs text-gray-400">{property?.developer?.industry ? "Developer" : property.broker_name ? "Agent" : "Owner"}</p>
                 </div>
               </div>

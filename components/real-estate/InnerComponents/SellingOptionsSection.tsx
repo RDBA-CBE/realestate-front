@@ -42,11 +42,11 @@ export default function SellingOptionsSection() {
             <img
               src="/assets/images/real-estate/home/About.png"
               alt="Property"
-              className="h-full w-full object-cover"
+              className="h-[400px] md:h-full w-full object-cover "
             />
 
             {/* Overlay Card */}
-            <div className="absolute bottom-6 left-6 max-w-md rounded-3xl bg-white p-6 shadow-xl">
+            <div className="absolute bottom-6 right-6 left-6 md:bottom-6 md:left-6 md:right-0 max-w-md rounded-3xl bg-white p-6 shadow-xl">
               <h3 className="section-in-ti leading-snug">
                 Find Excellent Property Deals Near You
               </h3>

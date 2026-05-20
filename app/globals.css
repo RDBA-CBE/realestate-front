@@ -1931,11 +1931,13 @@ body {
     width: 100%;
     border-radius: 50px;
     padding: 12px;
+     height: 45px;
   }
   .adv-search-label{
+   
   display: block !important;
   font-size: 18px;
-  margin-top: -4px;
+  /* margin-top: -4px; */
 }
 }
 
