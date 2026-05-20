@@ -449,7 +449,7 @@ const Header = () => {
                               <AccordionTrigger
                                 className={`no-underline hover:no-underline uppercase text-sm ${
                                   menu.items?.length > 0 ? "" : "[&>svg]:hidden"
-                                } ${isActive ? "text-dred font-semibold" : ""}`}
+                                } ${isActive ? "text-dred" : ""}`}
                                 onClick={() => {
                                   if (!menu.items?.length) {
                                     router.push(menu.url);
@@ -457,7 +457,7 @@ const Header = () => {
                                   }
                                 }}
                               >
-                                {isActive && <span className="w-1 h-4 bg-dred rounded-full mr-2 inline-block" />}
+                              
                                 {menu.title}
                               </AccordionTrigger>
                               {menu.items?.length > 0 && (
