@@ -132,9 +132,16 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
   const ImageSlider = ({ height }: { height: number | string }) => (
     <div className="relative overflow-hidden w-full h-full" style={{ height }}>
       {displayImages[currentImageIndex]?.image_url && (
-        <motion.div key={displayImages[currentImageIndex].image_url} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="w-full h-full">
-          <Image src={displayImages[currentImageIndex].image_url} alt={property.title} fill className="object-cover" />
-        </motion.div>
+        <div className="w-full h-full">
+          <Image
+            src={displayImages[currentImageIndex].image_url}
+            alt={property.title}
+            fill
+            className="object-cover"
+            priority
+            sizes="(max-width: 768px) 100vw, 400px"
+          />
+        </div>
       )}
 
       {/* Arrows */}
@@ -184,7 +191,7 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
   if (view === "grid") {
     return (
       <>
-        <motion.div whileHover={{ y: -4 }} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} className="h-full">
+        <motion.div  className="h-full">
           <Card onClick={onClick} className="bg-white  border-gray overflow-hidden rounded-2xl shadow-sm hover:shadow-xl cursor-pointer h-full flex flex-col transition-shadow duration-300">
 
             {/* Image */}
