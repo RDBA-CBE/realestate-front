@@ -35,7 +35,7 @@ const faqs = [
 export default function FAQSectionNew() {
   return (
     <section className="section-pad bg-white overflow-hidden">
-      <div className="section-wid pb-5">
+      <div className="section-wid ">
         <div className="grid lg:grid-cols-2 gap-0  overflow-hidden  ">
 
          
@@ -69,7 +69,7 @@ export default function FAQSectionNew() {
               <p className="text-sm text-gray-500 mb-3">Still have questions?</p>
               <Link
                 href="mailto:support@gmail.com"
-                className="inline-flex items-center gap-2 bg-[#9b0f09] hover:bg-[#7d0c07] text-white text-sm font-semibold px-7 py-3 rounded-full transition-colors duration-200 shadow-md"
+                className="inline-flex items-center gap-2 bg-[#9b0f09] hover:bg-[#7d0c07] text-white text-sm font-semibold px-14 py-3 rounded-full transition-colors duration-200 shadow-md"
               >
                 Contact Us
               </Link>
@@ -81,12 +81,14 @@ export default function FAQSectionNew() {
            {/* Left — Image panel */}
           <div className="relative min-h-[420px] lg:min-h-full rounded-2xl">
             <img
-              src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=900&fit=crop"
+              src="/assets/images/real-estate/home/faq-2.png"
               alt="FAQ"
               className="absolute inset-0 w-full h-full object-cover rounded-2xl"
             />
             {/* Dark overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#1a0a09]/80 via-[#9b0f09]/50 to-black/60 rounded-2xl" />
+            {/* <div className="absolute inset-0 bg-gradient-to-br from-[#1a0a09]/80 via-[#9b0f09]/50 to-black/60 rounded-2xl" /> */}
+            <div className="absolute inset-0 bg-black/60 rounded-2xl" />
+
 
             {/* Text over image */}
             <div className="relative z-10 flex flex-col justify-end h-full p-8 lg:p-12">

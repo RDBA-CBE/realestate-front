@@ -29,8 +29,8 @@ export default function DeveloperRegistrationSection() {
   const router = useRouter();
 
   return (
-    <section className="section-pad py-10" style={{background:`url(/assets/images/real-estate/home/dev-reg-1.png)`, backgroundSize:"cover", width:"100%", height:"100%", backgroundPosition:"center", backgroundRepeat:"no-repeat"}}>
-      <div className="section-wid pt-5">
+    <section className="section-pad py-10" style={{background:`url(/assets/images/real-estate/home/dev-reg-3.png)`, backgroundSize:"cover", width:"100%", height:"100%", backgroundPosition:"center", backgroundRepeat:"no-repeat"}}>
+      <div className="section-wid pt-5 pb-5">
         <div className="flex flex-col xl:flex-row  gap-10  xl:gap-20">
 
           {/* Left content */}
@@ -67,7 +67,7 @@ export default function DeveloperRegistrationSection() {
                   </div>
                   <div>
                     <h3 className="section-in-ti mb-1">{perk.title}</h3>
-                    <p className="text-sm text-gray-500">{perk.desc}</p>
+                    <p className=" leading-relaxed">{perk.desc}</p>
                   </div>
                 </div>
               );

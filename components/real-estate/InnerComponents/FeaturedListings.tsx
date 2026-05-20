@@ -14,9 +14,12 @@ const FeaturedListings = (props) => {
 
   const breakpoints = {
     320: { slidesPerView: 1, spaceBetween: 16 },
-    640: { slidesPerView: 2, spaceBetween: 30 },
-    1180: { slidesPerView: 3, spaceBetween: 30 },
-    1300: { slidesPerView: 4, spaceBetween: 30 },
+    640: { slidesPerView: 1.5, spaceBetween: 20 },
+    860: { slidesPerView: 2, spaceBetween: 20 },
+    1020: { slidesPerView: 2.5, spaceBetween: 20 },
+    1300: { slidesPerView: 3, spaceBetween: 20 },
+    1400: { slidesPerView: 3.5, spaceBetween: 20 },
+    1600: { slidesPerView: 4, spaceBetween: 24 },
   };
 
   const handleSlideChange = (swiper) => {
@@ -35,7 +38,7 @@ const FeaturedListings = (props) => {
       <div className="section-wid mx-auto ">
 
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between md:items-center mb-10">
+        <div className="flex flex-col lg:flex-row justify-between lg:items-center mb-10">
           <div>
             <h2 className="section-ti">Discover Our Fully Furnished Sale Properties</h2>
             <p className="section-cap">Aliquam lacinia diam quis lacus euismod</p>

@@ -150,12 +150,12 @@ const Header = () => {
                 <img
                   src="/assets/images/real-estate/home/boom-logo.png"
                   alt="Logo"
-                  className="h-12 w-auto object-contain"
+                  className="h-10 sm:h-12 w-auto object-contain"
                 />
               </Link>
 
               {/* Left Menu (Desktop) */}
-              <nav className="hidden lg:flex space-x-6">
+              <nav className="hidden xl:flex space-x-6">
                 {StudentLeftSideMenu.map((menu) => (
                   <div
                     key={menu.title}
@@ -166,7 +166,7 @@ const Header = () => {
                     <Link
                       prefetch={true}
                       href={menu.url}
-                      className="hover:text-themeColor1 text-[16px] font-[600]  "
+                      className="hover:text-themeColor1 text-[16px] font-[500]  nav-ti"
                     >
                       {menu.title}
                     </Link>
@@ -215,19 +215,22 @@ const Header = () => {
 
             <div>
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-3 me-4 hidden lg:flex">
+                {/* <div className="flex items-center gap-3 me-4 hidden xl:flex">
                   <Mail className="w-4 h-4 text-dred" />
                   <Link
                     href={"mailto:support@realestate.com"}
-                    className="font-normal text-[16px]"
+                    className="font-[500] text-[16px] nav-ti"
                   >
                     support@realestate.com
                   </Link>
-                </div>
+                </div> */}
+
+
+                
                 {/* {state.token && state.selectedLocation ? (
                   <button
                     onClick={handleLocationClick}
-                    className="hidden lg:flex items-center gap-1.5 me-2 px-3 py-1 rounded-full bg-[#9b0f09]/10 hover:bg-[#9b0f09]/20 transition-colors cursor-pointer"
+                    className="hidden xl:flex items-center gap-1.5 me-2 px-3 py-1 rounded-full bg-[#9b0f09]/10 hover:bg-[#9b0f09]/20 transition-colors cursor-pointer"
                   >
                     <MapPin className="w-3.5 h-3.5 text-dred shrink-0" />
                     <span className="text-sm font-medium text-dred">{state.selectedLocation.label}</span>
@@ -235,20 +238,61 @@ const Header = () => {
                 ) : state.token && !state.selectedLocation ? (
                   <button
                     onClick={handleLocationClick}
-                    className="hidden lg:flex items-center gap-1.5 me-2 px-3 py-1 rounded-full border border-dashed border-[#9b0f09]/50 hover:bg-[#9b0f09]/10 transition-colors"
+                    className="hidden xl:flex items-center gap-1.5 me-2 px-3 py-1 rounded-full border border-dashed border-[#9b0f09]/50 hover:bg-[#9b0f09]/10 transition-colors"
                   >
                     <MapPin className="w-3.5 h-3.5 text-dred shrink-0" />
                     <span className="text-sm font-medium text-dred">Choose Location</span>
                   </button>
                 ) : null} */}
-                {state.token ? (
+
+                  
+
+                  {/* <div className="group p-1 rounded-full  relative transition-all duration-300 cursor-pointer">
+  
+                    <span className="absolute inset-0 rounded-full border-2 border-dred scale-100 group-hover:scale-125 opacity-0 group-hover:opacity-100 transition-all duration-500"></span>
+
+                    <img
+                      src="/assets/images/real-estate/home/ai-search-2.png"
+                      alt=""
+                      className="w-7 h-7 relative z-10 transition-transform duration-300 group-hover:scale-105"
+                      onClick={() => router.push("/ai-search")}
+                    />
+                  </div> */}
+
+                  {/* <div className="p-1 rounded-full group cursor-pointer">
+                    <img
+                      src="/assets/images/real-estate/home/ai-search-2.png"
+                      alt=""
+                      onClick={() => router.push("/ai-search")}
+                      className="w-9 h-9 transform transition-transform duration-500 ease-out group-hover:scale-[1.3]"
+                    />
+                  </div> */}
+
+                  
+               
+               
+
+                {/* <Button
+                  onClick={() => router.push("/ai-search")}
+                  className="bg-color2 hover:bg-color2 text-white rounded-full  hover:text-white hidden md:block"
+                >
+                  AI Search
+                </Button> */}
+                <Button
+                  onClick={() => router.push("/post-property")}
+                  variant="outline"
+                  className="bg-color2 hover:bg-color2 !text-white hover:!text-white rounded-full hidden md:block nav-ti font-[400] mt-[-1px]"
+                >
+                  Post Property
+                </Button>
+
+                 {state.token ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="flex items-center space-x-2 focus:outline-none ">
-                        <Avatar className="h-8 w-8">
-                          {/* <AvatarImage src="/images/user-avatar.png" alt="User" /> */}
+                      <button className="hidden xl:flex items-center space-x-2 focus:outline-none">
+                        <Avatar className="h-9 w-9">
                           <AvatarFallback>
-                            <User2 className="text-white w-4 h-4" />
+                            <User2 className="text-white w-5 h-5" />
                           </AvatarFallback>
                         </Avatar>
                       </button>
@@ -287,7 +331,7 @@ const Header = () => {
                 ) : (
                   <>
                     {/* // !username && ( */}
-                    <div className="hidden lg:flex items-center gap-3">
+                    <div className="hidden xl:flex items-center gap-3">
                       <Button
                         onClick={() => router.push("/login")}
                         variant="outline"
@@ -304,35 +348,32 @@ const Header = () => {
                     </div>
                   </>
                 )}
+                <div className="p-1 rounded-full group hidden xl:block">
+                     <img src="/assets/images/real-estate/home/ai-search-1.png" alt="" className="w-10 h-10 transition-transform duration-500  ease-out group-hover:scale-[1.2]"
+                 onClick={() => router.push("/ai-search")}/>
+                  </div>
 
-                <Button
-                  onClick={() => router.push("/ai-search")}
-                  className="bg-color2 hover:bg-color2 text-white rounded-full  hover:text-white hidden md:block"
-                >
-                  AI Search
-                </Button>
-                <Button
-                  onClick={() => router.push("/post-property")}
-                  variant="outline"
-                  className="bg-color2 hover:bg-color2 text-white hover:text-white rounded-full hidden md:block"
-                >
-                  Post Property
-                </Button>
-
-                <div className="block lg:hidden">
+                <div className="block xl:hidden">
                   <Sheet open={open} onOpenChange={setOpen}>
                     <div className="flex items-center gap-3">
-                      {!state.token && (
-                        <Button
+                      {/* AI Search icon */}
+                      <img
+                        src="/assets/images/real-estate/home/ai-search-1.png"
+                        alt="AI Search"
+                        className="w-8 h-8 cursor-pointer"
+                        onClick={() => router.push("/ai-search")}
+                      />
+                      {/* Profile / Login icon */}
+                      {/* {state.token ? null : (
+                        <button
                           onClick={() => router.push("/login")}
-                          variant="outline"
-                          className="px-5 h-7 py-0 rounded-full bg-lred hover:bg-color2 border-[#9b0f09]  text-dred hover:text-white"
+                          className="flex items-center justify-center w-8 h-8 rounded-full border border-dred"
                         >
-                          Login
-                        </Button>
-                      )}
+                          <LogIn className="text-dred w-4 h-4" />
+                        </button>
+                      )} */}
                       <SheetTrigger asChild>
-                        <MenuIcon className="text-dred" />
+                        <MenuIcon className="text-dred cursor-pointer" />
                       </SheetTrigger>
                     </div>
 
@@ -449,6 +490,33 @@ const Header = () => {
                             </AccordionItem>
                           </Accordion>
                         ))}
+                          {/* Login + Post Property buttons inside sidebar */}
+                        <div className="flex flex-col gap-3 mt-6">
+                          {!state.token ? (
+                            <Button
+                              onClick={() => { router.push("/login"); setOpen(false); }}
+                              variant="outline"
+                              className="w-full rounded-full bg-lred border-[#9b0f09] text-dred hover:bg-color2 hover:text-white"
+                            >
+                              <LogIn className="w-4 h-4 mr-2" /> Login
+                            </Button>
+                          ) : (
+                            <Button
+                              onClick={() => { router.push("/profile"); setOpen(false); }}
+                              variant="outline"
+                              className="w-full rounded-full border-[#9b0f09] text-dred hover:bg-color2 hover:text-white"
+                            >
+                              <User className="w-4 h-4 mr-2" /> My Profile
+                            </Button>
+                          )}
+                          <Button
+                            onClick={() => { router.push("/post-property"); setOpen(false); }}
+                            className="w-full rounded-full bg-dred hover:bg-[#7d0c07] text-white"
+                          >
+                            Post Property
+                          </Button>
+                        </div>
+
                         <div className="flex items-center gap-3 me-4 mt-5 lg:flex">
                           <Mail className="w-4 h-4 text-dred" />
                           <Link
@@ -469,7 +537,7 @@ const Header = () => {
             {/* <div className="flex items-center gap-4"> */}
             {/* Login and Register Buttons (Visible when not logged in) */}
             {/* {!username && (
-                <div className="hidden lg:flex items-center gap-3">
+                <div className="hidden xl:flex items-center gap-3">
                   <Button
                     onClick={() => router.push("/login")}
                     variant="outline"

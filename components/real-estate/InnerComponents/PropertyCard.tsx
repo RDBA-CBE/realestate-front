@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import { MapPin, BedDouble, Bath, Maximize2, Heart, GitCompare } from "lucide-react";
-import { capitalizeFLetter, formatPriceRange, Success } from "@/utils/function.utils";
+import { capitalizeFLetter, formatPriceRange, Success, truncateText } from "@/utils/function.utils";
 import { useRouter } from "next/navigation";
 import Models from "@/imports/models.import";
+import { truncate } from "fs";
 
 const PropertyCard = ({ listing }) => {
   const router = useRouter();
@@ -101,7 +102,7 @@ const PropertyCard = ({ listing }) => {
           <p className="text-[#9b0f09] font-bold text-xl mb-1">
             ₹ {formatPriceRange(listing?.price_range?.minimum_price, listing?.price_range?.maximum_price)}
           </p>
-          <h3 className="section-in-ti mb-2">{listing?.title}</h3>
+          <h3 className="section-in-ti mb-2" title={listing?.title}>{truncateText(listing?.title, 34)}</h3>
           <p className="flex items-center gap-1 mb-4 min-h-[24px]">
             {listing?.location?.name && (<><MapPin className="w-3.5 h-3.5" />{`${capitalizeFLetter(
                                 listing.area?.name,

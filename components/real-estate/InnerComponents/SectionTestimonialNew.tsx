@@ -6,7 +6,7 @@ const testimonials = [
     text: "Every property radiates top-notch quality and absolute comfort here. The team went above and beyond to make sure everything was perfect.",
     author: "John Carter",
     role: "Home Buyer, Los Angeles",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+    image: "/assets/images/real-estate/home/testimonial/profile-1.png",
   },
   {
     text: "Amazing service and attention to detail. I felt supported during the entire process and couldn't be happier with my new home.",
@@ -18,13 +18,13 @@ const testimonials = [
     text: "Fast responses, honest advice and great listings — highly recommended for anyone searching for a new place.",
     author: "Samuel Green",
     role: "Property Investor",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=face",
+    image: "/assets/images/real-estate/home/testimonial/profile-2.png",
   },
   {
     text: "The best real estate experience I've ever had. Professional, transparent and genuinely caring about finding the right home.",
     author: "Priya Sharma",
     role: "Verified Buyer",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
+    image: "/assets/images/real-estate/home/testimonial/review-1.png",
   },
 ];
 
@@ -46,10 +46,10 @@ const Avatar = ({ name, image }: { name: string; image?: string }) => (
       ) : (
         <span className="text-white font-bold text-sm">{name.charAt(0)}</span>
       )}
-      <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white" />
+      {/* <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white" /> */}
     </div>
     <div>
-      <p className="text-sm font-semibold text-gray-900 leading-tight">{name}</p>
+      <p className="text-sm font-semibold text-gray-900 leading-tight mb-1 mt-4">{name}</p>
       <p className="text-xs text-gray-400">Verified buyer</p>
     </div>
   </div>
@@ -75,7 +75,7 @@ export default function SectionTestimonialNew() {
           {/* Card 1 — Dark image card (tall, col 1 row 1+2) */}
           <div className="relative rounded-2xl overflow-hidden row-span-2 min-h-[380px]">
             <img
-              src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500&h=700&fit=crop"
+              src="/assets/images/real-estate/home/testimonial/review-2.png"
               alt="property"
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -92,7 +92,7 @@ export default function SectionTestimonialNew() {
                   className="w-9 h-9 rounded-full object-cover border-2 border-white/40"
                 />
                 <div>
-                  <p className="text-white text-sm font-semibold">{testimonials[0].author}</p>
+                  <p className="text-white text-sm font-semibold mb-1 mt-2">{testimonials[0].author}</p>
                   <p className="text-white/50 text-xs">{testimonials[0].role}</p>
                 </div>
               </div>
@@ -102,20 +102,20 @@ export default function SectionTestimonialNew() {
           {/* Card 2 — Property image with label (col 2, row 1) */}
           <div className="relative rounded-2xl overflow-hidden min-h-[220px]">
             <img
-              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=400&fit=crop"
+              src="/assets/images/real-estate/home/testimonial/review-3.png"
               alt="property"
               className="absolute inset-0 w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
             <div className="relative z-10 flex flex-col justify-end h-full p-5">
-              <p className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-1">Customer Story</p>
-              <h4 className="text-white text-xl font-bold">{testimonials[1].author}</h4>
+              <p className="text-white/70 text-xs font-normal uppercase tracking-widest mb-1">Customer Story</p>
+              <h4 className="text-white text-xl  mb-1 ">{testimonials[1].author}</h4>
             </div>
           </div>
 
           {/* Card 3 — Rating highlight card (col 3, row 1) */}
           <div className="bg-white rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-sm min-h-[220px]">
-            <p className="text-5xl font-bold text-gray-900 leading-none">4.9</p>
+            <p className="text-5xl font-semibold text-gray-900 leading-none">4.9</p>
             <p className="text-sm text-gray-400 mt-1 mb-3">3,126 Reviews</p>
             <Stars size="w-6 h-6" />
             <p className="section-in-ti mt-4 leading-snug">
@@ -131,7 +131,7 @@ export default function SectionTestimonialNew() {
                 &quot;{testimonials[2].text}&quot;
               </p>
             </div>
-            <div className="mt-5">
+            <div className="mt-5 ">
               <Avatar name={testimonials[2].author} image={testimonials[2].image} />
             </div>
           </div>
@@ -145,7 +145,7 @@ export default function SectionTestimonialNew() {
               </p>
             </div>
             <div className="mt-4">
-              <p className="text-sm font-semibold text-gray-900">{testimonials[1].author}</p>
+              <p className="text-sm font-semibold text-gray-900 mb-1">{testimonials[1].author}</p>
               <p className="text-xs text-gray-400">{testimonials[1].role}</p>
             </div>
           </div>
@@ -153,7 +153,7 @@ export default function SectionTestimonialNew() {
           {/* Card 6 — Person image with quote overlay (col 3+4, row 2) */}
           <div className="relative rounded-2xl overflow-hidden min-h-[180px] lg:col-span-2">
             <img
-              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&h=400&fit=crop&crop=top"
+              src="/assets/images/real-estate/home/testimonial/review-1.png"
               alt="testimonial"
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -164,7 +164,7 @@ export default function SectionTestimonialNew() {
                 &quot;{testimonials[3].text}&quot;
               </p>
               <div className="mt-4">
-                <p className="text-white text-sm font-bold">{testimonials[3].author}</p>
+                <p className="text-white text-sm  mb-1">{testimonials[3].author}</p>
                 <p className="text-white/60 text-xs">{testimonials[3].role}</p>
               </div>
             </div>

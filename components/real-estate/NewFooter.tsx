@@ -89,7 +89,7 @@ export default function NewFooter() {
 
   return (
     <footer className="section-pad  text-white" 
-    style={{background:`url(/assets/images/real-estate/home/Footer.png)`, backgroundPosition:"bottom", backgroundSize:"cover", backgroundRepeat:"no-repeat", width:"100%", height:"100%"}}
+    style={{background:`url(/assets/images/real-estate/home/Footer-4.png)`, backgroundPosition:"top", backgroundSize:"cover", backgroundRepeat:"no-repeat", width:"100%", height:"100%"}}
     >
       <div className="section-wid">
         <div className="flex flex-col gap-6 border-b border-white/15 pb-8 md:flex-row md:items-center md:justify-between">
@@ -110,7 +110,7 @@ export default function NewFooter() {
           </div>
         </div>
 
-        <div className="grid gap-10 border-b border-white/15 py-10 md:grid-cols-5">
+        <div className="grid gap-10  py-10 md:grid-cols-5">
           <div>
             <h3 className="mb-4 section-in-ti !text-white">Popular Search</h3>
             <ul className="space-y-3 text-white/80">
@@ -171,7 +171,7 @@ export default function NewFooter() {
           <div className="space-y-6 md:col-span-2">
             <div>
               <p className="text-white/70">Live Support?</p>
-              <p className="mt-2">support@realestate.com</p>
+              <Link href="mailto:support@realestate.com" className="mt-2">support@realestate.com</Link>
             </div>
             <div>
               <h3 className="mb-4 text-white/70">Keep Yourself Up to Date</h3>
@@ -196,8 +196,10 @@ export default function NewFooter() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6 border-b border-white/15 py-8 md:flex-row md:items-center md:justify-center">
-          <h3 className="section-ti !text-white !font-medium">Get Mobile App</h3>
+        <div className="h-[1px] bg-white/15 xl:w-[50%] mx-auto" />
+
+        <div className="flex flex-col gap-6  py-8 md:flex-row md:items-center md:justify-center">
+          <h3 className="section-ti !text-white !font-normal mb-0 pb-0">Get Mobile App</h3>
           <div className="flex gap-4">
             <button className="rounded-xl  w-[150px] h-15 text-black">
               <img src="/assets/images/real-estate/home/app-store.png" alt="" className="rounded-xl object-cover w-[100%] h-[100%]" />
@@ -208,6 +210,9 @@ export default function NewFooter() {
             </button>
           </div>
         </div>
+
+       <div className="h-[1px] bg-white/15 xl:w-[50%] mx-auto" />
+
 
         <div className="flex flex-col gap-4 pt-6 text-sm text-white md:flex-row md:items-center md:justify-between">
           <p>

@@ -652,7 +652,7 @@ export function PropertyView(props: any) {
                       })
                     }
                     className="
-        w-full px-5 py-1 rounded-full
+        w-full px-2 py-1 rounded-full
         border border-gray-300 bg-white
         flex items-center justify-between
         text-gray-700
@@ -675,7 +675,7 @@ export function PropertyView(props: any) {
                   {state.openPriceDropdown === "min" && (
                     <div className="absolute z-50 mt-2 w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto">
                       <button
-                        className="w-full px-5 py-1 text-left hover:bg-gray-100"
+                        className="w-full px-2 py-1 text-left hover:bg-gray-100"
                         onClick={() =>
                           setState({
                             priceMinInput: "",
@@ -690,7 +690,7 @@ export function PropertyView(props: any) {
                       {priceOptions.map((item) => (
                         <button
                           key={item.value}
-                          className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                          className="w-full px-2 py-3 text-left hover:bg-gray-100"
                           onClick={() =>
                             setState({
                               priceMinInput: item.value,
@@ -717,7 +717,7 @@ export function PropertyView(props: any) {
                       })
                     }
                     className="
-        w-full px-5 py-2 rounded-full
+        w-full px-2 py-1 rounded-full
         border border-gray-300 bg-white
         flex items-center justify-between
         text-gray-700
@@ -922,7 +922,7 @@ export function PropertyView(props: any) {
                       })
                     }
                     className="
-        w-full px-5 py-1 rounded-full
+        w-full px-2 py-1 rounded-full
         border border-gray-300 bg-white
         flex items-center justify-between
         text-gray-700
@@ -948,7 +948,7 @@ export function PropertyView(props: any) {
                     "
                   >
                       <button
-                        className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                        className="w-full px-2 py-3 text-left hover:bg-gray-100"
                         onClick={() => {
                           setState({
                             sqftMin: "",
@@ -965,7 +965,7 @@ export function PropertyView(props: any) {
                       {sqftOptions.map((item) => (
                         <button
                           key={item.value}
-                          className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                          className="w-full px-2 py-3 text-left hover:bg-gray-100"
                           onClick={() => {
                             setState({
                               sqftMin: item.value,
@@ -994,7 +994,7 @@ export function PropertyView(props: any) {
                       })
                     }
                     className="
-        w-full px-5 py-1 rounded-full
+        w-full px-2 py-1 rounded-full
         border border-gray-300 bg-white
         flex items-center justify-between
         text-gray-700
@@ -1020,7 +1020,7 @@ export function PropertyView(props: any) {
                   "
                 >
                       <button
-                        className="w-full px-5 py-3 text-left hover:bg-gray-100"
+                        className="w-full px-2 py-3 text-left hover:bg-gray-100"
                         onClick={() => {
                           setState({
                             sqftMax: "",
@@ -1108,7 +1108,7 @@ export function PropertyView(props: any) {
                     <SheetTrigger asChild>
                       <Button
                         variant="outline"
-                        className="flex items-center gap-2 border-gray bg-transparent shadow-none px-2 "
+                        className="flex items-center gap-2 border-none bg-transparent shadow-none px-2  "
                       >
                         <SlidersHorizontal className="h-4 w-4" />
                         Filters
