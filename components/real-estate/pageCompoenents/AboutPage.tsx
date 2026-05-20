@@ -153,7 +153,7 @@ const AboutPage = () => {
             <span className="text-dred font-bold uppercase tracking-[0.2em] text-xs mb-3 inline-block">What We Offer</span>
             <h2 className="section-ti">Buy, Sell or Rent with Confidence</h2>
             <p className="section-cap mt-3 max-w-xl mx-auto">
-              Whether you're looking to buy your dream home or sell your property, we make it simple.
+              Whether you&apos;re looking to buy your dream home or sell your property, we make it simple.
             </p>
           </div>
 

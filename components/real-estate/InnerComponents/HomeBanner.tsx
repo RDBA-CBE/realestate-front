@@ -48,7 +48,7 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
             Discover Your  <br /> Perfect Home in  <br /> Paradise
           </h1>
           <p className="adv-subtitle">
-            Browse luxury properties, modern apartments, and exclusive villas in the world's most desirable locations
+            Browse luxury properties, modern apartments, and exclusive villas in the world&apos;s most desirable locations
           </p>
           <button className="adv-btn lg:mb-12"  > <a href="/property-list">Find Your Home</a></button>
            <button className="!border !border-white !bg-transparent adv-btn  hover:!bg-white hover:!text-black lg:mb-12 ms-4"  > <a href="mailto:support@gmail.com">Contact Us</a></button>
