@@ -156,7 +156,9 @@ const Header = () => {
 
               {/* Left Menu (Desktop) */}
               <nav className="hidden xl:flex space-x-6">
-                {StudentLeftSideMenu.map((menu) => (
+                {StudentLeftSideMenu.map((menu) => {
+                  const isActive = pathname === menu.url || (menu.url !== "/" && pathname.startsWith(menu.url));
+                  return (
                   <div
                     key={menu.title}
                     className="relative"
@@ -166,7 +168,11 @@ const Header = () => {
                     <Link
                       prefetch={true}
                       href={menu.url}
-                      className="hover:text-themeColor1 text-[16px] font-[500]  nav-ti"
+                      className={`text-[16px] font-[500] nav-ti transition-colors relative pb-1 ${
+                        isActive
+                          ? "text-dred after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-dred after:rounded-full"
+                          : "hover:text-dred"
+                      }`}
                     >
                       {menu.title}
                     </Link>
@@ -209,7 +215,8 @@ const Header = () => {
                         )}
                     </AnimatePresence>
                   </div>
-                ))}
+                  );
+                })}
               </nav>
             </div>
 
@@ -429,7 +436,9 @@ const Header = () => {
                       {/* )} */}
 
                       <div className="mt-4">
-                        {StudentLeftSideMenu.map((menu, index) => (
+                        {StudentLeftSideMenu.map((menu, index) => {
+                          const isActive = pathname === menu.url || (menu.url !== "/" && pathname.startsWith(menu.url));
+                          return (
                           <Accordion
                             type="single"
                             collapsible
@@ -440,7 +449,7 @@ const Header = () => {
                               <AccordionTrigger
                                 className={`no-underline hover:no-underline uppercase text-sm ${
                                   menu.items?.length > 0 ? "" : "[&>svg]:hidden"
-                                }`}
+                                } ${isActive ? "text-dred font-semibold" : ""}`}
                                 onClick={() => {
                                   if (!menu.items?.length) {
                                     router.push(menu.url);
@@ -448,6 +457,7 @@ const Header = () => {
                                   }
                                 }}
                               >
+                                {isActive && <span className="w-1 h-4 bg-dred rounded-full mr-2 inline-block" />}
                                 {menu.title}
                               </AccordionTrigger>
                               {menu.items?.length > 0 && (
@@ -489,7 +499,8 @@ const Header = () => {
                               )}
                             </AccordionItem>
                           </Accordion>
-                        ))}
+                          );
+                        })}
                           {/* Login + Post Property buttons inside sidebar */}
                         <div className="flex flex-col gap-3 mt-6">
                           {!state.token ? (
