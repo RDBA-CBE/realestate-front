@@ -133,11 +133,11 @@ const Header = () => {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="bg-white sticky top-0 z-[50]"
       >
-        <div className="section-wid  ">
+        <div className="section-wid  web-header">
           <div className="  flex justify-between items-center gap-20 ">
             <div className="flex items-center gap-20">
               {/* Logo */}
-              <Link className="flex justify-center gap-3 py-4" href="/">
+              <Link className="flex justify-center gap-3 py-3 md:py-4" href="/">
                 {/* <Link href="home">
                   <Image
                     src="/assets/images/logo.png"
@@ -221,7 +221,7 @@ const Header = () => {
             </div>
 
             <div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 md:gap-3">
                 {/* <div className="flex items-center gap-3 me-4 hidden xl:flex">
                   <Mail className="w-4 h-4 text-dred" />
                   <Link
@@ -296,10 +296,10 @@ const Header = () => {
                  {state.token ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="hidden xl:flex items-center space-x-2 focus:outline-none">
-                        <Avatar className="h-9 w-9">
+                      <button className="flex items-center space-x-2 focus:outline-none">
+                        <Avatar className="h-[30px] w-[30px] md:h-9 md:w-9">
                           <AvatarFallback>
-                            <User2 className="text-white w-5 h-5" />
+                            <User2 className="text-white w-4 h-4 md:w-5 md:h-5" />
                           </AvatarFallback>
                         </Avatar>
                       </button>
@@ -362,7 +362,7 @@ const Header = () => {
 
                 <div className="block xl:hidden">
                   <Sheet open={open} onOpenChange={setOpen}>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 md:gap-3">
                       {/* AI Search icon */}
                       <img
                         src="/assets/images/real-estate/home/ai-search-1.png"
@@ -380,7 +380,7 @@ const Header = () => {
                         </button>
                       )} */}
                       <SheetTrigger asChild>
-                        <MenuIcon className="text-dred cursor-pointer" />
+                        <MenuIcon className="text-dred cursor-pointer w-8 h-8 xs:w-auto xs:h-auto" />
                       </SheetTrigger>
                     </div>
 

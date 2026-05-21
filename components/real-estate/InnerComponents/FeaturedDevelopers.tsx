@@ -216,10 +216,10 @@ function DeveloperCard({ developer }: { developer: any }) {
   return (
     <div
       onClick={() => router.push(`/developer/${developer?.id}`)}
-      className="group cursor-pointer bg-white rounded-2xl py-10 px-8 transition-all duration-500 hover:-translate-y-1 hover:shadow-xl relative overflow-hidden"
+      className="group cursor-pointer bg-white rounded-2xl py-10 px-5 xs:px-8 transition-all duration-500 hover:-translate-y-1 hover:shadow-xl relative overflow-hidden"
     >
       {/* Arrow */}
-      <div className="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#fdf1f1] flex items-center justify-center text-dred transition-all duration-300 group-hover:rotate-45">
+      <div className="absolute top-3 right-3 md:top-5 md:right-5 w-8 h-8 rounded-full bg-[#fdf1f1] flex items-center justify-center text-dred transition-all duration-300 group-hover:rotate-45">
         <ArrowUpRight className="w-4 h-4" />
       </div>
 

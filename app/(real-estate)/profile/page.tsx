@@ -419,7 +419,7 @@ const getPropertyTypeNames = (ids: string[]) => {
               <UserCircle2 className="w-7 h-7 text-[#9b0f09]" />
             </div>
             <h3 className="text-lg font-bold text-black">Access Restricted</h3>
-            <p className="text-sm text-gray-500">{state.authAlertMessage}</p>
+            <p className="text-sm text-[#383838]">{state.authAlertMessage}</p>
             <Button
               className="w-full py-5 rounded-xl font-semibold text-white bg-[#9b0f09] hover:bg-[#7d0c07]"
               onClick={handleAuthAlertOk}
@@ -429,8 +429,8 @@ const getPropertyTypeNames = (ids: string[]) => {
           </div>
         </div>
       )}
-      <div className="container mx-auto max-w-7xl mt-6">
-        <div className="w-full bg-color1 border-gray shadow-none text-white rounded-xl flex flex-col md:flex-row items-center sm:items-start md:items-start justify-between p-4 md:p-6 gap-4">
+      <div className="container section-pad mx-auto max-w-7xl ">
+        <div className="w-full bg-color1 border-gray shadow-none text-white rounded-xl flex flex-col md:flex-row items-center sm:items-start md:items-start justify-between p-4 md:p-6 gap-2 md:gap-4">
           {/* Left Section */}
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 w-full md:w-auto text-center sm:text-left">
             {state.user?.profile_image ? (
@@ -459,16 +459,16 @@ const getPropertyTypeNames = (ids: string[]) => {
 
             <div className="w-full">
               <div className="flex flex-col">
-                <h2 className="text-lg text-black font-semibold">
+                <h2 className="section-in-ti">
                   {state.user?.first_name} {state.user?.last_name}
                 </h2>
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-1 sm:gap-2 px-0 mx-0 justify-center sm:justify-start flex-wrap">
-                  <p className="text-gray-600">{state.user?.email} <span className="hidden sm:inline">|</span></p>
-                  <p className="text-gray-600">{state.user?.phone}</p>
+                  <p className="text-[#383838] mb-2">{state.user?.email} <span className="hidden sm:inline">|</span></p>
+                  <p className="text-[#383838] mb-2">{state.user?.phone}</p>
                 </div>
               </div>
 
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-[#383838] ">
                 {state?.properties?.length} Wishlist · 1 Active Search · Last Login: Just Now
               </p>
 
@@ -477,7 +477,7 @@ const getPropertyTypeNames = (ids: string[]) => {
           </div>
 
           {/* Right Section */}
-          <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0 w-full md:w-auto">
+          <div className="flex flex-col sm:flex-row gap-3  w-full md:w-auto">
             <Button
               variant="outline"
               className="w-full md:w-auto rounded-full border-dred bg-transparent text-dred hover:text-white hover:bg-[#9b0f09]"
@@ -501,17 +501,17 @@ const getPropertyTypeNames = (ids: string[]) => {
         <div className="w-full bg-color1 mt-5 text-white p-4 sm:p-6 rounded-2xl grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch border-gray shadow-none">
           {/* Left Column - My Dream Home */}
           <div className="space-y-5 flex flex-col h-full ">
-            <h2 className="text-lg text-black font-semibold">My Preference</h2>
+            <h2 className="section-in-ti mt-2 text-start">My Preference</h2>
 
             <Card className="bg-white border-gray shadow-none text-white rounded-xl flex-1">
   <CardContent className="flex flex-col lg:flex-row justify-between p-4 h-full gap-4">
-    <div className="flex items-start gap-3">
+    <div className="flex md:items-start gap-3">
       <div className=" rounded-md flex-shrink-0">
         <MapPin size={20} className="text-dred" />
       </div>
 
-      <div>
-        <p className="text-sm text-gray-600">Location</p>
+      <div className="text-start">
+        <p className="text-sm text-[#383838]">Location</p>
 
         {/* Added Title */}
         <h3 className="text-black font-medium mt-1">
@@ -519,7 +519,7 @@ const getPropertyTypeNames = (ids: string[]) => {
         </h3>
 
         {/* Added Content */}
-        <p className="text-sm text-gray-500 mt-1 mb-3">
+        <p className="text-sm text-[#383838] mt-1 mb-3">
           Add your preferred location so that you can view the
           properties in your preferred location.
         </p>
@@ -535,7 +535,7 @@ const getPropertyTypeNames = (ids: string[]) => {
               </span>
             ))
           ) : (
-            <span className="text-sm text-gray-500">
+            <span className="text-sm ">
               No locations set
             </span>
           )}
@@ -623,7 +623,7 @@ const getPropertyTypeNames = (ids: string[]) => {
             </Card> */}
 
             {state.user?.newsletter !== undefined && (
-  <div className="mt-3 rounded-xl border border-dashed border-gray-300 bg-white/80 p-4 text-sm text-gray-700">
+  <div className="mt-3 rounded-xl border border-dashed border-gray-300 bg-white/80 p-4 text-sm text-[#383838]">
     {state.user?.newsletter ? (
       <>
         <p className="font-medium text-black">You&apos;re subscribed!</p>
@@ -661,7 +661,7 @@ const getPropertyTypeNames = (ids: string[]) => {
 
           {/* Right Column - My Activity */}
           <div className="space-y-5 flex flex-col h-full">
-            <h2 className="text-lg font-semibold text-black">My Activity</h2>
+            <h2 className="section-in-ti  text-start">My Activity</h2>
 
             {state?.properties?.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 !gap-3 flex-1">
@@ -686,10 +686,10 @@ const getPropertyTypeNames = (ids: string[]) => {
                       </button>
                     </div>
                     <div className="p-4">
-                      <h3 className="text-black font-semibold text-base truncate">
+                      <h3 className="text-black  text-base truncate">
                         {property.title || property.name || "Untitled Property"}
                       </h3>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="text-sm text-[#383838] mt-1">
                         {property.price ? formatToINRS(property.price) : "Price on request"}
                       </p>
                     </div>
@@ -803,7 +803,7 @@ const getPropertyTypeNames = (ids: string[]) => {
                   }`}
                 >
                   <form onSubmit={handleProfileSubmit} className="space-y-6">
-                    <p className="text-gray-600 text-sm text-center mb-4">
+                    <p className="text-[#383838] text-sm text-center mb-4">
                       Please fill in your profile details
                     </p>
 

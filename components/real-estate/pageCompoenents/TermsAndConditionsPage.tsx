@@ -48,23 +48,17 @@ const TermsAndConditionsPage = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
-      <section className="relative h-[320px] flex items-center justify-center overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1516156007-ad02b522cff4?q=80&w=2070&auto=format&fit=crop"
-          alt="Terms and Conditions"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/65" />
-        <div className="relative z-10 text-center text-white px-4">
-          <span className="text-xs uppercase tracking-[0.25em] font-semibold text-white/70 mb-3 block">
-            Legal
-          </span>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+      
+
+      <section className="  bg-dred h-[65px] md:h-[70px] flex items-center justify-center overflow-hidden">
+        
+       
+        <div className=" text-center text-white ">
+          
+          <h1 className="text-2xl md:text-2xl text-white pb-0 mb-0">
             Terms &amp; Conditions
           </h1>
-          <p className="text-base md:text-lg max-w-xl mx-auto text-white/80 font-light">
-            Please read these terms carefully before using our services.
-          </p>
+         
         </div>
       </section>
 

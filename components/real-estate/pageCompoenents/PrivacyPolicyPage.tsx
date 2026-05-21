@@ -74,24 +74,15 @@ const PrivacyPolicyPage = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
-      <section className="relative h-[320px] flex items-center justify-center overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1520004434532-cd668d27a421?q=80&w=2070&auto=format&fit=crop"
-          alt="Privacy Policy"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/65" />
-        <div className="relative z-10 text-center text-white px-4">
-          <span className="text-xs uppercase tracking-[0.25em] font-semibold text-white/70 mb-3 block">
-            Legal
-          </span>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+      <section className="  bg-dred h-[65px] md:h-[70px] flex items-center justify-center overflow-hidden">
+        
+       
+        <div className=" text-center text-white ">
+          
+          <h1 className="text-2xl md:text-2xl text-white pb-0 mb-0">
             Privacy Policy
           </h1>
-          <p className="text-base md:text-lg max-w-xl mx-auto text-white/80 font-light">
-            Your privacy is important to us. Learn how we collect, use, and
-            protect your data.
-          </p>
+         
         </div>
       </section>
 
@@ -107,7 +98,7 @@ const PrivacyPolicyPage = () => {
                 <h2 className="section-in-ti mb-3">
                   Our Commitment to Your Privacy
                 </h2>
-                <p className="text-gray-500 text-sm leading-relaxed mb-6">
+                <p className=" text-sm leading-relaxed mb-6">
                   This policy describes how Real Estate collects, uses, and
                   shares your personal information when you use our Services.
                 </p>
@@ -119,7 +110,7 @@ const PrivacyPolicyPage = () => {
                       className={`w-full text-left text-sm px-3 py-2 rounded-lg transition-colors ${
                         openIndex === i
                           ? "bg-dred text-white font-medium"
-                          : "text-gray-600 hover:bg-gray-200"
+                          : " hover:bg-gray-200"
                       }`}
                     >
                       {s.number}. {s.title}
@@ -162,13 +153,13 @@ const PrivacyPolicyPage = () => {
                   {openIndex === i && (
                     <div className="px-7 pb-6">
                       <div className="h-px bg-gray-100 mb-5" />
-                      <p className="text-gray-600 leading-relaxed text-[15px] mb-4">
+                      <p className=" leading-relaxed text-[15px] mb-4">
                         {s.content}
                       </p>
                       {s.list && (
                         <ul className="space-y-2">
                           {s.list.map((item, j) => (
-                            <li key={j} className="flex items-start gap-3 text-[15px] text-gray-600">
+                            <li key={j} className="flex items-start gap-3 text-[15px] ">
                               <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-dred flex-shrink-0" />
                               {item}
                             </li>

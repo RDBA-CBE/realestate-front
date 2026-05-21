@@ -142,11 +142,15 @@ const PropertyComparisonGrid = () => {
       group: "Pricing",
       attributes: [
         {
-          label: "Price",
-          key: "price",
-          format: (value: any) => formatToINR(value),
-          highlight: true,
-        },
+  label: "Price",
+  key: "price_range",
+  format: (value: any) =>
+    formatPriceRange(
+      value?.minimum_price,
+      value?.maximum_price
+    ),
+  highlight: true,
+},
         // {
         //   label: "Price Per Sq Ft",
         //   key: "price_per_sqft",
@@ -318,7 +322,7 @@ const PropertyComparisonGrid = () => {
                     height={32}
                   />
                 </div>
-                <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">
+                <h3 className="section-in-ti pt-2">
                   {property.title}
                 </h3>
                 <p className="text-xs text-dred font-bold mt-1">
@@ -352,13 +356,13 @@ const PropertyComparisonGrid = () => {
             </div>
 
             <div className="space-y-3">
-              <h4 className="font-semibold text-gray-900 border-b pb-1">
+              <h4 className="section-in-ti border-b pb-1">
                 {currentGroup.group}
               </h4>
               {currentGroup.attributes.map((attr) => (
                 <div
                   key={attr.key}
-                  className="flex justify-between items-center text-sm"
+                  className={`flex justify-between  text-sm ${attr.label == "Address" ? "flex-col items-start" : "flex-row items-center" }` }
                 >
                   <span className="text-gray-600 font-medium">
                     {attr.label}:
@@ -387,7 +391,7 @@ const PropertyComparisonGrid = () => {
         <thead>
           <tr className="border-b border-gray-200 bg-white">
             <th className="sticky left-0 w-64 bg-white flex-shrink-0 p-4 text-left border-r border-gray-200 z-10">
-              <span className="text-sm font-extrabold text-black uppercase">
+              <span className="section-in-ti ">
                 Property
               </span>
             </th>
@@ -422,10 +426,10 @@ const PropertyComparisonGrid = () => {
                       className="w-auto h-28 object-cover"
                     />
                   </div>
-                  <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">
+                  <h3 className="section-in-ti line-clamp-2 mt-4">
                     {property.title}
                   </h3>
-                  <p className="text-xs text-dred font-bold mt-1">
+                  <p className="text-xs text-dred font-bold mt-1 mb-0">
                     {formatPriceRange(
                       property?.price_range?.minimum_price,
                       property?.price_range?.maximum_price
@@ -444,7 +448,7 @@ const PropertyComparisonGrid = () => {
             <React.Fragment key={groupIndex}>
               <tr className="bg-gray-50">
                 <td colSpan={state.propertyList.length + 1} className="p-3">
-                  <span className="text-sm font-extrabold text-black uppercase">
+                  <span className="text-sm font-semibold text-black uppercase">
                     {groupData.group}
                   </span>
                 </td>
@@ -487,9 +491,21 @@ const PropertyComparisonGrid = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="max-w-[85rem] mx-auto"
+      className=" mx-auto"
     >
+      <section className="  bg-dred h-[65px] md:h-[70px] flex items-center justify-center overflow-hidden">
+        
+       
+        <div className=" text-center text-white ">
+          
+          <h1 className="text-2xl md:text-2xl text-white pb-0 mb-0">
+            Compare Properties
+          </h1>
+         
+        </div>
+      </section>
       <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
+        
         <div className="max-w-7xl mx-auto">
           {state.loading ? (
             <>
@@ -517,9 +533,9 @@ const PropertyComparisonGrid = () => {
             </div>
           ) : (
             <>
-              <h1 className="section-ti  text-center mb-12">
+              {/* <h1 className="section-ti  text-center mb-12">
                 Compare Properties
-              </h1>
+              </h1> */}
               <div className="lg:hidden mb-6">
                 <div className="flex space-x-1 overflow-x-auto scrollbar-hide">
                   {attributeGroups.map((group, index) => (

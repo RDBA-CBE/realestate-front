@@ -101,15 +101,15 @@ export default function Page() {
       // 1. fetch dynamic filters first
       const res: any = await Models.property.dynamicFilter({});
 
-      const locationList = (res?.location || []).map((item: any) => ({ label: item.name, value: item.id }));
-      const categoryList = (res?.property_type || []).map((item: any) => ({ label: item.name, value: item.id }));
-      const furnishingList = (res?.furnishing || []).map((item: any) => ({ label: item.name, value: item.value }));
-      const listingTypeList = (res?.listing_type || []).map((item: any) => ({ label: item.name, value: item.value }));
+      const locationList = (res?.location || []).map((item: any) => ({ label: item.name, value: item.id , count: item.count}));
+      const categoryList = (res?.property_type || []).map((item: any) => ({ label: item.name, value: item.id, count: item.count }));
+      const furnishingList = (res?.furnishing || []).map((item: any) => ({ label: item.name, value: item.value, count: item.count }));
+      const listingTypeList = (res?.listing_type || []).map((item: any) => ({ label: item.name, value: item.value, count: item.count }));
       const bedroomList = (res?.bedrooms || []).filter((item: any) => item.value > 0).map((item: any) => String(item.value));
-      const areaList = (res?.area || []).filter((item: any) => item.id !== null).map((item: any) => ({ label: item.name, value: item.id }));
-      const projectList = (res?.project || []).map((item: any) => ({ label: item.name, value: item.id }));
-      const developerList = (res?.developer || []).map((item: any) => ({ label: item.name, value: item.id }));
-      const floorPlanList = (res?.floor_plans || []).map((item: any) => ({ label: item.name.toUpperCase(), value: item.value }));
+      const areaList = (res?.area || []).filter((item: any) => item.id !== null).map((item: any) => ({ label: item.name, value: item.id, count: item.count }));
+      const projectList = (res?.project || []).map((item: any) => ({ label: item.name, value: item.id, count: item.count }));
+      const developerList = (res?.developer || []).map((item: any) => ({ label: item.name, value: item.id , count: item.count}));
+      const floorPlanList = (res?.floor_plans || []).map((item: any) => ({ label: item.name.toUpperCase(), value: item.value, count: item.count }));
 
       // 2. validate URL params against filter response
       const urlFilter = buildUrlParamFilter(res);
@@ -201,15 +201,15 @@ export default function Page() {
       const res: any = await Models.property.dynamicFilter(bodys);
 
       setState({
-        locationList: (res?.location || []).map((item: any) => ({ label: item.name, value: item.id })),
-        categoryList: (res?.property_type || []).map((item: any) => ({ label: item.name, value: item.id })),
-        furnishingList: (res?.furnishing || []).map((item: any) => ({ label: item.name, value: item.value })),
-        listingTypeList: (res?.listing_type || []).map((item: any) => ({ label: item.name, value: item.value })),
+        locationList: (res?.location || []).map((item: any) => ({ label: item.name, value: item.id, count: item.count })),
+        categoryList: (res?.property_type || []).map((item: any) => ({ label: item.name, value: item.id, count: item.count })),
+        furnishingList: (res?.furnishing || []).map((item: any) => ({ label: item.name, value: item.value, count: item.count })),
+        listingTypeList: (res?.listing_type || []).map((item: any) => ({ label: item.name, value: item.value, count: item.count })),
         bedroomList: (res?.bedrooms || []).filter((item: any) => item.value > 0).map((item: any) => String(item.value)),
-        areaList: (res?.area || []).filter((item: any) => item.id !== null).map((item: any) => ({ label: item.name, value: item.id })),
-        projectList: (res?.project || []).map((item: any) => ({ label: item.name, value: item.id })),
-        developerList: (res?.developer || []).map((item: any) => ({ label: item.name, value: item.id })),
-        floorPlanList: (res?.floor_plans || []).map((item: any) => ({ label: item.name.toUpperCase(), value: item.value })),
+        areaList: (res?.area || []).filter((item: any) => item.id !== null).map((item: any) => ({ label: item.name, value: item.id, count: item.count })),
+        projectList: (res?.project || []).map((item: any) => ({ label: item.name, value: item.id, count: item.count })),
+        developerList: (res?.developer || []).map((item: any) => ({ label: item.name, value: item.id, count: item.count })),
+        floorPlanList: (res?.floor_plans || []).map((item: any) => ({ label: item.name.toUpperCase(), value: item.value, count: item.count })),
         minPrice: res?.price_range?.minimum_price || 0,
         maxPrice: res?.price_range?.maximum_price || 0,
       });

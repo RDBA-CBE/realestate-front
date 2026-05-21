@@ -1,9 +1,91 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { ChevronDown, RotateCcw } from "lucide-react";
 import { TextInput } from "../common-components/textInput";
 import { priceOptions, sqftOptions } from "@/utils/constant.utils";
 import { getPriceLabel } from "@/utils/function.utils";
+import { FilterListPopup } from "./property-list/property3And4Column/FilterListPopup";
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  React.useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  return isMobile;
+}
+
+const PREVIEW_COUNT = 5;
+
+function FilterSection({
+  label, list, selected, stateKey, handleChange, showAlphabetNav = false,
+}: {
+  label: string; list: any[]; selected: any[]; stateKey: string;
+  handleChange: (k: string, v: any) => void; showAlphabetNav?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [popupPos, setPopupPos] = useState({ left: 0, top: 0 });
+  const isMobile = useIsMobile();
+
+  const openPopup = () => {
+    const el = sectionRef.current;
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      setPopupPos({ left: rect.left, top: rect.bottom + 8 });
+    }
+    setOpen(true);
+  };
+
+  return (
+    <div>
+      <div className="mb-2 font-semibold text-gray-900">{label}</div>
+      <div className="space-y-2" ref={sectionRef}>
+        {list.slice(0, PREVIEW_COUNT).map((option) => (
+          <label key={option.value} className="flex items-center justify-between gap-2 text-sm text-gray-700 cursor-pointer">
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                className="cursor-pointer"
+                checked={selected?.some((t) => t.value === option.value)}
+                onChange={(e) =>
+                  handleChange(stateKey, e.target.checked
+                    ? [...(selected || []), option]
+                    : selected.filter((t) => t.value !== option.value))
+                }
+              />
+              <span>{option.label}</span>
+            </div>
+            {option.count !== undefined && (
+              <span className="text-xs bg-gray-100 text-gray-500 rounded-full px-2 py-0.5">{option.count}</span>
+            )}
+          </label>
+        ))}
+        {list.length > PREVIEW_COUNT && (
+          <button
+            onClick={openPopup}
+            className="text-xs font-medium text-dred w-full rounded-full px-3 ps-5 text-left"
+          >
+            View more
+          </button>
+        )}
+      </div>
+      <FilterListPopup
+        open={open}
+        onClose={() => setOpen(false)}
+        title={label}
+        items={list}
+        selected={selected || []}
+        onChange={(updated) => handleChange(stateKey, updated)}
+        anchorPos={popupPos}
+        isMobile={isMobile}
+        showAlphabetNav={showAlphabetNav}
+      />
+    </div>
+  );
+}
 
 export const SidebarContent = (props: any) => {
   const {
@@ -56,14 +138,19 @@ export const SidebarContent = (props: any) => {
         <div className="mb-2 font-semibold text-gray-900">Listing Status</div>
         <div className="space-y-2">
           {[{ label: "All", value: "All" }, ...(listingTypeList || [])].map((option) => (
-            <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-              <input
-                type="radio"
-                name="listingStatus_mobile"
-                checked={state.listingStatus === option.label}
-                onChange={() => handleChange("listingStatus", option.label)}
-              />
-              {option.label}
+            <label key={option.value} className="flex items-center justify-between gap-2 text-sm text-gray-700 cursor-pointer">
+              <div className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="listingStatus_mobile"
+                  checked={state.listingStatus === option.label}
+                  onChange={() => handleChange("listingStatus", option.label)}
+                />
+                {option.label}
+              </div>
+              {option.count !== undefined && (
+                <span className="text-xs bg-gray-100 text-gray-500 rounded-full px-2 py-0.5">{option.count}</span>
+              )}
             </label>
           ))}
         </div>
@@ -75,118 +162,40 @@ export const SidebarContent = (props: any) => {
           <div className="mb-2 font-semibold text-gray-900">Property Type</div>
           <div className="space-y-2">
             {categoryList.map((option) => (
-              <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="cursor-pointer"
-                  checked={state.propertyType?.some((t) => t.value === option.value)}
-                  onChange={(e) =>
-                    handleChange("propertyType", e.target.checked
-                      ? [...(state.propertyType || []), option]
-                      : state.propertyType.filter((t) => t.value !== option.value))
-                  }
-                />
-                <span>{option.label}</span>
+              <label key={option.value} className="flex items-center justify-between gap-2 text-sm text-gray-700 cursor-pointer">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    className="cursor-pointer"
+                    checked={state.propertyType?.some((t) => t.value === option.value)}
+                    onChange={(e) =>
+                      handleChange("propertyType", e.target.checked
+                        ? [...(state.propertyType || []), option]
+                        : state.propertyType.filter((t) => t.value !== option.value))
+                    }
+                  />
+                  <span>{option.label}</span>
+                </div>
+                {option.count !== undefined && (
+                  <span className="text-xs bg-gray-100 text-gray-500 rounded-full px-2 py-0.5">{option.count}</span>
+                )}
               </label>
             ))}
           </div>
         </div>
       )}
 
-      {/* Location */}
       {locationList.length > 0 && (
-        <div>
-          <div className="mb-2 font-semibold text-gray-900">Location</div>
-          <div className="space-y-2">
-            {locationList.map((option) => (
-              <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="cursor-pointer"
-                  checked={state.location?.some((t) => t.value === option.value)}
-                  onChange={(e) =>
-                    handleChange("location", e.target.checked
-                      ? [...(state.location || []), option]
-                      : state.location.filter((t) => t.value !== option.value))
-                  }
-                />
-                <span>{option.label}</span>
-              </label>
-            ))}
-          </div>
-        </div>
+        <FilterSection label="Location" list={locationList} selected={state.location} stateKey="location" handleChange={handleChange} showAlphabetNav />
       )}
-
-      {/* Area */}
       {areaList.length > 0 && (
-        <div>
-          <div className="mb-2 font-semibold text-gray-900">Area</div>
-          <div className="space-y-2">
-            {areaList.map((option) => (
-              <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="cursor-pointer"
-                  checked={state.area?.some((t) => t.value === option.value)}
-                  onChange={(e) =>
-                    handleChange("area", e.target.checked
-                      ? [...(state.area || []), option]
-                      : state.area.filter((t) => t.value !== option.value))
-                  }
-                />
-                <span>{option.label}</span>
-              </label>
-            ))}
-          </div>
-        </div>
+        <FilterSection label="Area" list={areaList} selected={state.area} stateKey="area" handleChange={handleChange} />
       )}
-
-      {/* Developer */}
       {developerList.length > 0 && (
-        <div>
-          <div className="mb-2 font-semibold text-gray-900">Developer</div>
-          <div className="space-y-2">
-            {developerList.map((option) => (
-              <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="cursor-pointer"
-                  checked={state.developer?.some((t) => t.value === option.value)}
-                  onChange={(e) =>
-                    handleChange("developer", e.target.checked
-                      ? [...(state.developer || []), option]
-                      : state.developer.filter((t) => t.value !== option.value))
-                  }
-                />
-                <span>{option.label}</span>
-              </label>
-            ))}
-          </div>
-        </div>
+        <FilterSection label="Developer" list={developerList} selected={state.developer} stateKey="developer" handleChange={handleChange} />
       )}
-
-      {/* Project */}
       {projectList.length > 0 && (
-        <div>
-          <div className="mb-2 font-semibold text-gray-900">Project</div>
-          <div className="space-y-2">
-            {projectList.map((option) => (
-              <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="cursor-pointer"
-                  checked={state.project?.some((t) => t.value === option.value)}
-                  onChange={(e) =>
-                    handleChange("project", e.target.checked
-                      ? [...(state.project || []), option]
-                      : state.project.filter((t) => t.value !== option.value))
-                  }
-                />
-                <span>{option.label}</span>
-              </label>
-            ))}
-          </div>
-        </div>
+        <FilterSection label="Project" list={projectList} selected={state.project} stateKey="project" handleChange={handleChange} />
       )}
 
       {/* Budget */}
@@ -302,14 +311,21 @@ export const SidebarContent = (props: any) => {
           <div className="mb-2 font-semibold text-gray-900">Furnishing</div>
           <div className="space-y-2">
             {furnishingList.map((option) => (
-              <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="cursor-pointer"
-                  checked={state.furnishing?.some((t) => t.value === option.value)}
-                  onChange={(e) => handleChange("furnishing", e.target.checked ? [option] : [])}
-                />
-                <span>{option.label}</span>
+              <label key={option.value} className="flex items-center justify-between gap-2 text-sm text-gray-700 cursor-pointer">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    className="cursor-pointer"
+                    checked={state.furnishing?.some((t) => t.value === option.value)}
+                    onChange={(e) => handleChange("furnishing", e.target.checked
+                      ? [...(state.furnishing || []), option]
+                      : state.furnishing.filter((t) => t.value !== option.value))}
+                  />
+                  <span>{option.label}</span>
+                </div>
+                {option.count !== undefined && (
+                  <span className="text-xs bg-gray-100 text-gray-500 rounded-full px-2 py-0.5">{option.count}</span>
+                )}
               </label>
             ))}
           </div>

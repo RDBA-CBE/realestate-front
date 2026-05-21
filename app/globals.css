@@ -1644,6 +1644,16 @@ body {
   }
 }
 
+@media (max-width: 530px) {
+  .web-header.section-wid {
+    width: 96%;
+  }
+}
+
+
+
+
+
 .section-ti{
   font-size: 30px;
   font-weight: 500;
@@ -1729,7 +1739,7 @@ body {
 
 .adv-btn {
   margin-top: 28px;
-  padding: 14px 28px;
+  padding: 12px 28px;
   border-radius: 25px;
   background: #9b0f09;
   color: white;
@@ -1739,8 +1749,8 @@ body {
 }
 
 .adv-btn:hover {
-  background: #fff6f6;
-  color: #000;
+  background: #fff;
+  color: #9b0f09;
   border: 1px solid #9b0f09;
 }
 

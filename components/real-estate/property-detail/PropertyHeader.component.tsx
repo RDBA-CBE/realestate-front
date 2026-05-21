@@ -158,7 +158,7 @@ export default function PropertyHeader(props: any) {
 
         {/* Right side */}
         <div className="flex flex-col items-end  gap-1 hidden sm:block">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center justify-end gap-2">
             <Button
               onClick={() => handleWishList()}
               size="icon"

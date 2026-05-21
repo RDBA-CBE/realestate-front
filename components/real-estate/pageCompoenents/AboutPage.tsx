@@ -42,20 +42,20 @@ const AboutPage = () => {
       {/* ── HERO ── */}
       <section className="relative h-[500px] flex items-end overflow-hidden">
         <img
-          src="/assets/images/real-estate/home/About.png"
+          src="/assets/images/real-estate/home/faq-5.png"
           alt="About Us"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-bottom"
           onError={(e) => { e.currentTarget.src = "/assets/images/real-estate/banner.jpg"; }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
         <div className="relative z-10 section-wid pb-16">
-          <span className="text-xs uppercase tracking-[0.25em] font-semibold text-white/60 mb-3 block">
+          <span className="text-xs uppercase tracking-[0.25em]  text-white mb-3 block">
             Who We Are
           </span>
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight max-w-2xl">
+          <h1 className="adv-title leading-tight max-w-2xl">
             Building Dreams, <br />Delivering Homes
           </h1>
-          <p className="text-white/75 text-base md:text-lg max-w-xl leading-relaxed">
+          <p className="adv-subtitle">
             More than a real estate firm — your dedicated partners in finding the perfect property.
           </p>
         </div>
@@ -70,14 +70,14 @@ const AboutPage = () => {
               return (
                 <div
                   key={i}
-                  className={`flex items-center gap-4 py-8 px-6 ${i < 3 ? "md:border-r border-white/20" : ""}`}
+                  className={`flex  gap-4 py-8 px-6 ${i < 3 ? "md:border-r border-white/20" : ""}`}
                 >
                   <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center flex-shrink-0">
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-2xl md:text-3xl font-bold text-white leading-none">{stat.value}</p>
-                    <p className="text-white/70 text-xs mt-1 uppercase tracking-wider">{stat.label}</p>
+                    <p className="text-2xl md:text-3xl  text-white pb-2 mb-0">{stat.value}</p>
+                    <p className="text-white/70 text-xs uppercase tracking-wider">{stat.label}</p>
                   </div>
                 </div>
               );
@@ -104,8 +104,8 @@ const AboutPage = () => {
               />
               {/* Badge */}
               <div className="absolute bottom-[38%] left-[55%] -translate-x-1/2 bg-white rounded-2xl shadow-2xl px-5 py-4 z-10 border border-gray-100 text-center min-w-[130px]">
-                <p className="text-3xl font-bold text-dred leading-none">15+</p>
-                <p className="text-xs text-gray-500 mt-1 uppercase tracking-wider font-semibold">Years of Trust</p>
+                <p className="text-3xl text-dred font-semibold leading-none mb-0 pb-3">15+</p>
+                <p className="text-xs  uppercase tracking-wider font-semibold">Years of Trust</p>
               </div>
               {/* Decorative blob */}
               <div className="absolute -bottom-6 -left-6 w-40 h-40 bg-dred/8 rounded-full blur-3xl -z-10" />
@@ -123,20 +123,20 @@ const AboutPage = () => {
                 JustHome was founded with a singular vision — to transform the way people discover and acquire their dream homes. By combining decades of industry expertise with innovative digital tools, we offer a seamless journey for buyers, sellers, and investors alike.
               </p>
 
-              <div className="grid sm:grid-cols-2 gap-4 mb-10">
+              <div className="grid sm:grid-cols-2 !gap-4 mb-10">
                 {["Local Market Experts", "Global Reach & Network", "Premium Property Selection", "End-to-End Support"].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <div className="h-6 w-6 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
-                      <CheckCircle2 className="text-dred h-4 w-4" />
+                    <div className="h-8 w-8 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
+                      <CheckCircle2 className="text-dred h-5 w-5" />
                     </div>
-                    <span className="text-gray-700 font-medium text-sm">{item}</span>
+                    <span className=" ">{item}</span>
                   </div>
                 ))}
               </div>
 
               <Link
                 href="/property-list"
-                className="inline-flex items-center gap-2 bg-dred text-white px-8 py-4 rounded-full font-semibold hover:bg-[#7d0c07] transition-all group"
+                className="inline-flex items-center gap-2 bg-dred text-white px-8 py-3 rounded-full hover:bg-[#7d0c07] transition-all group"
               >
                 Explore Properties
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -243,7 +243,7 @@ const AboutPage = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-8">
                 <p className="text-white/70 text-xs uppercase tracking-widest mb-2">Our Promise</p>
-                <h3 className="text-white text-2xl font-bold leading-snug">
+                <h3 className="text-white text-2xl  leading-snug">
                   Trusted by 1,800+ <br />happy families
                 </h3>
               </div>
@@ -294,25 +294,25 @@ const AboutPage = () => {
             />
             <div className="absolute inset-0 bg-black/70" />
             <div className="relative z-10 w-full text-center px-6 py-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-5 leading-snug">
+              <h2 className="section-ti mb-5 !text-white">
                 Ready to Find Your Perfect Place?
               </h2>
-              <p className="text-white/75 text-base md:text-lg mb-10 max-w-xl mx-auto font-light">
+              <p className="text-white  mb-10 max-w-xl mx-auto ">
                 Whether you&apos;re looking for a cozy apartment or a sprawling estate, our team is ready to help.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Link
                   href="/property-list"
-                  className="bg-dred text-white px-8 py-4 rounded-full font-bold hover:bg-[#7d0c07] transition-all hover:-translate-y-0.5"
+                  className="bg-dred !text-white px-8 py-3 rounded-full  hover:bg-[#7d0c07] transition-all hover:-translate-y-0.5"
                 >
                   Browse Listings
                 </Link>
-                <Link
+                {/* <Link
                   href="/contact"
-                  className="border-2 border-white/50 text-white px-8 py-4 rounded-full font-bold hover:bg-white/10 transition-all hover:-translate-y-0.5"
+                  className="border-2 border-white text-white px-8 py-3 rounded-full  hover:bg-white/10 transition-all hover:-translate-y-0.5"
                 >
                   Contact Our Experts
-                </Link>
+                </Link> */}
               </div>
             </div>
           </div>

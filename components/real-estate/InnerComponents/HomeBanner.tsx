@@ -45,12 +45,12 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
         {/* Left Content */}
         <div className="adv-left">
           <h1 className="adv-title w-full ">
-            Discover Your  <br /> Perfect Home in  <br /> Paradise
+            Discover Your  <br /> Perfect Home in  <br className="hidden xs:block"/> Paradise
           </h1>
           <p className="adv-subtitle">
             Browse luxury properties, modern apartments, and exclusive villas in the world&apos;s most desirable locations
           </p>
-          <button className="adv-btn lg:mb-12"  > <a href="/property-list">Find Your Home</a></button>
+          <button className="adv-btn lg:mb-12 border border-dred"  > <a href="/property-list">Find Your Home</a></button>
            <button className="!border !border-white !bg-transparent adv-btn  hover:!bg-white hover:!text-black lg:mb-12 ms-4"  > <a href="mailto:support@gmail.com">Contact Us</a></button>
 
           {/* Tabs */}
