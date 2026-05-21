@@ -72,11 +72,11 @@ export function ActiveFilters({ state, handleChange, resetFilter, onClearPrice, 
   if (badges.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap items-center gap-2 py-2">
+    <div className="flex flex-wrap items-center gap-2 !mt-5 pt-0">
       {badges.map((badge, i) => (
         <span
           key={i}
-          className="flex items-center gap-1 px-3 py-1 rounded-full bg-red-50 border text-dred text-xs font-medium"
+          className="flex items-center gap-1 px-3 py-1 rounded-full bg-red-50 border text-dred text-[12px] font-medium"
         >
           {badge.label}
           <button onClick={badge.onRemove} className="ml-1 hover:text-red-800">

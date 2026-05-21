@@ -275,7 +275,7 @@ export default function AISearchComponent() {
         contact_email: payload?.email,
       };
 
-      let res: any = await Models.chat.chats(body);
+      const res: any = await Models.chat.chats(body);
       console.log("sendContactForm", res);
       setCurrentStep(null);
       if (!validateContact() || loading) return;
@@ -360,7 +360,7 @@ export default function AISearchComponent() {
         schedule_date_time:bookingForm?.date?moment(bookingForm?.date).format("YYYY-MM-DD HH:mm:ss"):null,
       };
       console.log("Booking Inquiry Payload:", payload);
-      let res: any = await Models.chat.booking_inquiry(payload);
+      const res: any = await Models.chat.booking_inquiry(payload);
     //  await  handleResponse(res);
 
       // console.log("Booking Inquiry Payload:", payload);
@@ -398,7 +398,7 @@ export default function AISearchComponent() {
         phone_number: callbackForm.phone,
       };
       console.log("Callback Payload:", payload);
-      let res: any = await Models.chat.callback(payload);
+      const res: any = await Models.chat.callback(payload);
       console.log("Callback Response:", res);
       setInquiryMode("done");
       await sendContactForm(payload);

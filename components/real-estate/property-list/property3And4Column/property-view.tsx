@@ -1,5 +1,6 @@
 import { PropertyCard } from "./property-card";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -12,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   RotateCcw,
+  Search,
   Search as SearchIcon,
   Loader,
   Filter,
@@ -20,6 +22,7 @@ import {
   SlidersHorizontal,
   MapPinHouseIcon,
   ChevronDown,
+  X,
 } from "lucide-react";
 import FilterDropdown from "../../FilterDropdown.component";
 import Modal from "@/components/common-components/modal";
@@ -44,7 +47,19 @@ import DeveloperCard from "../../developerProfile.component";
 import { priceOptions, sqftOptions } from "@/utils/constant.utils";
 import ContactAgentForm from "../../property-detail/ContactAgentForm.component";
 import { ActiveFilters } from "./ActiveFilters.component";
+import { FilterListPopup, PopupPortal } from "./FilterListPopup";
 import { useRouter } from "next/navigation";
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  return isMobile;
+}
 
 export function PropertyView(props: any) {
   const {
@@ -110,9 +125,19 @@ export function PropertyView(props: any) {
     sort: null,
     prefferedLocation: false,
     userLoggedIn: false,
+    openPriceDropdown: null,
+    openDropdown: null,
     isMobileFormOpen: false,
     selectedProperty: null,
+    showAllLocations: false,
+    showAllArea: false,
+    showAllDeveloper: false,
+    showAllProject: false,
+    activePopup: null as string | null,
+    popupPos: { left: 0, top: 0 },
   });
+
+  const [filterPopupPos, setFilterPopupPos] = useState<Record<string, { left: number; top: number }>>({});
 
   // console.log("state", state); // Commented out for cleaner console
 
@@ -122,6 +147,37 @@ export function PropertyView(props: any) {
   const priceFloorRef = useRef(0);
   const priceCeilingRef = useRef(0);
   const isResettingRef = useRef(false);
+  const dropdownRef = useRef(null);
+  const sqftDropdownRef = useRef(null);
+  const locationSectionRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const alphabetRefs = useRef<Record<string, HTMLElement | null>>({});
+
+  const areaSectionRef = useRef<HTMLDivElement>(null);
+  const developerSectionRef = useRef<HTMLDivElement>(null);
+  const projectSectionRef = useRef<HTMLDivElement>(null);
+
+  // one ref map for all filter section anchors
+  const filterSectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+
+
+
+
+
+  // Close dropdowns on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !(dropdownRef.current as any).contains(e.target)) {
+        setState({ openPriceDropdown: null });
+      }
+      if (sqftDropdownRef.current && !(sqftDropdownRef.current as any).contains(e.target)) {
+        setState({ openDropdown: null });
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const skeletonCount = state.view == "grid" ? 3 : 1;
 
@@ -285,7 +341,31 @@ export function PropertyView(props: any) {
     debouncedYearBuiltMax,
     debouncedPriceMinInput,
     debouncedPriceMaxInput,
+    state.prefferedLocation,
+    state.sort,
   ]);
+
+  const isMobile = useIsMobile();
+
+  const calcPopupPos = (key: string, ref: React.RefObject<HTMLDivElement>) => {
+    const el = ref.current;
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      setFilterPopupPos((prev) => ({ ...prev, [key]: { left: rect.left, top: rect.bottom + 8 } }));
+    }
+  };
+
+  const openPopup = (key: string) => {
+    const el = filterSectionRefs.current[key];
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      setState({ activePopup: key, popupPos: { left: rect.left, top: rect.top + 8 } });
+    } else {
+      setState({ activePopup: key, popupPos: { left: 0, top: 0 } });
+    }
+  };
+
+  const closePopup = () => setState({ activePopup: null });
 
   const handleChange = (name, value) => {
     console.log("name", name, "value", value);
@@ -453,17 +533,20 @@ export function PropertyView(props: any) {
                 ].map((option) => (
                   <label
                     key={option.value}
-                    className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
+                    className="flex items-center justify-between gap-2 text-sm text-gray-700 cursor-pointer"
                   >
-                    <input
-                      type="radio"
-                      name="listingStatus"
-                      checked={state.listingStatus === option.label}
-                      onChange={() =>
-                        handleChange("listingStatus", option.label)
-                      }
-                    />
-                    {option.label}
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name="listingStatus"
+                        checked={state.listingStatus === option.label}
+                        onChange={() => handleChange("listingStatus", option.label)}
+                      />
+                      {option.label}
+                    </div>
+                    {option.count !== undefined && (
+                      <span className="text-[11px] bg-dred/10 text-black rounded-full px-[8px] py-[1.6px]">{option.count}</span>
+                    )}
                   </label>
                 ))}
               </div>
@@ -477,170 +560,221 @@ export function PropertyView(props: any) {
                   {categoryList?.map((option) => (
                     <label
                       key={option?.value}
-                      className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
+                      className="flex items-center justify-between gap-2 text-sm text-gray-700 cursor-pointer"
                     >
-                      <input
-                        type="checkbox"
-                        className="cursor-pointer"
-                        checked={state.propertyType?.some(
-                          (t) => t.value === option.value,
-                        )}
-                        onChange={(e) => {
-                          const updated = e.target.checked
-                            ? [...state.propertyType, option]
-                            : state.propertyType.filter(
-                                (t) => t.value !== option.value,
-                              );
-                          handleChange("propertyType", updated);
-                        }}
-                      />
-                      <span>{option?.label}</span>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          className="cursor-pointer"
+                          checked={state.propertyType?.some(
+                            (t) => t.value === option.value,
+                          )}
+                          onChange={(e) => {
+                            const updated = e.target.checked
+                              ? [...state.propertyType, option]
+                              : state.propertyType.filter(
+                                  (t) => t.value !== option.value,
+                                );
+                            handleChange("propertyType", updated);
+                          }}
+                        />
+                        <span>{option?.label}</span>
+                      </div>
+                      {option.count !== undefined && (
+                        <span className="text-[11px] bg-dred/10 text-black rounded-full px-[8px] py-[1.6px]">{option.count}</span>
+                      )}
                     </label>
                   ))}
                 </div>
               </div>
             )}
+
             {locationList.length > 0 && (
               <div>
                 <div className="mb-2 font-semibold text-gray-900">Location</div>
-                <div className="space-y-2">
-                  {(locationList || []).map((option) => (
+                <div className="space-y-2" ref={locationSectionRef}>
+                  {(locationList || []).slice(0, 5).map((option) => (
                     <label
                       key={option.value}
-                      className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
+                      className="flex items-center justify-between gap-2 text-sm text-gray-700 cursor-pointer"
                     >
-                      <input
-                        type="checkbox"
-                        className="cursor-pointer"
-                        checked={state.location.some(
-                          (t) => t.value === option.value,
-                        )}
-                        onChange={(e) =>
-                          handleChange(
-                            "location",
-                            e.target.checked
-                              ? [...state.location, option]
-                              : state.location.filter(
-                                  (t) => t.value !== option.value,
-                                ),
-                          )
-                        }
-                      />
-                      <span>{option.label}</span>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          className="cursor-pointer"
+                          checked={state.location.some(
+                            (t) => t.value === option.value,
+                          )}
+                          onChange={(e) =>
+                            handleChange(
+                              "location",
+                              e.target.checked
+                                ? [...state.location, option]
+                                : state.location.filter(
+                                    (t) => t.value !== option.value,
+                                  ),
+                            )
+                          }
+                        />
+                        <span>{option.label}</span>
+                      </div>
+                      {option.count !== undefined && (
+                        <span className="text-[11px] bg-dred/10 text-black rounded-full px-[8px] py-[1.6px]">{option.count}</span>
+                      )}
                     </label>
                   ))}
+
+                  {locationList && locationList?.length > 5 && (
+                    <div className="relative mt-2">
+                      <button
+                        onClick={() => { setState({ showAllLocations: true }); setTimeout(() => calcPopupPos("location", locationSectionRef), 0); }}
+                        className="text-xs font-medium flex items-center gap-1 text-dred w-full rounded-full px-3 ps-5"
+                      >
+                        View more
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
+
+            <FilterListPopup
+              open={state.showAllLocations}
+              onClose={() => setState({ showAllLocations: false })}
+              title="Location"
+              items={locationList}
+              selected={state.location}
+              onChange={(updated) => handleChange("location", updated)}
+              anchorPos={filterPopupPos["location"] ?? { left: 0, top: 0 }}
+              isMobile={isMobile}
+              showAlphabetNav
+            />
             {areaList.length > 0 && (
               <div>
                 <div className="mb-2 font-semibold text-gray-900">Area</div>
-                <div className="space-y-2">
-                  {(areaList || []).map((option) => (
-                    <label
-                      key={option.value}
-                      className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        className="cursor-pointer"
-                        checked={state.area.some(
-                          (t) => t.value === option.value,
-                        )}
-                        onChange={(e) =>
-                          handleChange(
-                            "area",
-                            e.target.checked
-                              ? [...state.area, option]
-                              : state.area.filter(
-                                  (t) => t.value !== option.value,
-                                ),
-                          )
-                        }
-                      />
-                      <span>{option.label}</span>
+                <div className="space-y-2" ref={areaSectionRef}>
+                  {(areaList || []).slice(0, 5).map((option) => (
+                    <label key={option.value} className="flex items-center justify-between gap-2 text-sm text-gray-700 cursor-pointer">
+                      <div className="flex items-center gap-2">
+                        <input type="checkbox" className="cursor-pointer"
+                          checked={state.area.some((t) => t.value === option.value)}
+                          onChange={(e) => handleChange("area", e.target.checked ? [...state.area, option] : state.area.filter((t) => t.value !== option.value))}
+                        />
+                        <span>{option.label}</span>
+                      </div>
+                      {option.count !== undefined && (
+                        <span className="text-[11px] bg-dred/10 text-black rounded-full px-[8px] py-[1.6px]">{option.count}</span>
+                      )}
                     </label>
                   ))}
+                  {areaList.length > 5 && (
+                    <button
+                      onClick={() => { setState({ showAllArea: true }); setTimeout(() => calcPopupPos("area", areaSectionRef), 0); }}
+                      className="text-xs font-medium flex items-center gap-1 text-dred w-full rounded-full px-3 ps-5"
+                    >
+                      View more
+                    </button>
+                  )}
                 </div>
               </div>
             )}
+
+            <FilterListPopup
+              open={state.showAllArea}
+              onClose={() => setState({ showAllArea: false })}
+              title="Area"
+              items={areaList}
+              selected={state.area}
+              onChange={(updated) => handleChange("area", updated)}
+              anchorPos={filterPopupPos["area"] ?? { left: 0, top: 0 }}
+              isMobile={isMobile}
+              showAlphabetNav
+            />
+
             {developerList.length > 0 && (
               <div>
-                <div className="mb-2 font-semibold text-gray-900">
-                  Developer
-                </div>
-                <div className="space-y-2">
-                  {(developerList || []).map((option) => (
-                    <label
-                      key={option.value}
-                      className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        className="cursor-pointer"
-                        checked={state.developer.some(
-                          (t) => t.value === option.value,
-                        )}
-                        onChange={(e) =>
-                          handleChange(
-                            "developer",
-                            e.target.checked
-                              ? [...state.developer, option]
-                              : state.developer.filter(
-                                  (t) => t.value !== option.value,
-                                ),
-                          )
-                        }
-                      />
-                      <span>{option.label}</span>
+                <div className="mb-2 font-semibold text-gray-900">Developer</div>
+                <div className="space-y-2" ref={developerSectionRef}>
+                  {(developerList || []).slice(0, 5).map((option) => (
+                    <label key={option.value} className="flex items-center justify-between gap-2 text-sm text-gray-700 cursor-pointer">
+                      <div className="flex items-center gap-2">
+                        <input type="checkbox" className="cursor-pointer"
+                          checked={state.developer.some((t) => t.value === option.value)}
+                          onChange={(e) => handleChange("developer", e.target.checked ? [...state.developer, option] : state.developer.filter((t) => t.value !== option.value))}
+                        />
+                        <span>{option.label}</span>
+                      </div>
+                      {option.count !== undefined && (
+                        <span className="text-[11px] bg-dred/10 text-black rounded-full px-[8px] py-[1.6px]">{option.count}</span>
+                      )}
                     </label>
                   ))}
+                  {developerList.length > 5 && (
+                    <button
+                      onClick={() => { setState({ showAllDeveloper: true }); setTimeout(() => calcPopupPos("developer", developerSectionRef), 0); }}
+                      className="text-xs font-medium flex items-center gap-1 text-dred w-full rounded-full px-3 ps-5"
+                    >
+                      View more
+                    </button>
+                  )}
                 </div>
               </div>
             )}
+
+            <FilterListPopup
+              open={state.showAllDeveloper}
+              onClose={() => setState({ showAllDeveloper: false })}
+              title="Developer"
+              items={developerList}
+              selected={state.developer}
+              onChange={(updated) => handleChange("developer", updated)}
+              anchorPos={filterPopupPos["developer"] ?? { left: 0, top: 0 }}
+              isMobile={isMobile}
+              showAlphabetNav
+            />
+
             {projectList.length > 0 && (
               <div>
                 <div className="mb-2 font-semibold text-gray-900">Project</div>
-                <div className="space-y-2">
-                  {(projectList || []).map((option) => (
-                    <label
-                      key={option.value}
-                      className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        className="cursor-pointer"
-                        checked={state.project.some(
-                          (t) => t.value === option.value,
-                        )}
-                        onChange={(e) =>
-                          handleChange(
-                            "project",
-                            e.target.checked
-                              ? [...state.project, option]
-                              : state.project.filter(
-                                  (t) => t.value !== option.value,
-                                ),
-                          )
-                        }
-                      />
-                      <span>{option.label}</span>
+                <div className="space-y-2" ref={projectSectionRef}>
+                  {(projectList || []).slice(0, 5).map((option) => (
+                    <label key={option.value} className="flex items-center justify-between gap-2 text-sm text-gray-700 cursor-pointer">
+                      <div className="flex items-center gap-2">
+                        <input type="checkbox" className="cursor-pointer"
+                          checked={state.project.some((t) => t.value === option.value)}
+                          onChange={(e) => handleChange("project", e.target.checked ? [...state.project, option] : state.project.filter((t) => t.value !== option.value))}
+                        />
+                        <span>{option.label}</span>
+                      </div>
+                      {option.count  && (
+                        <span className="text-[11px] bg-dred/10 text-black rounded-full px-[8px] py-[1.6px]">{option.count}</span>
+                      )}
                     </label>
                   ))}
+                  {projectList.length > 5 && (
+                    <button
+                      onClick={() => { setState({ showAllProject: true }); setTimeout(() => calcPopupPos("project", projectSectionRef), 0); }}
+                      className="text-xs font-medium flex items-center gap-1 text-dred w-full rounded-full px-3 ps-5"
+                    >
+                      View more
+                    </button>
+                  )}
                 </div>
               </div>
             )}
-            <div>
-              {/* <PriceRangeSlider
-                  min={state.minPrice || 0}
-                  max={state.maxPrice || 50000000}
-                  value={state.priceRange}
-                  onChange={(val) => {
-                    setState({ priceRange: val });
-                    handleChange("minPrice", val[0]);
-                    handleChange("maxPrice", val[1]);
-                  }}
-                /> */}
+
+            <FilterListPopup
+              open={state.showAllProject}
+              onClose={() => setState({ showAllProject: false })}
+              title="Project"
+              items={projectList}
+              selected={state.project}
+              onChange={(updated) => handleChange("project", updated)}
+              anchorPos={filterPopupPos["project"] ?? { left: 0, top: 0 }}
+              isMobile={isMobile}
+              showAlphabetNav
+            />
+            <div ref={dropdownRef}>
               <div className=" font-semibold text-gray-900">Budget</div>
 
               <div className="flex gap-4 mt-2">
@@ -654,7 +788,12 @@ export function PropertyView(props: any) {
                           state.openPriceDropdown === "min" ? null : "min",
                       })
                     }
-                    className="w-full px-3 py-1 rounded-full border border-gray-300 bg-white flex items-center justify-between text-gray-700 whitespace-nowrap"
+                    className="
+        w-full px-2 py-1 rounded-full
+        border border-gray-300 bg-white
+        flex items-center justify-between
+        text-gray-700
+      "
                   >
                     <span className="whitespace-nowrap text-sm">
                       {state.priceMinInput
@@ -673,7 +812,7 @@ export function PropertyView(props: any) {
                   {state.openPriceDropdown === "min" && (
                     <div className="absolute z-50 bottom-full mb-2 min-w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto">
                       <button
-                        className="w-full px-5 py-1 text-left hover:bg-gray-100 whitespace-nowrap"
+                        className="w-full px-2 py-1 text-left hover:bg-gray-100"
                         onClick={() =>
                           setState({
                             priceMinInput: "",
@@ -688,7 +827,7 @@ export function PropertyView(props: any) {
                       {priceOptions.map((item) => (
                         <button
                           key={item.value}
-                          className="w-full px-5 py-3 text-left hover:bg-gray-100 whitespace-nowrap"
+                          className="w-full px-2 py-3 text-left hover:bg-gray-100"
                           onClick={() =>
                             setState({
                               priceMinInput: item.value,
@@ -714,7 +853,12 @@ export function PropertyView(props: any) {
                           state.openPriceDropdown === "max" ? null : "max",
                       })
                     }
-                    className="w-full px-3 py-1 rounded-full border border-gray-300 bg-white flex items-center justify-between text-gray-700 whitespace-nowrap"
+                    className="
+        w-full px-2 py-1 rounded-full
+        border border-gray-300 bg-white
+        flex items-center justify-between
+        text-gray-700
+      "
                   >
                     <span className="whitespace-nowrap text-sm">
                       {state.priceMaxInput
@@ -877,28 +1021,33 @@ export function PropertyView(props: any) {
                 {(furnishingList || [])?.map((option) => (
                   <label
                     key={option?.value}
-                    className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
+                    className="flex items-center justify-between gap-2 text-sm text-gray-700 cursor-pointer"
                   >
-                    <input
-                      type="checkbox"
-                      className="cursor-pointer"
-                      checked={state.furnishing.some(
-                        (t) => t.value === option.value,
-                      )}
-                      onChange={(e) => {
-                        handleChange(
-                          "furnishing",
-                          e.target.checked ? [option] : [],
-                        );
-                      }}
-                    />
-                    <span>{option?.label}</span>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        className="cursor-pointer"
+                        checked={state.furnishing.some(
+                          (t) => t.value === option.value,
+                        )}
+                        onChange={(e) => {
+                          const updated = e.target.checked
+                            ? [...state.furnishing, option]
+                            : state.furnishing.filter((t) => t.value !== option.value);
+                          handleChange("furnishing", updated);
+                        }}
+                      />
+                      <span>{option?.label}</span>
+                    </div>
+                    {option.count !== undefined && (
+                      <span className="text-[11px] bg-dred/10 text-black rounded-full px-[8px] py-[1.6px]">{option.count}</span>
+                    )}
                   </label>
                 ))}
               </div>
             </div>
 
-            <div>
+            <div ref={sqftDropdownRef}>
               <div className="mb-2 font-semibold text-gray-900">
                 Area (sqft)
               </div>
@@ -914,7 +1063,12 @@ export function PropertyView(props: any) {
                           state.openDropdown === "min" ? null : "min",
                       })
                     }
-                    className="w-full px-3 py-1 rounded-full border border-gray-300 bg-white flex items-center justify-between text-gray-700 whitespace-nowrap"
+                    className="
+        w-full px-2 py-1 rounded-full
+        border border-gray-300 bg-white
+        flex items-center justify-between
+        text-gray-700
+      "
                   >
                     <span className="whitespace-nowrap text-sm">{state.sqftMin || "No min"}</span>
 
@@ -931,7 +1085,7 @@ export function PropertyView(props: any) {
                     className="absolute z-50 bottom-full mb-2 min-w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto"
                   >
                       <button
-                        className="w-full px-5 py-3 text-left hover:bg-gray-100 whitespace-nowrap"
+                        className="w-full px-2 py-3 text-left hover:bg-gray-100"
                         onClick={() => {
                           setState({
                             sqftMin: "",
@@ -948,7 +1102,7 @@ export function PropertyView(props: any) {
                       {sqftOptions.map((item) => (
                         <button
                           key={item.value}
-                          className="w-full px-5 py-3 text-left hover:bg-gray-100 whitespace-nowrap"
+                          className="w-full px-2 py-3 text-left hover:bg-gray-100"
                           onClick={() => {
                             setState({
                               sqftMin: item.value,
@@ -976,7 +1130,12 @@ export function PropertyView(props: any) {
                           state.openDropdown === "max" ? null : "max",
                       })
                     }
-                    className="w-full px-3 py-1 rounded-full border border-gray-300 bg-white flex items-center justify-between text-gray-700 whitespace-nowrap"
+                    className="
+        w-full px-2 py-1 rounded-full
+        border border-gray-300 bg-white
+        flex items-center justify-between
+        text-gray-700
+      "
                   >
                     <span className="whitespace-nowrap text-sm">{state.sqftMax || "No max"}</span>
 
@@ -993,7 +1152,7 @@ export function PropertyView(props: any) {
                   className="absolute z-50 bottom-full mb-2 min-w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto"
                 >
                       <button
-                        className="w-full px-5 py-3 text-left hover:bg-gray-100 whitespace-nowrap"
+                        className="w-full px-2 py-3 text-left hover:bg-gray-100"
                         onClick={() => {
                           setState({
                             sqftMax: "",
@@ -1068,9 +1227,9 @@ export function PropertyView(props: any) {
         </aside>
 
         <section className="xl:col-span-4 space-y-6">
-          <div className="sticky top-[75px] z-10">
+          <div className="sticky top-[75px] z-50">
             <div className="flex flex-wrap items-center justify-between gap-1 md:gap-4 px-2 py-2  bg-color1 border-gray  rounded-full border">
-              <div className="flex items-center justify-between md:justify-normal gap-4 w-auto">
+              <div className="flex items-center justify-between md:justify-normal gap-4 w-full sm:w-auto">
                 {/* --------responsive filter sidebar start---------- */}
 
                 <div className="xl:hidden">
@@ -1081,7 +1240,7 @@ export function PropertyView(props: any) {
                     <SheetTrigger asChild>
                       <Button
                         variant="outline"
-                        className="flex items-center gap-2 border-gray bg-transparent shadow-none px-2 "
+                        className="flex items-center gap-2 border-none bg-transparent shadow-none px-2  "
                       >
                         <SlidersHorizontal className="h-4 w-4" />
                         Filters
@@ -1164,9 +1323,7 @@ export function PropertyView(props: any) {
                       hover:bg-dred hover:text-white
                          px-2 md:px-3 shadow-none "
                   onClick={() => {
-                    setState({
-                      prefferedLocation: !state.prefferedLocation,
-                    });
+                    setState({ prefferedLocation: !state.prefferedLocation });
                   }}
                 >
                   <MapPinHouseIcon />
@@ -1181,9 +1338,7 @@ export function PropertyView(props: any) {
                      
                       px-2 md:px-3 shadow-none "
                   onClick={() => {
-                    setState({
-                      prefferedLocation: !state.prefferedLocation,
-                    });
+                    setState({ prefferedLocation: !state.prefferedLocation });
                   }}
                 >
                   <MapPinHouseIcon />

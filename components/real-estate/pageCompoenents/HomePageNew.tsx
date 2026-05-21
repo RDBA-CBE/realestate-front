@@ -213,7 +213,7 @@ const HomePageNew = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen w-full overflow-x-hidden">
       {/* {state.showLocationModal && (
         <LocationPickerModal
           cities={state.allCities}
@@ -242,6 +242,7 @@ const HomePageNew = () => {
 
         
 
+
         <FeaturedDevelopers developerList={state.developerList} />
 
         <DeveloperRegistrationSection/>
@@ -253,14 +254,15 @@ const HomePageNew = () => {
             locationLabel={state.selectedLocation?.label}
           />
 
-          
+          <HowItWorks />
 
         {/* <AboutSection /> */}
          <SellingOptionsSection/>
-         <HowItWorks />
+         
 
         {/* <FAQSection/> */}
         <FAQSectionNew/>
+        
 
         {/* <ExploreDreamHomeSection/> */}
 

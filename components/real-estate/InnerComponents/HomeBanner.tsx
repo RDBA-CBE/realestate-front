@@ -1,5 +1,5 @@
 import CustomSelect from "@/components/common-components/dropdown";
-import { Home, MapPin, Search } from "lucide-react";
+import { ArrowRight, Home, MapPin, Search } from "lucide-react";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -44,16 +44,17 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
        <div className="section-wid adv-container relative z-10 w-full gap-10 items-center overflow-visible">
         {/* Left Content */}
         <div className="adv-left">
-          <h1 className="adv-title">
-            Easy way to find dream <br /> perfect property now
+          <h1 className="adv-title w-full ">
+            Discover Your  <br /> Perfect Home in  <br className="hidden xs:block"/> Paradise
           </h1>
           <p className="adv-subtitle">
-          With us, your trip is filled with amazing, memorable, and truly unforgettable experiences.
+            Browse luxury properties, modern apartments, and exclusive villas in the world&apos;s most desirable locations
           </p>
-          <button className="adv-btn lg:mb-12"  > <a href="/property-list">Find Your Home</a></button>
+          <button className="adv-btn lg:mb-12 border border-dred"  > <a href="/property-list">Find Your Home</a></button>
+           <button className="!border !border-white !bg-transparent adv-btn  hover:!bg-white hover:!text-black lg:mb-12 ms-4"  > <a href="mailto:support@gmail.com">Contact Us</a></button>
 
           {/* Tabs */}
-          <div className="adv-tabs flex gap-8 mt-12 lg:mt-14">
+          <div className="adv-tabs flex gap-8 mt-12 lg:mt-14 lg:ms-[25px]">
             {["Sale", "Lease", "All"].map((tab, i) => (
               <span
                 key={i}
@@ -68,27 +69,28 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
           {/* Search Bar */}
           <div className="adv-searchbar flex items-center justify-between gap-2 mt-6">
              <div className="flex  flex-1 gap-3 items-center lg:items-start px-4">
-              <Search className="text-[#383838] w-4 h-4 md:w-5 md:h-5  md:mt-0.5 shrink-0" />
+              <Search className="text-dred w-4 h-4 md:w-5 md:h-5  md:mt-0.5 shrink-0" />
               <div>
                 <input
                   type="text"
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  placeholder={`Search ${
-                    activeTab === "All"
-                      ? "properties"
-                      : activeTab === "Sale"
-                        ? "properties for sale"
-                        : "properties for lease"
-                  }...`}
+                  // placeholder={`Search ${
+                  //   activeTab === "All"
+                  //     ? "properties"
+                  //     : activeTab === "Sale"
+                  //       ? "properties for sale"
+                  //       : "properties for lease"
+                  // }...`}
+                  placeholder="Search Properties"
                   className="adv-field-input placeholder:lg:text-[15px] placeholder:text-[#737373]"
                 />
               </div>
             </div>
 
             <div className="flex  flex-1 gap-3 items-center lg:items-start px-4">
-              <MapPin className="text-[#383838] w-4 h-4 md:w-5 md:h-5  md:mt-1.5 shrink-0" />
+              <MapPin className="text-dred w-4 h-4 md:w-5 md:h-5  md:mt-1.5 shrink-0" />
               <div>
                 {/* <p className="adv-field-label">Location</p> */}
                 <CustomSelect
@@ -105,7 +107,7 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
             <div className="adv-divider"></div>
 
             <div className="flex flex-1 gap-3 items-center lg:items-start px-4">
-              <Home className="text-[#383838] w-4 h-4 md:w-5 md:h-5 md:mt-1.5 shrink-0" />
+              <Home className="text-dred w-4 h-4 md:w-5 md:h-5 md:mt-1.5 shrink-0" />
               <div>
                 {/* <p className="adv-field-label">Property Type</p> */}
                 <CustomSelect
@@ -128,8 +130,8 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
            
 
             <button className="adv-search-btn" onClick={handleSearch}>
-              <Search className="w-5 h-5 search-ico" />
-              <p className="adv-search-label">Search</p>
+              <ArrowRight className="w-5 h-5 search-ico" />
+              <p className="adv-search-label -mt-0.5">Search</p>
             </button>
           </div>
         </div>

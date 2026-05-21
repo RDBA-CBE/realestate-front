@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { AlertCircle, Heart } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -7,23 +7,22 @@ import { PropertyCardSkeleton } from "@/components/common-components/skeleton/Pr
 import { useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import { useRouter } from "next/navigation";
-import PropertyCard from "@/components/real-estate/InnerComponents/PropertyCard";
+import { PropertyCard } from "@/components/real-estate/property-list/property3And4Column/property-card";
 
 const Favorites = () => {
   const router = useRouter();
 
   const [state, setState] = useSetState({
-    page: 1,
     properties: [],
     loading: true,
     error: null,
   });
 
   useEffect(() => {
-    wishlist();
+    fetchWishlist();
   }, []);
 
-  const wishlist = async () => {
+  const fetchWishlist = async () => {
     try {
       setState({ loading: true });
       const wishlist_id = localStorage.getItem("wishlist_id");
@@ -33,19 +32,13 @@ const Favorites = () => {
       setState({ error: "Failed to load wishlist", loading: false });
     }
   };
+
   if (state.loading) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="max-w-[85rem] mx-auto"
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="section-wid">
         <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, index) => (
-              <PropertyCardSkeleton key={index} />
-            ))}
+            {[...Array(6)].map((_, i) => <PropertyCardSkeleton key={i} />)}
           </div>
         </div>
       </motion.div>
@@ -54,12 +47,7 @@ const Favorites = () => {
 
   if (state.error) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="max-w-[85rem] mx-auto"
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="section-wid">
         <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
@@ -72,20 +60,26 @@ const Favorites = () => {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="max-w-[85rem] mx-auto"
-    >
-      <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="">
+
+      <section className="  bg-dred h-[65px] md:h-[70px] flex items-center justify-center overflow-hidden">
+        
+       
+        <div className=" text-center text-white ">
+          
+          <h1 className="text-2xl md:text-2xl text-white pb-0 mb-0">
+            My Wishlist
+          </h1>
+         
+        </div>
+      </section>
+      <div className="py-10 section-wid">
+
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">
           <div>
-            <h1 className="section-ti">My Wishlist</h1>
+            {/* <h1 className="section-ti">My Wishlist</h1> */}
             <p className="section-cap">
-              {state.properties.length}{" "}
-              {state.properties.length === 1 ? "property" : "properties"} saved for later.
+              {state.properties.length} {state.properties.length === 1 ? "property" : "properties"} saved for later.
             </p>
           </div>
         </div>
@@ -102,7 +96,7 @@ const Favorites = () => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 !gap-5">
             {state.properties.map((property: any, index: number) => (
               <motion.div
                 key={property.id}
@@ -110,7 +104,12 @@ const Favorites = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
               >
-                <PropertyCard listing={{ ...property, user_wishlists: true }} />
+                <PropertyCard
+                  property={{ ...property, user_wishlists: true }}
+                  view="grid"
+                  list={state.properties}
+                  updateList={(data) => setState({ properties: data })}
+                />
               </motion.div>
             ))}
           </div>

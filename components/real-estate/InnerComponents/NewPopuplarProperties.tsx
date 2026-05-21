@@ -16,12 +16,16 @@ const NewPopuplarProperties = (props) => {
   const [activeFilter, setActiveFilter] = useState("all"); // 'all', 'rent', 'sale'
 
   // Swiper breakpoints configuration
-  const breakpoints = {
+   const breakpoints = {
     320: { slidesPerView: 1, spaceBetween: 16 },
-    640: { slidesPerView: 2, spaceBetween: 30 },
-    1180: { slidesPerView: 3, spaceBetween: 30 },
-    1300: { slidesPerView: 4, spaceBetween: 30 },
+    640: { slidesPerView: 1.5, spaceBetween: 20 },
+    860: { slidesPerView: 2, spaceBetween: 20 },
+    1020: { slidesPerView: 2.5, spaceBetween: 20 },
+    1300: { slidesPerView: 3, spaceBetween: 20 },
+    1400: { slidesPerView: 3.5, spaceBetween: 20 },
+    1600: { slidesPerView: 4, spaceBetween: 24 },
   };
+
 
   const handleClick=(property)=>{
 router.push(`property-detail/${property?.id}`)
@@ -34,8 +38,8 @@ router.push(`property-detail/${property?.id}`)
     <div className="section-pad bg-[#f8f8f8] ">
       <div className="section-wid ">
         {/* Header Section with Filter Buttons on the right */}
-        <div className="flex flex-col md:flex-row justify-between items-start lg:items-center mb-12 text-start">
-          <div className="mb-6 lg:mb-0">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-12 text-start">
+          <div className="mb-3 lg:mb-0">
             <h2 className="section-ti">
               Discover Popular Properties
             </h2>
