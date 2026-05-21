@@ -1950,7 +1950,8 @@ body {
     width: 100%;
     border-radius: 50px;
     padding: 12px;
-     height: 45px;
+     height: 40px;
+     margin-top: 5px;
   }
   .adv-search-label{
    
