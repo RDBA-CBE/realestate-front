@@ -15,8 +15,6 @@ import PropertyFinderChat from "@/components/common-components/ChatWidget";
 import NewFooter from "@/components/real-estate/NewFooter";
 import { ToastProvider } from "@/components/common-components/ToastProvider";
 
-
-
 // Poppins as the main sans font
 const poppins = Poppins({
   subsets: ["latin"],
@@ -32,7 +30,7 @@ const roboto = Roboto({
 });
 
 export default function RootLayout({ children }) {
-    const pathname = usePathname(); // ✅ correct hook
+  const pathname = usePathname(); // ✅ correct hook
   const isLoginPath = pathname?.startsWith("/login");
   const isSigninPath = pathname?.startsWith("/signin");
   const isForgetPassword = pathname?.startsWith("/forgot-password");
@@ -41,19 +39,29 @@ export default function RootLayout({ children }) {
   const isResetPassword = pathname?.startsWith("/reset-password");
   const isVerifyEmail = pathname?.startsWith("/verify-email");
 
-
   return (
     <Provider store={store}>
       <html lang="en" className={`${poppins.variable} ${roboto.variable}`}>
         <body className="font-sans antialiased bg-[#f9f9f9]">
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense
+            fallback={
+              <div className="fixed inset-0 flex items-center justify-center bg-white z-[9999]">
+                <div className="w-12 h-12 rounded-full border-4 border-[#9b0f09]/20 border-t-[#9b0f09] animate-spin" />
+              </div>
+            }
+          >
             <div className="flex flex-col w-full min-h-screen">
-              {!isLoginPath && !isSigninPath && !isForgetPassword && !isSignup && !isPostProperty && !isResetPassword && !isVerifyEmail && <Header />}
-              {/* {!isLoginPath && !isSigninPath && !isForgetPassword && <NewHeader />} */}
-
+              {!isLoginPath &&
+                !isSigninPath &&
+                !isForgetPassword &&
+                !isSignup &&
+                !isPostProperty &&
+                !isResetPassword &&
+                !isVerifyEmail && <Header />}
 
               <main className="w-full">{children}</main>
-              <NewFooter/>
+
+              <NewFooter />
             </div>
             {/* <PropertyFinderChat /> */}
             <Toaster position="top-center" />

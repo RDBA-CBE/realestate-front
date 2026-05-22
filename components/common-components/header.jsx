@@ -459,7 +459,7 @@ const Header = () => {
                           >
                             <AccordionItem value={`item-${index + 1}`}>
                               <AccordionTrigger
-                                className={`no-underline hover:no-underline uppercase text-sm !pb-0 ${
+                                className={`no-underline hover:no-underline uppercase text-sm pb-4${
                                   menu.items?.length > 0 ? "" : "[&>svg]:hidden"
                                 } ${isActive ? "text-dred" : ""}`}
                                 onClick={() => {
