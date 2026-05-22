@@ -105,8 +105,8 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
     e.stopPropagation();
     e.preventDefault();
     try {
-      if (navigator.share) await navigator.share({ title: property.title, url: window.location.href });
-      else { navigator.clipboard.writeText(window.location.href); Success("Link copied!"); }
+      if (navigator.share) await navigator.share({ title: property.title, url: `https://realestate-front-eight.vercel.app/property-detail/${property.id}` });
+      else { navigator.clipboard.writeText(`https://realestate-front-eight.vercel.app/property-detail/${property.id}`); Success("Link copied!"); }
     } catch {}
   };
 

@@ -38,14 +38,14 @@ export default function PropertyDesc(props: any) {
       {/* Description */}
       <div>
         <h3 className="section-in-ti mb-3">Property Description</h3>
-        <p className="text-gray-700 leading-relaxed">
+        <p className="text-gray-700 leading-relaxed mb-1">
         {expanded ? data.description : shortText}
       </p>
 
       {isLong && ( // ✅ Show button only if text is long
         <button
           onClick={() => setExpanded(!expanded)}
-          className="mt-2 font-semibold text-black hover:underline"
+          className=" text-sm text-blue-600 font-medium text-black hover:underline"
         >
           {expanded ? "Show less" : "Show more"}
         </button>

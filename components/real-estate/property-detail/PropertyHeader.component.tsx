@@ -23,15 +23,20 @@ import {
   TimeAgo,
   useSetState,
 } from "@/utils/function.utils";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Models from "@/imports/models.import";
 import { RWebShare } from "react-web-share";
+import { useRouter } from "next/navigation";
 
 export default function PropertyHeader(props: any) {
   const [state, setState] = useSetState({
     is_compare: false,
     url : ''
   });
+
+  const router = useRouter();
+
+   const [loginPopup, setLoginPopup] = useState(false);
 
   const { data, updateList } = props;
 
@@ -51,6 +56,44 @@ export default function PropertyHeader(props: any) {
   }, [data]);
 
   const handleWishList = async () => {
+      // e.stopPropagation();
+      // e.preventDefault();
+      const token = localStorage.getItem("token");
+      if (!token) { setLoginPopup(true); return; }
+      try {
+       if (!data?.user_wishlists) {
+          await Models.wishlist.add_property({
+            property_id: data?.id,
+          });
+          updateList();
+          Success("Added to your wishlist !");
+        } else {
+          await Models.wishlist.remove_property({
+            property_id: data?.id,
+          });
+          updateList();
+          Success("Removed from your wishlist !");
+        }
+      } catch (err) { console.log(err); }
+    };
+
+    const LoginPopup = loginPopup ? (
+    <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center" onClick={() => setLoginPopup(false)}>
+      <div className="bg-white rounded-2xl p-8 max-w-sm w-full mx-4 text-center shadow-xl" onClick={(e) => e.stopPropagation()}>
+        <div className="w-14 h-14 bg-[#fff6f6] rounded-full flex items-center justify-center mx-auto mb-4">
+          <Heart className="w-7 h-7 text-[#9b0f09]" />
+        </div>
+        <h3 className="text-lg font-bold text-black mb-2">Login Required</h3>
+        <p className="text-gray-500 text-sm mb-6">Please sign in to save properties to your wishlist.</p>
+        <div className="flex gap-3">
+          <button onClick={() => setLoginPopup(false)} className="flex-1 border border-gray-200 text-gray-700 py-2.5 rounded-xl font-medium hover:bg-gray-50">Cancel</button>
+          <button onClick={() => { setLoginPopup(false); router.push("/login"); }} className="flex-1 bg-[#9b0f09] text-white py-2.5 rounded-xl font-medium hover:bg-[#7d0c07]">Sign In</button>
+        </div>
+      </div>
+    </div>
+  ) : null;
+
+  const handleWishLis = async () => {
     try {
       const token = localStorage.getItem("token");
       if (token) {
@@ -109,20 +152,24 @@ export default function PropertyHeader(props: any) {
     <div className=" mt-5 md:mt-0 px-2">
       <div className="flex flex-row items-between md:items-start justify-between gap-4">
         <div className="space-y-2">
+          <p className="section-ti mb-2 !text-dred block sm:hidden">
+              {formatPriceRange(
+                data?.price_range?.minimum_price,
+                data?.price_range?.maximum_price
+              )}{" "}
+            </p>
           <h1 className="section-ti">{data?.title}</h1>
-          <p>By <span className="text-dred">{data?.developer?.industry} </span></p>
-          <p className="text-black font-semibold">{data?.address}</p>
-          <div className="block sm:hidden">
+          <p>By <span className="text-dred cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.id}`)}>{data?.developer?.industry} </span></p>
+          <p className="text-black ">{data?.address}</p>
+          {/* <div className="block sm:hidden">
             <span className="section-in-ti">
               {formatPriceRange(
                 data?.price_range?.minimum_price,
                 data?.price_range?.maximum_price
               )}{" "}
             </span>
-            {/* <span className="text-sm text-gray-600">
-              ({formatToINR(data?.price_per_sqft)}/sq ft)
-            </span> */}
-          </div>
+           
+          </div> */}
           <div className="flex items-center flex-wrap gap-3 text-sm text-gray-600 ">
             {/* <span>{`${capitalizeFLetter(data?.area?.name)} , ${capitalizeFLetter(
               data?.location?.name
@@ -165,8 +212,8 @@ export default function PropertyHeader(props: any) {
               variant="outline"
               className={`rounded-full ${
                 data?.user_wishlists
-                  ? "bg-color2 border-dred text-white hover:bg-color2 hover:border-[#9b0f09]"
-                  : "bg-white text-black"
+                  ? "bg-color2 border-dred !text-white hover:bg-color2 hover: border-[#9b0f09]"
+                  : "bg-white text-dred border-dred hover:text-dred"
               }`}
             >
               <Heart
@@ -181,8 +228,8 @@ export default function PropertyHeader(props: any) {
               variant="outline"
               className={`rounded-full ${
                 state?.is_compare
-                  ? "bg-color2 border-dred text-white hover:bg-green-600 hover:bg-[#9b0f09]"
-                  : "bg-white text-black"
+                  ? "bg-color2 border-dred !text-white hover:bg-green-600 hover:bg-[#9b0f09]"
+                  : "bg-white text-dred border-dred hover:text-dred"
               }`}
             >
               <GitCompareArrowsIcon size={18} />
@@ -195,7 +242,7 @@ export default function PropertyHeader(props: any) {
               }}
               onClick={() => console.log("shared successfully!")}
             >
-              <Button size="icon" variant="outline" className="rounded-full hover:border-dred hover:text-dred" >
+              <Button size="icon" variant="outline" className="rounded-full text-dred border-dred hover:border-dred hover:text-dred" >
                 <Share2 size={18} />
               </Button>
             </RWebShare>
@@ -205,7 +252,7 @@ export default function PropertyHeader(props: any) {
           </Button> */}
           </div>
           <div>
-            <p className="section-ti mt-2 !text-dred">
+            <p className="section-ti mt-3 !text-dred">
               {formatPriceRange(
                 data?.price_range?.minimum_price,
                 data?.price_range?.maximum_price
@@ -217,6 +264,7 @@ export default function PropertyHeader(props: any) {
           </div>
         </div>
       </div>
+      {LoginPopup}
     </div>
   );
 }

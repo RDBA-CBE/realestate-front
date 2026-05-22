@@ -110,91 +110,129 @@ export default function NewFooter() {
           </div>
         </div>
 
-        <div className="grid gap-10  py-10 md:grid-cols-5">
-          <div>
-            <h3 className="mb-4 section-in-ti !text-white">Popular Search</h3>
-            <ul className="space-y-3 text-white/80">
-              {popularSearch.map((item) => (
-                <li key={item.label}>
-                  <button
-                    type="button"
-                    onClick={() => handlePropertyListNavigate(item.params)}
-                    className="text-left hover:text-white"
-                  >
-                    {item.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+        <div className="grid grid-cols-2 gap-8 py-10 md:grid-cols-2 xl:grid-cols-5">
+  {/* Popular Search */}
+  <div>
+    <h3 className="mb-4 section-in-ti !text-white">
+      Popular Search
+    </h3>
 
-          <div>
-            <h3 className="mb-4 section-in-ti !text-white">Quick Links</h3>
-            <ul className="space-y-3 text-white/80">
-              {links?.map((item, i) => (
-                <li key={i}>
-                  {item.url === "property-list" ? (
-                    <button
-                      type="button"
-                      onClick={() => router.push(`/${item.url}`)}
-                      className="text-left hover:text-white"
-                    >
-                      {item.text}
-                    </button>
-                  ) : (
-                    <Link href={`/${item.url}`} className="hover:text-white">
-                      {item.text}
-                    </Link>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
+    <ul className="space-y-3 text-white/80">
+      {popularSearch.map((item) => (
+        <li key={item.label}>
+          <button
+            type="button"
+            onClick={() => handlePropertyListNavigate(item.params)}
+            className="text-left hover:text-white"
+          >
+            {item.label}
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
 
-          <div>
-            <h3 className="mb-4 section-in-ti !text-white">Discovery</h3>
-            <ul className="space-y-3 text-white/80">
-              {state.locationList?.slice(0, 5).map((item, i) => (
-                <li key={i}>
-                  <button
-                    type="button"
-                    onClick={() => handlePropertyListNavigate({ location: item.value })}
-                    className="text-left hover:text-white"
-                  >
-                    {item?.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+  {/* Quick Links */}
+  <div>
+    <h3 className="mb-4 section-in-ti !text-white">
+      Quick Links
+    </h3>
 
-          <div className="space-y-6 md:col-span-2">
-            <div>
-              <p className="text-white/70">Live Support?</p>
-              <Link href="mailto:support@realestate.com" className="mt-2">support@realestate.com</Link>
-            </div>
-            <div>
-              <h3 className="mb-4 text-white/70">Keep Yourself Up to Date</h3>
-              <div className="flex overflow-hidden rounded-full bg-white p-1">
-                <input
-                  type="email"
-                  placeholder="Your email"
-                  value={state.email}
-                  onChange={(e) => setState({ email: e.target.value })}
-                  onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
-                  style={{ color: "#000", backgroundColor: "transparent" }}
-                  className="w-full px-4 outline-none placeholder:text-gray-400"
-                />
-                <button
-                  onClick={handleSubscribe}
-                  className="rounded-full bg-dred px-5 py-2 whitespace-nowrap"
-                >
-                  Subscribe
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+    <ul className="space-y-3 text-white/80">
+      {links?.map((item, i) => (
+        <li key={i}>
+          {item.url === "property-list" ? (
+            <button
+              type="button"
+              onClick={() => router.push(`/${item.url}`)}
+              className="text-left hover:text-white"
+            >
+              {item.text}
+            </button>
+          ) : (
+            <Link
+              href={`/${item.url}`}
+              className="hover:text-white"
+            >
+              {item.text}
+            </Link>
+          )}
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  {/* Discovery */}
+  <div>
+    <h3 className="mb-4 section-in-ti !text-white">
+      Discovery
+    </h3>
+
+    <ul className="space-y-3 text-white/80">
+      {state.locationList?.slice(0, 5).map((item, i) => (
+        <li key={i}>
+          <button
+            type="button"
+            onClick={() =>
+              handlePropertyListNavigate({
+                location: item.value,
+              })
+            }
+            className="text-left hover:text-white"
+          >
+            {item?.label}
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  {/* Contact + Subscribe */}
+  <div className="space-y-6 col-span-2 md:col-span-1 xl:col-span-2">
+    <div>
+      <p className="text-white/70">Live Support?</p>
+
+      <Link
+        href="mailto:support@realestate.com"
+        className="mt-2 block"
+      >
+        support@realestate.com
+      </Link>
+    </div>
+
+    <div>
+      <h3 className="mb-4 text-white/70">
+        Keep Yourself Up to Date
+      </h3>
+
+      <div className="flex overflow-hidden rounded-full bg-white p-1">
+        <input
+          type="email"
+          placeholder="Your email"
+          value={state.email}
+          onChange={(e) =>
+            setState({ email: e.target.value })
+          }
+          onKeyDown={(e) =>
+            e.key === "Enter" && handleSubscribe()
+          }
+          style={{
+            color: "#000",
+            backgroundColor: "transparent",
+          }}
+          className="w-full px-4 outline-none placeholder:text-gray-400"
+        />
+
+        <button
+          onClick={handleSubscribe}
+          className="rounded-full bg-dred px-5 py-2 whitespace-nowrap"
+        >
+          Subscribe
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
         <div className="h-[1px] bg-white/15 xl:w-[50%] mx-auto" />
 

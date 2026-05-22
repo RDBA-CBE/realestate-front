@@ -13,8 +13,9 @@ import {
 } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import TextArea from "@/components/common-components/textArea";
-import { CalendarCheck, Phone, X } from "lucide-react";
+import { Building2, CalendarCheck, Phone, X } from "lucide-react";
 import moment from "moment";
+import { useRouter } from "next/navigation";
 
 interface ContactAgentFormProps {
   data: any;
@@ -41,6 +42,8 @@ export default function ContactAgentForm({
     userId:""
   });
 
+  const router = useRouter()
+
   const [inquiryMode, setInquiryMode] = useState<InquiryMode | "done">("none");
 
   const [callbackForm, setCallbackForm] = useState({
@@ -51,6 +54,7 @@ export default function ContactAgentForm({
   const [callbackErrors, setCallbackErrors] = useState({
     email: "",
     phone: "",
+    message: "",
   });
   const [callbackLoading, setCallbackLoading] = useState(false);
 
@@ -60,7 +64,7 @@ export default function ContactAgentForm({
     message: "",
     date: "",
   });
-  const [bookingErrors, setBookingErrors] = useState({ email: "", phone: "", date: "" });
+  const [bookingErrors, setBookingErrors] = useState({ email: "", phone: "", date: "", message: "" });
   const [bookingLoading, setBookingLoading] = useState(false);
 
   useEffect(() => {
@@ -167,18 +171,19 @@ export default function ContactAgentForm({
     try {
       setCallbackLoading(true);
 
-      const errs = { email: "", phone: "" };
-      if (!callbackForm.email.trim()) {errs.email = "Email is required";  setCallbackLoading(false);}
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(callbackForm.email)){
-        errs.email = "Enter a valid email";  
-        setCallbackLoading(false);}
+      const errs = { email: "", phone: "", message: "" };
+      // if (!callbackForm.email.trim()) {errs.email = "Email is required";  setCallbackLoading(false);}
+      //  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(callbackForm.email)){
+      //   errs.email = "Enter a valid email";  
+      //   setCallbackLoading(false);}
       if (!callbackForm.phone.trim()){ errs.phone = "Phone is required";  setCallbackLoading(false);}
       else if (!/^[0-9]{10}$/.test(callbackForm.phone)){
         errs.phone = "Enter a valid 10-digit number"; 
        setCallbackLoading(false);
       }
+      if (!callbackForm.message.trim()) { errs.message = "Inquiry details are required"; setCallbackLoading(false); }
       setCallbackErrors(errs);
-      if (errs.email || errs.phone) return;
+      if (errs.email || errs.phone || errs.message) return;
       const payload = {
         property: data?.id ?? null,
         search: "",
@@ -194,7 +199,7 @@ export default function ContactAgentForm({
       setInquiryMode("done");
       setCallbackLoading(false);
       setCallbackForm({ email: "", phone: "", message: "" });
-      setCallbackErrors({ email: "", phone: "" });
+      setCallbackErrors({ email: "", phone: "", message: "" });
 
       // TODO: replace with actual API call
     } catch (e) {
@@ -207,7 +212,7 @@ export default function ContactAgentForm({
     try {
     setBookingLoading(true);
 
-    const errs = { email: "", phone: "", date: "" };
+    const errs = { email: "", phone: "", date: "", message: "" };
     if (!bookingForm.email.trim()) {errs.email = "Email is required"; setBookingLoading(false);}
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bookingForm.email))
       {errs.email = "Enter a valid email"; setBookingLoading(false);}
@@ -215,8 +220,9 @@ export default function ContactAgentForm({
     else if (!/^[0-9]{10}$/.test(bookingForm.phone))
      { errs.phone = "Enter a valid 10-digit number"; setBookingLoading(false);}
     if (!bookingForm.date.trim()){ errs.date = "Date is required"; setBookingLoading(false);}
+    if (!bookingForm.message.trim()) { errs.message = "Inquiry details are required"; setBookingLoading(false); }
     setBookingErrors(errs);
-    if (errs.email || errs.phone) return;
+    if (errs.email || errs.phone || errs.message) return;
     const payload = {
       property: data?.id ?? null,
       search: "",
@@ -232,7 +238,7 @@ export default function ContactAgentForm({
     setBookingLoading(false);
     console.log("Booking Inquiry Payload:", payload);
     setBookingForm({ email: "", phone: "", message: "", date: "" });
-    setBookingErrors({ email: "", phone: "", date: "" });
+    setBookingErrors({ email: "", phone: "", date: "", message: "" });
     } catch (e) {
     setBookingLoading(false);
 
@@ -259,17 +265,33 @@ export default function ContactAgentForm({
       <CardContent className={`p-6 space-y-6 ${onClose ? "pt-0" : ""}`}>
         {/* Agent info */}
         <div className="flex items-center gap-4 border-b border-gray-200 pb-4">
-          <div className="flex-shrink-0">
-            <Image
+          <div className="flex-shrink-0 cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.id}`)}>
+            {/* <Image
               src="/assets/images/real-estate/dummy.png"
               alt="Agent"
               width={60}
               height={60}
               className="rounded-full object-cover border-2 border-gray-200"
-            />
+            /> */}
+            {data?.developer?.developer_image ? (
+              <div className="border border-gray rounded-xl h-16 w-16">
+                <img
+                  src={data?.developer?.developer_image}
+                  alt={data?.developer?.industry || "Developer"}
+                  
+                  
+                  className="object-contain position-center w-full h-full"
+                />
+              </div>
+                
+              ) : (
+                <div className="flex h-full w-full items-center justify-center border-2 p-3 border-dred rounded-xl">
+                  <Building2 className="h-10 w-10 text-dred " />
+                </div>
+              )}
           </div>
           <div className="text-left">
-            <h3 className="font-semibold">
+            <h3 className="font-semibold cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.id}`)}>
               {capitalizeFLetter(data?.developer?.industry)}
             </h3>
             <p className="text-gray-600 text-sm">
@@ -317,6 +339,29 @@ export default function ContactAgentForm({
           </div>
         ) : inquiryMode === "callback" ? (
           <div className="flex flex-col gap-3">
+             <div className="flex flex-col gap-1">
+              <label className="text-xs text-muted-foreground font-medium">
+                Phone Number <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="tel"
+                inputMode="numeric"
+                value={callbackForm.phone}
+                onChange={(e) => {
+                  const v = e.target.value.replace(/\D/g, "").slice(0, 10);
+                  setCallbackForm((p) => ({ ...p, phone: v }));
+                  setCallbackErrors((p) => ({ ...p, phone: "" }));
+                }}
+                placeholder="Phone number (10 digits)"
+                className={inputCls(callbackErrors.phone)}
+              />
+              {callbackErrors.phone && (
+                <p className="text-xs text-red-500 pl-1">
+                  {callbackErrors.phone}
+                </p>
+              )}
+            </div>
+            
             <div className="flex flex-col gap-1">
               <label className="text-xs text-muted-foreground font-medium">
                 Email
@@ -337,41 +382,24 @@ export default function ContactAgentForm({
                 </p>
               )}
             </div>
+           
             <div className="flex flex-col gap-1">
               <label className="text-xs text-muted-foreground font-medium">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                inputMode="numeric"
-                value={callbackForm.phone}
-                onChange={(e) => {
-                  const v = e.target.value.replace(/\D/g, "").slice(0, 10);
-                  setCallbackForm((p) => ({ ...p, phone: v }));
-                  setCallbackErrors((p) => ({ ...p, phone: "" }));
-                }}
-                placeholder="Phone number (10 digits)"
-                className={inputCls(callbackErrors.phone)}
-              />
-              {callbackErrors.phone && (
-                <p className="text-xs text-red-500 pl-1">
-                  {callbackErrors.phone}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-muted-foreground font-medium">
-                Inquiry Details
+                Inquiry Details <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={callbackForm.message}
-                onChange={(e) =>
-                  setCallbackForm((p) => ({ ...p, message: e.target.value }))
-                }
+                onChange={(e) => {
+                  setCallbackForm((p) => ({ ...p, message: e.target.value }));
+                  setCallbackErrors((p) => ({ ...p, message: "" }));
+                }}
                 placeholder="Tell us more about your inquiry..."
                 rows={3}
-                className="w-full bg-background border border-border rounded-xl px-3 py-2 text-sm outline-none focus:border-themeColor1 transition-colors placeholder:text-muted-foreground resize-none"
+                className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground resize-none ${callbackErrors.message ? "border-red-500" : "border-border focus:border-themeColor1"}`}
               />
+              {callbackErrors.message && (
+                <p className="text-xs text-red-500 pl-1">{callbackErrors.message}</p>
+              )}
             </div>
             <div className="flex gap-2">
               <button
@@ -394,7 +422,7 @@ export default function ContactAgentForm({
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-1">
                   <label className="text-xs text-muted-foreground font-medium">
-                    Preferred Date and Time
+                    Preferred Date and Time <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="datetime-local"
@@ -413,7 +441,7 @@ export default function ContactAgentForm({
                 </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs text-muted-foreground font-medium">
-                Email
+                Email <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
@@ -433,7 +461,7 @@ export default function ContactAgentForm({
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs text-muted-foreground font-medium">
-                Phone Number
+                Phone Number <span className="text-red-500">*</span>
               </label>
               <input
                 type="tel"
@@ -455,17 +483,21 @@ export default function ContactAgentForm({
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs text-muted-foreground font-medium">
-                Inquiry Details
+                Inquiry Details <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={bookingForm.message}
-                onChange={(e) =>
-                  setBookingForm((p) => ({ ...p, message: e.target.value }))
-                }
+                onChange={(e) => {
+                  setBookingForm((p) => ({ ...p, message: e.target.value }));
+                  setBookingErrors((p) => ({ ...p, message: "" }));
+                }}
                 placeholder="Tell us more about your inquiry..."
                 rows={3}
-                className="w-full bg-background border border-border rounded-xl px-3 py-2 text-sm outline-none focus:border-themeColor1 transition-colors placeholder:text-muted-foreground resize-none"
+                className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground resize-none ${bookingErrors.message ? "border-red-500" : "border-border focus:border-themeColor1"}`}
               />
+              {bookingErrors.message && (
+                <p className="text-xs text-red-500 pl-1">{bookingErrors.message}</p>
+              )}
             </div>
             <div className="flex gap-2">
               <button
