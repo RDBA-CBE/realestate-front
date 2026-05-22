@@ -38,10 +38,10 @@ const FeaturedListings = (props) => {
       <div className="section-wid mx-auto ">
 
         {/* Header */}
-        <div className="flex flex-col lg:flex-row justify-between lg:items-center mb-10">
+        <div className="flex flex-col lg:flex-row justify-between lg:items-center mb-5 md:mb-10 ">
           <div>
             <h2 className="section-ti">Discover Our Fully Furnished Sale Properties</h2>
-            <p className="section-cap">Aliquam lacinia diam quis lacus euismod</p>
+            <p className="section-cap mb-0 md:mb-4">Aliquam lacinia diam quis lacus euismod</p>
           </div>
           {locationEmpty && (
             <div className="flex items-center gap-2 mt-2 px-4 py-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 text-sm">

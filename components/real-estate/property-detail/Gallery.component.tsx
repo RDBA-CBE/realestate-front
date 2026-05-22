@@ -186,12 +186,16 @@ export default function Gallery({ data, images, updateList }: GalleryProps) {
                     key={i}
                     className="overflow-hidden rounded-2xl shadow-lg relative cursor-pointer"
                     onClick={() => handleOpen(i + 1)}
-                  >
+                  > 
+                   <div
+                      className="absolute inset-0 z-0 bg-cover bg-center filter blur-lg scale-110"
+                      style={{ backgroundImage: `url(${images?.[0]?.image})` }}
+                    ></div>
                     <Image
                       src={img?.image}
                       alt={`Gallery ${i + 1}`}
                       fill
-                      className="object-cover"
+                      className="object-contain"
                     />
 
                     {isLastCard && (

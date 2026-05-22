@@ -3,6 +3,9 @@
 import React from "react";
 import { CheckCircle2, Target, Award, ShieldCheck, ArrowRight, Users, Building2, Star, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+ 
 
 const stats = [
   { label: "Years Experience", value: "15+", icon: TrendingUp },
@@ -35,14 +38,24 @@ const team = [
   { name: "Ravi Kumar", role: "Lead Consultant", img: "/assets/images/real-estate/home/dev-reg-3.png" },
 ];
 
+
+
 const AboutPage = () => {
+
+
+  const router = useRouter();
+
+  const OnTypeClick = (card) => {
+    router.push(`${card.url}`);
+  };
+  
   return (
     <div className="min-h-screen bg-white">
 
       {/* ── HERO ── */}
       <section className="relative h-[500px] flex items-end overflow-hidden">
         <img
-          src="/assets/images/real-estate/home/faq-5.png"
+          src="/assets/images/real-estate/about/about.webp"
           alt="About Us"
           className="absolute inset-0 w-full h-full object-cover object-bottom"
           onError={(e) => { e.currentTarget.src = "/assets/images/real-estate/banner.jpg"; }}
@@ -93,17 +106,17 @@ const AboutPage = () => {
             {/* Images collage */}
             <div className="relative h-[520px]">
               <img
-                src="/assets/images/real-estate/home/banner-1.png"
+                src="/assets/images/real-estate/about/about-1.webp"
                 alt="Our Story"
                 className="absolute top-0 left-0 w-[65%] h-[60%] object-cover rounded-3xl shadow-xl"
               />
               <img
-                src="/assets/images/real-estate/home/banner-2.png"
+                src="/assets/images/real-estate/about/home-right.webp"
                 alt="Properties"
                 className="absolute bottom-0 right-0 w-[60%] h-[55%] object-cover rounded-3xl shadow-xl"
               />
               {/* Badge */}
-              <div className="absolute bottom-[38%] left-[55%] -translate-x-1/2 bg-white rounded-2xl shadow-2xl px-5 py-4 z-10 border border-gray-100 text-center min-w-[130px]">
+              <div className="absolute bottom-[45%] left-[55%] -translate-x-1/2 bg-white rounded-2xl shadow-2xl px-5 py-4 z-10 border border-gray-100 text-center min-w-[130px]">
                 <p className="text-3xl text-dred font-semibold leading-none mb-0 pb-3">15+</p>
                 <p className="text-xs  uppercase tracking-wider font-semibold">Years of Trust</p>
               </div>
@@ -160,55 +173,83 @@ const AboutPage = () => {
           <div className="grid md:grid-cols-2 gap-6">
             {[
               {
-                title: "Looking for a New Home?",
-                desc: "Browse thousands of verified listings across top cities. Find the perfect home that fits your lifestyle and budget.",
-                btn: "Browse Listings",
-                href: "/property-list",
-                bg: "/assets/images/real-estate/home/Buy.png",
-                inner: "/assets/images/real-estate/home/hit-in-buy.png",
-              },
-              {
-                title: "Want to Sell Your Property?",
-                desc: "List your property with us and reach thousands of serious buyers. Fast, transparent, and hassle-free.",
-                btn: "Post Property",
-                href: "/post-property",
-                bg: "/assets/images/real-estate/home/Sale.png",
-                inner: "/assets/images/real-estate/home/hit-in-sale.png",
-              },
+      title: "Looking for the new home?",
+      description:
+        "10 new offers every day. 350 offers on site, trusted by a community of thousands of users.",
+      buttonText: "Get Started",
+      image: "/assets/images/real-estate/home/buy-1.webp",
+      bgImage:
+        "/assets/images/real-estate/home/Buy.webp",
+      url: "/property-list?type=Sale",
+    },
+    {
+      title: "Want to sell your home?",
+      description:
+        "10 new offers every day. 350 offers on site, trusted by a community of thousands of users.",
+      buttonText: "Get Started",
+      image: "/assets/images/real-estate/home/sale-1.webp",
+      bgImage:
+        "/assets/images/real-estate/home/Sale.webp",
+      url: "/post-property",
+    },
             ].map((card, i) => (
-              <div key={i} className="relative overflow-hidden rounded-2xl min-h-[360px] group">
-                <img
-                  src={card.bg}
-                  alt={card.title}
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-black/15" />
-                <div className="absolute bottom-5 left-5 right-5 z-10">
-                  <div className="bg-white rounded-2xl px-5 py-6 flex items-center justify-between gap-4 shadow-xl">
-                    <div className="flex-1">
-                      <h3 className="section-in-ti mb-2">{card.title}</h3>
-                      <p className="text-sm text-gray-500 mb-4 max-w-xs">{card.desc}</p>
-                      <Link
-                        href={card.href}
-                        className="inline-flex items-center gap-2 bg-dred text-white text-sm px-5 py-2 rounded-full hover:bg-[#7d0c07] transition-colors"
-                      >
-                        {card.btn} <ArrowRight size={14} />
-                      </Link>
-                    </div>
-                    <div className="hidden sm:block shrink-0 w-24 h-24 rounded-2xl overflow-hidden">
-                      <img src={card.inner} alt={card.title} className="w-full h-full object-cover" />
-                    </div>
-                  </div>
-                </div>
-              </div>
+               <div
+                            key={i}
+                            className="relative overflow-hidden rounded-2xl min-h-[360px] group"
+                          >
+                            {/* Background Image */}
+                            <img
+                              src={card.bgImage}
+                              alt={card.title}
+                              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                            />
+              
+                            {/* Overlay */}
+                             <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/35 to-black/20 z-[1]" />
+              
+                            {/* Floating Content Card */}
+                            <div className="absolute bottom-5 left-5 right-5 z-[2]">
+                              <div className="bg-white/10 rounded-2xl px-5 py-8 flex items-center justify-between gap-4 shadow-xl">
+                                {/* Left Content */}
+                                <div className="flex-1">
+                                  <h3 className="section-in-ti mb-2 !text-white">
+                                    {card.title}
+                                  </h3>
+              
+                                  <p className=" mb-4 max-w-md leading-relaxed !text-white">
+                                    {card.description}
+                                  </p>
+              
+                                  <button
+                                    onClick={() => OnTypeClick(card)}
+                                    className="flex items-center gap-2 bg-dred hover:bg-[#fff6f6] hover:text-[#9b0f09] text-sm text-white hover:border hover:border-[#9b0f09] px-5 py-2 rounded-full transition-colors"
+                                  >
+                                    {card.buttonText}
+                                    <ArrowRight size={14} />
+                                  </button>
+                                </div>
+              
+                                {/* Right Small Image */}
+                                <div className="hidden sm:block shrink-0">
+                                  <div className="w-28 h-28 rounded-2xl overflow-hidden">
+                                    <img
+                                      src={card.image}
+                                      alt={card.title}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* ── VALUES ── */}
-      <section className="section-pad bg-white">
-        <div className="section-wid">
+      <section className="section-pad bg-white ">
+        <div className="section-wid py-5">
           <div className="grid lg:grid-cols-2 gap-14 items-center">
             {/* Text side */}
             <div>
@@ -219,7 +260,7 @@ const AboutPage = () => {
               </p>
               <div className="space-y-6">
                 {values.map((item, i) => (
-                  <div key={i} className="flex gap-5 items-start group">
+                  <div key={i} className="flex gap-5 items-start group border-b border-[#d1d0d0]">
                     <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center flex-shrink-0 group-hover:bg-dred transition-colors duration-300">
                       <item.icon className="h-6 w-6 text-dred group-hover:text-white transition-colors duration-300" />
                     </div>
@@ -234,8 +275,9 @@ const AboutPage = () => {
 
             {/* Image side */}
             <div className="relative rounded-3xl overflow-hidden h-[500px] shadow-2xl">
+              {/* <div className="absolute inset-0 bg-black/30" /> */}
               <img
-                src="/assets/images/real-estate/home/banner-3.png"
+                src="/assets/images/real-estate/about/about-2.webp"
                 alt="Our Values"
                 className="w-full h-full object-cover"
                 onError={(e) => { e.currentTarget.src = "/assets/images/real-estate/home/banner-4.png"; }}
@@ -288,11 +330,11 @@ const AboutPage = () => {
         <div className="section-wid">
           <div className="relative rounded-3xl overflow-hidden min-h-[320px] flex items-center">
             <img
-              src="/assets/images/real-estate/home/home-banner1.jpg"
+              src="/assets/images/real-estate/about/about-frame.webp"
               alt="CTA Background"
               className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black/70" />
+            {/* <div className="absolute inset-0 bg-black/70" /> */}
             <div className="relative z-10 w-full text-center px-6 py-16">
               <h2 className="section-ti mb-5 !text-white">
                 Ready to Find Your Perfect Place?

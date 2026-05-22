@@ -29,7 +29,7 @@ export default function DeveloperRegistrationSection() {
   const router = useRouter();
 
   return (
-    <section className="section-pad py-10" style={{background:`url(/assets/images/real-estate/home/dev-reg-3.png)`, backgroundSize:"cover", width:"100%", height:"100%", backgroundPosition:"center", backgroundRepeat:"no-repeat"}}>
+    <section className="section-pad py-10" style={{background:`url(/assets/images/real-estate/home/dev-2.webp)`, backgroundSize:"cover", width:"100%", height:"100%", backgroundPosition:"center", backgroundRepeat:"no-repeat"}}>
       <div className="section-wid pt-5 pb-5">
         <div className="flex flex-col xl:flex-row  gap-10  xl:gap-20">
 

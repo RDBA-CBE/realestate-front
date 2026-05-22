@@ -1,19 +1,16 @@
 import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
-
-// Import Swiper styles
-// import "swiper/css";
 import { capitalizeFLetter, formatPriceRange, truncateText } from "@/utils/function.utils";
 import { useRouter } from "next/navigation";
-import { Bath, BedDouble, MapPin, Maximize2 } from "lucide-react";
+import { MapPin } from "lucide-react";
 import PropertyCard from "./PropertyCard";
+import { NewPopularPropertiesSkeleton } from "./HomeSectionSkeletons";
 
 const NewPopuplarProperties = (props) => {
-
-  const router=useRouter()
-  const { propertyList, updatePropertyType, locationEmpty, locationLabel } = props;
-  const [activeFilter, setActiveFilter] = useState("all"); // 'all', 'rent', 'sale'
+  const router = useRouter();
+  const { propertyList, updatePropertyType, locationEmpty, locationLabel, loading } = props;
+  const [activeFilter, setActiveFilter] = useState("all");
 
   // Swiper breakpoints configuration
    const breakpoints = {
@@ -27,12 +24,9 @@ const NewPopuplarProperties = (props) => {
   };
 
 
-  const handleClick=(property)=>{
-router.push(`property-detail/${property?.id}`)
-
-  }
-
-  console.log("propertyList com", propertyList);
+  const handleClick = (property) => {
+    router.push(`property-detail/${property?.id}`);
+  };
 
   return (
     <div className="section-pad bg-[#f8f8f8] ">
@@ -58,8 +52,9 @@ router.push(`property-detail/${property?.id}`)
           <div className="gap-2 md:gap-4  inline-flex">
             <button
               onClick={() => {
+                 setActiveFilter("all");
                 updatePropertyType("all");
-                setActiveFilter("all");
+               
               }}
               className={`px-3 md:px-6 py-2 text-sm rounded-full transition-colors ${
                 activeFilter === "all"
@@ -71,9 +66,10 @@ router.push(`property-detail/${property?.id}`)
             </button>
             <button
               onClick={() => {
+                  setActiveFilter("lease");
                 updatePropertyType("lease");
 
-                setActiveFilter("lease");
+              
               }}
               className={`px-6 py-2 text-sm rounded-full transition-colors ${
                 activeFilter === "lease"
@@ -85,9 +81,10 @@ router.push(`property-detail/${property?.id}`)
             </button>
             <button
               onClick={() => {
+                setActiveFilter("sale");
                 updatePropertyType("sale");
 
-                setActiveFilter("sale");
+                
               }}
               className={`px-6 py-2 text-sm rounded-full transition-colors ${
                 activeFilter === "sale"
@@ -119,18 +116,28 @@ router.push(`property-detail/${property?.id}`)
         )} */}
 
         {/* Conditional Rendering: Swiper for "All Properties", Grid for filtered views */}
-        {propertyList?.length > 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm animate-pulse">
+                <div className="h-52 bg-gray-200" />
+                <div className="p-4 space-y-3">
+                  <div className="h-5 bg-gray-200 rounded w-3/4" />
+                  <div className="h-4 bg-gray-200 rounded w-1/2" />
+                  <div className="h-4 bg-gray-200 rounded w-2/3" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : propertyList?.length > 0 ? (
           <Swiper
+            key={activeFilter}
             modules={[Autoplay]}
             spaceBetween={24}
             slidesPerView={1}
             breakpoints={breakpoints}
-            navigation={{
-              nextEl: ".properties-swiper-next",
-              prevEl: ".properties-swiper-prev",
-            }}
             autoplay={{ delay: 4000, disableOnInteraction: false }}
-            loop={true}
+            loop={propertyList.length > 3}
             className="featured-listings-swiper pb-10"
           >
             {propertyList.map((property, index) => (

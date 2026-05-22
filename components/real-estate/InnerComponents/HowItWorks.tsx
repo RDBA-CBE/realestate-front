@@ -107,9 +107,9 @@ const HowItWorks = () => {
       description:
         "10 new offers every day. 350 offers on site, trusted by a community of thousands of users.",
       buttonText: "Get Started",
-      image: "/assets/images/real-estate/home/hit-in-buy.png",
+      image: "/assets/images/real-estate/home/buy-1.webp",
       bgImage:
-        "/assets/images/real-estate/home/Buy.png",
+        "/assets/images/real-estate/home/Buy.webp",
       url: "/property-list?type=Sale",
     },
     {
@@ -117,9 +117,9 @@ const HowItWorks = () => {
       description:
         "10 new offers every day. 350 offers on site, trusted by a community of thousands of users.",
       buttonText: "Get Started",
-      image: "/assets/images/real-estate/home/hit-in-sale.png",
+      image: "/assets/images/real-estate/home/sale-1.webp",
       bgImage:
-        "/assets/images/real-estate/home/Sale.png",
+        "/assets/images/real-estate/home/Sale.webp",
       url: "/post-property",
     },
   ];

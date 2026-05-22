@@ -81,7 +81,7 @@ export default function FAQSectionNew() {
            {/* Left — Image panel */}
           <div className="relative min-h-[420px] lg:min-h-full rounded-2xl">
             <img
-              src="/assets/images/real-estate/home/faq-2.png"
+              src="/assets/images/real-estate/home/faq.webp"
               alt="FAQ"
               className="absolute inset-0 w-full h-full object-cover rounded-2xl"
             />
@@ -103,7 +103,7 @@ export default function FAQSectionNew() {
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4">
-                <Link href={"/propert-list"} className="rounded-full bg-white px-7 py-3 text-sm font-medium text-black transition hover:bg-gray-100">
+                <Link href={"/property-list"} className="rounded-full bg-white px-7 py-3 text-sm font-medium text-black transition hover:bg-gray-100">
                   Browse all properties
                 </Link>
 

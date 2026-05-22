@@ -90,7 +90,7 @@ export default function DeveloperDetailPage() {
       <div className="border-b border-[#ebe7e1] bg-[#f8f8f8]">
         <div className="section-wid pb-5 pt-4">
           {/* BREADCRUMB */}
-          <div className="flex lg:justify-between items-center">
+          <div className="flex justify-between items-center mb-5">
             <div className=" flex flex-wrap items-center gap-2 text-sm text-gray-500">
               <span
                 className="cursor-pointer hover:text-black"
@@ -117,15 +117,15 @@ export default function DeveloperDetailPage() {
             <Button
               variant="outline"
               onClick={() => router.back()}
-              className="mb-8 rounded-full border-dred bg-white px-5 text-dred shadow-none hover:bg-dred hover:text-white"
+              className="mb-0 md:mb-8 rounded-2xl border-dred bg-white px-4 py-1 md:px-5 text-dred shadow-none hover:bg-dred hover:text-white h-6"
             >
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeft className=" h-4 w-4 hidden md:block" />
               Back
             </Button>
           </div>
 
           {/* HEADER CONTENT */}
-          <div className="flex flex-col gap-4 md:flex-row md:items-center">
+          <div className="flex md:flex-col gap-4 md:flex-row md:items-center">
             {/* IMAGE */}
             <div className="relative h-[80px] w-[80px] overflow-hidden rounded-2xl border border-[#e7e5e4] bg-white shadow-sm">
               {developerImage ? (
@@ -193,7 +193,7 @@ export default function DeveloperDetailPage() {
 
         <div>
           {/* FILTERS */}
-          <div className="  pt-4  flex justify-between">
+          <div className="  pt-4  flex justify-between ">
             <h3 className="section-in-ti ">Explore {developerName} Projects</h3>
 
             {/* <div className="mt-6 flex flex-wrap gap-4">
@@ -215,7 +215,7 @@ export default function DeveloperDetailPage() {
               </button>
             </div> */}
 
-            <p className="">
+            <p className="text-xs hidden md:block">
               Showing 1-{properties.length} of {properties.length}
             </p>
           </div>

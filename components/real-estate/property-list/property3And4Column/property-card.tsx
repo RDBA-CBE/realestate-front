@@ -144,20 +144,35 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
     </div>
   );
 
-  /* ── Image area (no action buttons inside) ── */
-  const ImageArea = ({ height }: { height: number | string }) => (
+  /* ── Image area (inlined — no inner component to avoid stale closures) ── */
+  const imageAreaJSX = (height: number | string) => (
     <div className="relative overflow-hidden w-full h-full" style={{ height }}>
       {images[imgIndex]?.image_url && (
         <Image src={images[imgIndex].image_url} alt={property.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 400px" />
       )}
       {images.length > 1 && (
         <>
-          <button type="button" onClick={onPrev} className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-1.5 z-10"><ChevronLeft size={16} /></button>
-          <button type="button" onClick={onNext} className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-1.5 z-10"><ChevronRight size={16} /></button>
+          <button
+            type="button"
+            onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); }}
+            onClick={onPrev}
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-1.5 z-10"
+          ><ChevronLeft size={16} /></button>
+          <button
+            type="button"
+            onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); }}
+            onClick={onNext}
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-1.5 z-10"
+          ><ChevronRight size={16} /></button>
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
             {images.map((_, i) => (
-              <button key={i} type="button" onClick={(e) => { e.stopPropagation(); setImgIndex(i); }}
-                className={`h-1.5 rounded-full transition-all ${i === imgIndex ? "bg-white w-3" : "bg-white/50 w-1.5"}`} />
+              <button
+                key={i}
+                type="button"
+                onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                onClick={(e) => { e.stopPropagation(); e.preventDefault(); setImgIndex(i); }}
+                className={`h-1.5 rounded-full transition-all ${i === imgIndex ? "bg-white w-3" : "bg-white/50 w-1.5"}`}
+              />
             ))}
           </div>
         </>
@@ -197,7 +212,7 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
         <div className="h-full" onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
           <Card onClick={onCardClick} className="bg-white border-gray overflow-hidden rounded-2xl shadow-sm hover:shadow-xl cursor-pointer h-full flex flex-col transition-shadow duration-300">
             <div className="relative flex-shrink-0" style={{ height: GRID_IMAGE_HEIGHT }}>
-              <ImageArea height={GRID_IMAGE_HEIGHT} />
+              {imageAreaJSX(GRID_IMAGE_HEIGHT)}
               {ActionButtons}
             </div>
             <CardContent className="flex flex-col flex-grow py-4 gap-1">
@@ -255,7 +270,7 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
       <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
         <Card onClick={onCardClick} className="bg-white border border-gray-100 overflow-hidden rounded-2xl shadow-sm hover:shadow-xl cursor-pointer transition-shadow duration-300 flex flex-col sm:flex-row">
           <div className="relative sm:w-[380px] w-full flex-shrink-0 h-52 sm:h-auto">
-            <ImageArea height="100%" />
+            {imageAreaJSX("100%")}
             {ActionButtons}
           </div>
           <CardContent className="flex flex-col flex-grow p-5 gap-1">

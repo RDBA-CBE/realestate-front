@@ -22,9 +22,9 @@ const testimonials = [
   },
   {
     text: "The best real estate experience I've ever had. Professional, transparent and genuinely caring about finding the right home.",
-    author: "Priya Sharma",
+    author: "Pradeep Sharma",
     role: "Verified Buyer",
-    image: "/assets/images/real-estate/home/testimonial/review-1.png",
+    image: "/assets/images/real-estate/home/testimonial/review-1.webp",
   },
 ];
 
@@ -75,7 +75,7 @@ export default function SectionTestimonialNew() {
           {/* Card 1 — Dark image card (tall, col 1 row 1+2) */}
           <div className="relative rounded-2xl overflow-hidden row-span-2 min-h-[380px]">
             <img
-              src="/assets/images/real-estate/home/testimonial/review-2.png"
+              src="/assets/images/real-estate/home/testimonial/review-1.webp"
               alt="property"
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -102,7 +102,7 @@ export default function SectionTestimonialNew() {
           {/* Card 2 — Property image with label (col 2, row 1) */}
           <div className="relative rounded-2xl overflow-hidden min-h-[220px]">
             <img
-              src="/assets/images/real-estate/home/testimonial/review-3.png"
+              src="/assets/images/real-estate/home/testimonial/review-2.webp"
               alt="property"
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -153,9 +153,14 @@ export default function SectionTestimonialNew() {
           {/* Card 6 — Person image with quote overlay (col 3+4, row 2) */}
           <div className="relative rounded-2xl overflow-hidden min-h-[180px] lg:col-span-2">
             <img
-              src="/assets/images/real-estate/home/testimonial/review-1.png"
+              src="/assets/images/real-estate/home/testimonial/review-3.webp"
               alt="testimonial"
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover hidden lg:block"
+            />
+            <img
+              src="/assets/images/real-estate/home/testimonial/review-3-mbl.webp"
+              alt="testimonial"
+              className="absolute inset-0 w-full h-full object-cover block lg:hidden"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-[#9b0f09]/80 via-[#9b0f09]/40 to-transparent" />
             <div className="relative z-10 flex flex-col justify-end h-full p-6 max-w-xs">

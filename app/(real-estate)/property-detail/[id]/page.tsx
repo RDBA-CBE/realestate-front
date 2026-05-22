@@ -409,7 +409,7 @@ export default function PropertyDetailPage() {
 
       {/* Similar Listings */}
       {state.similarProperty.length > 0 && (
-        <div className="mt-16">
+        <div className="section-pad">
           <SimilarListings1 data={state.similarProperty} />
         </div>
       )}

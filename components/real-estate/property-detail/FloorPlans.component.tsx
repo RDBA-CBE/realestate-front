@@ -106,7 +106,7 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
       </h3>
 
       {/* ✅ Category + Type Tabs */}
-      <div className="flex flex-wrap gap-2 border-b pb-4">
+      <div className="flex flex-wrap gap-2  pb-2">
         {categories.map((cat) =>
           Object.entries(groupedData[cat]).map(([type, plans]) => (
             <button
@@ -122,7 +122,7 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
                   : "bg-color1 text-gray-700"
               }`}
             >
-              <div className="font-semibold">
+              <div className=" pb-1">
                 {cat.toUpperCase()}  {type != null ? ` ${type}` : ""}
               </div>
 
@@ -176,17 +176,17 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
       {selectedPlan && (
         <div className="flex justify-between mt-6 text-sm text-gray-700">
           <div>
-            <p className="font-semibold">Plot Area</p>
+            <p className="font-semibold pb-2 mb-0">Built-Up Area</p>
             <p>{formatNumber(selectedPlan.square_feet)} sq.ft</p>
           </div>
 
           <div>
-            <p className="font-semibold">Type</p>
+            <p className="font-semibold pb-2 mb-0">Type</p>
             <p>{selectedPlan.type}</p>
           </div>
 
           <div>
-            <p className="font-semibold">Status</p>
+            <p className="font-semibold pb-2 mb-0">Status</p>
             <p className="text-green-600 font-semibold">
               Ready to Move
             </p>

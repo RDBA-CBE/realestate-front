@@ -1409,7 +1409,7 @@ export function PropertyView(props: any) {
                   <Button
                     onClick={() => setState({ view: "list" })}
                     variant="ghost"
-                    className={`pe-0 px-2 md:px-3 py-2 text-sm font-medium flex items-center gap-1 transition-colors ${
+                    className={` px-2 md:px-3 py-2 text-sm font-medium flex items-center gap-1 transition-colors ${
                       state.view === "list"
                         ? " text-dred hover:text-dred hover:bg-transparent"
                         : "text-gray-600  hover:text-dred hover:bg-transparent"

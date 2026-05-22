@@ -77,7 +77,7 @@ const PropertyCard = ({ listing }) => {
 
           {/* For Sale badge */}
           <div className="absolute top-3 left-3 bg-[#9b0f09] text-white text-xs font-semibold px-3 py-1 rounded-full">
-            For Sale
+            {capitalizeFLetter(listing?.listing_type)}
           </div>
 
           {/* Action icons */}
@@ -99,7 +99,7 @@ const PropertyCard = ({ listing }) => {
 
         {/* Content */}
         <div className="pt-4 pb-3 px-4 text-start flex flex-col flex-1">
-          <p className="text-[#9b0f09] font-bold text-xl mb-1">
+          <p className="text-[#9b0f09] font-semibold text-xl mb-1">
             ₹ {formatPriceRange(listing?.price_range?.minimum_price, listing?.price_range?.maximum_price)}
           </p>
           <h3 className="section-in-ti mb-2" title={listing?.title}>{truncateText(listing?.title, 34)}</h3>
@@ -108,7 +108,7 @@ const PropertyCard = ({ listing }) => {
                                 listing.area?.name,
                               )}, ${capitalizeFLetter(listing.location?.name)}`}</>)}
           </p>
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-t pt-5 pb-4 border-[#ededed] mt-auto">
+          <div className="flex flex-row items-center justify-between border-t pt-4 pb-2 border-[#ededed] mt-auto">
             {listing.floor_plans && listing.floor_plans.length > 0 && (
                <span className="flex items-center gap-1"><BedDouble className="w-4 h-4" />   {`${[
                         ...new Set(
