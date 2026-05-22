@@ -84,13 +84,45 @@ export default function DeveloperDetailPage() {
 
   const developerImage = developer?.developer_image || developer?.profile_image;
 
+  const [expanded, setExpanded] = useState(false);
+
+  const getMaxLength = () => {
+  if (typeof window === "undefined") return 300;
+
+  if (window.innerWidth < 640) return 80; // mobile
+  if (window.innerWidth < 1024) return 220; // tablet
+  return 400; // desktop
+};
+
+const [maxLength, setMaxLength] = useState(getMaxLength());
+
+useEffect(() => {
+  const handleResize = () => {
+    setMaxLength(getMaxLength());
+  };
+
+  window.addEventListener("resize", handleResize);
+
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
+  const description =
+    developer?.description ||
+    `${developerName} is a leading real estate and property development company delivering premium residential and commercial projects with modern architecture and quality lifestyle amenities.`;
+
+  const isLong = description.length > maxLength;
+
+const shortText = isLong
+  ? description.slice(0, maxLength) + "..."
+  : description;
+
   return (
-    <div className="min-h-screen bg-[#fff]">
+    <div className="min-h-screen bg-[#fff] section-pad !pt-0">
       {/* HEADER */}
-      <div className="border-b border-[#ebe7e1] bg-[#f8f8f8]">
+      <div className="border-b border-[#ebe7e1] bg-[#f8f8f8] pt-5">
         <div className="section-wid pb-5 pt-4">
           {/* BREADCRUMB */}
-          <div className="flex justify-between items-center mb-5">
+          <div className="flex justify-between items-center pb-5">
             <div className=" flex flex-wrap items-center gap-2 text-sm text-gray-500">
               <span
                 className="cursor-pointer hover:text-black"
@@ -117,7 +149,7 @@ export default function DeveloperDetailPage() {
             <Button
               variant="outline"
               onClick={() => router.back()}
-              className="mb-0 md:mb-8 rounded-2xl border-dred bg-white px-4 py-1 md:px-5 text-dred shadow-none hover:bg-dred hover:text-white h-6"
+              className="mb-0  rounded-2xl border-dred bg-white px-4 py-1 md:px-5 md:py-3.5 text-dred shadow-none hover:bg-dred hover:text-white h-6"
             >
               <ArrowLeft className=" h-4 w-4 hidden md:block" />
               Back
@@ -125,7 +157,7 @@ export default function DeveloperDetailPage() {
           </div>
 
           {/* HEADER CONTENT */}
-          <div className="flex md:flex-col gap-4 md:flex-row md:items-center">
+          <div className="flex  gap-4 md:flex-row md:items-center">
             {/* IMAGE */}
             <div className="relative h-[80px] w-[80px] overflow-hidden rounded-2xl border border-[#e7e5e4] bg-white shadow-sm">
               {developerImage ? (
@@ -146,22 +178,29 @@ export default function DeveloperDetailPage() {
             <div>
               <p className="text-sm text-gray-500">Property For Sale by</p>
 
-              <h1 className=" section-ti ">
-                {developerName || "Developer"}
-              </h1>
+              <h1 className=" section-ti ">{developerName || "Developer"}</h1>
             </div>
           </div>
           <div className=" mt-4">
             {/* <h3 className="section-in-ti">Description</h3> */}
 
-            <p className="mt-2 ">
-              {developer?.description ||
-                `${developerName} is a leading real estate and property development company delivering premium residential and commercial projects with modern architecture and quality lifestyle amenities.`}
-            </p>
+            <div className="mt-2">
+              <p className="leading-7 text-gray-700 transition-all duration-300">
+                {expanded ? description : shortText}  
+                {isLong && (
+                <button
+                  onClick={() => setExpanded(!expanded)}
+                  className="mt-2 xs:ps-2 text-xs font-medium text-dred hover:underline"
+                >
+                  {expanded ? "Show Less" : "Show More"}
+                </button>
+              )}
+              </p>
+
+             
+            </div>
           </div>
         </div>
-
-        
       </div>
 
       {/* TAB */}
@@ -188,7 +227,6 @@ export default function DeveloperDetailPage() {
           </p> */}
 
           {/* DESCRIPTION */}
-          
         </div>
 
         <div>
@@ -215,7 +253,7 @@ export default function DeveloperDetailPage() {
               </button>
             </div> */}
 
-            <p className="text-xs hidden md:block">
+            <p className="text-xs md:text-sm hidden md:block">
               Showing 1-{properties.length} of {properties.length}
             </p>
           </div>

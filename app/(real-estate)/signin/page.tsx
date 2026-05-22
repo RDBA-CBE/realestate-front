@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Failure, Success, useSetState } from "@/utils/function.utils";
-import { Loader, Home, CheckCircle2, Building2, ArrowRight } from "lucide-react";
+import { Loader, Home, CheckCircle2, Building2, ArrowRight, ArrowLeft } from "lucide-react";
 
 const perks = [
   "Access exclusive property listings",
@@ -71,15 +71,24 @@ const SigninPage = () => {
     <div className="min-h-screen flex bg-white font-sans relative">
 
       {/* ── Top-right: Go to Property Listing ── */}
-      <div className="absolute top-5 right-5 z-30">
+      <div className="absolute top-5 right-5 z-30 flex gap-2">
         <button
           type="button"
           onClick={() => router.push("/property-list")}
-          className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 bg-white text-sm font-medium text-black hover:border-[#9b0f09] hover:text-[#9b0f09] transition-all shadow-sm"
+          className="flex items-center gap-2 px-4 py-1 rounded-full border bg-white text-sm text-dred font-medium text-black border border-[#9b0f09] hover:bg-[#fff6f6] hover:text-[#9b0f09] transition-all shadow-sm"
         >
           <Home className="w-4 h-4" />
           View Properties
-          <ArrowRight className="w-3.5 h-3.5" />
+        
+        </button>
+        <button
+          type="button"
+          onClick={() => router.push("/property-list")}
+          className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 bg-dred text-sm font-medium text-white hover:border-[#9b0f09]  transition-all shadow-sm"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Go back
+          
         </button>
       </div>
 

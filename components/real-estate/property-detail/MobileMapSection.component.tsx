@@ -212,7 +212,7 @@ const GoogleMaps = (props) => {
         className="flex gap-3 p-4 mt-5 bg-gray-50 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 w-[100%] cursor-pointer "
         onClick={() => setShowMap(true)}
       >
-        <div className="flex items-center justify-center w-[120px] h-10  sm:w-14 sm:h-14  bg-white rounded-full border border-gray-200">
+        <div className="flex items-center justify-center px-2.5 h-10  sm:w-20 sm:h-14  bg-white rounded-full border border-gray-200">
           <MapPin className="text-dred w-4 h-4" />
         </div>
 

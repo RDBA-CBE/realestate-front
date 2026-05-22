@@ -209,6 +209,7 @@ export default function PropertyDetailPage() {
     detail: {},
     similarProperty: [],
     token: null,
+    loading: true,
   });
 
   const [isMobileFormOpen, setIsMobileFormOpen] = useState(false);
@@ -254,12 +255,13 @@ export default function PropertyDetailPage() {
 
   const getDetails = async () => {
     try {
+      setState({ loading: true });
       const token = localStorage.getItem("token");
       const res: any = await Models.property.details(params?.id);
-      console.log("✌️res --->", res);
-      setState({ detail: res, token });
+      setState({ detail: res, token, loading: false });
       similarProperty(res?.property_type?.id);
     } catch (error) {
+      setState({ loading: false });
       console.log("✌️error --->", error);
     }
   };
@@ -329,13 +331,83 @@ export default function PropertyDetailPage() {
     .map((s) => ({ id: s.id, label: s.id }))
     .filter(Boolean);
 
+  const P = ({ className }: { className: string }) => (
+    <div className={`animate-pulse bg-gray-200 rounded-lg ${className}`} />
+  );
+
+  const PropertyDetailSkeleton = (
+    <div className="xl:max-w-[80rem] max-w-[85rem] mx-auto p-6 space-y-6">
+      {/* Header skeleton */}
+      <div className="space-y-3">
+        <P className="h-8 w-2/3" />
+        <P className="h-4 w-1/3" />
+        <div className="flex gap-3">
+          <P className="h-4 w-24" />
+          <P className="h-4 w-24" />
+        </div>
+      </div>
+
+      {/* Gallery skeleton */}
+      <div className="grid grid-cols-4 grid-rows-2 gap-2 h-[420px]">
+        <P className="col-span-2 row-span-2 h-full rounded-2xl" />
+        <P className="h-full rounded-2xl" />
+        <P className="h-full rounded-2xl" />
+        <P className="h-full rounded-2xl" />
+        <P className="h-full rounded-2xl" />
+      </div>
+
+      {/* Tabs skeleton */}
+      <div className="flex gap-4 border-b pb-2">
+        {Array.from({ length: 5 }).map((_, i) => <P key={i} className="h-8 w-24 rounded-full" />)}
+      </div>
+
+      {/* Content + Sidebar skeleton */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left content */}
+        <div className="lg:col-span-2 space-y-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="border border-gray-100 rounded-2xl p-6 space-y-4">
+              <P className="h-6 w-40" />
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {Array.from({ length: 6 }).map((_, j) => (
+                  <div key={j} className="space-y-2">
+                    <P className="h-3 w-20" />
+                    <P className="h-5 w-28" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Sidebar */}
+        <div className="hidden lg:block">
+          <div className="border border-gray-100 rounded-2xl p-6 space-y-4">
+            <div className="flex items-center gap-3">
+              <P className="w-14 h-14 rounded-full" />
+              <div className="space-y-2 flex-1">
+                <P className="h-5 w-32" />
+                <P className="h-3 w-24" />
+              </div>
+            </div>
+            <P className="h-10 w-full rounded-xl" />
+            <P className="h-10 w-full rounded-xl" />
+            <P className="h-10 w-full rounded-xl" />
+            <P className="h-12 w-full rounded-xl" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
-    <div className=" xl:max-w-[80rem] max-w-[85rem] mx-auto p-6">
+    <div className="xl:max-w-[80rem] max-w-[85rem] mx-auto p-6">
+      {state.loading ? PropertyDetailSkeleton : (
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-      />
+      >
 
       {/* Header + Gallery */}
       <div className="conatiner flex flex-col md:flex-col space-y-6 md:space-y-6">
@@ -399,7 +471,7 @@ export default function PropertyDetailPage() {
 
       <div className="lg:hidden fixed bottom-8 right-0 w-auto flex justify-center z-20">
         <Button
-          className="bg-color2 hover:bg-color2 text-white px-9 py-6 rounded-l-full rounded-r-none  shadow-lg text-lg"
+          className="bg-color2 hover:bg-color2 text-white px-4 py-4 rounded-l-full rounded-r-none font-normal shadow-lg text-md"
           onClick={() => setIsMobileFormOpen(true)}
         >
           <PhoneForwarded />
@@ -446,6 +518,8 @@ export default function PropertyDetailPage() {
           </>
         )}
       </AnimatePresence>
+    </motion.div>
+    )}
     </div>
   );
 }

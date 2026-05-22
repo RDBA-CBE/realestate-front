@@ -79,7 +79,7 @@ export default function SellingOptionsSection() {
 
                     <div className="flex  gap-3 ">
                     <Icon className="h-7 w-7 text-[#9b0f09]" />
-                    <h3 className="section-in-ti leading-snug">
+                    <h3 className="section-in-ti leading-snug mb-2.5">
                     {item.title}
                   </h3>
                   </div>

@@ -13,6 +13,7 @@ import {
   CalendarCheck,
   Eye,
   SendIcon,
+  ArrowLeft,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
@@ -483,6 +484,9 @@ export default function AISearchComponent() {
     >
       {/* Header */}
       <div className="flex items-center gap-3 px-2 py-4 border-b border-border shrink-0">
+        <div onClick={()=> router.back()}>
+          <ArrowLeft className="text-dred w-5 h-5"/>
+        </div>
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-themeColor1 to-orange-400 flex items-center justify-center">
           <Sparkles className="w-4 h-4 text-white" />
         </div>
