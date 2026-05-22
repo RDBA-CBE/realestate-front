@@ -48,10 +48,10 @@ const PropertyByType = ({ propertyTypeList = [] }) => {
     <section className="bg-[#f8f8f8] section-pad !pt-0">
       <div className="section-wid mx-auto ">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between md:items-center mb-10 ">
+        <div className="flex flex-col md:flex-row justify-between md:items-center mb-5 md:mb-10 ">
           <div>
             <h2 className="section-ti">Explore Property Types</h2>
-            <p className="section-cap">Lorem ipsum dolor sit amet</p>
+            <p className="section-cap mb-0 md:mb-4">Lorem ipsum dolor sit amet</p>
           </div>
           {/* Nav Arrows */}
           {propertyTypeList.length > 6 && (

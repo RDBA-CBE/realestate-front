@@ -193,7 +193,9 @@ import { truncateText } from "@/utils/function.utils";
 
 const breakpoints = {
   320: { slidesPerView: 1, spaceBetween: 16 },
-  640: { slidesPerView: 2, spaceBetween: 20 },
+  600: { slidesPerView: 1.5, spaceBetween: 20 },
+ 
+  780: { slidesPerView: 2, spaceBetween: 20 },
   1180: { slidesPerView: 3, spaceBetween: 20 },
   1300: { slidesPerView: 3, spaceBetween: 20 },
   1500: { slidesPerView: 3, spaceBetween: 24 },
@@ -216,7 +218,7 @@ function DeveloperCard({ developer }: { developer: any }) {
   return (
     <div
       onClick={() => router.push(`/developer/${developer?.id}`)}
-      className="group cursor-pointer bg-white rounded-2xl py-10 px-5 xs:px-8 transition-all duration-500 hover:-translate-y-1 hover:shadow-xl relative overflow-hidden"
+      className="group cursor-pointer bg-white rounded-2xl py-10 px-5 lg:px-8 transition-all duration-500 hover:-translate-y-1 hover:shadow-xl relative overflow-hidden"
     >
       {/* Arrow */}
       <div className="absolute top-3 right-3 md:top-5 md:right-5 w-8 h-8 rounded-full bg-[#fdf1f1] flex items-center justify-center text-dred transition-all duration-300 group-hover:rotate-45">
@@ -283,7 +285,7 @@ export default function FeaturedDevelopers({
   return (
     <section className="section-pad overflow-hidden relative "
         style={{
-          background: ` url('/assets/images/real-estate/home/dev-reg-bg.png')`,
+          background: ` url('/assets/images/real-estate/home/developers1.webp')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

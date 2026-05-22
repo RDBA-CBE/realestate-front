@@ -85,7 +85,7 @@ const LoginPage = () => {
       </div>
 
       {/* Left panel */}
-      <div className="hidden lg:flex flex-col justify-between w-1/2 bg-[#9b0f09] px-16 py-12 relative overflow-hidden">
+      <div className="hidden lg:flex flex-col justify-between w-1/2 bg-[#9b0f09] px-16 pt-12  relative overflow-hidden">
         <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-white/5" />
         <div className="absolute bottom-0 right-0 w-72 h-72 rounded-full bg-white/5 translate-x-1/3 translate-y-1/3" />
 
@@ -111,7 +111,7 @@ const LoginPage = () => {
         </div>
 
         <div className="z-10">
-          <svg viewBox="0 0 400 160" className="w-full opacity-20" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 400 160" className="w-full opacity-20" xmlns="http://www.w3.org/2000/svg" style={{marginBottom:"-15px"}}>
             <rect x="20" y="60" width="80" height="90" rx="4" fill="white" />
             <polygon points="60,20 100,60 20,60" fill="white" />
             <rect x="45" y="100" width="30" height="50" rx="2" fill="#9b0f09" />

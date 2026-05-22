@@ -69,7 +69,7 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
           {/* Search Bar */}
           <div className="adv-searchbar flex items-center justify-between gap-2 mt-6">
              <div className="flex  flex-1 gap-3 items-center lg:items-start px-4">
-              <Search className="text-dred w-4 h-4 md:w-5 md:h-5  md:mt-0.5 shrink-0" />
+              <Search className="text-dred w-4 h-4 md:w-5 md:h-5 mt-0  md:mt-0.5 shrink-0" />
               <div>
                 <input
                   type="text"
@@ -84,7 +84,7 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
                   //       : "properties for lease"
                   // }...`}
                   placeholder="Search Properties"
-                  className="adv-field-input placeholder:lg:text-[15px] placeholder:text-[#737373]"
+                  className="adv-field-input placeholder:lg:text-[15px] placeholder:text-[#737373] py-2 md:py-0"
                 />
               </div>
             </div>
@@ -129,9 +129,10 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
 
            
 
-            <button className="adv-search-btn" onClick={handleSearch}>
+            <button className="adv-search-btn " onClick={handleSearch}>
+              <p className="adv-search-label -mt-0.5 ms-2">Search</p>
               <ArrowRight className="w-5 h-5 search-ico" />
-              <p className="adv-search-label -mt-0.5">Search</p>
+              
             </button>
           </div>
         </div>

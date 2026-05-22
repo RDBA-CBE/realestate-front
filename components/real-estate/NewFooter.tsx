@@ -89,7 +89,7 @@ export default function NewFooter() {
 
   return (
     <footer className="section-pad  text-white" 
-    style={{background:`url(/assets/images/real-estate/home/Footer-4.png)`, backgroundPosition:"top", backgroundSize:"cover", backgroundRepeat:"no-repeat", width:"100%", height:"100%"}}
+    style={{background:`url(/assets/images/real-estate/home/Footer.webp)`, backgroundPosition:"top", backgroundSize:"cover", backgroundRepeat:"no-repeat", width:"100%", height:"100%"}}
     >
       <div className="section-wid">
         <div className="flex flex-col gap-6 border-b border-white/15 pb-8 md:flex-row md:items-center md:justify-between">

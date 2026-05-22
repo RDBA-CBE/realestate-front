@@ -386,9 +386,19 @@ const Header = () => {
 
                     <SheetContent>
                       <SheetHeader>
-                        <SheetTitle></SheetTitle>
+                        <SheetTitle>
+                         {/* <div className="flex justify-center gap-3 py-4"> */}
+                          <img
+                            src="/assets/images/real-estate/home/boom-logo.png"
+                            alt="Logo"
+                            className="h-10 w-auto object-contain -mt-2"
+                            onClick={() => { router.push("/")
+                               setOpen(false)}}
+                          />
+                        {/* </div> */}
+                        </SheetTitle>
                       </SheetHeader>
-                      <div className="flex justify-between items-center mt-5">
+                      {/* <div className="flex justify-between items-center "> */}
                         {/* <Link href="home">
                           <Image
                             src="/assets/images/logo.png"
@@ -397,13 +407,15 @@ const Header = () => {
                             height={80}
                           />
                         </Link> */}
-                        <div className="flex justify-center gap-3 py-4">
+                        {/* <div className="flex justify-center gap-3 py-4">
                           <img
                             src="/assets/images/real-estate/home/boom-logo.png"
                             alt="Logo"
                             className="h-10 w-auto object-contain"
+                            onClick={() => { router.push("/")
+                               setOpen(false)}}
                           />
-                        </div>
+                        </div> */}
 
                         {/* {!state.token && (
                           <Button
@@ -414,7 +426,7 @@ const Header = () => {
                             Login
                           </Button>
                         )} */}
-                      </div>
+                      {/* </div> */}
 
                       {/* Mobile Auth Buttons */}
                       {/* {!username && ( */}
@@ -447,7 +459,7 @@ const Header = () => {
                           >
                             <AccordionItem value={`item-${index + 1}`}>
                               <AccordionTrigger
-                                className={`no-underline hover:no-underline uppercase text-sm ${
+                                className={`no-underline hover:no-underline uppercase text-sm !pb-0 ${
                                   menu.items?.length > 0 ? "" : "[&>svg]:hidden"
                                 } ${isActive ? "text-dred" : ""}`}
                                 onClick={() => {
@@ -502,7 +514,7 @@ const Header = () => {
                           );
                         })}
                           {/* Login + Post Property buttons inside sidebar */}
-                        <div className="flex flex-col gap-3 mt-6">
+                        <div className="flex flex-col gap-3 mt-8">
                           {!state.token ? (
                             <Button
                               onClick={() => { router.push("/login"); setOpen(false); }}
@@ -528,7 +540,7 @@ const Header = () => {
                           </Button>
                         </div>
 
-                        <div className="flex items-center gap-3 me-4 mt-5 lg:flex">
+                        <div className="flex items-center gap-3 me-4 mt-6 lg:flex">
                           <Mail className="w-4 h-4 text-dred" />
                           <Link
                             href={"mailto:support@realestate.com"}

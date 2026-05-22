@@ -205,7 +205,7 @@ export default function PropertyHeader(props: any) {
           </Button> */}
           </div>
           <div>
-            <p className="section-ti mt-2">
+            <p className="section-ti mt-2 !text-dred">
               {formatPriceRange(
                 data?.price_range?.minimum_price,
                 data?.price_range?.maximum_price

@@ -168,12 +168,15 @@ export default function ContactAgentForm({
       setCallbackLoading(true);
 
       const errs = { email: "", phone: "" };
-      if (!callbackForm.email.trim()) errs.email = "Email is required";
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(callbackForm.email))
-        errs.email = "Enter a valid email";
-      if (!callbackForm.phone.trim()) errs.phone = "Phone is required";
-      else if (!/^[0-9]{10}$/.test(callbackForm.phone))
-        errs.phone = "Enter a valid 10-digit number";
+      if (!callbackForm.email.trim()) {errs.email = "Email is required";  setCallbackLoading(false);}
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(callbackForm.email)){
+        errs.email = "Enter a valid email";  
+        setCallbackLoading(false);}
+      if (!callbackForm.phone.trim()){ errs.phone = "Phone is required";  setCallbackLoading(false);}
+      else if (!/^[0-9]{10}$/.test(callbackForm.phone)){
+        errs.phone = "Enter a valid 10-digit number"; 
+       setCallbackLoading(false);
+      }
       setCallbackErrors(errs);
       if (errs.email || errs.phone) return;
       const payload = {
@@ -205,13 +208,13 @@ export default function ContactAgentForm({
     setBookingLoading(true);
 
     const errs = { email: "", phone: "", date: "" };
-    if (!bookingForm.email.trim()) errs.email = "Email is required";
+    if (!bookingForm.email.trim()) {errs.email = "Email is required"; setBookingLoading(false);}
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bookingForm.email))
-      errs.email = "Enter a valid email";
-    if (!bookingForm.phone.trim()) errs.phone = "Phone is required";
+      {errs.email = "Enter a valid email"; setBookingLoading(false);}
+    if (!bookingForm.phone.trim()){ errs.phone = "Phone is required"; setBookingLoading(false);}
     else if (!/^[0-9]{10}$/.test(bookingForm.phone))
-      errs.phone = "Enter a valid 10-digit number";
-    if (!bookingForm.date.trim()) errs.date = "Date is required";
+     { errs.phone = "Enter a valid 10-digit number"; setBookingLoading(false);}
+    if (!bookingForm.date.trim()){ errs.date = "Date is required"; setBookingLoading(false);}
     setBookingErrors(errs);
     if (errs.email || errs.phone) return;
     const payload = {

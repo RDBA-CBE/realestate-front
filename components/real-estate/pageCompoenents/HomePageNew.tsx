@@ -25,6 +25,13 @@ import LocationPickerModal from '../InnerComponents/LocationPickerModal';
 import PropertyByCityNew from '../InnerComponents/PropertyByCityNew';
 import FAQSectionNew from '../InnerComponents/FAQSectionNew';
 import SectionTestimonialNew from '../InnerComponents/SectionTestimonialNew';
+import {
+  PropertyByCitySkeleton,
+  FeaturedListingsSkeleton,
+  PropertyByTypeSkeleton,
+  FeaturedDevelopersSkeleton,
+  NewPopularPropertiesSkeleton,
+} from '../InnerComponents/HomeSectionSkeletons';
 
 
 
@@ -41,6 +48,11 @@ const HomePageNew = () => {
       showLocationModal: false,
       featuredLocationEmpty: false,
       popularLocationEmpty: false,
+      loadingCity: true,
+      loadingFeatured: true,
+      loadingPropertyType: true,
+      loadingDevelopers: true,
+      loadingPopular: true,
     });
   
     useEffect(() => {
@@ -79,9 +91,11 @@ const HomePageNew = () => {
 
     const developerList = async () => {
       try {
+        setState({ loadingDevelopers: true });
         const res: any = await Models.user.list(1, { group: "Developer", has_complete_developer_profile: true});
-        setState({ developerList: res?.results || [] });
+        setState({ developerList: res?.results || [], loadingDevelopers: false });
       } catch (error: any) {
+        setState({ loadingDevelopers: false });
         const msg = error?.error || error?.response?.data?.error || "";
         if (msg === "Given token not valid for any token type") {
           toastEmitter.emit("error", "Session expired. Please login again.");
@@ -95,23 +109,19 @@ const HomePageNew = () => {
 
     const cityList = async (page) => {
       try {
+        setState({ loadingCity: true });
         const body: any = {};
         if (state.search) body.search = state.search;
         const res: any = await Models.dropdowns.city(page, body);
         const locationdd = res?.results?.filter((item) => item?.property_count != 0);
         const droprdown = Dropdown(locationdd, "name");
-
         setState({
-          locationList: droprdown,
-          cityList: res?.results,
-          allCities: locationdd,
-          total: res?.count,
-          page,
-          next: res.next,
-          previous: res.previous,
-          totalRecords: res.count,
+          locationList: droprdown, cityList: res?.results, allCities: locationdd,
+          total: res?.count, page, next: res.next, previous: res.previous, totalRecords: res.count,
+          loadingCity: false,
         });
       } catch (error) {
+        setState({ loadingCity: false });
         console.log("error -->", error);
       }
     };
@@ -136,66 +146,60 @@ const HomePageNew = () => {
 
    const propertyTypeList = async () => {
       try {
+        setState({ loadingPropertyType: true });
         const res: any = await Models.category.list(1, {});
         setState({
           propertyTypeList: res?.results?.filter((item) => item?.properties_count != 0),
+          loadingPropertyType: false,
         });
       } catch (error) {
+        setState({ loadingPropertyType: false });
         console.log("✌️error --->", error);
       }
     };
 
     const saleWithFurnishedList = async (locationId?: number) => {
       try {
-        setState({ loading: true, featuredLocationEmpty: false });
-
+        setState({ loadingFeatured: true, featuredLocationEmpty: false });
         const body: any = { listing_type: "sale", furnishing: "furnished" };
         if (locationId) body.location = locationId;
-
         const res: any = await Models.property.list(1, body);
         const results = res?.results || [];
-
         if (locationId && results.length === 0) {
           setState({ featuredLocationEmpty: true });
-          // fallback: fetch without location filter
           const fallback: any = await Models.property.list(1, { listing_type: "sale", furnishing: "furnished" });
-          setState({ saleWithFurnishedList: fallback?.results || [], loading: false });
+          setState({ saleWithFurnishedList: fallback?.results || [], loadingFeatured: false });
         } else {
-          setState({ saleWithFurnishedList: results, loading: false });
+          setState({ saleWithFurnishedList: results, loadingFeatured: false });
         }
       } catch (error) {
-        setState({ loading: false });
+        setState({ loadingFeatured: false });
         console.log("✌️error --->", error);
       }
     };
 
     const propertyList = async (type, locationId?: number) => {
       try {
-        setState({ loading: true, popularLocationEmpty: false });
-
+        setState({ loadingPopular: true, popularLocationEmpty: false });
         const body: any = {};
-        if (type === "sale") body.listing_type = "sale";
-        if (type === "lease") body.listing_type = "lease";
-
+        if (type == "sale") body.listing_type = "sale";
+        if (type == "lease") body.listing_type = "lease";
         const locId = locationId ?? state.selectedLocation?.value;
         if (locId) body.location = locId;
-
         const res: any = await Models.property.list(1, body);
         const results = res?.results || [];
-
         if (locId && results.length === 0) {
           setState({ popularLocationEmpty: true });
-          // fallback: fetch without location filter
           const fallbackBody: any = {};
-          if (type === "sale") fallbackBody.listing_type = "sale";
-          if (type === "lease") fallbackBody.listing_type = "lease";
+          if (type == "sale") fallbackBody.listing_type = "sale";
+          if (type == "lease") fallbackBody.listing_type = "lease";
           const fallback: any = await Models.property.list(1, fallbackBody);
-          setState({ propertyList: fallback?.results || [], loading: false });
+          setState({ propertyList: fallback?.results || [], loadingPopular: false });
         } else {
-          setState({ propertyList: results, loading: false });
+          setState({ propertyList: results, loadingPopular: false });
         }
       } catch (error) {
-        setState({ loading: false });
+        setState({ loadingPopular: false });
         console.log("✌️error --->", error);
       }
     };
@@ -229,21 +233,19 @@ const HomePageNew = () => {
 
         <HomeBanner propertyTypeList={state.propertyTypeList} cityList={state.locationList} />
 
-         <PropertyByCity cityList={state.cityList} />
-         {/* <PropertyByCityNew cityList={state.cityList} /> */}
+        {state.loadingCity ? <PropertyByCitySkeleton /> : <PropertyByCity cityList={state.cityList} />}
 
+        {state.loadingFeatured ? <FeaturedListingsSkeleton /> : (
           <FeaturedListings
             list={state.saleWithFurnishedList}
             locationEmpty={state.featuredLocationEmpty}
             locationLabel={state.selectedLocation?.label}
           />
+        )}
 
-        <PropertyByType propertyTypeList={state.propertyTypeList} />
+        {state.loadingPropertyType ? <PropertyByTypeSkeleton /> : <PropertyByType propertyTypeList={state.propertyTypeList} />}
 
-        
-
-
-        <FeaturedDevelopers developerList={state.developerList} />
+        {state.loadingDevelopers ? <FeaturedDevelopersSkeleton /> : <FeaturedDevelopers developerList={state.developerList} />}
 
         <DeveloperRegistrationSection/>
 
@@ -252,6 +254,7 @@ const HomePageNew = () => {
             updatePropertyType={(type) => propertyList(type)}
             locationEmpty={state.popularLocationEmpty}
             locationLabel={state.selectedLocation?.label}
+            loading={state.loadingPopular}
           />
 
           <HowItWorks />

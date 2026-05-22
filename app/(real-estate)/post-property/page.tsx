@@ -97,7 +97,7 @@ const PostPropertyPage = () => {
       </div>
 
       {/* Left panel */}
-      <div className="hidden lg:flex flex-col justify-between w-1/2 bg-[#9b0f09] px-16 py-12 relative overflow-hidden">
+      <div className="hidden lg:flex flex-col justify-between w-1/2 bg-[#9b0f09] px-16 pt-12  relative overflow-hidden">
         <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-white/5" />
         <div className="absolute bottom-0 right-0 w-72 h-72 rounded-full bg-white/5 translate-x-1/3 translate-y-1/3" />
 
@@ -122,7 +122,7 @@ const PostPropertyPage = () => {
         </div>
 
         <div className="z-10">
-          <svg viewBox="0 0 400 160" className="w-full opacity-20" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 400 160" className="w-full opacity-20" xmlns="http://www.w3.org/2000/svg" style={{marginBottom:"-15px"}}>
             <rect x="20" y="60" width="80" height="90" rx="4" fill="white" />
             <polygon points="60,20 100,60 20,60" fill="white" />
             <rect x="45" y="100" width="30" height="50" rx="2" fill="#9b0f09" />
@@ -145,11 +145,11 @@ const PostPropertyPage = () => {
           <div className="flex lg:hidden items-center justify-center gap-2 mb-8 cursor-pointer" onClick={() => router.push("/")}>
             <img src="/assets/images/real-estate/home/boom-logo.png" alt="Logo" className="h-12 w-auto object-contain" />
 </div>
-          <h2 className="text-3xl font-bold text-black mb-1">Post Your Property</h2>
-          <p className="text-gray-500 text-sm mb-8">
+          <h2 className="text-3xl font-bold text-black pb-5">Post Your Property</h2>
+          {/* <p className="text-gray-500 text-sm mb-8">
             Already have an account?{" "}
             <Link href="/login" className="text-[#9b0f09] font-semibold hover:underline">Sign in</Link>
-          </p>
+          </p> */}
 
           {/* Google SSO */}
           {/* <button
@@ -165,11 +165,11 @@ const PostPropertyPage = () => {
             Continue with Google
           </button> */}
 
-          <div className="flex items-center gap-3 mb-6">
+          {/* <div className="flex items-center gap-3 mb-6">
             <div className="flex-1 h-px bg-gray-200" />
             <span className="text-xs text-gray-400 font-medium">OR</span>
             <div className="flex-1 h-px bg-gray-200" />
-          </div>
+          </div> */}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-3">

@@ -11,16 +11,16 @@ const IMAGE_BASE_PATH = "/assets/images/real-estate/home/location/";
 
 // Actual image files available in the location folder
 const LOCATION_IMAGES = [
-  "Bangalore.png",
-  "Chennai.png",
-  "Coimbatore.png",
-  "Erode.png",
-  "Hosur.png",
-  "Kochi.png",
-  "Kodaikanal.png",
-  "Ooty.png",
-  "Nagerkoil.png",
-  "Mysore.png"
+  "Bangalore.webp",
+  "Chennai.webp",
+  "Coimbatore.webp",
+  "Erode.webp",
+  "Hosur.webp",
+  "Kochi.webp",
+  "Kodaikanal.webp",
+  "Ooty.webp",
+  "Nagerkoil.webp",
+  "Mysore.webp"
 ];
 
 // Build a lowercase-keyed map: { "bangalore": "Bangalore.png", ... }
@@ -57,10 +57,10 @@ const PropertyByCity = ({ cityList = [] }) => {
   return (
     <section className="section-pad bg-white overflow-hidden">
       <div className="section-wid pb-5">
-         <div className="flex flex-col md:flex-row justify-between items-start mb-10 ">
+         <div className="flex flex-col md:flex-row justify-between items-start mb-5 md:mb-10 ">
         <div className=" ">
           <h2 className="section-ti">Properties by Cities</h2>
-          <p className="section-cap">Explore top cities with the best real estate opportunities</p>
+          <p className="section-cap mb-0 md:mb-4">Explore top cities with the best real estate opportunities</p>
         </div>
 
         {cityList.length > 6 && <div className="flex items-center gap-3  mt-4 lg:mt-0">

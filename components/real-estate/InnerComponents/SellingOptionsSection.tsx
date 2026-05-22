@@ -45,7 +45,7 @@ export default function SellingOptionsSection() {
           {/* Left Big Image */}
           <div className="relative  h-[400px] md:h-full overflow-hidden rounded-2xl">
             <img
-              src="/assets/images/real-estate/home/faq-5.png"
+              src="/assets/images/real-estate/home/selling-opt-2.webp"
               alt="Property"
               className="h-full w-full object-cover"
             />
