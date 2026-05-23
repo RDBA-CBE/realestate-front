@@ -1,24 +1,41 @@
 import CustomSelect from "@/components/common-components/dropdown";
 import { ArrowRight, Home, MapPin, Search } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Models from "@/imports/models.import";
 
-const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
+const HomeBanner = () => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("Sale");
   const [selectedType, setSelectedType] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [searchText, setSearchText] = useState("");
+  const [locationList, setLocationList] = useState([]);
+  const [propertyTypeList, setPropertyTypeList] = useState([]);
 
-  const propertyTypeOptions = propertyTypeList.map((item) => ({
-    value: String(item.id),
-    label: item.name,
-  }));
+  useEffect(() => {
+    fetchDynamicFilters();
+  }, [activeTab, selectedType, selectedCity]);
 
-  const cityOptions = cityList.map((item) => ({
-    value: item.value,
-    label: item.label,
-  }));
+  const fetchDynamicFilters = async () => {
+    try {
+      const body: any = {};
+      if (activeTab !== "All") body.listing_type = [activeTab.toLowerCase()];
+      if (selectedCity) body.location = [Number(selectedCity)];
+      if (selectedType) body.property_type = [Number(selectedType)];
+
+      const res: any = await Models.property.dynamicFilter(body);
+
+      setLocationList(
+        (res?.location || []).map((item: any) => ({ label: item.name, value: String(item.id) }))
+      );
+      setPropertyTypeList(
+        (res?.property_type || []).map((item: any) => ({ label: item.name, value: String(item.id) }))
+      );
+    } catch (error) {
+      console.log("banner dynamicFilter error", error);
+    }
+  };
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -29,18 +46,8 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
     router.push(`/property-list?${params.toString()}`);
   };
 
-  
-
   return (
     <section className="adv-wrapper relative lg:min-h-[90vh] py-20 lg:py-0 flex items-center justify-center overflow-hidden">
-      {/* <div className="
-    absolute left-0 top-0 h-full w-[60%] z-0
-    bg-gradient-to-rb
-    from-black/65
-    via-black/35
-    to-transparent
-    backdrop-blur-[5px]
-  "></div> */}
        <div className="section-wid adv-container relative z-10 w-full gap-10 items-center overflow-visible">
         {/* Left Content */}
         <div className="adv-left">
@@ -58,7 +65,11 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
             {["Sale", "Lease", "All"].map((tab, i) => (
               <span
                 key={i}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => {
+                  setActiveTab(tab);
+                  setSelectedType("");
+                  setSelectedCity("");
+                }}
                 className={`adv-tab cursor-pointer ${activeTab === tab ? "active" : ""}`}
               >
                 {tab}
@@ -76,13 +87,6 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  // placeholder={`Search ${
-                  //   activeTab === "All"
-                  //     ? "properties"
-                  //     : activeTab === "Sale"
-                  //       ? "properties for sale"
-                  //       : "properties for lease"
-                  // }...`}
                   placeholder="Search Properties"
                   className="adv-field-input placeholder:lg:text-[15px] placeholder:text-[#737373] py-2 md:py-0"
                 />
@@ -92,14 +96,12 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
             <div className="flex  flex-1 gap-3 items-center lg:items-start px-4">
               <MapPin className="text-dred w-4 h-4 md:w-5 md:h-5  md:mt-1.5 shrink-0" />
               <div>
-                {/* <p className="adv-field-label">Location</p> */}
                 <CustomSelect
-                  options={cityOptions}
+                  options={locationList}
                   value={selectedCity}
                   onChange={(selected) => setSelectedCity(selected ? selected.value : "")}
                   className="custom-select placeholder:lg:text-[16px]"
                   placeholder="Choose City"
-                  
                 />
               </div>
             </div>
@@ -109,45 +111,24 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
             <div className="flex flex-1 gap-3 items-center lg:items-start px-4">
               <Home className="text-dred w-4 h-4 md:w-5 md:h-5 md:mt-1.5 shrink-0" />
               <div>
-                {/* <p className="adv-field-label">Property Type</p> */}
                 <CustomSelect
-                  options={propertyTypeOptions}
+                  options={propertyTypeList}
                   value={selectedType}
                   onChange={(selected) => setSelectedType(selected ? selected.value : "")}
                   className="custom-select placeholder:lg:text-[16px]"
                   placeholder="Choose Property Type"
                 />
-                {/* <select className="adv-field-input cursor-pointer">
-                  <option value="">Choose type...</option>
-                  <option value="sale">For Sale</option>
-                  <option value="lease">For Lease</option>
-                </select> */}
               </div>
             </div>
 
             <div className="adv-divider"></div>
 
-           
-
             <button className="adv-search-btn " onClick={handleSearch}>
               <p className="adv-search-label ms-2">Search</p>
               <ArrowRight className="w-5 h-5 search-ico " />
-              
             </button>
           </div>
         </div>
-
-        {/* Right Images — hidden on mobile */}
-        {/* <div className="adv-right hidden md:flex relative gap-5">
-          <div className="flex flex-col gap-5 mt-[-50px]">
-            <img
-              src="assets/images/real-estate/home/home-banner.png"
-              alt=""
-              className="adv-img w-full h-auto  object-cover"
-            />
-           
-          </div>
-        </div> */}
       </div>
     </section>
   );

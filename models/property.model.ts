@@ -4,7 +4,7 @@ const properties = {
   list: (page, body) => {
     console.log("✌️body --->", body);
     let promise = new Promise((resolve, reject) => {
-      let url = `properties?page=${page}`;
+      let url = `properties?page=${page}&is_approved=true&publish=true`;
 
       if (body?.publish == "Yes") {
         url += `&publish=${encodeURIComponent(true)}`;

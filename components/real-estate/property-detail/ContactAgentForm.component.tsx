@@ -173,7 +173,7 @@ export default function ContactAgentForm({
 
       const errs = { email: "", phone: "", message: "" };
       // if (!callbackForm.email.trim()) {errs.email = "Email is required";  setCallbackLoading(false);}
-      //  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(callbackForm.email)){
+      //  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(callbackForm.email)){
       //   errs.email = "Enter a valid email";  
       //   setCallbackLoading(false);}
       if (!callbackForm.phone.trim()){ errs.phone = "Phone is required";  setCallbackLoading(false);}

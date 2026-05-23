@@ -5,6 +5,7 @@ import {
   MapPin, Heart, Share, GitCompareArrowsIcon,
   ChevronLeft, ChevronRight, IndianRupeeIcon,
   Maximize2, Star, CheckCircle2, Phone, Home,
+  MapPinHouseIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
@@ -181,8 +182,8 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
         For {property.listing_type}
       </Badge>
       {property?.user_preferred_locations && (
-        <Badge className="absolute top-3 right-3 bg-[#fff6f6] text-[#9b0f09] border-none rounded-full px-2 py-1 text-xs flex gap-1">
-          <Star className="w-3 h-3" /> Preferred
+        <Badge className="absolute top-3 right-3 bg-[#9b0f09] text-[#fff] hover:bg-dred border-none rounded-full px-2 py-1 text-xs flex gap-1">
+          <MapPinHouseIcon className="w-3 h-3" /> Preffered
         </Badge>
       )}
     </div>

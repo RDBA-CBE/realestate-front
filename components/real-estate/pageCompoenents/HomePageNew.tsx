@@ -107,6 +107,8 @@ const HomePageNew = () => {
       }
     };
 
+    
+
     const cityList = async (page) => {
       try {
         setState({ loadingCity: true });
@@ -231,7 +233,7 @@ const HomePageNew = () => {
         transition={{ duration: 0.6 }}
       >
 
-        <HomeBanner propertyTypeList={state.propertyTypeList} cityList={state.locationList} />
+        <HomeBanner />
 
         {state.loadingCity ? <PropertyByCitySkeleton /> : <PropertyByCity cityList={state.cityList} />}
 

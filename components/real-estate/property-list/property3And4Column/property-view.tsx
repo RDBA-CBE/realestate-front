@@ -49,6 +49,9 @@ import ContactAgentForm from "../../property-detail/ContactAgentForm.component";
 import { ActiveFilters } from "./ActiveFilters.component";
 import { FilterListPopup, PopupPortal } from "./FilterListPopup";
 import { useRouter } from "next/navigation";
+import Models from "@/imports/models.import";
+import CustomMultiSelect from "@/components/common-components/multi-select";
+import { Dropdown, Success, Failure } from "@/utils/function.utils";
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
@@ -135,6 +138,12 @@ export function PropertyView(props: any) {
     showAllProject: false,
     activePopup: null as string | null,
     popupPos: { left: 0, top: 0 },
+    userPreferredLocations: [] as any[],
+    showNoPreferredModal: false,
+    showChooseLocationModal: false,
+    chooseLocation: [] as string[],
+    locationList: [] as any[],
+    userId: null as string | null,
   });
 
   const [filterPopupPos, setFilterPopupPos] = useState<Record<string, { left: number; top: number }>>({});
@@ -200,11 +209,53 @@ export function PropertyView(props: any) {
   );
 
   useEffect(() => {
-    const userLoggedIn = localStorage.getItem("token");
-    setState({
-      userLoggedIn : userLoggedIn ? true : false
-    })
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+    setState({ userLoggedIn: !!token, userId });
+    if (token && userId) {
+      fetchUserPreferredLocations(userId);
+    }
+    fetchLocationList();
   }, []);
+
+  const fetchUserPreferredLocations = async (userId: string) => {
+    try {
+      const res: any = await Models.user.details(userId);
+      const preferred = res?.preferred_locations || [];
+      setState({ userPreferredLocations: preferred });
+    } catch (error) {
+      console.log("error fetching user preferred locations", error);
+    }
+  };
+
+  const fetchLocationList = async () => {
+    try {
+      const res: any = await Models.dropdowns.city(1, {});
+      setState({ locationList: Dropdown(res?.results, "name") });
+    } catch (error) {
+      console.log("error fetching location list", error);
+    }
+  };
+
+  const handlePreferredLocationClick = () => {
+    if (state.userPreferredLocations?.length > 0) {
+      setState({ prefferedLocation: !state.prefferedLocation });
+    } else {
+      setState({ showNoPreferredModal: true });
+    }
+  };
+
+  const handleSavePreferredLocation = async () => {
+    try {
+      await Models.user.update({ preferred_locations: state.chooseLocation }, state.userId);
+      Success("Preferred Locations Updated");
+      setState({ showChooseLocationModal: false, showNoPreferredModal: false });
+      await fetchUserPreferredLocations(state.userId);
+      setState({ prefferedLocation: true });
+    } catch (error) {
+      Failure("Failed to update preferred locations");
+    }
+  };
 
 
   useEffect(() => {
@@ -225,6 +276,52 @@ export function PropertyView(props: any) {
     initialPropertyType,
     initialDeveloper,
   ]);
+
+  // Reconcile selected filters against updated dynamic filter lists
+  // When dynamic filters update (e.g. selecting Coimbatore removes Agricultural from categoryList),
+  // remove any selected items that no longer exist in the updated lists
+  useEffect(() => {
+    if (initialLoadRef.current) return;
+
+    const reconcile = (selected: any[], list: any[]) => {
+      if (!selected?.length || !list?.length) return selected;
+      const validValues = new Set(list.map((i) => i.value));
+      return selected.filter((i) => validValues.has(i.value));
+    };
+
+    const updates: any = {};
+
+    if (categoryList?.length) {
+      const next = reconcile(state.propertyType, categoryList);
+      if (next.length !== state.propertyType.length) updates.propertyType = next;
+    }
+    if (locationList?.length) {
+      const next = reconcile(state.location, locationList);
+      if (next.length !== state.location.length) updates.location = next;
+    }
+    if (areaList?.length) {
+      const next = reconcile(state.area, areaList);
+      if (next.length !== state.area.length) updates.area = next;
+    }
+    if (developerList?.length) {
+      const next = reconcile(state.developer, developerList);
+      if (next.length !== state.developer.length) updates.developer = next;
+    }
+    if (projectList?.length) {
+      const next = reconcile(state.project, projectList);
+      if (next.length !== state.project.length) updates.project = next;
+    }
+    if (floorPlanList?.length) {
+      const next = reconcile(state.floorPlan, floorPlanList);
+      if (next.length !== state.floorPlan.length) updates.floorPlan = next;
+    }
+    if (furnishingList?.length) {
+      const next = reconcile(state.furnishing, furnishingList);
+      if (next.length !== state.furnishing.length) updates.furnishing = next;
+    }
+
+    if (Object.keys(updates).length > 0) setState(updates);
+  }, [categoryList, locationList, areaList, developerList, projectList, floorPlanList, furnishingList]);
 
   useEffect(() => {
     if (minPrice > 0 || maxPrice > 0) {
@@ -1322,9 +1419,7 @@ export function PropertyView(props: any) {
                       border-dred  bg-dred text-white
                       hover:bg-dred hover:text-white
                          px-2 md:px-3 shadow-none "
-                  onClick={() => {
-                    setState({ prefferedLocation: !state.prefferedLocation });
-                  }}
+                  onClick={handlePreferredLocationClick}
                 >
                   <MapPinHouseIcon />
                   Preffered Location
@@ -1333,13 +1428,11 @@ export function PropertyView(props: any) {
                 (
                    <Button
                   variant="outline"
-                  className="px-4 py-2 h-8 rounded-2xl text-sm  text-dred 
+                  className="px-4 py-2 h-8 rounded-2xl text-sm bg-[#fff6f6]  text-dred 
                       border-dred hover:text-dred
                      
                       px-2 md:px-3 shadow-none "
-                  onClick={() => {
-                    setState({ prefferedLocation: !state.prefferedLocation });
-                  }}
+                  onClick={handlePreferredLocationClick}
                 >
                   <MapPinHouseIcon />
                   Preffered Location
@@ -1534,6 +1627,104 @@ export function PropertyView(props: any) {
         width="700px"
         renderComponent={() => <div>...same filter options...</div>}
       />
+
+      {/* No Preferred Location Info Modal */}
+      <AnimatePresence>
+        {state.showNoPreferredModal && (
+          <>
+            <motion.div
+              className="fixed inset-0 bg-black/50 z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setState({ showNoPreferredModal: false })}
+            />
+            <motion.div
+              className="fixed inset-0 flex items-center justify-center z-50 p-4"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+            >
+              <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 py-8 px-5 flex flex-col items-center text-center ]">
+                <div className="w-14 h-14 rounded-full bg-[#fff6f6] flex items-center justify-center">
+                  <MapPinHouseIcon className="w-7 h-7 text-dred" />
+                </div>
+                <h3 className="text-lg text-black">No Preferred Location</h3>
+                <p className="text-sm text-[#383838] ">You don&apos;t have any preferred location set.</p>
+                <div className="flex gap-3 w-full mt-5">
+                  <button
+                    className="flex-1 py-2 px-3 rounded-xl border border-gray-300 text-gray-600 text-sm "
+                    onClick={() => setState({ showNoPreferredModal: false })}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="flex-1 py-2 px-3 rounded-xl bg-dred text-white text-sm "
+                    onClick={() => setState({ showNoPreferredModal: false, showChooseLocationModal: true, chooseLocation: [] })}
+                  >
+                    Choose Preferred Location
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Choose Preferred Location Modal */}
+      <AnimatePresence>
+        {state.showChooseLocationModal && (
+          <>
+            <motion.div
+              className="fixed inset-0 bg-black/50 z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setState({ showChooseLocationModal: false })}
+            />
+            <motion.div
+              className="fixed inset-0 flex items-center justify-center z-50 p-4"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+            >
+              <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg  text-black">Choose Preferred Location</h3>
+                  <button onClick={() => setState({ showChooseLocationModal: false })} className="mt-[-40px]">
+                    <X className="w-5 h-5 text-gray-500" />
+                  </button>
+                </div>
+                <CustomMultiSelect
+                  className="border border-gray-200 bg-white"
+                  options={state.locationList}
+                  value={state.chooseLocation}
+                  onChange={(value) => setState({ chooseLocation: value })}
+                  placeholder="Select location"
+                  isMulti={true}
+                  loadOptions={({ search }) => fetchLocationList()}
+                />
+                <div className="flex gap-3">
+                  <button
+                    className="flex-1 py-2 rounded-xl border border-gray-300 text-gray-600 text-sm "
+                    onClick={() => setState({ showChooseLocationModal: false })}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="flex-1 py-2 rounded-xl bg-dred text-white text-sm "
+                    onClick={handleSavePreferredLocation}
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {state.isMobileFormOpen && (

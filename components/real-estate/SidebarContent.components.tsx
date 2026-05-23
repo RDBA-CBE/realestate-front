@@ -189,13 +189,13 @@ export const SidebarContent = (props: any) => {
         <FilterSection label="Location" list={locationList} selected={state.location} stateKey="location" handleChange={handleChange} showAlphabetNav />
       )}
       {areaList.length > 0 && (
-        <FilterSection label="Area" list={areaList} selected={state.area} stateKey="area" handleChange={handleChange} />
+        <FilterSection label="Area" list={areaList} selected={state.area} stateKey="area" handleChange={handleChange} showAlphabetNav/>
       )}
       {developerList.length > 0 && (
-        <FilterSection label="Developer" list={developerList} selected={state.developer} stateKey="developer" handleChange={handleChange} />
+        <FilterSection label="Developer" list={developerList} selected={state.developer} stateKey="developer" handleChange={handleChange} showAlphabetNav/>
       )}
       {projectList.length > 0 && (
-        <FilterSection label="Project" list={projectList} selected={state.project} stateKey="project" handleChange={handleChange} />
+        <FilterSection label="Project" list={projectList} selected={state.project} stateKey="project" handleChange={handleChange} showAlphabetNav/>
       )}
 
       {/* Budget */}
@@ -285,7 +285,7 @@ export const SidebarContent = (props: any) => {
       )}
 
       {/* Bathrooms */}
-      <div>
+      {/* <div>
         <div className="mb-2 font-semibold text-gray-900">Bathrooms</div>
         <div className="flex flex-wrap gap-2">
           {["Any", "2+", "3+", "4+", "5+"].map((option) => {
@@ -303,7 +303,7 @@ export const SidebarContent = (props: any) => {
             );
           })}
         </div>
-      </div>
+      </div> */}
 
       {/* Furnishing */}
       {furnishingList.length > 0 && (

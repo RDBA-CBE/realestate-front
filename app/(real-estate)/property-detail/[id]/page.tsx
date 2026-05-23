@@ -32,7 +32,7 @@ import { Label } from "@/components/ui/label";
 import { useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import { useParams, useRouter } from "next/navigation";
-import { PhoneForwarded, X } from "lucide-react";
+import { ArrowLeft, PhoneForwarded, X } from "lucide-react";
 
 // ---------------- AUTH HOOK ----------------
 function useAuth() {
@@ -408,6 +408,40 @@ export default function PropertyDetailPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
+        {/* BREADCRUMB */}
+        <div className="flex justify-between items-center pb-5">
+            <div className=" flex flex-wrap items-center gap-2 text-sm text-gray-500">
+              <span
+                className="cursor-pointer hover:text-black"
+                onClick={() => router.push("/")}
+              >
+                Home
+              </span>
+
+              <span>/</span>
+
+              <span
+                className="cursor-pointer hover:text-black"
+                onClick={() => router.push("/property-list")}
+              >
+                Property List
+              </span>
+
+              <span>/</span>
+
+              <span className="text-black">{state?.detail?.title}</span>
+            </div>
+
+            {/* BACK BUTTON */}
+            <Button
+              variant="outline"
+              onClick={() => router.back()}
+              className="mb-0  rounded-2xl border-dred bg-white px-4 py-1 md:px-5 md:py-3.5 text-dred shadow-none hover:bg-dred hover:text-white h-6"
+            >
+              <ArrowLeft className=" h-4 w-4 hidden md:block" />
+              Back
+            </Button>
+          </div>
 
       {/* Header + Gallery */}
       <div className="conatiner flex flex-col md:flex-col space-y-6 md:space-y-6">
