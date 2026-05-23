@@ -1955,10 +1955,13 @@ body {
      margin-top: 5px;
   }
   .adv-search-label{
-   
+   margin-top: -4px;
   display: block !important;
   font-size: 16px;
   /* margin-top: -4px; */
+}
+.adv-search-btn .search-ico{
+   margin-top: -2px;
 }
 }
 
