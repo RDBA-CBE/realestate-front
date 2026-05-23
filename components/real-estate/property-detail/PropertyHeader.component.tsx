@@ -149,9 +149,9 @@ export default function PropertyHeader(props: any) {
   
 
   return (
-    <div className=" mt-5 md:mt-0 px-2">
+    <div className=" mt-5 md:mt-0 ">
       <div className="flex flex-row items-between md:items-start justify-between gap-4">
-        <div className="space-y-2">
+        <div className="space-y-2 md:w-[70%]">
           <p className="section-ti mb-2 !text-dred block sm:hidden">
               {formatPriceRange(
                 data?.price_range?.minimum_price,
@@ -160,7 +160,7 @@ export default function PropertyHeader(props: any) {
             </p>
           <h1 className="section-ti">{data?.title}</h1>
           <p>By <span className="text-dred cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.id}`)}>{data?.developer?.industry} </span></p>
-          <p className="text-black ">{data?.address}</p>
+          <p className="text-black leading-relaxed">{data?.address}</p>
           {/* <div className="block sm:hidden">
             <span className="section-in-ti">
               {formatPriceRange(
@@ -205,7 +205,20 @@ export default function PropertyHeader(props: any) {
 
         {/* Right side */}
         <div className="flex flex-col items-end  gap-1 hidden sm:block">
-          <div className="flex items-center justify-end gap-2">
+         
+          <div>
+            <p className="section-ti mb-3 !text-dred pt-2">
+              {formatPriceRange(
+                data?.price_range?.minimum_price,
+                data?.price_range?.maximum_price
+              )}{" "}
+            </p>
+            {/* <p className="text-sm text-gray-600 ">
+              {(data?.price_per_sqft)}/sq ft
+            </p> */}
+          </div>
+
+           <div className="flex items-center justify-end gap-2">
             <Button
               onClick={() => handleWishList()}
               size="icon"
@@ -250,17 +263,6 @@ export default function PropertyHeader(props: any) {
             {/* <Button size="icon" variant="outline" className="rounded-full">
             <Printer size={18} />
           </Button> */}
-          </div>
-          <div>
-            <p className="section-ti mt-3 !text-dred">
-              {formatPriceRange(
-                data?.price_range?.minimum_price,
-                data?.price_range?.maximum_price
-              )}{" "}
-            </p>
-            {/* <p className="text-sm text-gray-600 ">
-              {(data?.price_per_sqft)}/sq ft
-            </p> */}
           </div>
         </div>
       </div>

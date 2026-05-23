@@ -664,7 +664,7 @@ const getPropertyTypeNames = (ids: string[]) => {
             <h2 className="section-in-ti  text-start">My Activity</h2>
 
             {state?.properties?.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 !gap-3 flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 !gap-3">
                 {state?.properties?.slice(0, 2).map((property, index) => (
                   <div
                     key={index}
