@@ -130,7 +130,7 @@ const HomeBanner = ({ propertyTypeList = [], cityList = [] }) => {
            
 
             <button className="adv-search-btn " onClick={handleSearch}>
-              <p className="adv-search-label mt-[-1.2px] ms-2">Search</p>
+              <p className="adv-search-label ms-2">Search</p>
               <ArrowRight className="w-5 h-5 search-ico " />
               
             </button>
