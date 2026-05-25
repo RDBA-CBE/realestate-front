@@ -32,7 +32,7 @@ const NewPopuplarProperties = (props) => {
     <div className="section-pad bg-[#f8f8f8] ">
       <div className="section-wid ">
         {/* Header Section with Filter Buttons on the right */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-12 text-start">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-start mb-12 text-start">
           <div className="mb-3 lg:mb-0">
             <h2 className="section-ti">
               Discover Popular Properties
@@ -40,10 +40,16 @@ const NewPopuplarProperties = (props) => {
             <p className="section-cap">
               Aliquam lacinia diam quis lacus euismod
             </p>
+            {locationLabel && !locationEmpty && ( 
+                        <div className="flex items-center gap-2 mt-2 text-amber-700 text-sm">
+                          <MapPin className="w-4 h-4 shrink-0" />
+                          Showing properties in<span className="font-semibold mx-1">{locationLabel}</span> 
+                        </div>
+                        )}
             {locationEmpty && (
-              <div className="flex items-center gap-2 mt-2 px-4 py-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 text-sm">
+              <div className="flex items-center gap-2 mt-2 text-amber-700 text-sm">
                 <MapPin className="w-4 h-4 shrink-0" />
-                No properties found in <span className="font-semibold mx-1">{locationLabel}</span> — showing all available properties.
+                No {activeFilter} properties found in <span className="font-semibold mx-1">{locationLabel}</span> — showing all available properties.
               </div>
             )}
           </div>
@@ -138,7 +144,7 @@ const NewPopuplarProperties = (props) => {
             breakpoints={breakpoints}
             autoplay={{ delay: 4000, disableOnInteraction: false }}
             loop={propertyList.length > 3}
-            className="featured-listings-swiper pb-10"
+            className="featured-listings-swiper pb-0 md:pb-10"
           >
             {propertyList.map((property, index) => (
               <SwiperSlide key={index} className="h-auto">

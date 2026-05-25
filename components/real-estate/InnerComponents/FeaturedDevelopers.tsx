@@ -106,10 +106,10 @@
 //   return (
 //     <section className="section-pad bg-white ">
 //       <div className="section-wid pb-5">
-        
+
 //         {/* Heading */}
 //         <div className="flex flex-col md:flex-row justify-between items-start lg:items-center mb-5">
-          
+
 //           <div className=" lg:mb-0">
 //             <h2 className="section-ti">
 //               Featured Developers
@@ -145,7 +145,7 @@
 //           </Swiper>
 //         ) : (
 //           <div className="rounded-3xl border border-gray-200 bg-white p-8 text-center text-gray-600 shadow-sm">
-            
+
 //             <p className="text-lg font-medium">
 //               No featured developers available right now.
 //             </p>
@@ -173,28 +173,23 @@
 //   );
 // }
 
-
-
 "use client";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
-import {
-  Building2,
-  ArrowUpRight,
-  Building,
-  LayoutGrid,
-} from "lucide-react";
+import { Building2, ArrowUpRight, Building, LayoutGrid } from "lucide-react";
 
 import { useRouter } from "next/navigation";
 import { truncateText } from "@/utils/function.utils";
+import Link from "next/link";
+
 
 const breakpoints = {
   320: { slidesPerView: 1, spaceBetween: 16 },
   600: { slidesPerView: 1.5, spaceBetween: 20 },
- 
+
   780: { slidesPerView: 2, spaceBetween: 20 },
   1180: { slidesPerView: 3, spaceBetween: 20 },
   1300: { slidesPerView: 3, spaceBetween: 20 },
@@ -241,36 +236,45 @@ function DeveloperCard({ developer }: { developer: any }) {
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <h3 className="section-in-ti text-black mb-2  ">
-            {name}
-          </h3>
-          <div className="border-b border-[1.4px] border-dred  w-[20%] mb-4"/>
+          <h3 className="section-in-ti text-black mb-2  ">{name}</h3>
+          <div className="border-b border-[1.4px] border-dred  w-[20%] mb-4" />
 
           {/* Counts */}
           <div className="flex items-center gap-4 mb-3 ">
             <div className="flex items-center gap-1">
               {/* <LayoutGrid size={13} /> */}
-              <img src="/assets/images/real-estate/home/dev-icon-1.png" alt=""  className="w-5" />
+              <img
+                src="/assets/images/real-estate/home/dev-icon-1.png"
+                alt=""
+                className="w-5"
+              />
               <span>{projectCount} Projects</span>
             </div>
 
             <div className="flex items-center gap-1">
               {/* <Building size={13} /> */}
-              <img src="/assets/images/real-estate/home/dev-icon-2.png" alt=""  className="w-5" />
+              <img
+                src="/assets/images/real-estate/home/dev-icon-2.png"
+                alt=""
+                className="w-5"
+              />
 
               <span>{propertyCount} Listings</span>
             </div>
           </div>
-
-         
         </div>
       </div>
-       {/* Description */}
-          <p className=" leading-relaxed pb-0">
-            {description
-              ? truncateText(description, 120)
-              : "No description available."}
-          </p>
+      {/* Description */}
+      <p className=" leading-relaxed pb-0">
+        {description ? (
+          <>
+            {truncateText(description, 150)}{" "}
+            <Link href={`/developer/${developer?.id}`} className="text-dred hover:underline">read more </Link>
+          </>
+        ) : (
+          "No description available."
+        )}
+      </p>
     </div>
   );
 }
@@ -283,21 +287,19 @@ export default function FeaturedDevelopers({
   const hasDevelopers = !!developerList?.length;
 
   return (
-    <section className="section-pad overflow-hidden relative "
-        style={{
-          background: ` url('/assets/images/real-estate/home/developers1.webp')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}>
-      <div className="section-wid pb-5"
-        
-      >
+    <section
+      className="section-pad overflow-hidden relative "
+      style={{
+        background: ` url('/assets/images/real-estate/home/developers1.webp')`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <div className="section-wid pb-5">
         {/* Heading */}
         <div className="mb-10 relative z-10">
-          <h2 className="section-ti !text-white">
-            Featured Developers
-          </h2>
+          <h2 className="section-ti !text-white">Featured Developers</h2>
 
           <p className="section-cap !text-white/90">
             Explore top real estate developers and their latest projects

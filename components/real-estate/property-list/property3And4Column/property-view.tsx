@@ -23,6 +23,8 @@ import {
   MapPinHouseIcon,
   ChevronDown,
   X,
+  ListCollapseIcon,
+  LayoutGrid,
 } from "lucide-react";
 import FilterDropdown from "../../FilterDropdown.component";
 import Modal from "@/components/common-components/modal";
@@ -257,14 +259,25 @@ export function PropertyView(props: any) {
     }
   };
 
+  console.log("initialPropertyType", initialPropertyType);
+  
+
 
   useEffect(() => {
     if (propertyTypeFilter) setState({ propertyType: propertyTypeFilter });
     if (initialSearch) setState({ search: initialSearch });
-    if (initialListingStatus) setState({ listingStatus: initialListingStatus });
-    if (initialLocation?.length > 0) setState({ location: initialLocation });
-    if (initialPropertyType?.length > 0) setState({ propertyType: initialPropertyType });
-    if (initialDeveloper?.length > 0) setState({ developer: initialDeveloper });
+    setState({ listingStatus: initialListingStatus || "All" });
+    setState({ location: initialLocation || [] });
+    setState({ developer: initialDeveloper || [] });
+
+    // Ensure propertyType is handled as an array (it might be a string from URL)
+    if (initialPropertyType) {
+      const typeArray = Array.isArray(initialPropertyType)
+        ? initialPropertyType
+        : [initialPropertyType];
+      setState({ propertyType: typeArray });
+    }
+
     // Mark initial load done after all initial props are applied
     const t = setTimeout(() => { initialLoadRef.current = false; }, 500);
     return () => clearTimeout(t);
@@ -322,6 +335,24 @@ export function PropertyView(props: any) {
 
     if (Object.keys(updates).length > 0) setState(updates);
   }, [categoryList, locationList, areaList, developerList, projectList, floorPlanList, furnishingList]);
+  console.log("propertyType", state.propertyType);
+  
+
+  // Resolve string-based property types (names from URL) to objects with IDs once categoryList is loaded
+  useEffect(() => {
+    if (categoryList?.length > 0 && state.propertyType?.length > 0) {
+      const hasStrings = state.propertyType.some((t: any) => typeof t === "string");
+      if (hasStrings) {
+        const resolved = state.propertyType.map((item: any) => {
+          if (typeof item === "string") {
+            return categoryList.find((cat) => cat.label.toLowerCase() === item.toLowerCase());
+          }
+          return item;
+        }).filter(Boolean);
+        if (resolved.length > 0) setState({ propertyType: resolved });
+      }
+    }
+  }, [categoryList, state.propertyType]);
 
   useEffect(() => {
     if (minPrice > 0 || maxPrice > 0) {
@@ -1323,10 +1354,158 @@ export function PropertyView(props: any) {
           </div>
         </aside>
 
-        <section className="xl:col-span-4 space-y-6">
+        <section className="xl:col-span-4 space-y-2 xl:space-y-6">
           <div className="sticky top-[75px] z-50">
-            <div className="flex flex-wrap items-center justify-between gap-1 md:gap-4 px-2 py-2  bg-color1 border-gray  rounded-full border">
-              <div className="flex items-center justify-between md:justify-normal gap-4 w-full sm:w-auto">
+            <div className="flex flex-wrap items-center justify-between gap-2 md:gap-4 px-2 py-1.5 bg-color1 border-gray rounded-full border shadow-sm">
+              <div className="relative flex-1 min-w-[180px]">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-dred z-10" />
+                <Input
+                  type="text"
+                  placeholder="What are you looking for?"
+                  value={state.search}
+                  onChange={(e) => handleChange("search", e.target.value)}
+                  className="pl-11 h-8 md:h-10 border-none  rounded-full shadow-none focus-visible:outline-none focus-visible:ring-0 w-full "
+                />
+              </div>
+            
+              <div className="hidden md:flex items-center justify-between md:justify-normal gap-4 w-full sm:w-auto">
+                {/* --------responsive filter sidebar start---------- */}
+
+                
+
+                {/* --------responsive filter sidebar end---------- */}
+
+                {/* <Link
+                  href="/property-listmv"
+                  className="no-underline hidden xl:block"
+                >
+                  <Button
+                    variant="outline"
+                    className="px-4 py-2 h-9  rounded-lg text-sm font-medium text-gray-600 hover:text-dred 
+                      border-gray 
+                      md:!border 
+                      md:!border-theme 
+                      hover:border-red-200 bg-transparent md:bg-white px-2 md:px-3 shadow-none"
+                  >
+                    <MapPinHouseIcon />
+                    Map View
+                  </Button>
+                </Link> */}
+                {/* <span className="text-sm text-gray-600"></span> */}
+
+                
+
+                    {  state.userLoggedIn &&
+               (state.prefferedLocation == true ? ( 
+               <Button
+                  variant="outline"
+                  className="px-2 py-1 h-6.5 rounded-2xl text-xs  
+                      border-dred  bg-dred text-white
+                      hover:bg-dred hover:text-white
+                         shadow-none "
+                  onClick={handlePreferredLocationClick}
+                >
+                  <MapPinHouseIcon />
+                  Preffered Location
+                </Button>
+                ) :
+                (
+                   <Button
+                  variant="outline"
+                  className="px-2 py-1 h-6.5 rounded-2xl text-xs bg-[#fff6f6]  text-dred 
+                      border-dred hover:text-dred
+                     
+                      shadow-none "
+                  onClick={handlePreferredLocationClick}
+                >
+                  <MapPinHouseIcon />
+                  Preffered Location
+                </Button>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-4 justify-between md:justify-normal  w-auto">
+           
+
+                <div className="flex items-center gap-2 hidden md:flex">
+                  <span className="text-sm text-gray-600 whitespace-nowrap">
+                    Sort by:
+                  </span>
+                  <Select
+                    defaultValue="default"
+                    onValueChange={(value) => {
+                      let sortValue = "new"; // default
+                      switch (value) {
+                        case "price-low":
+                          sortValue = "price";
+                          break;
+                        case "price-high":
+                          sortValue = "-price";
+                          break;
+                        case "default":
+                          sortValue = "";
+                          break;
+                        case "newest":
+                          sortValue = "-created_at";
+                          break;
+                      }
+                      handleChange("sort", sortValue);
+                    }}
+                  >
+                    <SelectTrigger className="border-0 shadow-none focus:ring-0 p-0 h-auto text-sm font-medium text-gray-900">
+                      <SelectValue placeholder="Newest" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="default">Default</SelectItem>
+                      <SelectItem value="newest">Newest</SelectItem>
+
+                      <SelectItem value="price-low">
+                        Price: Low to High
+                      </SelectItem>
+                      <SelectItem value="price-high">
+                        Price: High to Low
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="hidden sm:flex items-center gap-2 overflow-hidden pe-3">
+                  <Button
+                    onClick={() => setState({ view: "grid" })}
+                    variant="ghost"
+                    className={`px-2 md:px-2 h-8 text-sm font-medium flex items-center gap-1 transition-colors  ${
+                      state.view === "grid"
+                        ? "text-white bg-dred hover:bg-dred hover:text-white"
+                        : "text-gray-600  hover:text-dred hover:bg-transparent"
+                    }`}
+                  >
+                    <LayoutGrid className="w-4 h-4" />
+                    
+                  </Button>
+                  <div className="h-6 w-px bg-gray-300"></div>
+                  <Button
+                    onClick={() => setState({ view: "list" })}
+                    variant="ghost"
+                    className={` px-2 md:px-2 h-8 text-sm font-medium flex items-center gap-1 transition-colors ${
+                      state.view === "list"
+                        ? " text-white bg-dred hover:bg-dred hover:text-white"
+                        : "text-gray-600  hover:text-dred hover:bg-transparent"
+                    }`}
+                  >
+                    <List className="w-4 h-4" />
+                    
+                  </Button>
+                </div>
+              </div>
+            </div>
+            {/* <div className="w-full">
+              <DeveloperCard variant="horizontal" />
+            </div> */}
+
+            
+          </div>
+
+          <div className=" flex xl:hidden items-center justify-between gap-4 w-full">
                 {/* --------responsive filter sidebar start---------- */}
 
                 <div className="xl:hidden">
@@ -1347,6 +1526,18 @@ export function PropertyView(props: any) {
                     <SheetContent
                       side="left"
                       className="w-100 p-0 overflow-y-auto bg-color1 "
+                      onPointerDownOutside={(e) => {
+                        const target = e.target as HTMLElement;
+                        if (target.closest('[data-filter-popup]')) e.preventDefault();
+                      }}
+                      onInteractOutside={(e) => {
+                        const target = e.target as HTMLElement;
+                        if (target.closest('[data-filter-popup]')) e.preventDefault();
+                      }}
+                      onFocusOutside={(e) => {
+                        const target = e.target as HTMLElement;
+                        if (target.closest('[data-filter-popup]')) e.preventDefault();
+                      }}
                     >
                       <div className="p-4">
                         <SheetHeader className="flex items-center justify-between">
@@ -1411,14 +1602,16 @@ export function PropertyView(props: any) {
                 </Link> */}
                 {/* <span className="text-sm text-gray-600"></span> */}
 
+                
+
                     {  state.userLoggedIn &&
                (state.prefferedLocation == true ? ( 
                <Button
                   variant="outline"
-                  className="px-4 py-2 h-8 rounded-2xl text-sm  
+                  className="flex md:hidden px-2 py-1 h-6.5 rounded-2xl text-xs  
                       border-dred  bg-dred text-white
                       hover:bg-dred hover:text-white
-                         px-2 md:px-3 shadow-none "
+                        shadow-none "
                   onClick={handlePreferredLocationClick}
                 >
                   <MapPinHouseIcon />
@@ -1428,96 +1621,21 @@ export function PropertyView(props: any) {
                 (
                    <Button
                   variant="outline"
-                  className="px-4 py-2 h-8 rounded-2xl text-sm bg-[#fff6f6]  text-dred 
+                  className="flex md:hidden px-2 py-1 h-6.5 rounded-2xl text-xs bg-[#fff6f6]  text-dred 
                       border-dred hover:text-dred
-                     
-                      px-2 md:px-3 shadow-none "
+                     shadow-none "
                   onClick={handlePreferredLocationClick}
                 >
                   <MapPinHouseIcon />
                   Preffered Location
                 </Button>
                 ))}
-              </div>
-
-              <div className="flex items-center gap-4 justify-between md:justify-normal  w-auto">
-           
-
-                <div className="flex items-center gap-2 hidden md:flex">
-                  <span className="text-sm text-gray-600 whitespace-nowrap">
-                    Sort by:
-                  </span>
-                  <Select
-                    defaultValue="default"
-                    onValueChange={(value) => {
-                      let sortValue = "new"; // default
-                      switch (value) {
-                        case "price-low":
-                          sortValue = "price";
-                          break;
-                        case "price-high":
-                          sortValue = "-price";
-                          break;
-                        case "default":
-                          sortValue = "";
-                          break;
-                        case "newest":
-                          sortValue = "-created_at";
-                          break;
-                      }
-                      handleChange("sort", sortValue);
-                    }}
-                  >
-                    <SelectTrigger className="border-0 shadow-none focus:ring-0 p-0 h-auto text-sm font-medium text-gray-900">
-                      <SelectValue placeholder="Newest" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="default">Default</SelectItem>
-                      <SelectItem value="newest">Newest</SelectItem>
-
-                      <SelectItem value="price-low">
-                        Price: Low to High
-                      </SelectItem>
-                      <SelectItem value="price-high">
-                        Price: High to Low
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="hidden sm:flex items-center gap-0 overflow-hidden md:bg-white/70 md:shadow-sm border-gray rounded-full">
-                  <Button
-                    onClick={() => setState({ view: "grid" })}
-                    variant="ghost"
-                    className={`px-2 md:px-3 py-2 text-sm font-medium flex items-center gap-1 transition-colors  ${
-                      state.view === "grid"
-                        ? "text-dred hover:text-dred hover:bg-transparent"
-                        : "text-gray-600  hover:text-dred hover:bg-transparent"
-                    }`}
-                  >
-                    <Grid className="w-4 h-4" />
-                    Grid
-                  </Button>
-                  <div className="h-6 w-px bg-gray-300"></div>
-                  <Button
-                    onClick={() => setState({ view: "list" })}
-                    variant="ghost"
-                    className={` px-2 md:px-3 py-2 text-sm font-medium flex items-center gap-1 transition-colors ${
-                      state.view === "list"
-                        ? " text-dred hover:text-dred hover:bg-transparent"
-                        : "text-gray-600  hover:text-dred hover:bg-transparent"
-                    }`}
-                  >
-                    <List className="w-4 h-4" />
-                    List
-                  </Button>
-                </div>
-              </div>
-            </div>
-            {/* <div className="w-full">
-              <DeveloperCard variant="horizontal" />
-            </div> */}
           </div>
+
+              
+            
+
+        
 
           <ActiveFilters
             state={state}

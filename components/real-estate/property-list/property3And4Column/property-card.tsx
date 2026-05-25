@@ -6,6 +6,8 @@ import {
   ChevronLeft, ChevronRight, IndianRupeeIcon,
   Maximize2, Star, CheckCircle2, Phone, Home,
   MapPinHouseIcon,
+  Map,
+  MapPinHouse,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
@@ -25,6 +27,7 @@ interface Property {
   total_area?: any; floor_plans?: any; user_preferred_locations?: any;
   amenities?: any[]; plot_sizes?: Array<{ size: string; price: string }>;
   bhk_configurations?: Array<{ bhk: string; price: string; area?: string }>;
+  location_url?: string;
 }
 interface PropertyCardProps {
   property: Property; view: "grid" | "list";
@@ -217,7 +220,15 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
               {ActionButtons}
             </div>
             <CardContent className="flex flex-col flex-grow py-4 gap-1">
-              <h3 className="font-semibold text-gray-900 text-base leading-snug line-clamp-2">{property.title}</h3>
+              <div className="flex items-start justify-between gap-1">
+                <h3 className="font-semibold text-gray-900 text-base leading-snug line-clamp-2">{property.title}</h3>
+                <div onClick={(e) =>{
+                    e.stopPropagation()
+                    window.open(property?.location_url, "_blank")
+                }}  title="View on Map">
+                  <MapPinHouse className="w-5 h-5 text-[#9b0f09] hover:scale-110 transition-transform" />
+                </div>
+              </div>
               {(property.location?.name || property.location?.label) && (
                 <div className="flex items-center gap-1 text-sm">
                   <MapPin className="w-3.5 h-3.5 text-[#9b0f09] shrink-0" />
@@ -275,7 +286,15 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
             {ActionButtons}
           </div>
           <CardContent className="flex flex-col flex-grow p-5 gap-1">
+            <div className="flex items-start justify-between gap-1">
             <h3 className="font-semibold text-gray-900 text-lg leading-snug line-clamp-2">{property.title}</h3>
+            <div onClick={(e) =>{
+                    e.stopPropagation()
+                    window.open(property?.location_url, "_blank")
+                }} title="View on Map">
+                  <MapPinHouse className="w-5 h-5 text-[#9b0f09] hover:scale-110 transition-transform" />
+                </div>
+                </div>
             {(property.location?.name || property.location?.label) && (
               <div className="flex items-center gap-1 text-sm">
                 <MapPin className="w-3.5 h-3.5 text-[#9b0f09] shrink-0" />

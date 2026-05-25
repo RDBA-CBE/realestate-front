@@ -418,13 +418,13 @@ const getPropertyTypeNames = (ids: string[]) => {
             <div className="w-14 h-14 rounded-full bg-[#fff6f6] flex items-center justify-center">
               <UserCircle2 className="w-7 h-7 text-[#9b0f09]" />
             </div>
-            <h3 className="text-lg font-bold text-black">Access Restricted</h3>
+            <h3 className="text-lg font-bold text-black">Session Expired</h3>
             <p className="text-sm text-[#383838]">{state.authAlertMessage}</p>
             <Button
               className="w-full py-5 rounded-xl font-semibold text-white bg-[#9b0f09] hover:bg-[#7d0c07]"
               onClick={handleAuthAlertOk}
             >
-              OK, Go to Home
+              Login Again
             </Button>
           </div>
         </div>

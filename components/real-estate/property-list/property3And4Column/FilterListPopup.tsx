@@ -45,15 +45,6 @@ export function FilterListPopup({
     return () => { document.body.style.overflow = prev; };
   }, [open]);
 
-  // Prevent touch scroll from leaking to parent (Sheet/page) on mobile
-  useEffect(() => {
-    const el = listRef.current;
-    if (!el || !open) return;
-    const onTouchMove = (e: TouchEvent) => e.stopPropagation();
-    el.addEventListener("touchmove", onTouchMove, { passive: true });
-    return () => el.removeEventListener("touchmove", onTouchMove);
-  }, [open]);
-
   const filtered = useMemo(() =>
     query ? items.filter(i => i.label.toLowerCase().includes(query.toLowerCase())) : items
   , [items, query]);
@@ -63,6 +54,8 @@ export function FilterListPopup({
     [filtered]
   );
 
+  const popupRef = useRef<HTMLDivElement>(null);
+
   if (!open) return null;
 
   const width = popupWidth ?? (showAlphabetNav ? "clamp(300px, 90vw, 900px)" : "clamp(300px, 90vw, 700px)");
@@ -70,12 +63,32 @@ export function FilterListPopup({
 
   return (
     <PopupPortal>
-      <div className="fixed inset-0 bg-black/40 z-[9998]" onPointerDown={onClose} />
       <div
-        onPointerDown={(e) => e.stopPropagation()}
-        onWheel={(e) => e.stopPropagation()}
-        className="fixed bg-white border border-slate-200 shadow-2xl z-[9999] p-4 flex flex-col rounded-2xl"
-        style={{ top: "50%", left: isMobile ? "50%" : `${anchorPos.left}px`, transform: isMobile ? "translate(-50%, -50%)" : "translateY(-50%)", width: isMobile ? "92vw" : width, height: isMobile ? "80vh" : height, maxHeight: "80vh" }}
+        className="fixed inset-0 bg-black/40 z-[9998] pointer-events-auto"
+        style={{ pointerEvents: "auto" }}
+        onPointerDown={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+      />
+      <div
+        ref={popupRef}
+        data-filter-popup
+        onPointerDown={(e) => {
+          // Only stop propagation if we are not clicking an input
+          const target = e.target as HTMLElement;
+          if (target.tagName !== 'INPUT') e.stopPropagation();
+        }}
+        className="fixed bg-white border border-slate-200 shadow-2xl z-[9999] p-4 flex flex-col rounded-2xl pointer-events-auto"
+        style={{ 
+          top: "50%", 
+          left: isMobile ? "50%" : `${anchorPos.left}px`, 
+          transform: isMobile ? "translate(-50%, -50%)" : "translateY(-50%)", 
+          width: isMobile ? "92vw" : width, 
+          height: isMobile ? "80vh" : height, 
+          maxHeight: "80vh", 
+          pointerEvents: "auto" 
+        }}
       >
         {/* Header */}
         <div className="flex justify-between items-start mb-3 border-b pb-3">
@@ -89,7 +102,6 @@ export function FilterListPopup({
                   placeholder={`Search ${title.toLowerCase()}...`}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  onPointerDown={(e) => e.stopPropagation()}
                   className="w-full pl-8 pr-3 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none"
                 />
               </div>
@@ -118,7 +130,17 @@ export function FilterListPopup({
           <button onClick={onClose} className="ml-3  hover:text-slate-600 flex-shrink-0"><X size={18} /></button>
         </div>
         {/* List */}
-        <div ref={listRef} className="overflow-y-auto overflow-x-auto flex-1 pr-1" style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-y", overscrollBehavior: "contain" }} onWheel={(e) => e.stopPropagation()}>
+        <div
+          ref={listRef}
+          className="overflow-y-auto overflow-x-auto flex-1 pr-1"
+          style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-y", overscrollBehavior: "contain" }}
+          onWheel={(e) => e.stopPropagation()}
+          onTouchMove={(e) => {
+            // Stopping propagation on touchMove allows the local scroll to happen
+            // while preventing the parent Sheet's scroll lock from cancelling the event.
+            e.stopPropagation();
+          }}
+        >
           <div className={showAlphabetNav ? "columns-[220px] gap-6 min-w-max h-full" : "columns-[200px] gap-4"}>
             {filtered.map((item, index) => {
               const currentLetter = item.label[0]?.toUpperCase();

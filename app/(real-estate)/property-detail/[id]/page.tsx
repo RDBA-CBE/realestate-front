@@ -337,27 +337,31 @@ export default function PropertyDetailPage() {
 
   const PropertyDetailSkeleton = (
     <div className="xl:max-w-[80rem] max-w-[85rem] mx-auto p-6 space-y-6">
-      {/* Header skeleton */}
-      <div className="space-y-3">
-        <P className="h-8 w-2/3" />
-        <P className="h-4 w-1/3" />
-        <div className="flex gap-3">
-          <P className="h-4 w-24" />
-          <P className="h-4 w-24" />
+      <div className="flex flex-col space-y-6">
+        {/* Gallery skeleton - Swaps order with header on desktop */}
+        <div className="order-1 md:order-2">
+          <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-2 h-[250px] md:h-[420px]">
+            <P className="md:col-span-2 md:row-span-2 h-full rounded-2xl" />
+            <P className="h-full rounded-2xl hidden md:block" />
+            <P className="h-full rounded-2xl hidden md:block" />
+            <P className="h-full rounded-2xl hidden md:block" />
+            <P className="h-full rounded-2xl hidden md:block" />
+          </div>
+        </div>
+
+        {/* Header skeleton */}
+        <div className="space-y-3 order-2 md:order-1">
+          <P className="h-8 w-2/3" />
+          <P className="h-4 w-1/3" />
+          <div className="flex gap-3">
+            <P className="h-4 w-24" />
+            <P className="h-4 w-24" />
+          </div>
         </div>
       </div>
 
-      {/* Gallery skeleton */}
-      <div className="grid grid-cols-4 grid-rows-2 gap-2 h-[420px]">
-        <P className="col-span-2 row-span-2 h-full rounded-2xl" />
-        <P className="h-full rounded-2xl" />
-        <P className="h-full rounded-2xl" />
-        <P className="h-full rounded-2xl" />
-        <P className="h-full rounded-2xl" />
-      </div>
-
       {/* Tabs skeleton */}
-      <div className="flex gap-4 border-b pb-2">
+      <div className="flex gap-4 border-b pb-2 overflow-hidden">
         {Array.from({ length: 5 }).map((_, i) => <P key={i} className="h-8 w-24 rounded-full" />)}
       </div>
 
@@ -433,14 +437,14 @@ export default function PropertyDetailPage() {
             </div>
 
             {/* BACK BUTTON */}
-            <Button
-              variant="outline"
+            <button
+              
               onClick={() => router.back()}
-              className="mb-0  rounded-2xl border-dred bg-white px-4 py-1 md:px-5 md:py-3.5 text-dred shadow-none hover:bg-dred hover:text-white h-6"
+              className="mb-0 flex !gap-1 items-center pe-2 text-sm rounded-2xl border-none bg-transparent shadow-none  py-1  md:py-3.5 text-black hover:text-gray-700 h-6 hover:shadow-none hover:bg-transparent"
             >
-              <ArrowLeft className=" h-4 w-4 hidden md:block" />
+              <ArrowLeft className=" h-3 w-3 hidden md:block" />
               Back
-            </Button>
+            </button>
           </div>
 
       {/* Header + Gallery */}

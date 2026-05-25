@@ -96,13 +96,8 @@ const HomePageNew = () => {
         setState({ developerList: res?.results || [], loadingDevelopers: false });
       } catch (error: any) {
         setState({ loadingDevelopers: false });
-        const msg = error?.error || error?.response?.data?.error || "";
-        if (msg === "Given token not valid for any token type") {
-          toastEmitter.emit("error", "Session expired. Please login again.");
-          localStorage.clear();
-          window.location.href = "/login";
-          return;
-        }
+        const msg = error?.error || error?.response?.data?.error || "Something went wrong";
+        toastEmitter.emit("error", msg);
         console.log("✌️error --->", error);
       }
     };
@@ -220,20 +215,20 @@ const HomePageNew = () => {
 
   return (
     <div className="min-h-screen w-full overflow-x-hidden">
-      {/* {state.showLocationModal && (
+      {state.showLocationModal && (
         <LocationPickerModal
           cities={state.allCities}
           onConfirm={handleLocationConfirm}
           onSkip={handleLocationSkip}
         />
-      )} */}
+      )}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
 
-        <HomeBanner />
+        <HomeBanner locationLabel={state.selectedLocation}/>
 
         {state.loadingCity ? <PropertyByCitySkeleton /> : <PropertyByCity cityList={state.cityList} />}
 

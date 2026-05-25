@@ -14,6 +14,7 @@ interface Toast {
 }
 
 let idCounter = 0;
+let isSessionAlertActive = false;
 const DURATION = 3500;
 
 export function ToastProvider() {
@@ -23,6 +24,18 @@ export function ToastProvider() {
   useEffect(() => {
     setMounted(true);
     const unsub = toastEmitter.subscribe((type, message) => {
+      // Global interceptor for session expiration
+      if (message === "Given token not valid for any token type" || message === "Session expired. Please login again.") {
+        if (!isSessionAlertActive) {
+          isSessionAlertActive = true;
+          window.alert("Session expired. Please login again.");
+          localStorage.clear();
+          // Full reload to clear all states and navigate to login
+          window.location.href = "/login";
+        }
+        return;
+      }
+
       const id = ++idCounter;
       setToasts((prev) => [...prev, { id, type, message }]);
       setTimeout(() => {

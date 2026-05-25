@@ -210,7 +210,7 @@ const GoogleMaps = (props) => {
     {/* ---- Property Card ---- */}
       <Card
         className="flex gap-3 p-4 mt-5 bg-gray-50 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 w-[100%] cursor-pointer "
-        onClick={() => setShowMap(true)}
+        // onClick={() => setShowMap(true)}
       >
         <div className="flex items-center justify-center px-2.5 h-10  sm:w-10 sm:h-10  bg-white rounded-full border border-gray-200">
           <MapPin className="text-dred w-4 h-4" />
@@ -222,7 +222,8 @@ const GoogleMaps = (props) => {
             {data?.address || "Not specified"}
           </p>
           <a
-            href="#"
+            href={data?.location_url || "#"}
+            target="_blank"
             className="text-xs text-dred hover:underline font-medium"
           >
             View on Map

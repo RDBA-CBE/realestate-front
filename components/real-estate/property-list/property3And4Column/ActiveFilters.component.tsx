@@ -72,7 +72,7 @@ export function ActiveFilters({ state, handleChange, resetFilter, onClearPrice, 
   if (badges.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap items-center gap-2 !mt-5 pt-0">
+    <div className="flex flex-wrap items-center gap-2 !mt-5 pt-0 pb-5 xl:pb-0">
       {badges.map((badge, i) => (
         <span
           key={i}

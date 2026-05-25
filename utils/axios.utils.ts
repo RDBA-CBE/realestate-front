@@ -22,6 +22,22 @@ const processQueue = (error: any, token: string | null = null) => {
   failedQueue = [];
 };
 
+const showTokenExpiredAlert = () => {
+  const userConfirmed = window.confirm(
+    "Your token has expired. Click OK to login again.",
+  );
+
+  if (userConfirmed) {
+    localStorage.clear();
+    window.location.href = "/login";
+  } else {
+    setTimeout(() => {
+      localStorage.clear();
+      window.location.href = "/login";
+    }, 1000);
+  }
+};
+
 export const instance = (): AxiosInstance => {
   if (api) return api;
 
@@ -48,19 +64,26 @@ export const instance = (): AxiosInstance => {
       const originalRequest: any = error.config;
 
       if (
-        error.response?.data?.code === "token_not_valid" &&
-        !originalRequest._retry
-      ) {
+        (error.response?.status === 401 &&
+          error.response?.data?.code === "token_not_valid" &&
+          !originalRequest._retry) ||
+        error.response?.data?.error ===
+          "Given token not valid for any token type"
+      )  {
         originalRequest._retry = true;
 
         const refreshToken = localStorage.getItem("refresh");
-
-        if (!refreshToken) {
-          window.location.href = "/login";
-          localStorage.clear();
-
+         if (!refreshToken) {
+          showTokenExpiredAlert();
           return Promise.reject(error);
         }
+
+        // if (!refreshToken) {
+        //   window.location.href = "/login";
+        //   localStorage.clear();
+
+        //   return Promise.reject(error);
+        // }
 
         if (isRefreshing) {
           return new Promise((resolve, reject) => {

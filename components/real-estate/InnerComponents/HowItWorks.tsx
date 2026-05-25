@@ -126,7 +126,7 @@ const HowItWorks = () => {
 
   return (
     <section className="section-pad bg-white">
-      <div className="section-wid py-5">
+      <div className="section-wid py-2 md:py-5">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {cards.map((card, index) => (
             <div

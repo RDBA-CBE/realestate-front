@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Models from "@/imports/models.import";
 
-const HomeBanner = () => {
+const HomeBanner = ({locationLabel}) => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("Sale");
   const [selectedType, setSelectedType] = useState("");
@@ -14,6 +14,22 @@ const HomeBanner = () => {
   const [propertyTypeList, setPropertyTypeList] = useState([]);
 
   useEffect(() => {
+    const cityValue = locationLabel?.value ? String(locationLabel.value) : "";
+    setSelectedCity(cityValue);
+
+    // Immediately sync the locationList with the selected city from prop
+    // This ensures the label is available to CustomSelect even before API fetch
+    if (locationLabel && cityValue) {
+      setLocationList((prev: any) => {
+        if (prev.some((loc: any) => loc.value === cityValue)) return prev;
+        return [{ label: locationLabel.label, value: cityValue }, ...prev];
+      });
+    } else if (!locationLabel) {
+      setSelectedCity("");
+    }
+  }, [locationLabel]);
+
+  useEffect(() => {
     fetchDynamicFilters();
   }, [activeTab, selectedType, selectedCity]);
 
@@ -21,14 +37,30 @@ const HomeBanner = () => {
     try {
       const body: any = {};
       if (activeTab !== "All") body.listing_type = [activeTab.toLowerCase()];
-      if (selectedCity) body.location = [Number(selectedCity)];
+      if (selectedCity && selectedCity !== "all") body.location = [Number(selectedCity)];
       if (selectedType) body.property_type = [Number(selectedType)];
 
       const res: any = await Models.property.dynamicFilter(body);
 
-      setLocationList(
-        (res?.location || []).map((item: any) => ({ label: item.name, value: String(item.id) }))
-      );
+      const locations = (res?.location || []).map((item: any) => ({ 
+        label: item.name, 
+        value: String(item.id) 
+      }));
+
+      // Ensure "Show All Locations" is available if it's currently selected
+      if (selectedCity === "all") {
+        if (!locations.some(loc => loc.value === "all")) {
+          locations.unshift({ label: "Show All Locations", value: "all" });
+        }
+      } 
+      // Ensure the global location from props is always in the list so its label can be displayed
+      else if (selectedCity && locationLabel && String(locationLabel.value) === selectedCity) {
+        if (!locations.some(loc => loc.value === selectedCity)) {
+          locations.unshift({ label: locationLabel.label, value: selectedCity });
+        }
+      }
+
+      setLocationList(locations);
       setPropertyTypeList(
         (res?.property_type || []).map((item: any) => ({ label: item.name, value: String(item.id) }))
       );
@@ -40,7 +72,7 @@ const HomeBanner = () => {
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (activeTab !== "All") params.set("type", activeTab.toLowerCase());
-    if (selectedCity) params.set("location", selectedCity);
+    if (selectedCity && selectedCity !== "all") params.set("location", selectedCity);
     if (selectedType) params.set("propertyType", selectedType);
     if (searchText) params.set("search", searchText);
     router.push(`/property-list?${params.toString()}`);
@@ -68,7 +100,6 @@ const HomeBanner = () => {
                 onClick={() => {
                   setActiveTab(tab);
                   setSelectedType("");
-                  setSelectedCity("");
                 }}
                 className={`adv-tab cursor-pointer ${activeTab === tab ? "active" : ""}`}
               >

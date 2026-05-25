@@ -26,10 +26,10 @@ const items = [
 
 export default function SellingOptionsSection() {
   return (
-    <section className="section-pad bg-[#fff] !pt-0">
+    <section className="section-pad bg-[#fff] !pt-2 md:!pt-0 !pb-0 md:!pb-[40px]">
       <div className="section-wid ">
         {/* Heading */}
-        <div className="mx-auto mb-14 max-w-2xl text-center">
+        <div className="mx-auto mb-8 md:mb-14 max-w-2xl text-center">
           <h2 className="section-ti">
             Let&apos;s Find The Right Selling Option For You
           </h2>

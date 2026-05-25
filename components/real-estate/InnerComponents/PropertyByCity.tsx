@@ -29,7 +29,7 @@ const CITY_IMAGE_MAP: Record<string, string> = Object.fromEntries(
 );
 
 const breakpoints = {
-  320: { slidesPerView: 1.3, spaceBetween: 14 },
+  320: { slidesPerView: 2, spaceBetween: 14 },
   480: { slidesPerView: 2.2, spaceBetween: 16 },
   990: { slidesPerView: 3.2, spaceBetween: 20 },
   1180: { slidesPerView: 4.2, spaceBetween: 20 },
@@ -56,7 +56,7 @@ const PropertyByCity = ({ cityList = [] }) => {
 
   return (
     <section className="section-pad bg-white overflow-hidden">
-      <div className="section-wid pb-5">
+      <div className="section-wid pb-2 md:pb-5">
          <div className="flex flex-col md:flex-row justify-between items-start mb-5 md:mb-10 ">
         <div className=" ">
           <h2 className="section-ti">Properties by Cities</h2>
@@ -92,8 +92,8 @@ const PropertyByCity = ({ cityList = [] }) => {
             <SwiperSlide key={index}>
               <div
                 onClick={() => handleClick(city)}
-                className="relative cursor-pointer rounded-2xl overflow-hidden group"
-                style={{ height: "340px" }}
+                className="relative cursor-pointer rounded-2xl overflow-hidden group h-[240px] md:h-[340px]"
+                // style={{ height: "340px" }}
               >
                 <img
                   src={getCityImage(city.name)}
@@ -108,11 +108,11 @@ const PropertyByCity = ({ cityList = [] }) => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
 
                 {/* Text */}
-                <div className="absolute bottom-0 left-0 right-0 p-5">
+                <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
                   <h4 className="text-white text-[17px] leading-tight mb-2">
                     {city.name}
                   </h4>
-                  <p className="text-sm bg-white/80 px-3 py-2 rounded-lg w-fit ">
+                  <p className="text-xs md:text-sm bg-white/80 px-2 py-1 md:px-3 md:py-2 rounded-lg w-fit mb-0">
                     <span className="text-black font-bold">{city.property_count}</span>
                     <span className="text-black/90 ml-1 ">
                       {city.property_count === 1 ? "Property" : "Properties"} Available
