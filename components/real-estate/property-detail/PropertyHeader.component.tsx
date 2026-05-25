@@ -153,7 +153,7 @@ export default function PropertyHeader(props: any) {
       <div className="flex flex-row items-between md:items-start justify-between gap-4">
         <div className="space-y-2 md:w-[70%]">
           <p className="section-ti mb-2 !text-dred block sm:hidden">
-              {formatPriceRange(
+             ₹ {formatPriceRange(
                 data?.price_range?.minimum_price,
                 data?.price_range?.maximum_price
               )}{" "}
@@ -208,7 +208,7 @@ export default function PropertyHeader(props: any) {
          
           <div>
             <p className="section-ti mb-3 !text-dred pt-2">
-              {formatPriceRange(
+              ₹ {formatPriceRange(
                 data?.price_range?.minimum_price,
                 data?.price_range?.maximum_price
               )}{" "}

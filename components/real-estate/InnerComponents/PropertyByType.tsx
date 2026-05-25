@@ -82,7 +82,7 @@ const PropertyByType = ({ propertyTypeList = [] }) => {
             spaceBetween={16}
             slidesPerView={2}
             breakpoints={{
-              320: { slidesPerView: 1.5, spaceBetween: 16 },
+              320: { slidesPerView: 2, spaceBetween: 16 },
               500: { slidesPerView: 2, spaceBetween: 16 },
               640: { slidesPerView: 2.5, spaceBetween: 20 },
               860: { slidesPerView: 3, spaceBetween: 20 },
@@ -102,7 +102,7 @@ const PropertyByType = ({ propertyTypeList = [] }) => {
               }
             }}
             navigation={{ prevEl: prevRef.current, nextEl: nextRef.current }}
-            autoplay={{ delay: 3000, disableOnInteraction: false }}
+            // autoplay={{ delay: 3000, disableOnInteraction: false }}
             loop={true}
           >
             {propertyTypeList.map((item, index) => {
@@ -111,7 +111,7 @@ const PropertyByType = ({ propertyTypeList = [] }) => {
                  <div className="pb-5 ">
   <div
     onClick={() => handleClick(item)}
-    className="bg-white rounded-2xl h-[180px] flex flex-col items-center text-center cursor-pointer relative transition-all duration-300 hover:-translate-y-1"
+    className="bg-white rounded-2xl h-[140px] md:h-[180px] flex flex-col items-center text-center cursor-pointer relative transition-all duration-300 hover:-translate-y-1"
     style={{
       background: `url(/assets/images/real-estate/home/prop-frame.png)`,
       backgroundSize: "cover",
@@ -121,15 +121,15 @@ const PropertyByType = ({ propertyTypeList = [] }) => {
       boxShadow: "0 10px 10px rgba(0,0,0,0.08)",
     }}
   >
-    <div className="w-20 h-20 rounded-2xl bg-dred flex text-white items-center justify-center border border-[#9b0f09] absolute -top-8 z-50 shadow-md">
+    <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-dred flex text-white items-center justify-center border border-[#9b0f09] absolute -top-8 z-50 shadow-md">
       <img
         src={getPropTypeImage(item.name)}
         alt={item.name}
-        className="w-10"
+        className="w-7 md:w-10"
         onError={(e) => { e.currentTarget.src = PROP_TYPE_DEFAULT; }}
       />
     </div>
-    <h3 className="section-in-ti mt-[80px]">{item.name}</h3>
+    <h3 className="section-in-ti mt-[60px] md:mt-[80px]">{item.name}</h3>
     <p>{item.properties_count} Properties</p>
   </div>
 </div>

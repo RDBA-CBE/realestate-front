@@ -433,14 +433,14 @@ export default function PropertyDetailPage() {
             </div>
 
             {/* BACK BUTTON */}
-            <Button
-              variant="outline"
+            <button
+              
               onClick={() => router.back()}
-              className="mb-0  rounded-2xl border-dred bg-white px-4 py-1 md:px-5 md:py-3.5 text-dred shadow-none hover:bg-dred hover:text-white h-6"
+              className="mb-0 flex !gap-1 items-center pe-2 text-sm rounded-2xl border-none bg-transparent shadow-none  py-1  md:py-3.5 text-black hover:text-gray-700 h-6 hover:shadow-none hover:bg-transparent"
             >
-              <ArrowLeft className=" h-4 w-4 hidden md:block" />
+              <ArrowLeft className=" h-3 w-3 hidden md:block" />
               Back
-            </Button>
+            </button>
           </div>
 
       {/* Header + Gallery */}

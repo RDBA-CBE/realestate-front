@@ -220,12 +220,24 @@ const GoogleMaps = (props) => {
           <span>{data?.state || "Not specified"}</span>
         </div>
       </CardContent>
-      {data?.address && (
+      {/* {data?.location_url && (
         <div
           className="w-full h-full"
           dangerouslySetInnerHTML={{ __html: data?.location_url }}
         />
+      )} */}
+      {data?.latitude && data?.longitude && (
+        <iframe
+          src={`https://www.google.com/maps?q=${data.latitude},${data.longitude}&output=embed`}
+          width="100%"
+          height="100%"
+          style={{ border: 0 }}
+          loading="lazy"
+          allowFullScreen
+          referrerPolicy="no-referrer-when-downgrade"
+        />
       )}
+
       {/* <div
         style={{
           position: "relative",

@@ -257,14 +257,25 @@ export function PropertyView(props: any) {
     }
   };
 
+  console.log("initialPropertyType", initialPropertyType);
+  
+
 
   useEffect(() => {
     if (propertyTypeFilter) setState({ propertyType: propertyTypeFilter });
     if (initialSearch) setState({ search: initialSearch });
-    if (initialListingStatus) setState({ listingStatus: initialListingStatus });
-    if (initialLocation?.length > 0) setState({ location: initialLocation });
-    if (initialPropertyType?.length > 0) setState({ propertyType: initialPropertyType });
-    if (initialDeveloper?.length > 0) setState({ developer: initialDeveloper });
+    setState({ listingStatus: initialListingStatus || "All" });
+    setState({ location: initialLocation || [] });
+    setState({ developer: initialDeveloper || [] });
+
+    // Ensure propertyType is handled as an array (it might be a string from URL)
+    if (initialPropertyType) {
+      const typeArray = Array.isArray(initialPropertyType)
+        ? initialPropertyType
+        : [initialPropertyType];
+      setState({ propertyType: typeArray });
+    }
+
     // Mark initial load done after all initial props are applied
     const t = setTimeout(() => { initialLoadRef.current = false; }, 500);
     return () => clearTimeout(t);
@@ -322,6 +333,24 @@ export function PropertyView(props: any) {
 
     if (Object.keys(updates).length > 0) setState(updates);
   }, [categoryList, locationList, areaList, developerList, projectList, floorPlanList, furnishingList]);
+  console.log("propertyType", state.propertyType);
+  
+
+  // Resolve string-based property types (names from URL) to objects with IDs once categoryList is loaded
+  useEffect(() => {
+    if (categoryList?.length > 0 && state.propertyType?.length > 0) {
+      const hasStrings = state.propertyType.some((t: any) => typeof t === "string");
+      if (hasStrings) {
+        const resolved = state.propertyType.map((item: any) => {
+          if (typeof item === "string") {
+            return categoryList.find((cat) => cat.label.toLowerCase() === item.toLowerCase());
+          }
+          return item;
+        }).filter(Boolean);
+        if (resolved.length > 0) setState({ propertyType: resolved });
+      }
+    }
+  }, [categoryList, state.propertyType]);
 
   useEffect(() => {
     if (minPrice > 0 || maxPrice > 0) {
@@ -1347,6 +1376,18 @@ export function PropertyView(props: any) {
                     <SheetContent
                       side="left"
                       className="w-100 p-0 overflow-y-auto bg-color1 "
+                      onPointerDownOutside={(e) => {
+                        const target = e.target as HTMLElement;
+                        if (target.closest('[data-filter-popup]')) e.preventDefault();
+                      }}
+                      onInteractOutside={(e) => {
+                        const target = e.target as HTMLElement;
+                        if (target.closest('[data-filter-popup]')) e.preventDefault();
+                      }}
+                      onFocusOutside={(e) => {
+                        const target = e.target as HTMLElement;
+                        if (target.closest('[data-filter-popup]')) e.preventDefault();
+                      }}
                     >
                       <div className="p-4">
                         <SheetHeader className="flex items-center justify-between">

@@ -34,8 +34,8 @@ const faqs = [
 
 export default function FAQSectionNew() {
   return (
-    <section className="section-pad bg-white overflow-hidden">
-      <div className="section-wid ">
+    <section className="section-pad bg-white overflow-hidden ">
+      <div className="section-wid pb-2 md:pb-5">
         <div className="grid lg:grid-cols-2 gap-0  overflow-hidden  ">
 
          

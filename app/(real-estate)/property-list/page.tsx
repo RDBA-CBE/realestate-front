@@ -5,10 +5,12 @@ import { PropertyView2 } from "@/components/real-estate/property-list/property3A
 import Models from "@/imports/models.import";
 import { PROPERTY_LIST_PAGE } from "@/utils/constant.utils";
 import {
+  capitalizeFLetter,
   formatNumber,
   removePlus,
   useSetState,
 } from "@/utils/function.utils";
+import { toastEmitter } from "@/utils/toast.utils";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
@@ -49,7 +51,7 @@ export default function Page() {
   useEffect(() => {
     initPage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [developerId, search, type, propertyType, locationParam]);
 
   useEffect(() => {
     if (developerId) {
@@ -68,12 +70,14 @@ export default function Page() {
       const locationId = Number(locationParam);
       const matched = (res?.location || []).find((item: any) => item.id === locationId);
       if (matched) urlFilter.location = [{ label: matched.name, value: matched.id }];
-    }
+    }    
 
     // validate & map propertyType param
     if (propertyType) {
-      const typeId = Number(propertyType);
-      const matched = (res?.property_type || []).find((item: any) => item.id === typeId);
+      const typeVal = propertyType.toLowerCase();
+      const matched = (res?.property_type || []).find((item: any) => 
+        String(item.id) === typeVal || (item.name && item.name.toLowerCase() === typeVal)
+      );
       if (matched) urlFilter.propertyType = [{ label: matched.name, value: matched.id }];
     }
 
@@ -135,6 +139,8 @@ export default function Page() {
       const hasUrlFilters = Object.keys(urlFilter).length > 0;
       await propertyList(1, false, hasUrlFilters ? urlFilter : null);
     } catch (error) {
+      const msg = error?.error || error?.response?.data?.error || "Failed to initialize filters";
+      toastEmitter.emit("error", msg);
       setState({ loading: false });
     }
   };
@@ -176,6 +182,8 @@ export default function Page() {
         // maxPrice: filterData ? state.maxPrice : maxPrice,
       });
     } catch (error) {
+      const msg = error?.error || error?.response?.data?.error || "Failed to load properties";
+      toastEmitter.emit("error", msg);
       setState({
         loading: false,
         isLoadingMore: false,

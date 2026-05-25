@@ -70,9 +70,12 @@ const Header = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const savedLocation = localStorage.getItem("userLocation");
+
+    const parsedLocation = savedLocation ? JSON.parse(savedLocation) : null;
+
     setState({
       token,
-      selectedLocation: savedLocation ? JSON.parse(savedLocation) : null,
+      selectedLocation: parsedLocation?.value === "all" ? null : parsedLocation,
     });
 
     const onLocationChanged = (e) => {
@@ -157,64 +160,68 @@ const Header = () => {
               {/* Left Menu (Desktop) */}
               <nav className="hidden xl:flex space-x-6">
                 {StudentLeftSideMenu.map((menu) => {
-                  const isActive = pathname === menu.url || (menu.url !== "/" && pathname.startsWith(menu.url));
+                  const isActive =
+                    pathname === menu.url ||
+                    (menu.url !== "/" && pathname.startsWith(menu.url));
                   return (
-                  <div
-                    key={menu.title}
-                    className="relative"
-                    onMouseEnter={() => menu.items && setActiveMenu(menu.title)}
-                    onMouseLeave={() => menu.items && setActiveMenu(null)}
-                  >
-                    <Link
-                      prefetch={true}
-                      href={menu.url}
-                      className={`text-[16px] font-[500] nav-ti transition-colors relative pb-1 ${
-                        isActive
-                          ? "text-dred after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-dred after:rounded-full"
-                          : "hover:text-dred"
-                      }`}
+                    <div
+                      key={menu.title}
+                      className="relative"
+                      onMouseEnter={() =>
+                        menu.items && setActiveMenu(menu.title)
+                      }
+                      onMouseLeave={() => menu.items && setActiveMenu(null)}
                     >
-                      {menu.title}
-                    </Link>
+                      <Link
+                        prefetch={true}
+                        href={menu.url}
+                        className={`text-[16px] font-[500] nav-ti transition-colors relative pb-1 ${
+                          isActive
+                            ? "text-dred after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-dred after:rounded-full"
+                            : "hover:text-dred"
+                        }`}
+                      >
+                        {menu.title}
+                      </Link>
 
-                    {/* Submenu with animation */}
-                    <AnimatePresence>
-                      {(activeMenu === menu.title ||
-                        clickedMenu === menu.title) &&
-                        menu.items && (
-                          <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.25, ease: "easeOut" }}
-                            className="absolute left-0 w-56 bg-white p-4 rounded-lg shadow-lg"
-                            onMouseEnter={() => setActiveMenu(menu.title)}
-                            onMouseLeave={() => setActiveMenu(null)}
-                          >
-                            {menu.items.map((item, index) => (
-                              <motion.div
-                                key={item.title}
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{
-                                  duration: 0.2,
-                                  delay: index * 0.05,
-                                }}
-                                className="mb-2"
-                              >
-                                <Link
-                                  prefetch={true}
-                                  href={item.url}
-                                  className="text-xs text-black font-[600] uppercase hover:text-themeColor1"
+                      {/* Submenu with animation */}
+                      <AnimatePresence>
+                        {(activeMenu === menu.title ||
+                          clickedMenu === menu.title) &&
+                          menu.items && (
+                            <motion.div
+                              initial={{ opacity: 0, y: -10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -10 }}
+                              transition={{ duration: 0.25, ease: "easeOut" }}
+                              className="absolute left-0 w-56 bg-white p-4 rounded-lg shadow-lg"
+                              onMouseEnter={() => setActiveMenu(menu.title)}
+                              onMouseLeave={() => setActiveMenu(null)}
+                            >
+                              {menu.items.map((item, index) => (
+                                <motion.div
+                                  key={item.title}
+                                  initial={{ opacity: 0, x: -10 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{
+                                    duration: 0.2,
+                                    delay: index * 0.05,
+                                  }}
+                                  className="mb-2"
                                 >
-                                  {item.title}
-                                </Link>
-                              </motion.div>
-                            ))}
-                          </motion.div>
-                        )}
-                    </AnimatePresence>
-                  </div>
+                                  <Link
+                                    prefetch={true}
+                                    href={item.url}
+                                    className="text-xs text-black font-[600] uppercase hover:text-themeColor1"
+                                  >
+                                    {item.title}
+                                  </Link>
+                                </motion.div>
+                              ))}
+                            </motion.div>
+                          )}
+                      </AnimatePresence>
+                    </div>
                   );
                 })}
               </nav>
@@ -232,15 +239,15 @@ const Header = () => {
                   </Link>
                 </div> */}
 
-
-                
-                {/* {state.token && state.selectedLocation ? (
+                {state.token && state.selectedLocation ? (
                   <button
                     onClick={handleLocationClick}
                     className="hidden xl:flex items-center gap-1.5 me-2 px-3 py-1 rounded-full bg-[#9b0f09]/10 hover:bg-[#9b0f09]/20 transition-colors cursor-pointer"
                   >
                     <MapPin className="w-3.5 h-3.5 text-dred shrink-0" />
-                    <span className="text-sm font-medium text-dred">{state.selectedLocation.label}</span>
+                    <span className="text-sm font-medium text-dred">
+                      {state.selectedLocation.label}
+                    </span>
                   </button>
                 ) : state.token && !state.selectedLocation ? (
                   <button
@@ -248,13 +255,13 @@ const Header = () => {
                     className="hidden xl:flex items-center gap-1.5 me-2 px-3 py-1 rounded-full border border-dashed border-[#9b0f09]/50 hover:bg-[#9b0f09]/10 transition-colors"
                   >
                     <MapPin className="w-3.5 h-3.5 text-dred shrink-0" />
-                    <span className="text-sm font-medium text-dred">Choose Location</span>
+                    <span className="text-sm font-medium text-dred">
+                      Choose Location
+                    </span>
                   </button>
-                ) : null} */}
+                ) : null}
 
-                  
-
-                  {/* <div className="group p-1 rounded-full  relative transition-all duration-300 cursor-pointer">
+                {/* <div className="group p-1 rounded-full  relative transition-all duration-300 cursor-pointer">
   
                     <span className="absolute inset-0 rounded-full border-2 border-dred scale-100 group-hover:scale-125 opacity-0 group-hover:opacity-100 transition-all duration-500"></span>
 
@@ -266,7 +273,7 @@ const Header = () => {
                     />
                   </div> */}
 
-                  {/* <div className="p-1 rounded-full group cursor-pointer">
+                {/* <div className="p-1 rounded-full group cursor-pointer">
                     <img
                       src="/assets/images/real-estate/home/ai-search-2.png"
                       alt=""
@@ -274,10 +281,6 @@ const Header = () => {
                       className="w-9 h-9 transform transition-transform duration-500 ease-out group-hover:scale-[1.3]"
                     />
                   </div> */}
-
-                  
-               
-               
 
                 {/* <Button
                   onClick={() => router.push("/ai-search")}
@@ -293,7 +296,7 @@ const Header = () => {
                   Post Property
                 </Button>
 
-                 {state.token ? (
+                {state.token ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button className="flex items-center space-x-2 focus:outline-none">
@@ -356,9 +359,13 @@ const Header = () => {
                   </>
                 )}
                 <div className="p-1 rounded-full group hidden xl:block">
-                     <img src="/assets/images/real-estate/home/ai-search-1.png" alt="" className="w-10 h-10 transition-transform duration-500  ease-out group-hover:scale-[1.2]"
-                 onClick={() => router.push("/ai-search")}/>
-                  </div>
+                  <img
+                    src="/assets/images/real-estate/home/ai-search-1.png"
+                    alt=""
+                    className="w-10 h-10 transition-transform duration-500  ease-out group-hover:scale-[1.2]"
+                    onClick={() => router.push("/ai-search")}
+                  />
+                </div>
 
                 <div className="block xl:hidden">
                   <Sheet open={open} onOpenChange={setOpen}>
@@ -387,19 +394,21 @@ const Header = () => {
                     <SheetContent>
                       <SheetHeader>
                         <SheetTitle>
-                         {/* <div className="flex justify-center gap-3 py-4"> */}
+                          {/* <div className="flex justify-center gap-3 py-4"> */}
                           <img
                             src="/assets/images/real-estate/home/boom-logo.png"
                             alt="Logo"
                             className="h-10 w-auto object-contain -mt-2"
-                            onClick={() => { router.push("/")
-                               setOpen(false)}}
+                            onClick={() => {
+                              router.push("/");
+                              setOpen(false);
+                            }}
                           />
-                        {/* </div> */}
+                          {/* </div> */}
                         </SheetTitle>
                       </SheetHeader>
                       {/* <div className="flex justify-between items-center "> */}
-                        {/* <Link href="home">
+                      {/* <Link href="home">
                           <Image
                             src="/assets/images/logo.png"
                             alt="logo"
@@ -407,7 +416,7 @@ const Header = () => {
                             height={80}
                           />
                         </Link> */}
-                        {/* <div className="flex justify-center gap-3 py-4">
+                      {/* <div className="flex justify-center gap-3 py-4">
                           <img
                             src="/assets/images/real-estate/home/boom-logo.png"
                             alt="Logo"
@@ -417,7 +426,7 @@ const Header = () => {
                           />
                         </div> */}
 
-                        {/* {!state.token && (
+                      {/* {!state.token && (
                           <Button
                             onClick={() => router.push("/login")}
                             variant="outline"
@@ -449,75 +458,81 @@ const Header = () => {
 
                       <div className="mt-4">
                         {StudentLeftSideMenu.map((menu, index) => {
-                          const isActive = pathname === menu.url || (menu.url !== "/" && pathname.startsWith(menu.url));
+                          const isActive =
+                            pathname === menu.url ||
+                            (menu.url !== "/" && pathname.startsWith(menu.url));
                           return (
-                          <Accordion
-                            type="single"
-                            collapsible
-                            className="w-full"
-                            key={index}
-                          >
-                            <AccordionItem value={`item-${index + 1}`}>
-                              <AccordionTrigger
-                                className={`no-underline hover:no-underline uppercase text-sm pb-4${
-                                  menu.items?.length > 0 ? "" : "[&>svg]:hidden"
-                                } ${isActive ? "text-dred" : ""}`}
-                                onClick={() => {
-                                  if (!menu.items?.length) {
-                                    router.push(menu.url);
-                                    setOpen(false);
-                                  }
-                                }}
-                              >
-                              
-                                {menu.title}
-                              </AccordionTrigger>
-                              {menu.items?.length > 0 && (
-                                <AccordionContent>
-                                  {menu.items ? (
-                                    <motion.ul
-                                      initial={{ opacity: 0, y: -5 }}
-                                      animate={{ opacity: 1, y: 0 }}
-                                      exit={{ opacity: 0, y: -5 }}
-                                      transition={{ duration: 0.3 }}
-                                      className="pl-5 uppercase"
-                                    >
-                                      {menu.items.map((item, itemIndex) => (
-                                        <motion.li
-                                          key={itemIndex}
-                                          initial={{ opacity: 0, x: -10 }}
-                                          animate={{ opacity: 1, x: 0 }}
-                                          transition={{
-                                            duration: 0.2,
-                                            delay: itemIndex * 0.05,
-                                          }}
-                                          className="pb-2 text-sm"
-                                        >
-                                          <a
-                                            href={item.url}
-                                            onClick={() => setOpen(false)}
+                            <Accordion
+                              type="single"
+                              collapsible
+                              className="w-full"
+                              key={index}
+                            >
+                              <AccordionItem value={`item-${index + 1}`}>
+                                <AccordionTrigger
+                                  className={`no-underline hover:no-underline uppercase text-sm pb-4${
+                                    menu.items?.length > 0
+                                      ? ""
+                                      : "[&>svg]:hidden"
+                                  } ${isActive ? "text-dred" : ""}`}
+                                  onClick={() => {
+                                    if (!menu.items?.length) {
+                                      router.push(menu.url);
+                                      setOpen(false);
+                                    }
+                                  }}
+                                >
+                                  {menu.title}
+                                </AccordionTrigger>
+                                {menu.items?.length > 0 && (
+                                  <AccordionContent>
+                                    {menu.items ? (
+                                      <motion.ul
+                                        initial={{ opacity: 0, y: -5 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -5 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="pl-5 uppercase"
+                                      >
+                                        {menu.items.map((item, itemIndex) => (
+                                          <motion.li
+                                            key={itemIndex}
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{
+                                              duration: 0.2,
+                                              delay: itemIndex * 0.05,
+                                            }}
+                                            className="pb-2 text-sm"
                                           >
-                                            {item.title}
-                                          </a>
-                                        </motion.li>
-                                      ))}
-                                    </motion.ul>
-                                  ) : (
-                                    <p className="uppercase">
-                                      <a href={menu.url}>{menu.title}</a>
-                                    </p>
-                                  )}
-                                </AccordionContent>
-                              )}
-                            </AccordionItem>
-                          </Accordion>
+                                            <a
+                                              href={item.url}
+                                              onClick={() => setOpen(false)}
+                                            >
+                                              {item.title}
+                                            </a>
+                                          </motion.li>
+                                        ))}
+                                      </motion.ul>
+                                    ) : (
+                                      <p className="uppercase">
+                                        <a href={menu.url}>{menu.title}</a>
+                                      </p>
+                                    )}
+                                  </AccordionContent>
+                                )}
+                              </AccordionItem>
+                            </Accordion>
                           );
                         })}
-                          {/* Login + Post Property buttons inside sidebar */}
+                        {/* Login + Post Property buttons inside sidebar */}
                         <div className="flex flex-col gap-3 mt-8">
                           {!state.token ? (
                             <Button
-                              onClick={() => { router.push("/login"); setOpen(false); }}
+                              onClick={() => {
+                                router.push("/login");
+                                setOpen(false);
+                              }}
                               variant="outline"
                               className="w-full rounded-full bg-lred border-[#9b0f09] text-dred hover:bg-color2 hover:text-white"
                             >
@@ -525,7 +540,10 @@ const Header = () => {
                             </Button>
                           ) : (
                             <Button
-                              onClick={() => { router.push("/profile"); setOpen(false); }}
+                              onClick={() => {
+                                router.push("/profile");
+                                setOpen(false);
+                              }}
                               variant="outline"
                               className="w-full rounded-full border-[#9b0f09] text-dred hover:bg-color2 hover:text-white"
                             >
@@ -533,7 +551,10 @@ const Header = () => {
                             </Button>
                           )}
                           <Button
-                            onClick={() => { router.push("/post-property"); setOpen(false); }}
+                            onClick={() => {
+                              router.push("/post-property");
+                              setOpen(false);
+                            }}
                             className="w-full rounded-full bg-dred hover:bg-[#7d0c07] text-white"
                           >
                             Post Property

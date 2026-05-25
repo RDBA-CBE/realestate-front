@@ -14,10 +14,10 @@ const links = [
 ];
 
 const popularSearch = [
-  { label: "Apartment for Sale", params: { type: "sale", search: "Apartment" } },
-  { label: "Apartment for Lease", params: { type: "lease", search: "Apartment" } },
-  { label: "Villas for Sale", params: { type: "sale", search: "Villa" } },
-  { label: "Villas for Lease", params: { type: "lease", search: "Villa" } },
+  { label: "Apartment for Sale", params: { type: "sale", propertyType: "apartment" } },
+  { label: "Apartment for Lease", params: { type: "lease", propertyType: "apartment" } },
+  { label: "Villas for Sale", params: { type: "sale", propertyType: "villa" } },
+  { label: "Villas for Lease", params: { type: "lease", propertyType: "villa" } },
 ];
 
 export default function NewFooter() {
@@ -66,10 +66,12 @@ export default function NewFooter() {
       if (state.search) body.search = state.search;
       const res: any = await Models.dropdowns.city(page, body);
       const locationdd = res?.results?.filter((item) => item?.property_count != 0);
-      const droprdown = Dropdown(locationdd, "name");
 
       setState({
-        locationList: droprdown,
+        locationList: (locationdd || []).map((item: any) => ({
+          label: item.name,
+          value: String(item.id),
+        })),
         cityList: res?.results,
         total: res?.count,
         page,
@@ -120,13 +122,12 @@ export default function NewFooter() {
     <ul className="space-y-3 text-white/80">
       {popularSearch.map((item) => (
         <li key={item.label}>
-          <button
-            type="button"
-            onClick={() => handlePropertyListNavigate(item.params)}
-            className="text-left hover:text-white"
+          <Link
+            href={`/property-list?${new URLSearchParams(item.params).toString()}`}
+            className="text-left hover:text-white block"
           >
             {item.label}
-          </button>
+          </Link>
         </li>
       ))}
     </ul>
@@ -171,17 +172,12 @@ export default function NewFooter() {
     <ul className="space-y-3 text-white/80">
       {state.locationList?.slice(0, 5).map((item, i) => (
         <li key={i}>
-          <button
-            type="button"
-            onClick={() =>
-              handlePropertyListNavigate({
-                location: item.value,
-              })
-            }
-            className="text-left hover:text-white"
+          <Link
+            href={`/property-list?location=${item.value}`}
+            className="text-left hover:text-white block"
           >
             {item?.label}
-          </button>
+          </Link>
         </li>
       ))}
     </ul>
