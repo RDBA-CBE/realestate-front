@@ -45,7 +45,7 @@ export default function PropertyDesc(props: any) {
       {isLong && ( // ✅ Show button only if text is long
         <button
           onClick={() => setExpanded(!expanded)}
-          className=" text-sm text-blue-600 font-medium text-black hover:underline"
+          className=" text-sm text-dred font-medium text-black hover:underline"
         >
           {expanded ? "Show less" : "Show more"}
         </button>

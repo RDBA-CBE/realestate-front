@@ -60,10 +60,33 @@ const HomeBanner = ({locationLabel}) => {
         }
       }
 
+      // Ensure the currently selected city is always in the list to avoid empty labels in the UI
+      if (selectedCity && selectedCity !== "all") {
+        const cityInRes = locations.some(l => l.value === selectedCity);
+        if (!cityInRes) {
+          const label = locationLabel?.label || "Selected City";
+          locations.unshift({ label, value: selectedCity });
+        }
+      }
+
       setLocationList(locations);
-      setPropertyTypeList(
-        (res?.property_type || []).map((item: any) => ({ label: item.name, value: String(item.id) }))
-      );
+
+      const types = (res?.property_type || []).map((item: any) => ({ 
+        label: item.name, 
+        value: String(item.id) 
+      }));
+
+      // If the list is empty and a specific city is selected, provide a descriptive disabled option.
+      // This ensures the dropdown menu is never "empty" and provides clear feedback to the user.
+      if (types.length === 0 && selectedCity && selectedCity !== "all") {
+        const cityLabel = 
+          locations.find((loc: any) => String(loc.value) === String(selectedCity))?.label || "chosen location";
+        
+        setPropertyTypeList([{ label: `No property type available for ${cityLabel}`, value: "no-results", isDisabled: true, disabled: true }]);
+      } else {
+        setPropertyTypeList(types);
+      }
+
     } catch (error) {
       console.log("banner dynamicFilter error", error);
     }

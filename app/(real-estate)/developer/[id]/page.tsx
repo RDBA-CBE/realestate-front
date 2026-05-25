@@ -119,7 +119,7 @@ const shortText = isLong
   return (
     <div className="min-h-screen bg-[#fff] section-pad !pt-0">
       {/* HEADER */}
-      <div className="border-b border-[#ebe7e1] bg-[#f8f8f8] pt-5">
+      <div className="border-b border-[#ebe7e1] bg-lred pt-5">
         <div className="section-wid pb-5 pt-4">
           {/* BREADCRUMB */}
           <div className="flex justify-between items-center pb-5">
