@@ -106,8 +106,9 @@ export default function AISearchComponent() {
     user_id: "",
   });
   const [callbackErrors, setCallbackErrors] = useState({
-    email: "",
+    
     phone: "",
+    message: "",
   });
   const [callbackLoading, setCallbackLoading] = useState(false);
   const [bookingForm, setBookingForm] = useState({
@@ -123,6 +124,7 @@ export default function AISearchComponent() {
     time: "",
     email: "",
     phone: "",
+    message:"",
   });
   const [bookingLoading, setBookingLoading] = useState(false);
   const [profileData, setProfileData] = useState({ email: "", phone: "", id: "" });
@@ -136,6 +138,17 @@ export default function AISearchComponent() {
   useEffect(() => {
     profile();
   }, []);
+
+  useEffect(() => {
+    if (inquiryPopup) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [inquiryPopup]);
 
   const profile = async () => {
     try {
@@ -334,13 +347,15 @@ export default function AISearchComponent() {
     try {
       setBookingLoading(true);
 
-      const errs = { date: "", time: "", email: "", phone: "" };
-      if (!bookingForm.email.trim()) errs.email = "Email is required";
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bookingForm.email))
-        errs.email = "Enter a valid email";
+      const errs = { date: "", time: "", email: "", phone: "", message:"" };
+      if (!bookingForm.date) {errs.date = "Preferred date and time is required"; setBookingLoading(false)}
+      if (!bookingForm.email.trim()) {errs.email = "Email is required"; setBookingLoading(false)}
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bookingForm.email)){
+        errs.email = "Enter a valid email"; setBookingLoading(false)}
       if (!bookingForm.phone.trim()) errs.phone = "Phone is required";
-      else if (!/^[0-9]{10}$/.test(bookingForm.phone))
-        errs.phone = "Enter a valid 10-digit number";
+      else if (!/^[0-9]{10}$/.test(bookingForm.phone)){
+        errs.phone = "Enter a valid 10-digit number"; setBookingLoading(false)}
+      if (!bookingForm.message) {errs.message = "Inquiry details is required"; setBookingLoading(false);}
       setBookingErrors(errs);
       if (errs.email || errs.phone) return;
 
@@ -381,15 +396,16 @@ export default function AISearchComponent() {
     try {
       setCallbackLoading(true);
 
-      const errs = { email: "", phone: "" };
-      if (!callbackForm.email.trim()) errs.email = "Email is required";
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(callbackForm.email))
-        errs.email = "Enter a valid email";
-      if (!callbackForm.phone.trim()) errs.phone = "Phone is required";
-      else if (!/^[0-9]{10}$/.test(callbackForm.phone))
-        errs.phone = "Enter a valid 10-digit number";
+      const errs = {  phone: "", message: "" };
+      // if (!callbackForm.email.trim()) errs.email = "Email is required";
+      // else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(callbackForm.email))
+      //   errs.email = "Enter a valid email";
+      if (!callbackForm.phone.trim()){ errs.phone = "Phone is required"; setCallbackLoading(false);}
+      else if (!/^[0-9]{10}$/.test(callbackForm.phone)){
+        errs.phone = "Enter a valid 10-digit number"; setCallbackLoading(false);}
+      if (!callbackForm.message) {errs.message = "Inquiry details is required"; setCallbackLoading(false);}
       setCallbackErrors(errs);
-      if (errs.email || errs.phone) return;
+      if (errs.message || errs.phone) return;
 
       const payload = {
         property: inquiryPopup?.propId ?? null,
@@ -639,9 +655,9 @@ export default function AISearchComponent() {
                                     });
                                     setInquiryMode("menu");
                                     setCallbackForm({ email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
-                                    setCallbackErrors({ email: "", phone: "" });
+                                    setCallbackErrors({ phone: "" , message:""});
                                     setBookingForm({ date: "", time: "", email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
-                                    setBookingErrors({ date: "", time: "", email: "", phone: "" });
+                                    setBookingErrors({ date: "", time: "", email: "", phone: "", message:"" });
                                   }}
                                   className="p-1.5 rounded-full hover:bg-themeColor1/10 text-themeColor1 transition-colors"
                                   title="Inquiry"
@@ -674,7 +690,7 @@ export default function AISearchComponent() {
                                   setInquiryPopup({ propId: null, propTitle: "General Inquiry" });
                                   setInquiryMode("callback");
                                   setCallbackForm({ email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
-                                  setCallbackErrors({ email: "", phone: "" });
+                                  setCallbackErrors({  phone: "", message:"" });
                                 }}
                                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-xs font-medium text-foreground"
                               >
@@ -686,7 +702,7 @@ export default function AISearchComponent() {
                                   setInquiryPopup({ propId: null, propTitle: "General Inquiry" });
                                   setInquiryMode("booking");
                                   setBookingForm({ date: "", time: "", email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
-                                  setBookingErrors({ date: "", time: "", email: "", phone: "" });
+                                  setBookingErrors({ date: "", time: "", email: "", phone: "" ,message :""});
                                 }}
                                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-xs font-medium text-foreground"
                               >
@@ -829,13 +845,13 @@ export default function AISearchComponent() {
                     {response.step.type === "text" &&
                       response.step.id === "contact_name" && (
                         <>
-                          <div className="flex flex-row gap-2">
+                          <div className="flex flex-col md:flex-row gap-2">
                             <button
                               onClick={() => {
                                 setInquiryPopup({ propId: null, propTitle: "General Inquiry" });
                                 setInquiryMode("callback");
                                 setCallbackForm({ email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
-                                setCallbackErrors({ email: "", phone: "" });
+                                setCallbackErrors({  phone: "", message:"" });
                               }}
                               className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-xs font-medium text-foreground"
                             >
@@ -847,7 +863,7 @@ export default function AISearchComponent() {
                                 setInquiryPopup({ propId: null, propTitle: "General Inquiry" });
                                 setInquiryMode("booking");
                                 setBookingForm({ date: "", time: "", email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
-                                setBookingErrors({ date: "", time: "", email: "", phone: "" });
+                                setBookingErrors({ date: "", time: "", email: "", phone: "", message:"" });
                               }}
                               className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-xs font-medium text-foreground"
                             >
@@ -968,7 +984,7 @@ export default function AISearchComponent() {
       {/* Inquiry Popup */}
       {inquiryPopup && (
         <div
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 px-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
           onClick={() => setInquiryPopup(null)}
         >
           <div
@@ -1118,8 +1134,14 @@ export default function AISearchComponent() {
                     }
                     placeholder="Tell us more about your inquiry..."
                     rows={3}
-                    className="w-full bg-background border border-border rounded-xl px-3 py-2 text-sm outline-none focus:border-themeColor1 transition-colors placeholder:text-muted-foreground resize-none"
+                    className={`w-full bg-background border  rounded-xl px-3 py-2 text-sm outline-none  transition-colors placeholder:text-muted-foreground resize-none  ${bookingErrors.message ? "border-red-500" : "border-border focus:border-themeColor1"}`}
                   />
+
+                  {bookingErrors.message && (
+                    <p className="text-xs text-red-500 pl-1">
+                      {bookingErrors.message}
+                    </p>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <button
@@ -1148,26 +1170,6 @@ export default function AISearchComponent() {
               <div className="flex flex-col gap-3">
                 <div className="flex flex-col gap-1">
                   <label className="text-xs text-muted-foreground font-medium">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    value={callbackForm.email}
-                    onChange={(e) => {
-                      setCallbackForm((p) => ({ ...p, email: e.target.value }));
-                      setCallbackErrors((p) => ({ ...p, email: "" }));
-                    }}
-                    placeholder="Email address"
-                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground ${callbackErrors.email ? "border-red-500" : "border-border focus:border-themeColor1"}`}
-                  />
-                  {callbackErrors.email && (
-                    <p className="text-xs text-red-500 pl-1">
-                      {callbackErrors.email}
-                    </p>
-                  )}
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs text-muted-foreground font-medium">
                     Phone Number
                   </label>
                   <input
@@ -1181,6 +1183,7 @@ export default function AISearchComponent() {
                     }}
                     placeholder="Phone number (10 digits)"
                     className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground ${callbackErrors.phone ? "border-red-500" : "border-border focus:border-themeColor1"}`}
+                    required
                   />
                   {callbackErrors.phone && (
                     <p className="text-xs text-red-500 pl-1">
@@ -1188,6 +1191,28 @@ export default function AISearchComponent() {
                     </p>
                   )}
                 </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs text-muted-foreground font-medium">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={callbackForm.email}
+                    onChange={(e) => {
+                      setCallbackForm((p) => ({ ...p, email: e.target.value }));
+                      setCallbackErrors((p) => ({ ...p, email: "" }));
+                    }}
+                    placeholder="Email address"
+                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground border-border focus:border-themeColor1`}
+                  />
+                  {/* {callbackErrors.email && (
+                    <p className="text-xs text-red-500 pl-1">
+                      {callbackErrors.email}
+                    </p>
+                  )} */}
+                </div>
+                
                 <div className="flex flex-col gap-1">
                   <label className="text-xs text-muted-foreground font-medium">
                     Inquiry Details
@@ -1202,8 +1227,16 @@ export default function AISearchComponent() {
                     }
                     placeholder="Tell us more about your inquiry..."
                     rows={3}
-                    className="w-full bg-background border border-border rounded-xl px-3 py-2 text-sm outline-none focus:border-themeColor1 transition-colors placeholder:text-muted-foreground resize-none"
+                    className={`w-full bg-background border  rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground resize-none ${callbackErrors.message ? "border-red-500" : "border-border focus:border-themeColor1"}`}
+                    required
                   />
+
+                  {callbackErrors.message && (
+                    <p className="text-xs text-red-500 pl-1">
+                      {callbackErrors.message}
+                    </p>
+                  )}
+                 
                 </div>
                 <div className="flex gap-2">
                   <button

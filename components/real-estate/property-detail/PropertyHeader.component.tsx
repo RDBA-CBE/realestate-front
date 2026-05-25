@@ -158,6 +158,14 @@ export default function PropertyHeader(props: any) {
                 data?.price_range?.maximum_price
               )}{" "}
             </p>
+            {data?.price_per_sqft && 
+            <span className="">
+            {/* <span></span> */}
+            <p className="text-[14px] text-black  mb-0">
+              Approx ₹ {(data?.price_per_sqft)} / sq.ft
+            </p>
+            </span>
+            }
           <h1 className="section-ti">{data?.title}</h1>
           <p>By <span className="text-dred cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.id}`)}>{data?.developer?.industry} </span></p>
           <p className="text-black leading-relaxed">{data?.address}</p>
@@ -204,21 +212,26 @@ export default function PropertyHeader(props: any) {
         </div>
 
         {/* Right side */}
-        <div className="flex flex-col items-end  gap-1 hidden sm:block">
+        <div className="flex flex-col items-end justify-end  gap-1 hidden sm:block">
          
-          <div>
-            <p className="section-ti mb-3 !text-dred pt-2">
+         
+            <p className=" text-2xl 2xl:text-3xl font-medium mb-1 !text-dred pt-2 text-right pb-1">
               ₹ {formatPriceRange(
                 data?.price_range?.minimum_price,
                 data?.price_range?.maximum_price
               )}{" "}
             </p>
-            {/* <p className="text-sm text-gray-600 ">
-              {(data?.price_per_sqft)}/sq ft
-            </p> */}
-          </div>
+            {data?.price_per_sqft && 
+            <span className="">
+            {/* <span></span> */}
+            <p className="text-[16px] text-black text-right mb-0">
+              Approx ₹ {(data?.price_per_sqft)} / sq.ft
+            </p>
+            </span>
+            }
+        
 
-           <div className="flex items-center justify-end gap-2">
+           <div className="flex items-center justify-end gap-2 mt-3">
             <Button
               onClick={() => handleWishList()}
               size="icon"
