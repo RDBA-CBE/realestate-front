@@ -132,7 +132,16 @@ const PropertyComparisonGrid = () => {
       group: "Address",
       attributes: [
         { label: "Address", key: "address" },
-        { label: "City", key: "city" },
+        {
+          label: "Area",
+          key: "area",
+          format: (value: any) => value?.label || value?.name || "-",
+        },
+        {
+          label: "City",
+          key: "location",
+          format: (value: any) => value?.label || value?.name || "-",
+        },
         { label: "State", key: "state" },
         { label: "Country", key: "country" },
         { label: "Postal Code", key: "postal_code" },

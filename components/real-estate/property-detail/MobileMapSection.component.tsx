@@ -218,7 +218,7 @@ const GoogleMaps = (props) => {
 
         <CardContent className="p-0">
           <p className="text-xs text-gray-500">Property Location</p>
-          <p className="text-sm font-semibold text-gray-800 mt-1">
+          <p className="text-sm font-semibold text-gray-800 mt-1 " style={{wordBreak:"break-all"}}>
             {data?.address || "Not specified"}
           </p>
           <a
