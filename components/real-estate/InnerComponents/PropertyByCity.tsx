@@ -37,7 +37,7 @@ const breakpoints = {
   1500: { slidesPerView: 5, spaceBetween: 24 },
 };
 
-const PropertyByCity = ({ cityList = [] }) => {
+const PropertyByCity = ({ cityList = [] }: { cityList?: any[] }) => {
   const router = useRouter();
   const swiperRef = useRef(null);
   const [swiperInstance, setSwiperInstance] = useState(null);
