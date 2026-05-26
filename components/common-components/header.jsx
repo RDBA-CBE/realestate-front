@@ -137,7 +137,7 @@ const Header = () => {
         className="bg-white sticky top-0 z-[50]"
       >
         <div className="section-wid  web-header">
-          <div className="  flex justify-between items-center gap-20 ">
+          <div className="  flex justify-between items-center gap-3 md:gap-20 ">
             <div className="flex items-center gap-20">
               {/* Logo */}
               <Link className="flex justify-center gap-3 py-3 md:py-4" href="/">
@@ -153,7 +153,7 @@ const Header = () => {
                 <img
                   src="/assets/images/real-estate/home/boom-logo.png"
                   alt="Logo"
-                  className="h-10 sm:h-12 w-auto object-contain"
+                  className="h-8 xs:h-10 sm:h-12 w-auto object-contain"
                 />
               </Link>
 
@@ -242,7 +242,7 @@ const Header = () => {
                 {state.token && state.selectedLocation ? (
                   <button
                     onClick={handleLocationClick}
-                    className="hidden xl:flex items-center gap-1.5 me-2 px-3 py-1 rounded-full bg-[#9b0f09]/10 hover:bg-[#9b0f09]/20 transition-colors cursor-pointer"
+                    className="hidden lg:flex items-center gap-1.5 me-2 px-3 py-1 rounded-full bg-[#9b0f09]/10 hover:bg-[#9b0f09]/20 transition-colors cursor-pointer"
                   >
                     <MapPin className="w-3.5 h-3.5 text-dred shrink-0" />
                     <span className="text-sm font-medium text-dred">
@@ -252,12 +252,35 @@ const Header = () => {
                 ) : state.token && !state.selectedLocation ? (
                   <button
                     onClick={handleLocationClick}
-                    className="hidden xl:flex items-center gap-1.5 me-2 px-3 py-1 rounded-full border border-dashed border-[#9b0f09]/50 hover:bg-[#9b0f09]/10 transition-colors"
+                    className="hidden lg:flex items-center gap-1.5 me-2 px-3 py-1 rounded-full border border-dashed border-[#9b0f09]/50 hover:bg-[#9b0f09]/10 transition-colors"
                   >
                     <MapPin className="w-3.5 h-3.5 text-dred shrink-0" />
                     <span className="text-sm font-medium text-dred">
                       Choose Location
                     </span>
+                  </button>
+                ) : null}
+
+                {state.token && state.selectedLocation ? (
+                  <button
+                    onClick={handleLocationClick}
+                    className="flex lg:hidden items-center gap-1  px-1.5 py-1 rounded-full bg-[#9b0f09]/10 hover:bg-[#9b0f09]/20 transition-colors cursor-pointer"
+                    title={state.selectedLocation.label}
+                  >
+                    {/* <MapPin className="w-2.5 h-2.5 text-dred shrink-0" /> */}
+                    <span className="text-[11px] font-medium text-dred">
+                      {state.selectedLocation.label}
+                    </span>
+                  </button>
+                ) : state.token && !state.selectedLocation ? (
+                  <button
+                    onClick={handleLocationClick}
+                    className="flex lg:hidden items-center gap-1.5 px-1.5 py-1.5 rounded-full border border-dashed border-[#9b0f09]/50 hover:bg-[#9b0f09]/10 transition-colors"
+                  >
+                    <MapPin className="w-4 h-4 text-dred shrink-0" />
+                    {/* <span className="text-[12px] font-medium text-dred">
+                      Choose Location
+                    </span> */}
                   </button>
                 ) : null}
 
@@ -387,7 +410,7 @@ const Header = () => {
                         </button>
                       )} */}
                       <SheetTrigger asChild>
-                        <MenuIcon className="text-dred cursor-pointer w-8 h-8 xs:w-auto xs:h-auto" />
+                        <MenuIcon className="text-dred cursor-pointer w-6 h-6 xs:w-auto xs:h-auto" />
                       </SheetTrigger>
                     </div>
 

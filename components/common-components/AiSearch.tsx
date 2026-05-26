@@ -496,7 +496,7 @@ export default function AISearchComponent() {
   // ── CHAT MODE ──────────────────────────────────────────────────────────────
   return (
     <div
-      className="flex flex-col w-full max-w-2xl mx-auto pb-6 min-h-[calc(100vh-80px)]"
+      className="flex flex-col w-full max-w-2xl mx-auto h-[calc(100vh-80px)]"
     >
       {/* Header */}
       <div className="flex items-center gap-3 px-2 py-4 border-b border-border shrink-0">
@@ -513,7 +513,7 @@ export default function AISearchComponent() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-2 py-5 pb-10 flex flex-col gap-3">
+      <div className="flex-1 overflow-y-auto px-2 pt-5  flex flex-col gap-3">
         {messages.map((msg, i) => {
           if (msg.role === "user") {
             return (
@@ -959,7 +959,7 @@ export default function AISearchComponent() {
           .find((m) => m.role === "bot") as BotMsg | undefined;
         return lastBot && !lastBot.response.step?.id && !loading;
       })() && (
-        <div className="px-2 pb-4 pt-2 border-t border-border shrink-0">
+        <div className="px-2 pb-4 pt-2 border-t border-border shrink-0 bg-background sticky bottom-0 z-10">
           <div className="flex items-center gap-2 bg-card border border-border rounded-2xl px-4 py-2.5 focus-within:ring-2 focus-within:ring-themeColor1 transition-all">
             <input
               ref={freeInputRef}

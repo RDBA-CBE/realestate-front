@@ -6,16 +6,23 @@ import Models from "@/imports/models.import";
 
 const HomeBanner = ({locationLabel}) => {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("Sale");
+  const [activeTab, setActiveTab] = useState(locationLabel?.value ? "All" : "Sale");
   const [selectedType, setSelectedType] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedCity, setSelectedCity] = useState(locationLabel?.value ? String(locationLabel.value) : "");
   const [searchText, setSearchText] = useState("");
-  const [locationList, setLocationList] = useState([]);
+  const [locationList, setLocationList] = useState<any[]>(
+    locationLabel?.value ? [{ label: locationLabel.label, value: String(locationLabel.value) }] : []
+  );
   const [propertyTypeList, setPropertyTypeList] = useState([]);
 
   useEffect(() => {
     const cityValue = locationLabel?.value ? String(locationLabel.value) : "";
     setSelectedCity(cityValue);
+
+    // If a location is set from the global state, default to the "All" tab
+    if (cityValue) {
+      setActiveTab("All");
+    }
 
     // Immediately sync the locationList with the selected city from prop
     // This ensures the label is available to CustomSelect even before API fetch
@@ -31,57 +38,59 @@ const HomeBanner = ({locationLabel}) => {
 
   useEffect(() => {
     fetchDynamicFilters();
-  }, [activeTab, selectedType, selectedCity]);
+  }, [activeTab, selectedType, selectedCity, locationLabel]);
 
   const fetchDynamicFilters = async () => {
     try {
       const body: any = {};
-      if (activeTab !== "All") body.listing_type = [activeTab.toLowerCase()];
+      // Map activeTab to API listing_type
+      if (activeTab === "Sale") {
+        body.listing_type = ["sale"];
+      } else if (activeTab === "Lease") {
+        body.listing_type = ["lease"];
+      } else if (activeTab === "All") {
+        body.listing_type = []; // Requesting all
+      }
+
       if (selectedCity && selectedCity !== "all") body.location = [Number(selectedCity)];
       if (selectedType) body.property_type = [Number(selectedType)];
 
       const res: any = await Models.property.dynamicFilter(body);
 
-      const locations = (res?.location || []).map((item: any) => ({ 
+      const apiLocations = (res?.location || []).map((item: any) => ({
         label: item.name, 
         value: String(item.id) 
       }));
 
-      // Ensure "Show All Locations" is available if it's currently selected
-      if (selectedCity === "all") {
-        if (!locations.some(loc => loc.value === "all")) {
-          locations.unshift({ label: "Show All Locations", value: "all" });
-        }
-      } 
-      // Ensure the global location from props is always in the list so its label can be displayed
-      else if (selectedCity && locationLabel && String(locationLabel.value) === selectedCity) {
-        if (!locations.some(loc => loc.value === selectedCity)) {
-          locations.unshift({ label: locationLabel.label, value: selectedCity });
-        }
+      let finalLocationList = [...apiLocations];
+      // Create a set of existing values to avoid duplicates
+      const existingValues = new Set(finalLocationList.map((loc: any) => loc.value));
+
+      // Always ensure the global location from props is in the list if it's set
+      if (locationLabel?.value && !existingValues.has(String(locationLabel.value))) {
+        finalLocationList.unshift({ label: locationLabel.label, value: String(locationLabel.value) });
+        existingValues.add(String(locationLabel.value));
       }
 
-      // Ensure the currently selected city is always in the list to avoid empty labels in the UI
-      if (selectedCity && selectedCity !== "all") {
-        const cityInRes = locations.some(l => l.value === selectedCity);
-        if (!cityInRes) {
-          const label = locationLabel?.label || "Selected City";
-          locations.unshift({ label, value: selectedCity });
-        }
+      // Ensure "Show All Locations" is an option if "all" is the selected city or if no city is selected
+      if ((!selectedCity || selectedCity === "all") && !existingValues.has("all")) {
+        finalLocationList.unshift({ label: "Show All Locations", value: "all" });
+        existingValues.add("all");
       }
 
-      setLocationList(locations);
+      setLocationList(finalLocationList);
 
-      const types = (res?.property_type || []).map((item: any) => ({ 
-        label: item.name, 
-        value: String(item.id) 
+      const types = (res?.property_type || []).map((item: any) => ({
+        label: item.name,
+        value: String(item.id)
       }));
 
       // If the list is empty and a specific city is selected, provide a descriptive disabled option.
       // This ensures the dropdown menu is never "empty" and provides clear feedback to the user.
       if (types.length === 0 && selectedCity && selectedCity !== "all") {
-        const cityLabel = 
-          locations.find((loc: any) => String(loc.value) === String(selectedCity))?.label || "chosen location";
-        
+        const cityLabel =
+          finalLocationList.find((loc: any) => String(loc.value) === String(selectedCity))?.label || "selected location";
+
         setPropertyTypeList([{ label: `No property type available for ${cityLabel}`, value: "no-results", isDisabled: true, disabled: true }]);
       } else {
         setPropertyTypeList(types);
@@ -123,6 +132,7 @@ const HomeBanner = ({locationLabel}) => {
                 onClick={() => {
                   setActiveTab(tab);
                   setSelectedType("");
+                  setSelectedCity(""); // Clear location on tab change
                 }}
                 className={`adv-tab cursor-pointer ${activeTab === tab ? "active" : ""}`}
               >
@@ -147,14 +157,14 @@ const HomeBanner = ({locationLabel}) => {
               </div>
             </div>
 
-            <div className="flex  flex-1 gap-3 items-center lg:items-start px-4">
+            <div className="flex  flex-1 gap-3 items-center lg:items-start px-4 ">
               <MapPin className="text-dred w-4 h-4 md:w-5 md:h-5  md:mt-1.5 shrink-0" />
-              <div>
+              <div className="w-full">
                 <CustomSelect
                   options={locationList}
                   value={selectedCity}
                   onChange={(selected) => setSelectedCity(selected ? selected.value : "")}
-                  className="custom-select placeholder:lg:text-[16px]"
+                  className="custom-select placeholder:lg:text-[16px] "
                   placeholder="Choose City"
                 />
               </div>
@@ -164,7 +174,7 @@ const HomeBanner = ({locationLabel}) => {
 
             <div className="flex flex-1 gap-3 items-center lg:items-start px-4">
               <Home className="text-dred w-4 h-4 md:w-5 md:h-5 md:mt-1.5 shrink-0" />
-              <div>
+              <div className="w-full">
                 <CustomSelect
                   options={propertyTypeList}
                   value={selectedType}
