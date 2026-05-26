@@ -259,6 +259,8 @@ export function PropertyView(props: any) {
     }
   };
 
+  
+
   console.log("initialPropertyType", initialPropertyType);
   
 
