@@ -38,6 +38,7 @@ export default function RootLayout({ children }) {
   const isPostProperty = pathname?.startsWith("/post-property");
   const isResetPassword = pathname?.startsWith("/reset-password");
   const isVerifyEmail = pathname?.startsWith("/verify-email");
+  const AISerach = pathname?.startsWith("/ai-search");
 
   return (
     <Provider store={store}>
@@ -61,7 +62,7 @@ export default function RootLayout({ children }) {
 
               <main className="w-full">{children}</main>
 
-              <NewFooter />
+             {!AISerach && <NewFooter />}
             </div>
             {/* <PropertyFinderChat /> */}
             <Toaster position="top-center" />

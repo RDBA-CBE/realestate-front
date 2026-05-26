@@ -47,15 +47,15 @@ const NewPopuplarProperties = (props) => {
                         </div>
                         )}
             {locationEmpty && (
-              <div className="flex items-center gap-2 mt-2 text-amber-700 text-sm">
-                <MapPin className="w-4 h-4 shrink-0" />
-                 {capitalizeFLetter(activeFilter)} properties are not available in <span className="font-semibold mx-1">{locationLabel}</span> — showing all available properties.
+              <div className="flex  gap-2 mt-2 text-amber-700 text-sm">
+                <MapPin className="w-4 h-4 shrink-0 mt-0.5" />
+                 <span> {capitalizeFLetter(activeFilter)} properties are not available in <span className="font-semibold mx-1">{locationLabel}</span> — showing all available properties. </span>
               </div>
             )}
           </div>
 
           {/* Filter Buttons - Moved to right end */}
-          <div className="gap-2 md:gap-4  inline-flex">
+          <div className="gap-2 md:gap-4  inline-flex mt-4 md:mt-0">
             <button
               onClick={() => {
                  setActiveFilter("all");

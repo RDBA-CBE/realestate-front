@@ -294,6 +294,10 @@ export default function Page() {
        if (data?.listingStatus == "For Sale") {
         bodyData.listing_type = ["sale"];
       }
+      // Explicitly handle "All" listing status by sending an empty array for listing_type
+      if (data?.listingStatus == "All") {
+        bodyData.listing_type = [];
+      }
 
       if (data?.listingStatus == "For Lease") {
         bodyData.listing_type = ["lease"];
