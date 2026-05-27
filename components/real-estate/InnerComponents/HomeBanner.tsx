@@ -62,7 +62,7 @@ const HomeBanner = ({locationLabel}) => {
         value: String(item.id) 
       }));
 
-      let finalLocationList = [...apiLocations];
+      const finalLocationList = [...apiLocations];
       // Create a set of existing values to avoid duplicates
       const existingValues = new Set(finalLocationList.map((loc: any) => loc.value));
 
