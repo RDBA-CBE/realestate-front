@@ -7,7 +7,7 @@ import { MapPin } from "lucide-react";
 import PropertyCard from "./PropertyCard";
 import { NewPopularPropertiesSkeleton } from "./HomeSectionSkeletons";
 
-const NewPopuplarProperties = (props) => {
+const NewPopuplarProperties = (props: any) => {
   const router = useRouter();
   const { propertyList, updatePropertyType, locationEmpty, locationLabel, loading } = props;
   const [activeFilter, setActiveFilter] = useState("all");

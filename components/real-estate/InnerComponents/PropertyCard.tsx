@@ -4,9 +4,8 @@ import { MapPin, BedDouble, Bath, Maximize2, Heart, GitCompare } from "lucide-re
 import { capitalizeFLetter, formatPriceRange, Success, truncateText } from "@/utils/function.utils";
 import { useRouter } from "next/navigation";
 import Models from "@/imports/models.import";
-import { truncate } from "fs";
 
-const PropertyCard = ({ listing }) => {
+const PropertyCard = ({ listing }: { listing: any }) => {
   const router = useRouter();
   const [isWishlisted, setIsWishlisted] = useState(listing?.user_wishlists || false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);

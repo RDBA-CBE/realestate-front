@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import PropertyCard from "./PropertyCard";
 
-const FeaturedListings = (props) => {
+const FeaturedListings = (props: any) => {
   const { list, locationEmpty, locationLabel } = props;
   const swiperRef = useRef(null);
 

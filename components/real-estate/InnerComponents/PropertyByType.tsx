@@ -34,7 +34,7 @@ const getPropTypeImage = (name: string) => {
   return filename ? `${PROP_TYPE_BASE}${filename}` : PROP_TYPE_DEFAULT;
 };
 
-const PropertyByType = ({ propertyTypeList = [] }) => {
+const PropertyByType = ({ propertyTypeList = [] }: { propertyTypeList?: any[] }) => {
   const router = useRouter();
   const swiperRef = useRef(null);
   const prevRef = useRef(null);
