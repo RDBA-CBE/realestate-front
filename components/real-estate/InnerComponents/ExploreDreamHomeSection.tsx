@@ -31,7 +31,7 @@ export default function ExploreDreamHomeSection() {
 
               {/* Buttons */}
               <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-                <Link href={"/propert-list"} className="rounded-full bg-white px-7 py-3 text-sm font-medium text-black transition hover:bg-gray-100">
+                <Link href={"/property-list"} className="rounded-full bg-white px-7 py-3 text-sm font-medium text-black transition hover:bg-gray-100">
                   Browse all properties
                 </Link>
 
