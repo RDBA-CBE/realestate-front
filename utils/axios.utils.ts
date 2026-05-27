@@ -5,10 +5,12 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import { BASEURL } from "./constant.utils";
+import Swal from "sweetalert2";
 
 let api: AxiosInstance | null = null;
 let isRefreshing = false;
 let failedQueue: any[] = [];
+let isAlertShown = false;
 
 const processQueue = (error: any, token: string | null = null) => {
   failedQueue.forEach((prom) => {
@@ -23,19 +25,20 @@ const processQueue = (error: any, token: string | null = null) => {
 };
 
 const showTokenExpiredAlert = () => {
-  const userConfirmed = window.confirm(
-    "Your token has expired. Click OK to login again.",
-  );
+  if (isAlertShown) return;
+  isAlertShown = true;
 
-  if (userConfirmed) {
+  Swal.fire({
+    title: "Session Expired",
+    text: "Your token has expired. Click OK to login again.",
+    icon: "warning",
+    confirmButtonText: "OK",
+    allowOutsideClick: false,
+  }).then(() => {
+    window.stop();
     localStorage.clear();
     window.location.href = "/login";
-  } else {
-    setTimeout(() => {
-      localStorage.clear();
-      window.location.href = "/login";
-    }, 1000);
-  }
+  });
 };
 
 export const instance = (): AxiosInstance => {
@@ -119,8 +122,7 @@ export const instance = (): AxiosInstance => {
             resolve(api!(originalRequest));
           } catch (err) {
             processQueue(err, null);
-            localStorage.clear();
-            window.location.href = "/login";
+            showTokenExpiredAlert();
             reject(err);
           } finally {
             isRefreshing = false;

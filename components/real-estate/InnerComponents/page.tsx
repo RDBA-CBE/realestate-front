@@ -10,6 +10,7 @@ import {
   removePlus,
   useSetState,
 } from "@/utils/function.utils";
+import { Timer, Briefcase, Layers, Building } from "lucide-react";
 import { toastEmitter } from "@/utils/toast.utils";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
@@ -46,6 +47,7 @@ export default function Page() {
     propertyTypeParams: "",
     initialLocation: [],
     initialPropertyType: [],
+    developerInfo: null,
   });
 
   const initialLoadRef = useRef(true);
@@ -142,9 +144,13 @@ export default function Page() {
       const hasUrlFilters = Object.keys(urlFilter).length > 0;
       await propertyList(1, false, hasUrlFilters ? urlFilter : null);
     } catch (error) {
+      setState({ loading: false });
+      
+      // If unauthorized, let the axios interceptor handle it
+      if (error?.response?.status === 401) return;
+
       const msg = error?.error || error?.response?.data?.error || "Failed to initialize filters";
       toastEmitter.emit("error", msg);
-      setState({ loading: false });
     }
   };
 
@@ -185,12 +191,15 @@ export default function Page() {
         // maxPrice: filterData ? state.maxPrice : maxPrice,
       });
     } catch (error) {
-      const msg = error?.error || error?.response?.data?.error || "Failed to load properties";
-      toastEmitter.emit("error", msg);
       setState({
         loading: false,
         isLoadingMore: false,
       });
+
+      if (error?.response?.status === 401) return;
+
+      const msg = error?.error || error?.response?.data?.error || "Failed to load properties";
+      toastEmitter.emit("error", msg);
       console.log("✌️error --->", error);
     }
   };
@@ -198,7 +207,7 @@ export default function Page() {
   const developerDetail = async () => {
     try {
       const res: any = await Models.user.details(developerId);
-      // console.log("✌️res --->", res);
+      setState({ developerInfo: res });
     } catch (error) {
       console.log("✌️error --->", error);
     }
@@ -398,6 +407,52 @@ export default function Page() {
 
   return (
     <div>
+      {developerId && state.developerInfo && (
+        <div className="container mx-auto px-4 mt-6">
+          <div className="bg-card border border-border rounded-[2rem] p-6 shadow-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-themeColor1/10 flex items-center justify-center shrink-0">
+                  <Timer className="w-6 h-6 text-themeColor1" />
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Experience</p>
+                  <p className="text-sm font-semibold">{state.developerInfo.years_in_business || 0} Years</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-themeColor1/10 flex items-center justify-center shrink-0">
+                  <Briefcase className="w-6 h-6 text-themeColor1" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Specialization</p>
+                  <p className="text-sm font-semibold truncate" title={state.developerInfo.specialization?.map((s: any) => s.specialization).join(", ")}>
+                    {state.developerInfo.specialization?.map((s: any) => s.specialization).join(", ") || "General"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-themeColor1/10 flex items-center justify-center shrink-0">
+                  <Layers className="w-6 h-6 text-themeColor1" />
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Total Projects</p>
+                  <p className="text-sm font-semibold">{state.developerInfo.total_project_count || 0}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-themeColor1/10 flex items-center justify-center shrink-0">
+                  <Building className="w-6 h-6 text-themeColor1" />
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Properties</p>
+                  <p className="text-sm font-semibold">{state.developerInfo.total_properties_count || 0}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <PropertyView
         key={pageKey} // Add this key to force re-mount on URL param changes
         propertyTypeFilter={state.propertyTypeParams}
