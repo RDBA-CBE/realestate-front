@@ -159,7 +159,7 @@ export default function PropertyHeader(props: any) {
               )}{" "}
             </p>
             {data?.price_per_sqft && 
-            <span className="">
+            <span className="block sm:hidden">
             {/* <span></span> */}
             <p className="text-[14px] text-black  mb-0">
               Approx ₹ {(data?.price_per_sqft)} / sq.ft
