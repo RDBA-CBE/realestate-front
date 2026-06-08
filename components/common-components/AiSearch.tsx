@@ -822,7 +822,7 @@ export default function AISearchComponent() {
                                 style={{ background: "#7a1010" }}
                               >
                                 <Building2 className="w-4 h-4 shrink-0" />
-                                View All{" "}
+                                View Related{" "}
                                 {response.results_count === 1
                                   ? "Property"
                                   : "Properties"}
@@ -937,7 +937,7 @@ export default function AISearchComponent() {
                     {response.step.type === "text" &&
                       response.step.id === "contact_name" && (
                         <>
-                          <div className="flex flex-col md:flex-row gap-2">
+                          <div className="flex flex-col md:flex-row gap-1">
                             <button
                               onClick={() => {
                                 setInquiryPopup({
@@ -1020,7 +1020,7 @@ export default function AISearchComponent() {
                               type="button"
                             >
                               <Building2 className="w-4 h-4 shrink-0" />
-                              View All
+                              View Related
                               {response.results_count === 1
                                 ? " Property"
                                 : " Properties"}
