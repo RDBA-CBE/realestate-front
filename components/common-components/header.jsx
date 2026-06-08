@@ -239,7 +239,7 @@ const Header = () => {
                   </Link>
                 </div> */}
 
-                {state.token && state.selectedLocation ? (
+                {state.token && state.selectedLocation && isHomePage ? (
                   <button
                     onClick={handleLocationClick}
                     className="hidden lg:flex items-center gap-1.5 me-2 px-3 py-1 rounded-full bg-[#9b0f09]/10 hover:bg-[#9b0f09]/20 transition-colors cursor-pointer"
@@ -249,7 +249,7 @@ const Header = () => {
                       {state.selectedLocation.label}
                     </span>
                   </button>
-                ) : state.token && !state.selectedLocation ? (
+                ) : state.token && !state.selectedLocation && isHomePage ? (
                   <button
                     onClick={handleLocationClick}
                     className="hidden lg:flex items-center gap-1.5 me-2 px-3 py-1 rounded-full border border-dashed border-[#9b0f09]/50 hover:bg-[#9b0f09]/10 transition-colors"
@@ -261,7 +261,7 @@ const Header = () => {
                   </button>
                 ) : null}
 
-                {state.token && state.selectedLocation ? (
+                {state.token && state.selectedLocation  ? (
                   <button
                     onClick={handleLocationClick}
                     className="flex lg:hidden items-center gap-1  px-1.5 py-1 rounded-full bg-[#9b0f09]/10 hover:bg-[#9b0f09]/20 transition-colors cursor-pointer"
@@ -272,15 +272,12 @@ const Header = () => {
                       {state.selectedLocation.label}
                     </span>
                   </button>
-                ) : state.token && !state.selectedLocation ? (
+                ) : state.token && !state.selectedLocation && isHomePage ? (
                   <button
                     onClick={handleLocationClick}
                     className="flex lg:hidden items-center gap-1.5 px-1.5 py-1.5 rounded-full border border-dashed border-[#9b0f09]/50 hover:bg-[#9b0f09]/10 transition-colors"
                   >
                     <MapPin className="w-4 h-4 text-dred shrink-0" />
-                    {/* <span className="text-[12px] font-medium text-dred">
-                      Choose Location
-                    </span> */}
                   </button>
                 ) : null}
 
