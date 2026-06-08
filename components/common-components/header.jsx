@@ -378,6 +378,7 @@ const Header = () => {
                     </div>
                   </>
                 )}
+                
                 <div className="p-1 rounded-full group hidden xl:block cursor-pointer ">
                   <img
                     src="/assets/images/real-estate/home/ai-search-1.png"
