@@ -14,6 +14,7 @@ import {
   Eye,
   SendIcon,
   ArrowLeft,
+  RefreshCcw,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
@@ -106,7 +107,6 @@ export default function AISearchComponent() {
     user_id: "",
   });
   const [callbackErrors, setCallbackErrors] = useState({
-    
     phone: "",
     message: "",
   });
@@ -124,10 +124,14 @@ export default function AISearchComponent() {
     time: "",
     email: "",
     phone: "",
-    message:"",
+    message: "",
   });
   const [bookingLoading, setBookingLoading] = useState(false);
-  const [profileData, setProfileData] = useState({ email: "", phone: "", id: "" });
+  const [profileData, setProfileData] = useState({
+    email: "",
+    phone: "",
+    id: "",
+  });
   const bottomRef = useRef<HTMLDivElement>(null);
   const freeInputRef = useRef<HTMLInputElement>(null);
 
@@ -155,10 +159,13 @@ export default function AISearchComponent() {
       const userId = localStorage.getItem("userId");
       if (userId) {
         const response: any = await Models.user.details(userId);
-        setProfileData({ email: response?.email ?? "", phone: response?.phone ?? "", id: response?.id ?? "" });
+        setProfileData({
+          email: response?.email ?? "",
+          phone: response?.phone ?? "",
+          id: response?.id ?? "",
+        });
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.log("error", error);
     }
   };
@@ -340,44 +347,58 @@ export default function AISearchComponent() {
 
   const toggleMulti = (opt: string) =>
     setSelectedOptions((prev) =>
-      prev.includes(opt) ? prev.filter((o) => o !== opt) : [...prev, opt],
+      prev.includes(opt) ? prev.filter((o) => o !== opt) : [...prev, opt]
     );
 
   const submitBooking = async () => {
     try {
       setBookingLoading(true);
 
-      const errs = { date: "", time: "", email: "", phone: "", message:"" };
-      if (!bookingForm.date) {errs.date = "Preferred date and time is required"; setBookingLoading(false)}
-      if (!bookingForm.email.trim()) {errs.email = "Email is required"; setBookingLoading(false)}
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bookingForm.email)){
-        errs.email = "Enter a valid email"; setBookingLoading(false)}
+      const errs = { date: "", time: "", email: "", phone: "", message: "" };
+      if (!bookingForm.date) {
+        errs.date = "Preferred date and time is required";
+        setBookingLoading(false);
+      }
+      if (!bookingForm.email.trim()) {
+        errs.email = "Email is required";
+        setBookingLoading(false);
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bookingForm.email)) {
+        errs.email = "Enter a valid email";
+        setBookingLoading(false);
+      }
       if (!bookingForm.phone.trim()) errs.phone = "Phone is required";
-      else if (!/^[0-9]{10}$/.test(bookingForm.phone)){
-        errs.phone = "Enter a valid 10-digit number"; setBookingLoading(false)}
-      if (!bookingForm.message) {errs.message = "Inquiry details is required"; setBookingLoading(false);}
+      else if (!/^[0-9]{10}$/.test(bookingForm.phone)) {
+        errs.phone = "Enter a valid 10-digit number";
+        setBookingLoading(false);
+      }
+      if (!bookingForm.message) {
+        errs.message = "Inquiry details is required";
+        setBookingLoading(false);
+      }
       setBookingErrors(errs);
       if (errs.email || errs.phone) return;
 
-//       {
-//   "property": 0,
-//   "message": "string",
-//   "search": "string",
-//   "schedule_date_time": "2026-05-18T09:50:25.657Z",
-//   "email": "user@example.com",
-//   "phone_number": "1955656171208"
-// }
+      //       {
+      //   "property": 0,
+      //   "message": "string",
+      //   "search": "string",
+      //   "schedule_date_time": "2026-05-18T09:50:25.657Z",
+      //   "email": "user@example.com",
+      //   "phone_number": "1955656171208"
+      // }
       const payload = {
         property: inquiryPopup?.propId ?? null,
         search: finalState,
         message: capitalizeFLetter(bookingForm.message),
         email: bookingForm.email,
         phone_number: bookingForm.phone,
-        schedule_date_time:bookingForm?.date?moment(bookingForm?.date).format("YYYY-MM-DD HH:mm:ss"):null,
+        schedule_date_time: bookingForm?.date
+          ? moment(bookingForm?.date).format("YYYY-MM-DD HH:mm:ss")
+          : null,
       };
       console.log("Booking Inquiry Payload:", payload);
       const res: any = await Models.chat.booking_inquiry(payload);
-    //  await  handleResponse(res);
+      //  await  handleResponse(res);
 
       // console.log("Booking Inquiry Payload:", payload);
       setInquiryMode("done");
@@ -396,14 +417,21 @@ export default function AISearchComponent() {
     try {
       setCallbackLoading(true);
 
-      const errs = {  phone: "", message: "" };
+      const errs = { phone: "", message: "" };
       // if (!callbackForm.email.trim()) errs.email = "Email is required";
       // else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(callbackForm.email))
       //   errs.email = "Enter a valid email";
-      if (!callbackForm.phone.trim()){ errs.phone = "Phone is required"; setCallbackLoading(false);}
-      else if (!/^[0-9]{10}$/.test(callbackForm.phone)){
-        errs.phone = "Enter a valid 10-digit number"; setCallbackLoading(false);}
-      if (!callbackForm.message) {errs.message = "Inquiry details is required"; setCallbackLoading(false);}
+      if (!callbackForm.phone.trim()) {
+        errs.phone = "Phone is required";
+        setCallbackLoading(false);
+      } else if (!/^[0-9]{10}$/.test(callbackForm.phone)) {
+        errs.phone = "Enter a valid 10-digit number";
+        setCallbackLoading(false);
+      }
+      if (!callbackForm.message) {
+        errs.message = "Inquiry details is required";
+        setCallbackLoading(false);
+      }
       setCallbackErrors(errs);
       if (errs.message || errs.phone) return;
 
@@ -421,7 +449,6 @@ export default function AISearchComponent() {
       await sendContactForm(payload);
       await profile();
       setCallbackLoading(false);
-
     } catch (e) {
       setCallbackLoading(false);
 
@@ -495,13 +522,11 @@ export default function AISearchComponent() {
 
   // ── CHAT MODE ──────────────────────────────────────────────────────────────
   return (
-    <div
-      className="flex flex-col w-full max-w-2xl mx-auto h-[calc(100vh-80px)]"
-    >
+    <div className="flex flex-col w-full max-w-3xl mx-auto h-[calc(100vh-80px)]">
       {/* Header */}
       <div className="flex items-center gap-3 px-2 py-4 border-b border-border shrink-0">
-        <div onClick={()=> router.back()}>
-          <ArrowLeft className="text-dred w-5 h-5"/>
+        <div onClick={() => router.back()}>
+          <ArrowLeft className="text-dred w-5 h-5" />
         </div>
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-themeColor1 to-orange-400 flex items-center justify-center">
           <Sparkles className="w-4 h-4 text-white" />
@@ -509,7 +534,15 @@ export default function AISearchComponent() {
         <span className="font-semibold text-sm text-foreground">
           AI Property Assistant
         </span>
-        <span className="ml-auto w-2 h-2 rounded-full bg-emerald-400" />
+        {/* <span className="ml-auto w-2 h-2 rounded-full bg-emerald-400" /> */}
+        <button
+          onClick={()=>setChatMode(false)}
+          className=" flex gap-1 items-center justify-center mt-3 ml-auto self-end px-4 py-1.5 rounded-xl bg-themeColor1 text-white text-xs font-medium disabled:opacity-40 hover:opacity-90 transition-opacity"
+        >
+        <RefreshCcw className="h-3 w-3 " />
+
+          Refresh
+        </button>
       </div>
 
       {/* Messages */}
@@ -567,7 +600,7 @@ export default function AISearchComponent() {
                               !t.startsWith("**") &&
                               !t.includes("₹") &&
                               !response.results!.some((p: any) =>
-                                t.includes(p.title),
+                                t.includes(p.title)
                               )
                             );
                           })
@@ -596,10 +629,12 @@ export default function AISearchComponent() {
                           };
                           const priceStr =
                             minPrice && maxPrice && minPrice !== maxPrice
-                              ? `${formatPrice(minPrice)} – ${formatPrice(maxPrice)}`
+                              ? `${formatPrice(minPrice)} – ${formatPrice(
+                                  maxPrice
+                                )}`
                               : minPrice
-                                ? formatPrice(minPrice)
-                                : null;
+                              ? formatPrice(minPrice)
+                              : null;
                           return (
                             <div
                               key={prop.id}
@@ -654,10 +689,31 @@ export default function AISearchComponent() {
                                       propTitle: prop.title,
                                     });
                                     setInquiryMode("menu");
-                                    setCallbackForm({ email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
-                                    setCallbackErrors({ phone: "" , message:""});
-                                    setBookingForm({ date: "", time: "", email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
-                                    setBookingErrors({ date: "", time: "", email: "", phone: "", message:"" });
+                                    setCallbackForm({
+                                      email: profileData.email,
+                                      phone: profileData.phone,
+                                      message: "",
+                                      user_id: profileData.id,
+                                    });
+                                    setCallbackErrors({
+                                      phone: "",
+                                      message: "",
+                                    });
+                                    setBookingForm({
+                                      date: "",
+                                      time: "",
+                                      email: profileData.email,
+                                      phone: profileData.phone,
+                                      message: "",
+                                      user_id: profileData.id,
+                                    });
+                                    setBookingErrors({
+                                      date: "",
+                                      time: "",
+                                      email: "",
+                                      phone: "",
+                                      message: "",
+                                    });
                                   }}
                                   className="p-1.5 rounded-full hover:bg-themeColor1/10 text-themeColor1 transition-colors"
                                   title="Inquiry"
@@ -687,10 +743,18 @@ export default function AISearchComponent() {
                             <div className="flex flex-row gap-2">
                               <button
                                 onClick={() => {
-                                  setInquiryPopup({ propId: null, propTitle: "General Inquiry" });
+                                  setInquiryPopup({
+                                    propId: null,
+                                    propTitle: "General Inquiry",
+                                  });
                                   setInquiryMode("callback");
-                                  setCallbackForm({ email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
-                                  setCallbackErrors({  phone: "", message:"" });
+                                  setCallbackForm({
+                                    email: profileData.email,
+                                    phone: profileData.phone,
+                                    message: "",
+                                    user_id: profileData.id,
+                                  });
+                                  setCallbackErrors({ phone: "", message: "" });
                                 }}
                                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-xs font-medium text-foreground"
                               >
@@ -699,10 +763,26 @@ export default function AISearchComponent() {
                               </button>
                               <button
                                 onClick={() => {
-                                  setInquiryPopup({ propId: null, propTitle: "General Inquiry" });
+                                  setInquiryPopup({
+                                    propId: null,
+                                    propTitle: "General Inquiry",
+                                  });
                                   setInquiryMode("booking");
-                                  setBookingForm({ date: "", time: "", email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
-                                  setBookingErrors({ date: "", time: "", email: "", phone: "" ,message :""});
+                                  setBookingForm({
+                                    date: "",
+                                    time: "",
+                                    email: profileData.email,
+                                    phone: profileData.phone,
+                                    message: "",
+                                    user_id: profileData.id,
+                                  });
+                                  setBookingErrors({
+                                    date: "",
+                                    time: "",
+                                    email: "",
+                                    phone: "",
+                                    message: "",
+                                  });
                                 }}
                                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-xs font-medium text-foreground"
                               >
@@ -711,26 +791,38 @@ export default function AISearchComponent() {
                               </button>
                               <button
                                 onClick={() => {
-                                  const f = response.applied_filters!;
+                                  console.log("sendContactForm", response);
+                                  const f = response.state;
+                                  console.log("f",f)
                                   const params = new URLSearchParams();
+                                  if (f.location)
+                                    params.set("ai_location", f.location);
+                                  if (f.location_pref)
+                                    params.set("ai_location", f.location_pref);
+  
+                                  if (f.location_area)
+                                    params.set("ai_area", f.location_area);
+  
                                   if (f.property_type)
-                                    params.set("propertyType", f.property_type);
+                                    params.set("ai_propertyType", f.property_type);
                                   if (f.city) params.set("search", f.city);
+                                  if (f.apartment_config)
+                                    params.set("ai_floor_plans_category", f.apartment_config);
                                   if (f.max_price)
-                                    params.set("maxPrice", f.max_price);
+                                    params.set("ai_maxPrice", f.max_price);
                                   if (f.furnishing)
-                                    params.set("furnishing", f.furnishing);
+                                    params.set("ai_furnishing", f.furnishing);
                                   if (f.amenities)
-                                    params.set("amenities", f.amenities);
+                                    params.set("ai_amenities", f.amenities);
                                   router.push(
-                                    `/property-list?${params.toString()}`,
+                                    `/property-list?${params.toString()}`
                                   );
                                 }}
                                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-white text-xs font-semibold hover:opacity-90 transition-opacity"
                                 style={{ background: "#7a1010" }}
                               >
                                 <Building2 className="w-4 h-4 shrink-0" />
-                                View{" "}
+                                View All{" "}
                                 {response.results_count === 1
                                   ? "Property"
                                   : "Properties"}
@@ -770,8 +862,8 @@ export default function AISearchComponent() {
                                 opt === "Skip"
                                   ? "border-slate-300 text-slate-400 hover:border-slate-400 hover:text-slate-500 bg-slate-50 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-500"
                                   : opt === "Enter Area"
-                                    ? "border-border text-muted-foreground hover:border-themeColor1 hover:text-themeColor1 bg-background"
-                                    : "border-themeColor1/30 text-foreground hover:bg-themeColor1 hover:text-white bg-card"
+                                  ? "border-border text-muted-foreground hover:border-themeColor1 hover:text-themeColor1 bg-background"
+                                  : "border-themeColor1/30 text-foreground hover:bg-themeColor1 hover:text-white bg-card"
                               }`}
                             >
                               {opt}
@@ -848,10 +940,18 @@ export default function AISearchComponent() {
                           <div className="flex flex-col md:flex-row gap-2">
                             <button
                               onClick={() => {
-                                setInquiryPopup({ propId: null, propTitle: "General Inquiry" });
+                                setInquiryPopup({
+                                  propId: null,
+                                  propTitle: "General Inquiry",
+                                });
                                 setInquiryMode("callback");
-                                setCallbackForm({ email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
-                                setCallbackErrors({  phone: "", message:"" });
+                                setCallbackForm({
+                                  email: profileData.email,
+                                  phone: profileData.phone,
+                                  message: "",
+                                  user_id: profileData.id,
+                                });
+                                setCallbackErrors({ phone: "", message: "" });
                               }}
                               className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-xs font-medium text-foreground"
                             >
@@ -860,10 +960,26 @@ export default function AISearchComponent() {
                             </button>
                             <button
                               onClick={() => {
-                                setInquiryPopup({ propId: null, propTitle: "General Inquiry" });
+                                setInquiryPopup({
+                                  propId: null,
+                                  propTitle: "General Inquiry",
+                                });
                                 setInquiryMode("booking");
-                                setBookingForm({ date: "", time: "", email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
-                                setBookingErrors({ date: "", time: "", email: "", phone: "", message:"" });
+                                setBookingForm({
+                                  date: "",
+                                  time: "",
+                                  email: profileData.email,
+                                  phone: profileData.phone,
+                                  message: "",
+                                  user_id: profileData.id,
+                                });
+                                setBookingErrors({
+                                  date: "",
+                                  time: "",
+                                  email: "",
+                                  phone: "",
+                                  message: "",
+                                });
                               }}
                               className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-xs font-medium text-foreground"
                             >
@@ -874,18 +990,29 @@ export default function AISearchComponent() {
                               onClick={() => {
                                 console.log("sendContactForm", response);
                                 const f = response.state;
+                                console.log("f",f)
                                 const params = new URLSearchParams();
+                                if (f.location)
+                                  params.set("ai_location", f.location);
+                                if (f.location_pref)
+                                  params.set("ai_location", f.location_pref);
+
+                                if (f.location_area)
+                                  params.set("ai_area", f.location_area);
+
                                 if (f.property_type)
-                                  params.set("propertyType", f.property_type);
+                                  params.set("ai_propertyType", f.property_type);
                                 if (f.city) params.set("search", f.city);
+                                if (f.apartment_config)
+                                  params.set("ai_floor_plans_category", f.apartment_config);
                                 if (f.max_price)
-                                  params.set("maxPrice", f.max_price);
+                                  params.set("ai_maxPrice", f.max_price);
                                 if (f.furnishing)
-                                  params.set("furnishing", f.furnishing);
+                                  params.set("ai_furnishing", f.furnishing);
                                 if (f.amenities)
-                                  params.set("amenities", f.amenities);
+                                  params.set("ai_amenities", f.amenities);
                                 router.push(
-                                  `/property-list?${params.toString()}`,
+                                  `/property-list?${params.toString()}`
                                 );
                               }}
                               className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-white text-xs font-semibold hover:opacity-90 transition-opacity"
@@ -893,10 +1020,10 @@ export default function AISearchComponent() {
                               type="button"
                             >
                               <Building2 className="w-4 h-4 shrink-0" />
-                              View{" "}
+                              View All
                               {response.results_count === 1
-                                ? "Property"
-                                : "Properties"}
+                                ? " Property"
+                                : " Properties"}
                               <ArrowRight className="w-4 h-4 shrink-0" />
                             </button>
                           </div>
@@ -1036,7 +1163,11 @@ export default function AISearchComponent() {
                       setBookingForm((p) => ({ ...p, date: e.target.value }));
                       setBookingErrors((p) => ({ ...p, date: "" }));
                     }}
-                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors ${bookingErrors.date ? "border-red-500" : "border-border focus:border-themeColor1"}`}
+                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors ${
+                      bookingErrors.date
+                        ? "border-red-500"
+                        : "border-border focus:border-themeColor1"
+                    }`}
                   />
                   {bookingErrors.date && (
                     <p className="text-xs text-red-500 pl-1">
@@ -1093,7 +1224,11 @@ export default function AISearchComponent() {
                       setBookingErrors((p) => ({ ...p, email: "" }));
                     }}
                     placeholder="Email address"
-                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground ${bookingErrors.email ? "border-red-500" : "border-border focus:border-themeColor1"}`}
+                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground ${
+                      bookingErrors.email
+                        ? "border-red-500"
+                        : "border-border focus:border-themeColor1"
+                    }`}
                   />
                   {bookingErrors.email && (
                     <p className="text-xs text-red-500 pl-1">
@@ -1115,7 +1250,11 @@ export default function AISearchComponent() {
                       setBookingErrors((p) => ({ ...p, phone: "" }));
                     }}
                     placeholder="Phone number (10 digits)"
-                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground ${bookingErrors.phone ? "border-red-500" : "border-border focus:border-themeColor1"}`}
+                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground ${
+                      bookingErrors.phone
+                        ? "border-red-500"
+                        : "border-border focus:border-themeColor1"
+                    }`}
                   />
                   {bookingErrors.phone && (
                     <p className="text-xs text-red-500 pl-1">
@@ -1134,7 +1273,11 @@ export default function AISearchComponent() {
                     }
                     placeholder="Tell us more about your inquiry..."
                     rows={3}
-                    className={`w-full bg-background border  rounded-xl px-3 py-2 text-sm outline-none  transition-colors placeholder:text-muted-foreground resize-none  ${bookingErrors.message ? "border-red-500" : "border-border focus:border-themeColor1"}`}
+                    className={`w-full bg-background border  rounded-xl px-3 py-2 text-sm outline-none  transition-colors placeholder:text-muted-foreground resize-none  ${
+                      bookingErrors.message
+                        ? "border-red-500"
+                        : "border-border focus:border-themeColor1"
+                    }`}
                   />
 
                   {bookingErrors.message && (
@@ -1182,7 +1325,11 @@ export default function AISearchComponent() {
                       setCallbackErrors((p) => ({ ...p, phone: "" }));
                     }}
                     placeholder="Phone number (10 digits)"
-                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground ${callbackErrors.phone ? "border-red-500" : "border-border focus:border-themeColor1"}`}
+                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground ${
+                      callbackErrors.phone
+                        ? "border-red-500"
+                        : "border-border focus:border-themeColor1"
+                    }`}
                     required
                   />
                   {callbackErrors.phone && (
@@ -1212,7 +1359,7 @@ export default function AISearchComponent() {
                     </p>
                   )} */}
                 </div>
-                
+
                 <div className="flex flex-col gap-1">
                   <label className="text-xs text-muted-foreground font-medium">
                     Inquiry Details
@@ -1227,7 +1374,11 @@ export default function AISearchComponent() {
                     }
                     placeholder="Tell us more about your inquiry..."
                     rows={3}
-                    className={`w-full bg-background border  rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground resize-none ${callbackErrors.message ? "border-red-500" : "border-border focus:border-themeColor1"}`}
+                    className={`w-full bg-background border  rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground resize-none ${
+                      callbackErrors.message
+                        ? "border-red-500"
+                        : "border-border focus:border-themeColor1"
+                    }`}
                     required
                   />
 
@@ -1236,7 +1387,6 @@ export default function AISearchComponent() {
                       {callbackErrors.message}
                     </p>
                   )}
-                 
                 </div>
                 <div className="flex gap-2">
                   <button

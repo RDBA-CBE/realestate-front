@@ -287,7 +287,7 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
           </div>
           <CardContent className="flex flex-col flex-grow p-5 gap-1">
             <div className="flex items-start justify-between gap-1">
-            <h3 className="font-semibold text-gray-900 text-lg leading-snug line-clamp-2">{property.title}</h3>
+            <h3 className="font-semibold text-gray-900 text-lg leading-snug line-clamp-2">{capitalizeFLetter(property.title)}</h3>
             <div onClick={(e) =>{
                     e.stopPropagation()
                     window.open(property?.location_url, "_blank")

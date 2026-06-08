@@ -93,6 +93,7 @@ export function PropertyView(props: any) {
     initialLocation,
     initialPropertyType,
     initialDeveloper,
+    initialArea,
     propertyTypeFilter,
     onFilterChange,
     isFilterLoading = false,
@@ -261,16 +262,13 @@ export function PropertyView(props: any) {
 
   
 
-  console.log("initialPropertyType", initialPropertyType);
-  
-
-
   useEffect(() => {
     if (propertyTypeFilter) setState({ propertyType: propertyTypeFilter });
     if (initialSearch) setState({ search: initialSearch });
     setState({ listingStatus: initialListingStatus || "All" });
     setState({ location: initialLocation || [] });
     setState({ developer: initialDeveloper || [] });
+    if (initialArea?.length) setState({ area: initialArea });
 
     // Ensure propertyType is handled as an array (it might be a string from URL)
     if (initialPropertyType) {
@@ -290,6 +288,7 @@ export function PropertyView(props: any) {
     initialLocation,
     initialPropertyType,
     initialDeveloper,
+    initialArea,
   ]);
 
   // Reconcile selected filters against updated dynamic filter lists
@@ -337,7 +336,6 @@ export function PropertyView(props: any) {
 
     if (Object.keys(updates).length > 0) setState(updates);
   }, [categoryList, locationList, areaList, developerList, projectList, floorPlanList, furnishingList]);
-  console.log("propertyType", state.propertyType);
   
 
   // Resolve string-based property types (names from URL) to objects with IDs once categoryList is loaded
@@ -498,7 +496,6 @@ export function PropertyView(props: any) {
   const closePopup = () => setState({ activePopup: null });
 
   const handleChange = (name, value) => {
-    console.log("name", name, "value", value);
     setState({ [name]: value });
   };
 
