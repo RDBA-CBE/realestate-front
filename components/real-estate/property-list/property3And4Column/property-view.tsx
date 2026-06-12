@@ -159,6 +159,7 @@ export function PropertyView(props: any) {
   const priceFloorRef = useRef(0);
   const priceCeilingRef = useRef(0);
   const isResettingRef = useRef(false);
+  const hasBeenClearedRef = useRef(false);
   const dropdownRef = useRef(null);
   const sqftDropdownRef = useRef(null);
   const locationSectionRef = useRef<HTMLDivElement>(null);
@@ -268,7 +269,7 @@ export function PropertyView(props: any) {
     setState({ listingStatus: initialListingStatus || "All" });
     setState({ location: initialLocation || [] });
     setState({ developer: initialDeveloper || [] });
-    if (initialArea?.length) setState({ area: initialArea });
+    if (initialArea?.length && !hasBeenClearedRef.current) setState({ area: initialArea });
 
     // Ensure propertyType is handled as an array (it might be a string from URL)
     if (initialPropertyType) {
@@ -536,6 +537,7 @@ export function PropertyView(props: any) {
     });
     previousFiltersRef.current = {};
 
+    hasBeenClearedRef.current = true;
     // Reset the flag immediately before calling parent
     isResettingRef.current = false;
 
