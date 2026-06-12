@@ -6,6 +6,7 @@ import {
   Sparkles,
   Search,
   ArrowRight,
+  ArrowUpRight,
   Building2,
   MessageCircle,
   Phone,
@@ -65,7 +66,9 @@ const suggestions = [
   "Affordable plots near Bangalore",
 ];
 
-export default function AISearchComponent() {
+export default function AISearchComponent(props:any) {
+  const {suggestions,refresh}=props
+
   const router = useRouter();
   const [chatMode, setChatMode] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -134,6 +137,12 @@ export default function AISearchComponent() {
   });
   const bottomRef = useRef<HTMLDivElement>(null);
   const freeInputRef = useRef<HTMLInputElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(64);
+
+  useEffect(() => {
+    const header = document.querySelector('header');
+    if (header) setHeaderHeight(header.offsetHeight);
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -192,8 +201,8 @@ export default function AISearchComponent() {
   };
 
   // Called when user submits from landing search box
-  const startChat = async (query: string) => {
-    const text = query.trim();
+  const startChat = async (query: any) => {
+    const text = (typeof query === "string" ? query : query?.label)?.trim();
     if (!text || loading) return;
     setChatMode(true);
     setFreeInput("");
@@ -459,7 +468,7 @@ export default function AISearchComponent() {
   // ── LANDING ────────────────────────────────────────────────────────────────
   if (!chatMode) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] px-4 gap-8">
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] px-4 gap-6 overflow-y-auto py-8">
         {/* Title */}
         <div className="flex flex-col items-center gap-2 text-center">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-themeColor1 to-orange-400 flex items-center justify-center shadow-lg">
@@ -482,17 +491,14 @@ export default function AISearchComponent() {
               type="text"
               value={freeInput}
               onChange={(e) => setFreeInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && freeInput.trim().length > 0 && freeInput.trim().length <= 25 && startChat(freeInput)}
+              onKeyDown={(e) => e.key === "Enter" && freeInput.trim().length > 0 && startChat(freeInput)}
               placeholder="e.g. 3BHK apartment in Chennai under 1 Cr..."
               className="flex-1 bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground"
               autoFocus
-              maxLength={25}
-            
             />
             <button
-              onClick={() => startChat(freeInput)}
-              disabled={!freeInput.trim()}
-              className="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-themeColor1 text-white text-sm font-medium disabled:opacity-40 hover:opacity-90 transition-opacity"
+              onClick={() => { if (freeInput.trim()) startChat(freeInput); }}
+              className="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-themeColor1 text-white text-sm font-medium hover:opacity-90 transition-opacity"
             >
               Search <ArrowRight className="w-4 h-4" />
             </button>
@@ -500,18 +506,20 @@ export default function AISearchComponent() {
         </div>
 
         {/* Suggestions */}
-        <div className="flex flex-col items-center gap-3 w-full max-w-xl">
+        <div className="flex flex-col items-center gap-2 w-full max-w-xl">
           <p className="text-xs text-muted-foreground uppercase tracking-widest">
             Try asking
           </p>
-          <div className="flex flex-wrap justify-center gap-2">
-            {suggestions.map((s) => (
+          <div className="flex flex-col gap-1.5 w-full">
+            {suggestions.slice(0, 4).map((s,i) => (
               <button
-                key={s}
+                key={i}
                 onClick={() => startChat(s)}
-                className="px-4 py-2 rounded-full border border-border bg-card text-sm text-muted-foreground hover:border-themeColor1 hover:text-themeColor1 transition-colors"
+                className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-card border border-border hover:border-themeColor1 hover:bg-[#fff6f6] transition-all duration-150 group text-left w-full"
               >
-                {s}
+                <Search className="w-3 h-3 text-muted-foreground group-hover:text-themeColor1 shrink-0" />
+                <span className="text-xs text-muted-foreground group-hover:text-themeColor1 flex-1 text-left leading-snug">{s?.label}</span>
+                <ArrowUpRight className="w-3 h-3 text-muted-foreground group-hover:text-themeColor1 shrink-0" />
               </button>
             ))}
           </div>
@@ -522,7 +530,8 @@ export default function AISearchComponent() {
 
   // ── CHAT MODE ──────────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col w-full max-w-3xl mx-auto h-[calc(100vh-80px)]">
+    <div className="flex flex-col w-full overflow-hidden" style={{height: `calc(100dvh - ${headerHeight}px)`}}>
+      <div className="flex flex-col w-full max-w-3xl mx-auto h-full overflow-hidden">
       {/* Header */}
       <div className="flex items-center gap-3 px-2 py-4 border-b border-border shrink-0">
         <div onClick={() => router.back()}>
@@ -536,7 +545,9 @@ export default function AISearchComponent() {
         </span>
         {/* <span className="ml-auto w-2 h-2 rounded-full bg-emerald-400" /> */}
         <button
-          onClick={()=>setChatMode(false)}
+          onClick={()=>{
+            refresh()
+            setChatMode(false)}}
           className=" flex gap-1 items-center justify-center mt-3 ml-auto self-end px-4 py-1.5 rounded-xl bg-themeColor1 text-white text-xs font-medium disabled:opacity-40 hover:opacity-90 transition-opacity"
         >
         <RefreshCcw className="h-3 w-3 " />
@@ -546,7 +557,7 @@ export default function AISearchComponent() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-2 pt-5  flex flex-col gap-3">
+      <div className="flex-1 overflow-y-auto px-2 pt-5 pb-4 flex flex-col gap-3">
         {messages.map((msg, i) => {
           if (msg.role === "user") {
             return (
@@ -568,6 +579,8 @@ export default function AISearchComponent() {
             !!response.step && !!response.step.id && !!response.step.type;
           const showOptions = hasValidStep && !response.done;
           const isActive = isLastBot && !response.done;
+          // When API returns done:false with no valid step — show suggestions instead of message
+          const isDeadEnd = !response.done && !hasValidStep && isLastBot;
 
           return (
             <div key={i} className="flex items-start gap-3">
@@ -576,7 +589,23 @@ export default function AISearchComponent() {
               </div>
               <div className="flex flex-col gap-2 w-full max-w-[85%]">
                 {/* Message with markdown */}
-                <div className="bg-muted border border-border text-foreground text-sm px-4 py-3 rounded-2xl rounded-tl-sm">
+                {isDeadEnd ? (
+                  <div className="flex flex-col gap-2 bg-muted border border-border rounded-2xl rounded-tl-sm px-3 py-2.5">
+                    <p className="text-xs text-muted-foreground">Try searches like this for better property results</p>
+                    {suggestions.slice(0, 4).map((s: any, i: number) => (
+                      <button
+                        key={i}
+                        onClick={() => startChat(s)}
+                        className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-card border border-border hover:border-themeColor1 hover:bg-[#fff6f6] transition-all duration-150 group text-left w-full"
+                      >
+                        <Search className="w-3 h-3 text-muted-foreground group-hover:text-themeColor1 shrink-0" />
+                        <span className="text-xs text-muted-foreground group-hover:text-themeColor1 flex-1 text-left leading-snug">{s?.label}</span>
+                        <ArrowUpRight className="w-3 h-3 text-muted-foreground group-hover:text-themeColor1 shrink-0" />
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                <div className="bg-muted border border-border text-foreground text-xs px-3 py-2.5 rounded-2xl rounded-tl-sm">
                   <ReactMarkdown
                     components={{
                       p: ({ children }) => (
@@ -609,6 +638,7 @@ export default function AISearchComponent() {
                       : response.message}
                   </ReactMarkdown>
                 </div>
+                )}
 
                 {/* Property results cards */}
                 {response.done &&
@@ -822,7 +852,7 @@ export default function AISearchComponent() {
                                 style={{ background: "#7a1010" }}
                               >
                                 <Building2 className="w-4 h-4 shrink-0" />
-                                View Related{" "}
+                                View Similar{" "}
                                 {response.results_count === 1
                                   ? "Property"
                                   : "Properties"}
@@ -1020,7 +1050,7 @@ export default function AISearchComponent() {
                               type="button"
                             >
                               <Building2 className="w-4 h-4 shrink-0" />
-                              View Related
+                              View Similar
                               {response.results_count === 1
                                 ? " Property"
                                 : " Properties"}
@@ -1079,14 +1109,31 @@ export default function AISearchComponent() {
         <div ref={bottomRef} />
       </div>
 
-      {/* Free-text bar — only when last bot message is done with no step */}
-      {(() => {
-        const lastBot = [...messages]
-          .reverse()
-          .find((m) => m.role === "bot") as BotMsg | undefined;
-        return lastBot && !lastBot.response.step?.id && !loading;
-      })() && (
-        <div className="px-2 pb-4 pt-2 border-t border-border shrink-0 bg-background sticky bottom-0 z-10">
+      {/* Free-text bar — show only when no active step */}
+      {!loading && messages.length > 0 && (() => {
+        const lastBot = [...messages].reverse().find((m) => m.role === "bot") as BotMsg | undefined;
+        const hasActiveStep = lastBot && !lastBot.response.done && lastBot.response.step?.id;
+        if (hasActiveStep) return null;
+        return (
+        <div className="px-2 pb-4 pt-2 border-t border-border shrink-0">
+          {/* Suggestion quick-picks when bot replied but chat is not done */}
+          {/* {(() => {
+            const lastBot = [...messages].reverse().find((m) => m.role === "bot") as BotMsg | undefined;
+            return lastBot && !lastBot.response.done && !lastBot.response.step?.id;
+          })() && (
+            <div className="flex gap-2 mb-2 overflow-x-auto pb-1 scrollbar-hide">
+              {suggestions.slice(0, 4).map((s: any, i: number) => (
+                <button
+                  key={i}
+                  onClick={() => startChat(s)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-card border border-border hover:border-themeColor1 hover:bg-[#fff6f6] transition-all text-xs text-muted-foreground hover:text-themeColor1 font-medium shrink-0"
+                >
+                  <Search className="w-3 h-3 shrink-0" />
+                  <span className="whitespace-nowrap">{s?.label}</span>
+                </button>
+              ))}
+            </div>
+          )} */}
           <div className="flex items-center gap-2 bg-card border border-border rounded-2xl px-4 py-2.5 focus-within:ring-2 focus-within:ring-themeColor1 transition-all">
             <input
               ref={freeInputRef}
@@ -1107,7 +1154,8 @@ export default function AISearchComponent() {
             </button>
           </div>
         </div>
-      )}
+        );
+      })()}
       {/* Inquiry Popup */}
       {inquiryPopup && (
         <div
@@ -1435,6 +1483,7 @@ export default function AISearchComponent() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

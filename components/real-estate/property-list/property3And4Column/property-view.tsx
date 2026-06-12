@@ -818,7 +818,7 @@ export function PropertyView(props: any) {
               showAlphabetNav
             />
 
-            {developerList.length > 0 && (
+            {developerList?.length > 0 && (
               <div>
                 <div className="mb-2 font-semibold text-gray-900">Developer</div>
                 <div className="space-y-2" ref={developerSectionRef}>
@@ -829,7 +829,7 @@ export function PropertyView(props: any) {
                           checked={state.developer.some((t) => t.value === option.value)}
                           onChange={(e) => handleChange("developer", e.target.checked ? [...state.developer, option] : state.developer.filter((t) => t.value !== option.value))}
                         />
-                        <span>{option.label}</span>
+                        <span className="truncate max-w-[130px] block" title={option.label}>{option.label}</span>
                       </div>
                       {option.count !== undefined && (
                         <span className="text-[11px] bg-dred/10 text-black rounded-full px-[8px] py-[1.6px]">{option.count}</span>

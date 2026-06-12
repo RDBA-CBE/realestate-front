@@ -58,14 +58,15 @@ interface UserMsg {
 }
 type Message = BotMsg | UserMsg;
 
-const suggestions = [
-  "3BHK apartment in Chennai",
-  "Villa under 2 Cr",
-  "Commercial space in Coimbatore",
-  "Affordable plots near Bangalore",
-];
+// const suggestions = [
+//   "3BHK apartment in Chennai",
+//   "Villa under 2 Cr",
+//   "Commercial space in Coimbatore",
+//   "Affordable plots near Bangalore",
+// ];
 
-export default function AISearchComponent() {
+export default function AISearchComponent(props:any) {
+  const {suggestions}=props
   const router = useRouter();
   const [chatMode, setChatMode] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -192,8 +193,8 @@ export default function AISearchComponent() {
   };
 
   // Called when user submits from landing search box
-  const startChat = async (query: string) => {
-    const text = query.trim();
+  const startChat = async (query: any) => {
+    const text = query?.label.trim();
     if (!text || loading) return;
     setChatMode(true);
     setFreeInput("");
@@ -509,13 +510,13 @@ export default function AISearchComponent() {
             Try asking
           </p>
           <div className="flex flex-wrap justify-center gap-2">
-            {suggestions.map((s) => (
+            {suggestions.map((s,i) => (
               <button
-                key={s}
+                key={i}
                 onClick={() => startChat(s)}
                 className="px-4 py-2 rounded-full border border-border bg-card text-sm text-muted-foreground hover:border-themeColor1 hover:text-themeColor1 transition-colors"
               >
-                {s}
+                {s?.label}
               </button>
             ))}
           </div>
