@@ -38,6 +38,15 @@ export const getTimeIntervals = [
 
 export const ROLES = ["BUYER", "SELLER", "AGENT", "DEVELOPER"];
 
+export const ROLE = {
+buyer: "buyer",
+seller: "seller",
+agent: "agent",
+developer: "developer",
+admin:"admin"
+};
+
+
 export const properties = [
   {
     id: 29,

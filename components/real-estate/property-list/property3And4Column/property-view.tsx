@@ -93,6 +93,7 @@ export function PropertyView(props: any) {
     initialLocation,
     initialPropertyType,
     initialDeveloper,
+    initialArea,
     propertyTypeFilter,
     onFilterChange,
     isFilterLoading = false,
@@ -158,6 +159,7 @@ export function PropertyView(props: any) {
   const priceFloorRef = useRef(0);
   const priceCeilingRef = useRef(0);
   const isResettingRef = useRef(false);
+  const hasBeenClearedRef = useRef(false);
   const dropdownRef = useRef(null);
   const sqftDropdownRef = useRef(null);
   const locationSectionRef = useRef<HTMLDivElement>(null);
@@ -261,16 +263,13 @@ export function PropertyView(props: any) {
 
   
 
-  console.log("initialPropertyType", initialPropertyType);
-  
-
-
   useEffect(() => {
     if (propertyTypeFilter) setState({ propertyType: propertyTypeFilter });
     if (initialSearch) setState({ search: initialSearch });
     setState({ listingStatus: initialListingStatus || "All" });
     setState({ location: initialLocation || [] });
     setState({ developer: initialDeveloper || [] });
+    if (initialArea?.length && !hasBeenClearedRef.current) setState({ area: initialArea });
 
     // Ensure propertyType is handled as an array (it might be a string from URL)
     if (initialPropertyType) {
@@ -290,6 +289,7 @@ export function PropertyView(props: any) {
     initialLocation,
     initialPropertyType,
     initialDeveloper,
+    initialArea,
   ]);
 
   // Reconcile selected filters against updated dynamic filter lists
@@ -337,7 +337,6 @@ export function PropertyView(props: any) {
 
     if (Object.keys(updates).length > 0) setState(updates);
   }, [categoryList, locationList, areaList, developerList, projectList, floorPlanList, furnishingList]);
-  console.log("propertyType", state.propertyType);
   
 
   // Resolve string-based property types (names from URL) to objects with IDs once categoryList is loaded
@@ -498,7 +497,6 @@ export function PropertyView(props: any) {
   const closePopup = () => setState({ activePopup: null });
 
   const handleChange = (name, value) => {
-    console.log("name", name, "value", value);
     setState({ [name]: value });
   };
 
@@ -539,6 +537,7 @@ export function PropertyView(props: any) {
     });
     previousFiltersRef.current = {};
 
+    hasBeenClearedRef.current = true;
     // Reset the flag immediately before calling parent
     isResettingRef.current = false;
 
@@ -821,7 +820,7 @@ export function PropertyView(props: any) {
               showAlphabetNav
             />
 
-            {developerList.length > 0 && (
+            {developerList?.length > 0 && (
               <div>
                 <div className="mb-2 font-semibold text-gray-900">Developer</div>
                 <div className="space-y-2" ref={developerSectionRef}>
@@ -832,7 +831,7 @@ export function PropertyView(props: any) {
                           checked={state.developer.some((t) => t.value === option.value)}
                           onChange={(e) => handleChange("developer", e.target.checked ? [...state.developer, option] : state.developer.filter((t) => t.value !== option.value))}
                         />
-                        <span>{option.label}</span>
+                        <span className="truncate max-w-[130px] block" title={option.label}>{option.label}</span>
                       </div>
                       {option.count !== undefined && (
                         <span className="text-[11px] bg-dred/10 text-black rounded-full px-[8px] py-[1.6px]">{option.count}</span>

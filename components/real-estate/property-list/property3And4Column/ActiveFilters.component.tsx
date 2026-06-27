@@ -1,6 +1,8 @@
+"use client";
 import { X } from "lucide-react";
 import { getPriceLabel } from "@/utils/function.utils";
 import { priceOptions, sqftOptions } from "@/utils/constant.utils";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface ActiveFiltersProps {
   state: any;
@@ -10,43 +12,74 @@ interface ActiveFiltersProps {
   onClearSqft: () => void;
 }
 
+// URL param keys that map to filter names
+const URL_PARAM_MAP: Record<string, string[]> = {
+  location: ["location", "ai_location"],
+  area: ["ai_area"],
+  propertyType: ["propertyType", "ai_propertyType"],
+  floorPlan: ["floor_plans_category", "ai_floor_plans_category"],
+  furnishing: ["ai_furnishing"],
+  listingStatus: ["type"],
+  search: ["search"],
+  bedrooms: [],
+  bathrooms: [],
+  priceMinInput: ["ai_maxPrice"],
+  priceMaxInput: ["ai_maxPrice"],
+  developer: ["developerId"],
+};
+
 export function ActiveFilters({ state, handleChange, resetFilter, onClearPrice, onClearSqft }: ActiveFiltersProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const removeUrlParams = (filterName: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const keys = URL_PARAM_MAP[filterName] || [];
+    keys.forEach((key) => params.delete(key));
+    router.replace(`/property-list?${params.toString()}`);
+  };
+
+  const removeAndUpdate = (filterName: string, newValue: any) => {
+    handleChange(filterName, newValue);
+    removeUrlParams(filterName);
+  };
+
   const badges: { label: string; onRemove: () => void }[] = [];
 
   if (state.search) {
-    badges.push({ label: `Search: ${state.search}`, onRemove: () => handleChange("search", "") });
+    badges.push({ label: `Search: ${state.search}`, onRemove: () => removeAndUpdate("search", "") });
   }
 
   if (state.listingStatus && state.listingStatus !== "All" && state.listingStatus !== "") {
-    badges.push({ label: state.listingStatus, onRemove: () => handleChange("listingStatus", "All") });
+    badges.push({ label: state.listingStatus, onRemove: () => removeAndUpdate("listingStatus", "All") });
   }
 
   (state.propertyType || []).forEach((item: any) =>
-    badges.push({ label: item.label, onRemove: () => handleChange("propertyType", state.propertyType.filter((t: any) => t.value !== item.value)) })
+    badges.push({ label: item.label, onRemove: () => removeAndUpdate("propertyType", state.propertyType.filter((t: any) => t.value !== item.value)) })
   );
 
   (state.location || []).forEach((item: any) =>
-    badges.push({ label: item.label, onRemove: () => handleChange("location", state.location.filter((t: any) => t.value !== item.value)) })
+    badges.push({ label: item.label, onRemove: () => removeAndUpdate("location", state.location.filter((t: any) => t.value !== item.value)) })
   );
 
   (state.area || []).forEach((item: any) =>
-    badges.push({ label: item.label, onRemove: () => handleChange("area", state.area.filter((t: any) => t.value !== item.value)) })
+    badges.push({ label: item.label, onRemove: () => removeAndUpdate("area", state.area.filter((t: any) => t.value !== item.value)) })
   );
 
   (state.developer || []).forEach((item: any) =>
-    badges.push({ label: item.label, onRemove: () => handleChange("developer", state.developer.filter((t: any) => t.value !== item.value)) })
+    badges.push({ label: item.label, onRemove: () => removeAndUpdate("developer", state.developer.filter((t: any) => t.value !== item.value)) })
   );
 
   (state.project || []).forEach((item: any) =>
-    badges.push({ label: item.label, onRemove: () => handleChange("project", state.project.filter((t: any) => t.value !== item.value)) })
+    badges.push({ label: item.label, onRemove: () => removeAndUpdate("project", state.project.filter((t: any) => t.value !== item.value)) })
   );
 
   (state.floorPlan || []).forEach((item: any) =>
-    badges.push({ label: item.label, onRemove: () => handleChange("floorPlan", state.floorPlan.filter((t: any) => t.value !== item.value)) })
+    badges.push({ label: item.label, onRemove: () => removeAndUpdate("floorPlan", state.floorPlan.filter((t: any) => t.value !== item.value)) })
   );
 
   (state.furnishing || []).forEach((item: any) =>
-    badges.push({ label: item.label, onRemove: () => handleChange("furnishing", []) })
+    badges.push({ label: item.label, onRemove: () => removeAndUpdate("furnishing", []) })
   );
 
   if (state.bedrooms && state.bedrooms !== "Any") {
@@ -60,7 +93,7 @@ export function ActiveFilters({ state, handleChange, resetFilter, onClearPrice, 
   if (state.priceMinInput || state.priceMaxInput) {
     const minLabel = state.priceMinInput ? getPriceLabel(state.priceMinInput, priceOptions) : "No min";
     const maxLabel = state.priceMaxInput ? getPriceLabel(state.priceMaxInput, priceOptions) : "No max";
-    badges.push({ label: ` ${minLabel} – ${maxLabel}`, onRemove: onClearPrice });
+    badges.push({ label: ` ${minLabel} – ${maxLabel}`, onRemove: () => { onClearPrice(); removeUrlParams("priceMinInput"); } });
   }
 
   if (state.sqftMin || state.sqftMax) {
@@ -70,6 +103,11 @@ export function ActiveFilters({ state, handleChange, resetFilter, onClearPrice, 
   }
 
   if (badges.length === 0) return null;
+
+  const handleClearAll = () => {
+    resetFilter();
+    router.replace("/property-list");
+  };
 
   return (
     <div className="flex flex-wrap items-center gap-2 !mt-5 pt-0 pb-5 xl:pb-0">
@@ -85,7 +123,7 @@ export function ActiveFilters({ state, handleChange, resetFilter, onClearPrice, 
         </span>
       ))}
       <button
-        onClick={resetFilter}
+        onClick={handleClearAll}
         className="text-sm text-gray-500 underline hover:text-gray-700 ml-1"
       >
         Clear all

@@ -26,6 +26,12 @@ export const objIsEmpty = (obj: object) => {
   return true;
 };
 
+export const removeSpace=(text)=>{
+  const result = text.replace(/\s+/g, '').toLowerCase();
+  return result
+  
+}
+
 export const truncateText = (text: string, maxLength: number = 20) => {
   if (!text) return "";
 
@@ -355,29 +361,50 @@ export const formattedNoDecimal = (number) => {
 
 export const TimeAgo = (dateString: string | Date) => {
   const now = new Date();
-  const past = new Date(dateString);
-  const diff = (now.getTime() - past.getTime()) / 1000; // difference in seconds
+
+  let past: Date;
+
+  if (dateString instanceof Date) {
+    past = dateString;
+  } else {
+    // UTC -> IST
+    const utcDate = new Date(dateString.replace(" ", "T") + "Z");
+
+    const istDateString = utcDate.toLocaleString("en-US", {
+      timeZone: "Asia/Kolkata",
+    });
+
+    past = new Date(istDateString);
+  }
+
+  const diff = Math.floor((now.getTime() - past.getTime()) / 1000);
 
   if (diff < 10) return "Now";
-  if (diff < 60) return `${Math.floor(diff)} Sec ago`;
+  if (diff < 60) return `${diff} Sec ago`;
   if (diff < 3600) return `${Math.floor(diff / 60)} Min ago`;
-  if (diff < 86400)
-    return `${Math.floor(diff / 3600)} Hour${
-      Math.floor(diff / 3600) > 1 ? "s" : ""
-    } ago`;
-  if (diff < 2592000)
-    return `${Math.floor(diff / 86400)} Day${
-      Math.floor(diff / 86400) > 1 ? "s" : ""
-    } ago`;
-  if (diff < 31104000)
-    return `${Math.floor(diff / 2592000)} Month${
-      Math.floor(diff / 2592000) > 1 ? "s" : ""
-    } ago`;
-  return `${Math.floor(diff / 31104000)} Year${
-    Math.floor(diff / 31104000) > 1 ? "s" : ""
-  } ago`;
-};
 
+  if (diff < 86400) {
+    const hours = Math.floor(diff / 3600);
+    const minutes = Math.floor((diff % 3600) / 60);
+
+    return minutes > 0
+      ? `${hours} hr ago`
+      : `${hours} Hr ago`;
+  }
+
+  if (diff < 2592000) {
+    const days = Math.floor(diff / 86400);
+    return `${days} Day${days > 1 ? "s" : ""} ago`;
+  }
+
+  if (diff < 31104000) {
+    const months = Math.floor(diff / 2592000);
+    return `${months} Month${months > 1 ? "s" : ""} ago`;
+  }
+
+  const years = Math.floor(diff / 31104000);
+  return `${years} Year${years > 1 ? "s" : ""} ago`;
+};
 export const formatPhoneNumber = (phone) => {
   if (!phone) return "";
 

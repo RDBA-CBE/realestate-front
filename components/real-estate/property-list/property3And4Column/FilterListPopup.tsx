@@ -32,6 +32,7 @@ export function FilterListPopup({
 }: FilterListPopupProps) {
   const [query, setQuery] = useState("");
   const [selectedAlphabet, setSelectedAlphabet] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const alphabetRefs = useRef<Record<string, HTMLElement | null>>({});
 
@@ -45,14 +46,23 @@ export function FilterListPopup({
     return () => { document.body.style.overflow = prev; };
   }, [open]);
 
-  const filtered = useMemo(() =>
-    query ? items.filter(i => i.label.toLowerCase().includes(query.toLowerCase())) : items
-  , [items, query]);
+  const filtered = useMemo(() => {
+    const result = query
+      ? items.filter(i => i.label.toLowerCase().includes(query.toLowerCase()))
+      : [...items];
+    return result.sort((a, b) => a.label.localeCompare(b.label));
+  }, [items, query]);
 
   const availableAlphabets = useMemo(
     () => new Set(filtered.map((i) => i.label[0]?.toUpperCase())),
     [filtered]
   );
+
+  useEffect(() => {
+    if (open) {
+      setTimeout(() => inputRef.current?.focus(), 50);
+    }
+  }, [open]);
 
   const popupRef = useRef<HTMLDivElement>(null);
 
@@ -64,21 +74,19 @@ export function FilterListPopup({
   return (
     <PopupPortal>
       <div
-        className="fixed inset-0 bg-black/40 z-[9998] pointer-events-auto"
+        // className="fixed inset-0 bg-black/40 z-[9998] pointer-events-auto"
         style={{ pointerEvents: "auto" }}
-        onPointerDown={(e) => {
-          e.stopPropagation();
-          onClose();
-        }}
+        className="fixed inset-0 bg-black/40 z-[9998]"
+        onClick={onClose}
+        // onPointerDown={(e) => { e.stopPropagation(); onClose(); }}
+        // onTouchEnd={(e) => { e.stopPropagation(); onClose(); }}
       />
       <div
         ref={popupRef}
         data-filter-popup
-        onPointerDown={(e) => {
-          // Only stop propagation if we are not clicking an input
-          const target = e.target as HTMLElement;
-          if (target.tagName !== 'INPUT') e.stopPropagation();
-        }}
+        onClick={(e) => e.stopPropagation()}
+        // onMouseDown={(e) => e.stopPropagation()}
+        // onTouchMove={(e) => e.stopPropagation()}
         className="fixed bg-white border border-slate-200 shadow-2xl z-[9999] p-4 flex flex-col rounded-2xl pointer-events-auto"
         style={{ 
           top: "50%", 
@@ -91,44 +99,54 @@ export function FilterListPopup({
         }}
       >
         {/* Header */}
-        <div className="flex justify-between items-start mb-3 border-b pb-3">
-          <div className={`flex gap-3 flex-1 item-center`}>
-            <div className="flex items-center gap-3">
-              {/* <span className="font-semibold text-gray-900 text-sm">{title}</span> */}
-              <div className="relative flex-1 max-w-[230px]">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 " size={14} />
-                <input
-                  type="text"
-                  placeholder={`Search ${title.toLowerCase()}...`}
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  className="w-full pl-8 pr-3 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none"
-                />
-              </div>
+        <div className="flex justify-between items-center mb-3 border-b pb-3 gap-2">
+          {!isMobile && (
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+              <input
+                ref={inputRef}
+                type="text"
+                placeholder={`Search ${title.toLowerCase()}...`}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onClick={() => inputRef.current?.focus()}
+                readOnly={false}
+                className="w-full pl-8 pr-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:border-dred"
+              />
             </div>
-            {showAlphabetNav && (
-              <div className="flex flex-wrap gap-2 pb-2">
-                {ALPHABETS.map((char) => {
-                  const isAvailable = availableAlphabets.has(char);
-                  return (
-                    <span
-                      key={char}
-                      onClick={() => {
-                        if (!isAvailable) return;
-                        setSelectedAlphabet(char);
-                        alphabetRefs.current[char]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                      }}
-                      className={`text-sm ${isAvailable ? "cursor-pointer hover:text-black" : "cursor-not-allowed text-slate-300"} ${selectedAlphabet === char && isAvailable ? "text-black border bg-gray-300 px-1 font-semibold" : ""}`}
-                    >
-                      {char}
-                    </span>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-          <button onClick={onClose} className="ml-3  hover:text-slate-600 flex-shrink-0"><X size={18} /></button>
+          )}
+          {isMobile && <span className="text-sm font-semibold">{title}</span>}
+          <button onClick={onClose} className="ml-2 hover:text-slate-600 flex-shrink-0"><X size={18} /></button>
         </div>
+        {/* Alphabet nav - single scrollable row */}
+        {showAlphabetNav && (
+          <div 
+            className="flex gap-2 overflow-x-auto pb-2 mb-2" 
+            style={{scrollbarWidth:"none", msOverflowStyle:"none"}}
+            onPointerDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
+          >
+            {ALPHABETS.map((char) => {
+              const isAvailable = availableAlphabets.has(char);
+              return (
+                <span
+                  key={char}
+                  onClick={() => {
+                    if (!isAvailable) return;
+                    setSelectedAlphabet(char);
+                    alphabetRefs.current[char]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                  }}
+                  className={`text-sm shrink-0 px-1 ${
+                    isAvailable ? "cursor-pointer hover:text-black" : "cursor-not-allowed text-slate-300"
+                  } ${selectedAlphabet === char && isAvailable ? "text-black border bg-gray-200 rounded font-semibold" : ""}`}
+                >
+                  {char}
+                </span>
+              );
+            })}
+          </div>
+        )}
         {/* List */}
         <div
           ref={listRef}

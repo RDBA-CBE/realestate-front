@@ -7,21 +7,25 @@ const perks = [
     icon: Building2,
     title: "List Your Properties",
     desc: "Showcase your projects to thousands of active buyers and renters across the platform.",
+ 
   },
   {
     icon: TrendingUp,
     title: "Grow Your Business",
     desc: "Reach a wider audience and close deals faster with our powerful listing tools.",
+  
   },
   {
     icon: BadgeCheck,
     title: "Verified Developer Badge",
     desc: "Build trust with buyers through our verified developer profile and credibility badge.",
+  
   },
   {
     icon: Users,
     title: "Connect With Buyers",
     desc: "Get direct inquiries from serious buyers and renters looking for properties like yours.",
+  
   },
 ];
 
@@ -60,14 +64,14 @@ export default function DeveloperRegistrationSection() {
               return (
                 <div
                   key={i}
-                  className="flex items-start gap-4 border border-[#d1d0d0] p-5 rounded-2xl bg-white"
+                  className="flex items-start gap-4  p-5 rounded-2xl bg-white/10"
                 >
                   <div className="flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-full border border-[#9b0f09] bg-white shadow-sm">
                     <Icon className="h-6 w-6 text-[#9b0f09]" />
                   </div>
                   <div>
-                    <h3 className="section-in-ti mb-1">{perk.title}</h3>
-                    <p className=" leading-relaxed">{perk.desc}</p>
+                    <h3 className="section-in-ti mb-1 !text-white">{perk.title}</h3>
+                    <p className=" leading-relaxed text-white">{perk.desc}</p>
                   </div>
                 </div>
               );

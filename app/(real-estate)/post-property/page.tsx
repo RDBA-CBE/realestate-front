@@ -72,7 +72,11 @@ const PostPropertyPage = () => {
         const errors = {};
         error.inner.forEach((err) => { errors[err.path] = err.message; });
         setState({ error: errors });
-      } else {
+      } 
+      else if (error?.error){
+        Failure(error?.error);
+      }
+      else {
         Failure(error?.email?.[0] || error?.password?.[0] || "Something went wrong.");
       }
     } finally {

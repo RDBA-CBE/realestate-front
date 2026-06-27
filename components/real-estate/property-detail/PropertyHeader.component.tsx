@@ -39,6 +39,7 @@ export default function PropertyHeader(props: any) {
    const [loginPopup, setLoginPopup] = useState(false);
 
   const { data, updateList } = props;
+  console.log("data",data)
 
    useEffect(() => {
     setState({url:window.location.href});
@@ -159,7 +160,7 @@ export default function PropertyHeader(props: any) {
               )}{" "}
             </p>
             {data?.price_per_sqft && 
-            <span className="">
+            <span className="block sm:hidden">
             {/* <span></span> */}
             <p className="text-[14px] text-black  mb-0">
               Approx ₹ {(data?.price_per_sqft)} / sq.ft
@@ -167,8 +168,10 @@ export default function PropertyHeader(props: any) {
             </span>
             }
           <h1 className="section-ti">{data?.title}</h1>
+          {data?.developer?.industry &&
           <p>By <span className="text-dred cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.id}`)}>{data?.developer?.industry} </span></p>
-          <p className="text-black leading-relaxed " style={{wordBreak:"break-all"}}>{data?.address}</p>
+        }
+          <p className="text-black leading-relaxed " style={{wordBreak:"break-all"}}>{capitalizeFLetter(data?.address)}</p>
           {/* <div className="block sm:hidden">
             <span className="section-in-ti">
               {formatPriceRange(

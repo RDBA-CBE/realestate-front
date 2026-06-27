@@ -9,6 +9,7 @@ import { BASEURL } from "./constant.utils";
 let api: AxiosInstance | null = null;
 let isRefreshing = false;
 let failedQueue: any[] = [];
+let isAlertShown = false;
 
 const processQueue = (error: any, token: string | null = null) => {
   failedQueue.forEach((prom) => {
@@ -23,6 +24,9 @@ const processQueue = (error: any, token: string | null = null) => {
 };
 
 const showTokenExpiredAlert = () => {
+  if (isAlertShown) return;
+  isAlertShown = true;
+
   const userConfirmed = window.confirm(
     "Your token has expired. Click OK to login again.",
   );
@@ -119,8 +123,7 @@ export const instance = (): AxiosInstance => {
             resolve(api!(originalRequest));
           } catch (err) {
             processQueue(err, null);
-            localStorage.clear();
-            window.location.href = "/login";
+            showTokenExpiredAlert();
             reject(err);
           } finally {
             isRefreshing = false;
