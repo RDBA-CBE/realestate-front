@@ -110,7 +110,7 @@ const HowItWorks = () => {
       image: "/assets/images/real-estate/home/buy-1.webp",
       bgImage:
         "/assets/images/real-estate/home/Buy.webp",
-      url: "/property-list?type=Sale",
+      url: "/property-list?type=sale",
     },
     {
       title: "Want to sell your home?",

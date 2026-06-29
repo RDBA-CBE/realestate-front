@@ -91,7 +91,7 @@ const PropertyComparisonGrid = () => {
         //   format: (value: any) => value?.name,
         // },
         {
-          label: "Floor Plans",
+          label: "Unit Configuration",
           key: "floor_plans",
           format: (value: any) => {
             if (!value || value.length === 0) return "-";
