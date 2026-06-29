@@ -94,6 +94,7 @@ export function PropertyView(props: any) {
     initialPropertyType,
     initialDeveloper,
     initialArea,
+    initialFurnishingList,
     propertyTypeFilter,
     onFilterChange,
     isFilterLoading = false,
@@ -261,6 +262,8 @@ export function PropertyView(props: any) {
     }
   };
 
+
+  
   
 
   useEffect(() => {
@@ -268,7 +271,7 @@ export function PropertyView(props: any) {
     if (initialSearch) setState({ search: initialSearch });
     setState({ listingStatus: initialListingStatus || "All" });
     setState({ location: initialLocation || [] });
-    setState({ developer: initialDeveloper || [] });
+    setState({ developer: initialDeveloper || [], furnishing: initialFurnishingList || [] });
     if (initialArea?.length && !hasBeenClearedRef.current) setState({ area: initialArea });
 
     // Ensure propertyType is handled as an array (it might be a string from URL)
@@ -290,6 +293,7 @@ export function PropertyView(props: any) {
     initialPropertyType,
     initialDeveloper,
     initialArea,
+    initialFurnishingList,
   ]);
 
   // Reconcile selected filters against updated dynamic filter lists

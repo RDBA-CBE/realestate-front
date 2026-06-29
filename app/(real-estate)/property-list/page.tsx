@@ -22,6 +22,7 @@ export default function Page() {
   const type = searchParams.get("type");
   const propertyType = searchParams.get("propertyType");
   const locationParam = searchParams.get("location");
+  const furnishing = searchParams.get("furnishing");
 
   const ai_location = searchParams.get("ai_location");
   const ai_area = searchParams.get("ai_area");
@@ -61,7 +62,7 @@ export default function Page() {
   useEffect(() => {
     initPage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [developerId, search, type, propertyType, locationParam, ai_location]);
+  }, [developerId, search, type, propertyType, locationParam, ai_location, furnishing]);
 
   useEffect(() => {
     if (developerId) {
@@ -105,6 +106,15 @@ export default function Page() {
     // listing type param
     if (type && type !== "all") {
       urlFilter.listingStatus = type === "sale" ? "For Sale" : "For Lease";
+    }
+
+    if (furnishing) {
+      const matched = (res?.furnishing || []).find(
+        (item: any) => item.value === furnishing
+      );
+      if(matched){
+      urlFilter.furnishing = [{ label: matched.name, value: matched.value }];
+      }
     }
 
     if (developerId) {
@@ -387,6 +397,7 @@ export default function Page() {
           initialLocation: urlFilter.location || [],
           initialPropertyType: urlFilter.propertyType || [],
           initialDeveloper: urlFilter.developer || [],
+          initialFurnishingList: urlFilter.furnishing || [],
         });
 
         const hasUrlFilters = Object.keys(urlFilter).length > 0;
@@ -722,6 +733,7 @@ export default function Page() {
         initialLocation={state.initialLocation}
         initialPropertyType={state.initialPropertyType}
         initialArea={state.initialArea}
+        initialFurnishingList = {state.initialFurnishingList}
         initialListingStatus={
           type
             ? type === "all"
