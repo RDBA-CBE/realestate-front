@@ -95,10 +95,10 @@ const LoginPage = () => {
               </div>
               <h3 className="text-xl font-bold text-gray-900">Access Restricted</h3>
               <p className="text-gray-500 text-sm">
-                This website is exclusively for <span className="font-semibold text-[#9b0f09]">Buyers</span>. You do not have permission to access this platform.
+                This website is exclusively for <span className="font-semibold text-[#9b0f09]">Buyers</span>. As a developer you do not have permission to access this platform.
               </p>
               <p className="text-gray-500 text-sm">
-                To manage your data, please use the admin panel:
+                To manage your data, please use the admin panel 
               </p>
               <a
                 href="https://realestate-admin-navy.vercel.app/auth/signin"
