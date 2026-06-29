@@ -18,7 +18,7 @@ const URL_PARAM_MAP: Record<string, string[]> = {
   area: ["ai_area"],
   propertyType: ["propertyType", "ai_propertyType"],
   floorPlan: ["floor_plans_category", "ai_floor_plans_category"],
-  furnishing: ["ai_furnishing"],
+  furnishing: ["furnishing", "ai_furnishing"],
   listingStatus: ["type"],
   search: ["search"],
   bedrooms: [],

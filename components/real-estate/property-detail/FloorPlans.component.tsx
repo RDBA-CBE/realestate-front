@@ -10,6 +10,7 @@ interface FloorPlan {
   price: string;
   image: string | null;
   type?: string;
+  floor_no?: string;
 }
 
 interface Props {
@@ -86,7 +87,8 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
     const min = Math.min(...prices);
     const max = Math.max(...prices);
 
-    return `${formatPrice(min.toString())} - ${formatPrice(max.toString())}`;
+    return ` ${formatPrice(max.toString())}`;
+    // return `${formatPrice(min.toString())} - ${formatPrice(max.toString())}`;
   };
 
   // ❌ Empty state
@@ -183,6 +185,11 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
           <div>
             <p className="font-semibold pb-2 mb-0">Type</p>
             <p>{selectedPlan.type}</p>
+          </div>
+
+          <div>
+            <p className="font-semibold pb-2 mb-0">Floor No</p>
+            <p>{selectedPlan.floor_no}</p>
           </div>
 
           <div>

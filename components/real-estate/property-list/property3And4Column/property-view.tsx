@@ -94,6 +94,7 @@ export function PropertyView(props: any) {
     initialPropertyType,
     initialDeveloper,
     initialArea,
+    initialFurnishingList,
     propertyTypeFilter,
     onFilterChange,
     isFilterLoading = false,
@@ -261,6 +262,8 @@ export function PropertyView(props: any) {
     }
   };
 
+
+  
   
 
   useEffect(() => {
@@ -268,7 +271,7 @@ export function PropertyView(props: any) {
     if (initialSearch) setState({ search: initialSearch });
     setState({ listingStatus: initialListingStatus || "All" });
     setState({ location: initialLocation || [] });
-    setState({ developer: initialDeveloper || [] });
+    setState({ developer: initialDeveloper || [], furnishing: initialFurnishingList || [] });
     if (initialArea?.length && !hasBeenClearedRef.current) setState({ area: initialArea });
 
     // Ensure propertyType is handled as an array (it might be a string from URL)
@@ -290,6 +293,7 @@ export function PropertyView(props: any) {
     initialPropertyType,
     initialDeveloper,
     initialArea,
+    initialFurnishingList,
   ]);
 
   // Reconcile selected filters against updated dynamic filter lists
@@ -634,6 +638,7 @@ export function PropertyView(props: any) {
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 items-start min-h-screen">
         <aside className="space-y-6 lg:col-span-1 xl:sticky md:top-16 lg:top-16  hidden xl:block ">
           <div className="p-4 pb-8 border rounded-2xl space-y-6 bg-color1 border-gray h-[91vh] overflow-auto thin-scrollbar">
+            <h3 className="mb-2 font-semibold text-gray-900">Filters</h3>
             {/* <div className="w-full flex justify-end">
               <Button
                 onClick={() => resetFilter()}
@@ -645,11 +650,11 @@ export function PropertyView(props: any) {
               </Button>
             </div> */}
 
-            <TextInput
+            {/* <TextInput
               placeholder="What are you looking for?"
               value={state.search}
               onChange={(e) => handleChange("search", e.target.value)}
-            />
+            /> */}
 
             <div>
               <div className="mb-2 font-semibold text-gray-900">
@@ -1080,7 +1085,9 @@ export function PropertyView(props: any) {
                 </div>
               </div>
             )}
-            <div>
+
+
+            {/* <div>
               <div className="mb-2 font-semibold text-gray-900">Bathrooms</div>
 
               <div className="flex flex-wrap gap-2">
@@ -1122,7 +1129,7 @@ export function PropertyView(props: any) {
                   );
                 })}
               </div>
-            </div>
+            </div> */}
 
             {/* <div>
               <div className="mb-2 font-semibold text-gray-900">Bathrooms</div>

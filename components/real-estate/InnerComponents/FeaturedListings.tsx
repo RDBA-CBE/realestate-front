@@ -61,7 +61,7 @@ const FeaturedListings = (props: any) => {
           </div>
           
           <a
-            href="property-list"
+            href="property-list?type=sale&furnishing=furnished"
             className="flex items-center gap-4 mt-4 md:mt-0  transition-colors font-medium"
           >
             See All Properties
