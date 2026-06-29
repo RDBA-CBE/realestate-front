@@ -690,8 +690,8 @@ export default function AISearchComponent(props:any) {
                                   {prop.title}
                                 </div>
                                 <div className="text-xs text-muted-foreground truncate">
-                                  {prop.city}
-                                  {prop.state ? `, ${prop.state}` : ""}
+                                  {prop.area?.name}
+                                  {prop.location?.name ? `, ${prop.location?.name}` : ""}
                                 </div>
                                 {priceStr && (
                                   <p className="text-xs font-medium text-themeColor1">
@@ -770,7 +770,7 @@ export default function AISearchComponent(props:any) {
                       {visibleCount >= response.results.length &&
                         response.applied_filters && (
                           <>
-                            <div className="flex flex-row gap-2">
+                            <div className="flex flex-col md:flex-row gap-1">
                               <button
                                 onClick={() => {
                                   setInquiryPopup({
@@ -1180,7 +1180,7 @@ export default function AISearchComponent(props:any) {
             </div>
 
             {inquiryMode === "menu" && (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col md:flex-row gap-1">
                 <button
                   onClick={() => setInquiryMode("booking")}
                   className="flex items-center gap-3 px-4 py-3 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-sm font-medium text-foreground"
