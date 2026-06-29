@@ -9,7 +9,9 @@ import * as Yup from "yup";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Failure, Success, useSetState } from "@/utils/function.utils";
-import { Loader, Home, CheckCircle2, ArrowRight, ArrowLeft } from "lucide-react";
+import { Loader, Home, CheckCircle2, ArrowRight, ArrowLeft, X } from "lucide-react";
+import { ROLE } from "@/utils/constant.utils";
+
 
 const perks = [
   "Browse thousands of verified listings",
@@ -26,6 +28,7 @@ const LoginPage = () => {
     password: "",
     loading: false,
     error: {},
+    showAccessDenied: false,
   });
 
   const handleInputChange = (e) => {
@@ -40,7 +43,7 @@ const LoginPage = () => {
       const body = { email: state.email, password: state.password };
       await Utils.Validation.signin.validate(body, { abortEarly: false });
       const res: any = await Models.auth.login(body);
-      Success("Login Successfully");
+      if(res?.user_type == ROLE.buyer){
       localStorage.setItem("token", res?.access);
       localStorage.setItem("refresh", res?.refresh);
       localStorage.setItem("userId", res?.user_id);
@@ -52,6 +55,11 @@ const LoginPage = () => {
         localStorage.setItem("groupId", res?.groups?.[0]?.id);
       }
       window.location.href = "/property-list";
+      Success("Login Successfully");
+
+    } else {
+      setState({ loading: false, showAccessDenied: true });
+    }
     } catch (error) {
       setState({ loading: false });
       if (error instanceof Yup.ValidationError) {
@@ -70,6 +78,40 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex bg-white font-sans relative">
+
+      {/* Access Denied Modal */}
+      {state.showAccessDenied && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full mx-4 relative">
+            <button
+              onClick={() => setState({ showAccessDenied: false })}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="flex flex-col items-center text-center gap-4">
+              <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center">
+                <span className="text-3xl">🚫</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">Access Restricted</h3>
+              <p className="text-gray-500 text-sm">
+                This website is exclusively for <span className="font-semibold text-[#9b0f09]">Buyers</span>. You do not have permission to access this platform.
+              </p>
+              <p className="text-gray-500 text-sm">
+                To manage your data, please use the admin panel:
+              </p>
+              <a
+                href="https://realestate-admin-navy.vercel.app/auth/signin"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-2.5 rounded-xl bg-[#9b0f09] text-white text-sm font-semibold hover:bg-[#7d0c07] transition-colors text-center"
+              >
+                Go to Admin Panel
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Top-right: View Properties */}
      <div className="absolute top-5 right-5 z-30 flex gap-2">
