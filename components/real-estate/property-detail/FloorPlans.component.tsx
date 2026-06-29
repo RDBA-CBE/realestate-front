@@ -87,7 +87,8 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
     const min = Math.min(...prices);
     const max = Math.max(...prices);
 
-    return `${formatPrice(min.toString())} - ${formatPrice(max.toString())}`;
+    return ` ${formatPrice(max.toString())}`;
+    // return `${formatPrice(min.toString())} - ${formatPrice(max.toString())}`;
   };
 
   // ❌ Empty state
