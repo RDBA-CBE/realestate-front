@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import FilterDropdown from "../../FilterDropdown.component";
 import Modal from "@/components/common-components/modal";
-import { getPriceLabel, useSetState } from "@/utils/function.utils";
+import { getPriceLabel, truncateText, useSetState } from "@/utils/function.utils";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -836,7 +836,7 @@ export function PropertyView(props: any) {
                           checked={state.developer.some((t) => t.value === option.value)}
                           onChange={(e) => handleChange("developer", e.target.checked ? [...state.developer, option] : state.developer.filter((t) => t.value !== option.value))}
                         />
-                        <span className="truncate max-w-[130px] block" title={option.label}>{option.label}</span>
+                        <span className="  block" title={option.label}>{truncateText(option.label, 22)}</span>
                       </div>
                       {option.count !== undefined && (
                         <span className="text-[11px] bg-dred/10 text-black rounded-full px-[8px] py-[1.6px]">{option.count}</span>
