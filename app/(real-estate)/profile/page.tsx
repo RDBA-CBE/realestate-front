@@ -478,8 +478,7 @@ export default function ProfilePage() {
               </div>
 
               <p className="text-sm text-[#383838] ">
-                {state?.properties?.length} Wishlist · 1 Active Search · Last
-                Login: Just Now
+                {state?.properties?.length} Wishlist · Last Login: Just Now
               </p>
             </div>
           </div>
@@ -697,7 +696,7 @@ export default function ProfilePage() {
                       </button>
                     </div>
                     <div className="p-4">
-                      <h3 className="text-black  text-base truncate mb-0">
+                      <h3 className="text-start text-black  text-base truncate mb-0">
                         {property.title || property.name || "Untitled Property"}
                       </h3>
                       <p className="flex text-sm text-black items-center gap-1 mt-1 mb-0 min-h-[24px]">
@@ -710,7 +709,7 @@ export default function ProfilePage() {
                           </>
                         )}
                       </p>
-                      <p className="mb-0 text-lg font-semibold text-[#9b0f09] mt-1">
+                      <p className="text-start mb-0 text-lg font-semibold text-[#9b0f09] mt-1">
                         {property.price_range
                           ? `₹ ${formatPriceRange(property?.price_range?.minimum_price, property?.price_range?.maximum_price)}`
                           : "Price on request"}
