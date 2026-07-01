@@ -356,7 +356,7 @@ const TermsAndConditionsPage = () => {
 
               <p className="leading-relaxed mb-3">
                 <strong>
-                  For the purposes of this clause, "Customer" means any broker,
+                  For the purposes of this clause, &quot;Customer&quot; means any broker,
                   developer, or other contracting party that enters into a
                   Service Order or procures subscriptions or services from RRE,
                   including its permitted representatives, successors, and
@@ -715,7 +715,7 @@ const TermsAndConditionsPage = () => {
                 <li className="leading-relaxed">
                   Modifying the services provided through Boom Realtys or their
                   appearance using any technology or overlay any additional
-                  offering on top of such services or simulate Boom Realtys's
+                  offering on top of such services or simulate Boom Realtys&apos;s
                   services or its functions in any manner whatsoever without
                   explicit consent obtained in writing by approaching us at the
                   email id.
@@ -730,7 +730,7 @@ const TermsAndConditionsPage = () => {
                   Attempting to breach or breaching any security or
                   authentication measures set up by the RRE in relation to Boom
                   Realtys and/or attempting to probe, scan or test the
-                  vulnerability of the RRE's system or network.
+                  vulnerability of the RRE&apos;s system or network.
                 </li>
 
                 <li className="leading-relaxed">
@@ -800,7 +800,7 @@ const TermsAndConditionsPage = () => {
 
                 <li className="leading-relaxed">
                   Imposing an unreasonable or disproportionately large load on
-                  Boom Realtys's infrastructure.
+                  Boom Realtys&apos;s infrastructure.
                 </li>
 
                 <li className="leading-relaxed">
@@ -861,7 +861,7 @@ const TermsAndConditionsPage = () => {
                     <li className="flex gap-3">
                       <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-dred flex-shrink-0" />
                       <span>
-                        Is grossly harmful, harassing, invasive of another's
+                        Is grossly harmful, harassing, invasive of another&apos;s
                         privacy including bodily privacy, hateful, disparaging,
                         relating to or encouraging money laundering or gambling
                         in any manner, any content which is or may potentially
@@ -980,8 +980,8 @@ const TermsAndConditionsPage = () => {
 
               <p className="leading-relaxed mb-3">
                 <strong>
-                  THE CONTENT OF BOOM REALTYS IS PROVIDED "AS IS" AND ON AN "AS
-                  AVAILABLE" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY
+                  THE CONTENT OF BOOM REALTYS IS PROVIDED &quot;AS IS&quot; AND ON AN &quot;AS
+                  AVAILABLE&quot; BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY
                   KIND, WHETHER EXPRESS OR IMPLIED.
                 </strong>
               </p>
