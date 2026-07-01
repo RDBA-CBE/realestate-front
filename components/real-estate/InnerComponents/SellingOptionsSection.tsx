@@ -3,23 +3,23 @@ import { BadgeDollarSign, Clock3, Building2 } from "lucide-react";
 
 const items = [
   {
-    title: "Find Excellent Deals",
-    desc: "We offer complete real estate services for buying, selling, and renting.",
+    title: "Find exceptional properties with confidence",
+    desc: "Verified listings, competitive prices and trusted guidance for smarter property decisions every day.",
     icon: BadgeDollarSign,
   },
   {
-    title: "Friendly Host & Fast Support",
-    desc: "We offer complete real estate services for buying, selling, and renting.",
+    title: "Friendly experts, faster property solutions",
+    desc: "Dedicated professionals providing personalized assistance throughout your buying, selling and investment journey. ",
     icon: Clock3,
   },
   {
-    title: "List Your Own Property",
-    desc: "We offer complete real estate services for buying, selling, and renting.",
+    title: "List your property with ease",
+    desc: "Reach genuine buyers, maximize visibility and sell faster through our trusted real estate platform.",
     icon: Building2,
   },
    {
-    title: "List Your Own Property",
-    desc: "We offer complete real estate services for buying, selling, and renting.",
+    title: "Trusted listings, better investment opportunities",
+    desc: "Explore quality properties from reliable developers with complete transparency and expert support.",
     icon: Building2,
   },
 ];
@@ -35,8 +35,7 @@ export default function SellingOptionsSection() {
           </h2>
 
           <p className="section-cap mt-3">
-            We offer complete real estate services for buying, selling, and
-            renting residential properties.
+            Explore flexible selling options that help you attract serious buyers and achieve the best possible property value
           </p>
         </div>
 
@@ -57,8 +56,7 @@ export default function SellingOptionsSection() {
               </h3>
 
               <p className="mt-3 leading-relaxed ">
-                We offer complete real estate services for buying, selling, and
-                renting residential properties.
+                Partner with us to sell confidently using proven strategies, quality leads and dedicated real estate expertise
               </p>
             </div>
           </div>

@@ -105,7 +105,7 @@ const HowItWorks = () => {
     {
       title: "Looking for the new home?",
       description:
-        "10 new offers every day. 350 offers on site, trusted by a community of thousands of users.",
+        "Browse thousands of trusted listings, explore prime locations, and confidently move into the home you've always wanted.",
       buttonText: "Get Started",
       image: "/assets/images/real-estate/home/buy-1.webp",
       bgImage:
@@ -115,7 +115,7 @@ const HowItWorks = () => {
     {
       title: "Want to sell your home?",
       description:
-        "10 new offers every day. 350 offers on site, trusted by a community of thousands of users.",
+        "Market your home to the right audience, attract serious buyers, and close successful deals with complete confidence.",
       buttonText: "Get Started",
       image: "/assets/images/real-estate/home/sale-1.webp",
       bgImage:

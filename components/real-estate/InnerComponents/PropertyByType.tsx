@@ -51,7 +51,7 @@ const PropertyByType = ({ propertyTypeList = [] }: { propertyTypeList?: any[] })
         <div className="flex flex-col md:flex-row justify-between md:items-center mb-5 md:mb-10 ">
           <div>
             <h2 className="section-ti">Explore Property Types</h2>
-            <p className="section-cap mb-0 md:mb-4">Lorem ipsum dolor sit amet</p>
+            <p className="section-cap mb-0 md:mb-4">Find spaces designed for every lifestyle</p>
           </div>
           {/* Nav Arrows */}
           {propertyTypeList.length > 6 && (

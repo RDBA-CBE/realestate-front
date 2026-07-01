@@ -14,10 +14,10 @@ import { ROLE } from "@/utils/constant.utils";
 
 
 const perks = [
-  "Browse thousands of verified listings",
-  "Save your favourite properties",
-  "Get price alerts & new arrivals",
-  "Connect directly with developers",
+  "Discover properties that match your preferences",
+  "Shortlist properties you love instantly",
+  "Receive personalized property recommendations",
+  "Chat directly with sellers and developers",
 ];
 
 const LoginPage = () => {
@@ -146,10 +146,10 @@ const LoginPage = () => {
 
         <div className="z-10 space-y-6">
           <h1 className="text-5xl font-semibold text-white leading-tight">
-            Welcome back! Sign in
+            Sign in to discover better property opportunities
           </h1>
           <p className="text-white/70 text-lg max-w-xs">
-            Your dream property is just a login away.
+            Easily manage your properties and enquiries.
           </p>
           <ul className="space-y-4 pt-2">
             {perks.map((perk, i) => (

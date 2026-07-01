@@ -302,7 +302,7 @@ export default function FeaturedDevelopers({
           <h2 className="section-ti !text-white">Featured Developers</h2>
 
           <p className="section-cap !text-white/90">
-            Explore top real estate developers and their latest projects
+            Find exceptional properties from leading developers designed with quality, innovation and reliability
           </p>
         </div>
 

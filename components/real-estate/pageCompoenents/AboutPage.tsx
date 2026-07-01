@@ -17,18 +17,18 @@ const stats = [
 const values = [
   {
     icon: Target,
-    title: "Our Mission",
-    desc: "To provide the most professional, informative, loyal and dedicated service in the industry through cutting-edge technology and local expertise.",
+    title: " Mission",
+    desc: "To make property buying, selling, and investing simple through trusted listings, expert guidance, and transparent real estate services.",
   },
   {
     icon: Award,
-    title: "Our Vision",
-    desc: "To be the leading real estate service provider in the region, recognized for excellence, innovation, and an unwavering commitment to our clients.",
+    title: " Vision",
+    desc: "To be the most trusted real estate platform by delivering seamless property experiences with innovation, transparency, and customer satisfaction.",
   },
   {
     icon: ShieldCheck,
     title: "Core Values",
-    desc: "Integrity, transparency, and excellence are at the heart of everything we do. We believe in building lasting relationships based on trust.",
+    desc: "We are committed to integrity, transparency, innovation, and customer satisfaction, delivering reliable real estate solutions with excellence.",
   },
 ];
 
@@ -69,7 +69,7 @@ const AboutPage = () => {
             Building Dreams, <br />Delivering Homes
           </h1>
           <p className="adv-subtitle">
-            More than a real estate firm — your dedicated partners in finding the perfect property.
+           Helping buyers, sellers, and developers achieve their goals through reliable listings and dedicated real estate expertise
           </p>
         </div>
       </section>
@@ -127,17 +127,17 @@ const AboutPage = () => {
             {/* Text */}
             <div>
               <span className="text-dred font-bold uppercase tracking-[0.2em] text-xs mb-4 inline-block">
-                Established 2005
+                Established 2026
               </span>
               <h2 className="section-ti mb-6">
-                Redefining the Real Estate Experience
+                Connecting you to better properties
               </h2>
               <p className="section-cap mb-8 leading-relaxed">
-                JustHome was founded with a singular vision — to transform the way people discover and acquire their dream homes. By combining decades of industry expertise with innovative digital tools, we offer a seamless journey for buyers, sellers, and investors alike.
+                At Boom Realtys, we believe finding the perfect property should be simple, transparent and rewarding. Since our inception, we&apos;ve been dedicated to connecting buyers, sellers, investors and developers through a trusted real estate platform that delivers verified listings, expert guidance and seamless experiences. Whether you&apos;re buying, selling a property or exploring investment opportunities, Boom Realty provides the expertise, transparency and support you need to make confident decisions.
               </p>
 
               <div className="grid sm:grid-cols-2 !gap-4 mb-10">
-                {["Local Market Experts", "Global Reach & Network", "Premium Property Selection", "End-to-End Support"].map((item, i) => (
+                {["Verified property listings", "Local market expertise", "Personalized property solutions", "End-to-end real estate support"].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
                       <CheckCircle2 className="text-dred h-5 w-5" />
@@ -164,9 +164,9 @@ const AboutPage = () => {
         <div className="section-wid">
           <div className="text-center mb-12">
             <span className="text-dred font-bold uppercase tracking-[0.2em] text-xs mb-3 inline-block">What We Offer</span>
-            <h2 className="section-ti">Buy, Sell or Rent with Confidence</h2>
+            <h2 className="section-ti">Find, Buy & Sell with Confidence</h2>
             <p className="section-cap mt-3 max-w-xl mx-auto">
-              Whether you&apos;re looking to buy your dream home or sell your property, we make it simple.
+              Explore verified property listings, compare options and discover perfect homes matching your lifestyle and budget
             </p>
           </div>
 
@@ -175,7 +175,7 @@ const AboutPage = () => {
               {
       title: "Looking for the new home?",
       description:
-        "10 new offers every day. 350 offers on site, trusted by a community of thousands of users.",
+        "Browse thousands of trusted listings, explore prime locations, and confidently move into the home you&apos;ve always wanted.",
       buttonText: "Get Started",
       image: "/assets/images/real-estate/home/buy-1.webp",
       bgImage:
@@ -185,7 +185,7 @@ const AboutPage = () => {
     {
       title: "Want to sell your home?",
       description:
-        "10 new offers every day. 350 offers on site, trusted by a community of thousands of users.",
+        "Market your home to the right audience, attract serious buyers, and close successful deals with complete confidence.",
       buttonText: "Get Started",
       image: "/assets/images/real-estate/home/sale-1.webp",
       bgImage:
@@ -253,14 +253,14 @@ const AboutPage = () => {
           <div className="grid lg:grid-cols-2 gap-14 items-center">
             {/* Text side */}
             <div>
-              <span className="text-dred font-bold uppercase tracking-[0.2em] text-xs mb-4 inline-block">Our Foundation</span>
-              <h2 className="section-ti mb-4">What Drives Us Every Day</h2>
-              <p className="section-cap mb-10 leading-relaxed">
-                We are driven by a commitment to excellence and a passion for helping our clients achieve their real estate dreams.
+              <span className="text-dred font-bold uppercase tracking-[0.2em] text-xs mb-4 inline-block">Our principles</span>
+              <h2 className="section-ti mb-4">Driven by purpose and values</h2>
+              <p className="section-cap mb-8 leading-relaxed">
+               Everything we do is guided by integrity, innovation, transparency, and customer-first values that create meaningful property experiences together.
               </p>
               <div className="space-y-6">
                 {values.map((item, i) => (
-                  <div key={i} className="flex gap-5 items-start group border-b border-[#d1d0d0]">
+                  <div key={i} className="flex gap-5 items-start group pb-4 border-b border-[#d1d0d0]">
                     <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center flex-shrink-0 group-hover:bg-dred transition-colors duration-300">
                       <item.icon className="h-6 w-6 text-dred group-hover:text-white transition-colors duration-300" />
                     </div>
@@ -337,17 +337,17 @@ const AboutPage = () => {
             {/* <div className="absolute inset-0 bg-black/70" /> */}
             <div className="relative z-10 w-full text-center px-6 py-16">
               <h2 className="section-ti mb-5 !text-white">
-                Ready to Find Your Perfect Place?
+                Begin your property journey with Boom Realtys
               </h2>
               <p className="text-white  mb-10 max-w-xl mx-auto ">
-                Whether you&apos;re looking for a cozy apartment or a sprawling estate, our team is ready to help.
+                Start exploring verified properties, connect with trusted experts, and discover a home that perfectly fits your lifestyle.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Link
                   href="/property-list"
                   className="bg-dred !text-white px-8 py-3 rounded-full  hover:bg-[#7d0c07] transition-all hover:-translate-y-0.5"
                 >
-                  Browse Listings
+                  Explore Properties
                 </Link>
                 {/* <Link
                   href="/contact"

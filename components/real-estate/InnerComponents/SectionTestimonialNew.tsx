@@ -3,26 +3,26 @@ import React from "react";
 
 const testimonials = [
   {
-    text: "Every property radiates top-notch quality and absolute comfort here. The team went above and beyond to make sure everything was perfect.",
-    author: "John Carter",
+    text: "Boom Realtys made selling my property easy. Their verified buyers and dedicated support helped me close the deal quickly. I highly recommend them to anyone looking to sell a property.",
+    author: "Rahul ",
     role: "Home Buyer, Los Angeles",
     image: "/assets/images/real-estate/home/testimonial/profile-1.png",
   },
   {
-    text: "Amazing service and attention to detail. I felt supported during the entire process and couldn't be happier with my new home.",
-    author: "Lisa Monroe",
+    text: "Listing my property on Boom Realtys was a great decision. The platform was easy to use, and I received genuine buyer enquiries that helped me sell my property quickly.",
+    author: "Ananya",
     role: "Verified Buyer",
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&crop=face",
   },
   {
-    text: "Fast responses, honest advice and great listings — highly recommended for anyone searching for a new place.",
-    author: "Samuel Green",
+    text: "Boom Realtys' professional service and effective property promotion attracted serious buyers, making my property sale smooth, fast, and hassle-free.",
+    author: "Pradeep Kumar",
     role: "Property Investor",
     image: "/assets/images/real-estate/home/testimonial/profile-2.png",
   },
   {
-    text: "The best real estate experience I've ever had. Professional, transparent and genuinely caring about finding the right home.",
-    author: "Pradeep Sharma",
+    text: "Boom Realtys made selling my property simple with verified enquiries, excellent market reach, and responsive support that helped me get the best value.",
+    author: "Vikram ",
     role: "Verified Buyer",
     image: "/assets/images/real-estate/home/testimonial/review-1.webp",
   },
@@ -63,9 +63,9 @@ export default function SectionTestimonialNew() {
         {/* Header */}
         <div className="text-center mb-12">
           {/* <p className="text-[#9b0f09] text-sm font-semibold uppercase tracking-widest mb-2">Testimonials</p> */}
-          <h2 className="section-ti">What our customers say about us</h2>
-          <p className="section-cap mt-2 max-w-xl mx-auto">
-            Real stories from real people who found their dream property with us.
+          <h2 className="section-ti">Hear what our customers say</h2>
+          <p className="section-cap mt-2  mx-auto">
+            See why homeowners, buyers and investors choose Boom Realtys for reliable service and outstanding property solutions
           </p>
         </div>
 

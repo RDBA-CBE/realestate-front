@@ -116,10 +116,11 @@ const HomeBanner = ({ locationLabel }: { locationLabel?: any }) => {
         {/* Left Content */}
         <div className="adv-left">
           <h1 className="adv-title w-full ">
-            Discover Your  <br /> Perfect Home in  <br className="hidden xs:block"/> Paradise
+             {/* Discover Your  <br /> Perfect Home in  <br className="hidden xs:block"/> Paradise */}
+            Every Great   <br /> Address Begins   <br className="hidden xs:block"/> With Boom
           </h1>
           <p className="adv-subtitle">
-            Browse luxury properties, modern apartments, and exclusive villas in the world&apos;s most desirable locations
+            From apartments to villas, discover trusted listings designed to match your budget, lifestyle and future aspirations
           </p>
           <a href="/property-list" className="adv-btn lg:mb-12 border border-dred inline-flex items-center justify-center">
             Find Your Home

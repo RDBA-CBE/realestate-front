@@ -45,7 +45,7 @@ const FeaturedListings = (props: any) => {
         <div className="flex flex-col lg:flex-row justify-between lg:items-start mb-5 md:mb-10 ">
           <div>
             <h2 className="section-ti">Discover Our Fully Furnished Sale Properties</h2>
-            <p className="section-cap mb-0 md:mb-4">Aliquam lacinia diam quis lacus euismod</p>
+            <p className="section-cap mb-0 md:mb-4">Your journey to your dream home begins here</p>
             {locationLabel && !locationEmpty && ( 
             <div className="flex items-center gap-2 mt-2 text-amber-700 text-sm">
               <MapPin className="w-4 h-4 shrink-0" />

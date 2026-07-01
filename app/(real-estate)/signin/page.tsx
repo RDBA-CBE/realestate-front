@@ -12,10 +12,10 @@ import { Failure, Success, useSetState } from "@/utils/function.utils";
 import { Loader, Home, CheckCircle2, Building2, ArrowRight, ArrowLeft } from "lucide-react";
 
 const perks = [
-  "Access exclusive property listings",
-  "Save and compare your favourites",
-  "Get notified on new properties",
-  "Connect directly with developers",
+  "Browse exclusive verified properties",
+  "Save and compare your favourite properties",
+  "Get alerts on latest listings",
+  "Contact trusted developers directly",
 ];
 
 const SigninPage = () => {
@@ -59,6 +59,7 @@ const SigninPage = () => {
         const errors = {};
         error.inner.forEach((err) => { errors[err.path] = err.message; });
         setState({ error: errors });
+        console.log("Validation Errors:", state.error);
       } else {
         if (error?.error) Failure(error.error);
         // else if (error?.password?.length > 0) Failure(error.password[0]);
@@ -110,10 +111,10 @@ const SigninPage = () => {
         {/* headline */}
         <div className="z-10 space-y-6">
           <h1 className="text-5xl font-semibold text-white leading-tight">
-            Find your dream home today.
+            Sign in to discover better homes faster
           </h1>
           <p className="text-white/70 text-lg max-w-xs">
-            Join thousands of buyers and investors discovering the best properties.
+            Unlock personalized property experiences with one secure login.
           </p>
 
           <ul className="space-y-4 pt-2">

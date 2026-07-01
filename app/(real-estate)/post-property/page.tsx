@@ -12,10 +12,10 @@ import { useEffect } from "react";
 import { Loader, Home, CheckCircle2, ArrowRight, ArrowLeft } from "lucide-react";
 
 const perks = [
-  "List your property for Sale or Lease",
-  "Get verified leads from serious buyers",
-  "Property activated in just 30 minutes",
-  "Free listing — no hidden charges",
+  "Sell or lease your property quickly",
+  "Verified buyers and genuine enquiries",
+  "Quick property activation process",
+  "List for free with zero fees",
 ];
 
 const PostPropertyPage = () => {
@@ -119,10 +119,10 @@ const PostPropertyPage = () => {
 </div>
         <div className="z-10 space-y-6">
           <h1 className="text-5xl font-semibold text-white leading-tight">
-            Sell or Lease your property with ease.
+            Post your property and find genuine buyers
           </h1>
           <p className="text-white/70 text-lg max-w-xs">
-            Reach thousands of verified buyers and tenants instantly.
+            Get noticed faster by buyers ready to make decisions
           </p>
           <ul className="space-y-4 pt-2">
             {perks.map((perk, i) => (
