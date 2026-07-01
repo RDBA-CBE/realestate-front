@@ -1533,7 +1533,7 @@ export function PropertyView(props: any) {
 
                     <SheetContent
                       side="left"
-                      className="w-100 p-0 overflow-y-auto bg-color1 "
+                      className="w-full max-w-full sm:w-[92vw] sm:max-w-[440px] p-0 overflow-y-auto overflow-x-hidden bg-color1"
                       onPointerDownOutside={(e) => {
                         const target = e.target as HTMLElement;
                         if (target.closest('[data-filter-popup]')) e.preventDefault();
