@@ -20,7 +20,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import ContactAgentForm from "@/components/real-estate/property-detail/ContactAgentForm.component";
-import { Dropdown, Failure, Success, useSetState, formatToINRS } from "@/utils/function.utils";
+import {
+  Dropdown,
+  Failure,
+  Success,
+  useSetState,
+  formatToINRS,
+  formatPriceRange,
+  capitalizeFLetter,
+} from "@/utils/function.utils";
 
 import { Input } from "@/components/ui/input";
 import CustomPhoneInput from "@/components/common-components/phoneInput";
@@ -45,7 +53,7 @@ export default function ProfilePage() {
     address: "",
     isEditProfile: false,
     isChangePassword: false,
-    isPrefferedLocation:false,
+    isPrefferedLocation: false,
     id: null,
     propertyTypeList: [], // New: for property types dropdown
     preferredPropertyTypes: [], // New: for user's preferred property types (IDs)
@@ -55,7 +63,7 @@ export default function ProfilePage() {
     isPreferredPriceRange: false, // New: for price range modal visibility
     loading: false,
     error: null,
-    locationList : [],
+    locationList: [],
     showAuthAlert: false,
     authAlertMessage: "",
   });
@@ -85,33 +93,35 @@ export default function ProfilePage() {
   console.log("state.id", state.id);
 
   const cityList = async (page, search = "") => {
-        try {
-          const body: any = {};
-          if (search) body.search = search;
-          const res: any = await Models.dropdowns.city(page, body);
-          const droprdown = Dropdown(res?.results, "name");
-    
-          setState({
-            locationList: droprdown,
-            total: res?.count,
-            page,
-            next: res.next,
-            previous: res.previous,
-            totalRecords: res.count,
-          });
-        } catch (error) {
-          console.log("error -->", error);
-        }
-      };
+    try {
+      const body: any = {};
+      if (search) body.search = search;
+      const res: any = await Models.dropdowns.city(page, body);
+      const droprdown = Dropdown(res?.results, "name");
 
-      console.log("locationList", state.locationList);
-      
+      setState({
+        locationList: droprdown,
+        total: res?.count,
+        page,
+        next: res.next,
+        previous: res.previous,
+        totalRecords: res.count,
+      });
+    } catch (error) {
+      console.log("error -->", error);
+    }
+  };
+
+  console.log("locationList", state.locationList);
 
   const getUser = async () => {
     try {
       const id = localStorage.getItem("userId");
       if (!id) {
-        setState({ showAuthAlert: true, authAlertMessage: "User session not found. Please sign in again." });
+        setState({
+          showAuthAlert: true,
+          authAlertMessage: "User session not found. Please sign in again.",
+        });
         return;
       }
       setState({ loading: true });
@@ -124,7 +134,8 @@ export default function ProfilePage() {
         email: res?.email || "",
         phone: res?.phone || "",
         address: res?.address || "",
-        preferredPropertyTypes: res?.preferred_property_types?.map((type) => String(type.id)) || [], // Assuming API returns this
+        preferredPropertyTypes:
+          res?.preferred_property_types?.map((type) => String(type.id)) || [], // Assuming API returns this
         preferredMaxPrice: res?.preferred_max_price || 0,
         preferredMinPrice: res?.preferred_min_price || 0, // Assuming API returns this
         location: res?.preferred_locations?.map((loc) => String(loc.id)) || [],
@@ -165,7 +176,7 @@ export default function ProfilePage() {
       });
 
       const updatedProperties = state.properties.filter(
-        (property: any) => property.id !== propertyId
+        (property: any) => property.id !== propertyId,
       );
       setState({ properties: updatedProperties });
       Success("Removed from your wishlist !");
@@ -184,7 +195,6 @@ export default function ProfilePage() {
         phone: state.phone,
 
         address: state.address,
-        
       };
 
       console.log("body", body);
@@ -216,15 +226,14 @@ export default function ProfilePage() {
   };
 
   console.log("state.error", state.error);
-  
 
   const handlePasswordSubmit = async (e) => {
     try {
       e.preventDefault();
       const body = {
-       old_password: state.current_password,
+        old_password: state.current_password,
         new_password: state.new_password,
-        confirm_password : state.confirm_password
+        confirm_password: state.confirm_password,
       };
 
       console.log("body", body);
@@ -256,28 +265,24 @@ export default function ProfilePage() {
   };
 
   const handlePrefferedLocationSubmit = async (e) => {
-
     console.log("state.location", state.location);
-    
+
     try {
       e.preventDefault();
       const body = {
-      
-        preferred_locations : state.location,
+        preferred_locations: state.location,
       };
 
       console.log("body", body);
 
-
       const res: any = await Models.user.update(body, state.id);
 
       console.log("res", res);
-      
+
       setState({ isPrefferedLocation: false });
 
       Success("Preffered Locations Updated");
-      getUser()
-     
+      getUser();
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         const validationErrors = {};
@@ -295,92 +300,91 @@ export default function ProfilePage() {
     }
   };
 
-const handleNewsletterSubmit = async (e) => {
-  e.preventDefault();
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const updatedStatus = !state.user?.newsletter; // toggle true/false
+    try {
+      const updatedStatus = !state.user?.newsletter; // toggle true/false
 
-    const body = {
-      newsletter: updatedStatus,
-    };
-
-    const res: any = await Models.user.update(body, state.id);
-
-    console.log("res", res);
-
-    // update local state if needed
-    setState({
-    
+      const body = {
         newsletter: updatedStatus,
-      },
-    );
+      };
 
-    Success(
-      updatedStatus
-        ? "Subscribed to newsletter successfully"
-        : "Unsubscribed from newsletter successfully"
-    );
-    getUser()
-  } catch (error) {
-    if (error instanceof Yup.ValidationError) {
-      const validationErrors = {};
+      const res: any = await Models.user.update(body, state.id);
 
-      error.inner.forEach((err) => {
-        validationErrors[err.path] = err.message;
+      console.log("res", res);
+
+      // update local state if needed
+      setState({
+        newsletter: updatedStatus,
       });
 
-      setState({ errors: validationErrors, loading: false });
-    } else {
-      Failure(error?.error);
+      Success(
+        updatedStatus
+          ? "Subscribed to newsletter successfully"
+          : "Unsubscribed from newsletter successfully",
+      );
+      getUser();
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const validationErrors = {};
+
+        error.inner.forEach((err) => {
+          validationErrors[err.path] = err.message;
+        });
+
+        setState({ errors: validationErrors, loading: false });
+      } else {
+        Failure(error?.error);
+      }
+
+      setState({ loading: false });
     }
+  };
 
-    setState({ loading: false });
-  }
-};
+  // New: Handle Preferred Property Type Submit
+  const handlePreferredPropertyTypeSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const body = {
+        preferred_property_types: state.preferredPropertyTypes,
+      };
+      await Models.user.update(body, state.id);
+      setState({ isPreferredPropertyType: false });
+      Success("Preferred Property Types Updated");
+      getUser();
+    } catch (error) {
+      Failure(error?.error || "Failed to update property types.");
+    }
+  };
 
-// New: Handle Preferred Property Type Submit
-const handlePreferredPropertyTypeSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const body = {
-      preferred_property_types: state.preferredPropertyTypes,
-    };
-    await Models.user.update(body, state.id);
-    setState({ isPreferredPropertyType: false });
-    Success("Preferred Property Types Updated");
-    getUser();
-  } catch (error) {
-    Failure(error?.error || "Failed to update property types.");
-  }
-};
+  // New: Handle Preferred Price Range Submit
+  const handlePreferredPriceRangeSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const body = {
+        preferred_min_price: state.preferredMinPrice,
+        preferred_max_price: state.preferredMaxPrice,
+      };
+      await Models.user.update(body, state.id);
+      setState({ isPreferredPriceRange: false });
+      Success("Preferred Price Range Updated");
+      getUser();
+    } catch (error) {
+      Failure(error?.error || "Failed to update price range.");
+    }
+  };
 
-// New: Handle Preferred Price Range Submit
-const handlePreferredPriceRangeSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const body = {
-      preferred_min_price: state.preferredMinPrice,
-      preferred_max_price: state.preferredMaxPrice,
-    };
-    await Models.user.update(body, state.id);
-    setState({ isPreferredPriceRange: false });
-    Success("Preferred Price Range Updated");
-    getUser();
-  } catch (error) {
-    Failure(error?.error || "Failed to update price range.");
-  }
-};
-
-// Helper to get property type names from IDs
-const getPropertyTypeNames = (ids: string[]) => {
-  return ids.map(id => {
-    const type = state.propertyTypeList.find(item => item.value === id);
-    return type ? type.label : '';
-  }).filter(Boolean).join(', ');
-};
-
-
+  // Helper to get property type names from IDs
+  const getPropertyTypeNames = (ids: string[]) => {
+    return ids
+      .map((id) => {
+        const type = state.propertyTypeList.find((item) => item.value === id);
+        return type ? type.label : "";
+      })
+      .filter(Boolean)
+      .join(", ");
+  };
 
   const handleAuthAlertOk = async () => {
     try {
@@ -389,7 +393,10 @@ const getPropertyTypeNames = (ids: string[]) => {
         await Models.auth.logout({ refresh });
       }
     } catch (error) {
-      console.log("Logout failed, clearing session and redirecting home", error);
+      console.log(
+        "Logout failed, clearing session and redirecting home",
+        error,
+      );
     } finally {
       localStorage.clear();
       window.location.href = "/";
@@ -405,7 +412,7 @@ const getPropertyTypeNames = (ids: string[]) => {
   };
 
   return (
-   <motion.div
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
@@ -445,17 +452,16 @@ const getPropertyTypeNames = (ids: string[]) => {
               <div
                 className="w-16 h-16 rounded-full flex items-center justify-center bg-dred text-white text-xl font-bold flex-shrink-0"
                 style={{
-                  backgroundColor: '#9b0f09', // Ensure primary color for avatar background
-                  color: 'white',
-                  fontSize: '1.5rem', // Adjust font size as needed
+                  backgroundColor: "#9b0f09", // Ensure primary color for avatar background
+                  color: "white",
+                  fontSize: "1.5rem", // Adjust font size as needed
                 }}
               >
                 {state.user?.first_name
                   ? state.user.first_name.charAt(0).toUpperCase()
-                  : ''}
+                  : ""}
               </div>
             )}
-
 
             <div className="w-full">
               <div className="flex flex-col">
@@ -463,16 +469,17 @@ const getPropertyTypeNames = (ids: string[]) => {
                   {state.user?.first_name} {state.user?.last_name}
                 </h2>
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-1 sm:gap-2 px-0 mx-0 justify-center sm:justify-start flex-wrap">
-                  <p className="text-[#383838] mb-2">{state.user?.email} <span className="hidden sm:inline">|</span></p>
+                  <p className="text-[#383838] mb-2">
+                    {state.user?.email}{" "}
+                    <span className="hidden sm:inline">|</span>
+                  </p>
                   <p className="text-[#383838] mb-2">{state.user?.phone}</p>
                 </div>
               </div>
 
               <p className="text-sm text-[#383838] ">
-                {state?.properties?.length} Wishlist · 1 Active Search · Last Login: Just Now
+                {state?.properties?.length} Wishlist · Last Login: Just Now
               </p>
-
-                
             </div>
           </div>
 
@@ -504,57 +511,52 @@ const getPropertyTypeNames = (ids: string[]) => {
             <h2 className="section-in-ti mt-2 text-start">My Preference</h2>
 
             <Card className="bg-white border-gray shadow-none text-white rounded-xl flex-1">
-  <CardContent className="flex flex-col lg:flex-row justify-between p-4 h-full gap-4">
-    <div className="flex md:items-start gap-3">
-      <div className=" rounded-md flex-shrink-0">
-        <MapPin size={20} className="text-dred" />
-      </div>
+              <CardContent className="flex flex-col lg:flex-row justify-between p-4 h-full gap-4">
+                <div className="flex md:items-start gap-3">
+                  <div className=" rounded-md flex-shrink-0">
+                    <MapPin size={20} className="text-dred" />
+                  </div>
 
-      <div className="text-start">
-        <p className="text-sm text-[#383838]">Location</p>
+                  <div className="text-start">
+                    <p className="text-sm text-[#383838]">Location</p>
 
-        {/* Added Title */}
-        <h3 className="text-black font-medium mt-1">
-          Preferred Location
-        </h3>
+                    {/* Added Title */}
+                    <h3 className="text-black font-medium mt-1">
+                      Preferred Location
+                    </h3>
 
-        {/* Added Content */}
-        <p className="text-sm text-[#383838] mt-1 mb-3">
-          Add your preferred location so that you can view the
-          properties in your preferred location.
-        </p>
+                    {/* Added Content */}
+                    <p className="text-sm text-[#383838] mt-1 mb-3">
+                      Add your preferred location so that you can view the
+                      properties in your preferred location.
+                    </p>
 
-        <div className="text-black font-medium flex flex-wrap gap-2">
-          {state.user?.preferred_locations?.length > 0 ? (
-            state.user.preferred_locations.map((l) => (
-              <span
-                key={l.id}
-                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-dred"
-              >
-                {l.name}
-              </span>
-            ))
-          ) : (
-            <span className="text-sm ">
-              No locations set
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
+                    <div className="text-black font-medium flex flex-wrap gap-2">
+                      {state.user?.preferred_locations?.length > 0 ? (
+                        state.user.preferred_locations.map((l) => (
+                          <span
+                            key={l.id}
+                            className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-dred"
+                          >
+                            {l.name}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-sm ">No locations set</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
 
-    <Button
-      variant="outline"
-      className="text-dred border-dred hover:bg-lred text-sm px-3 py-2 lg:py-0 rounded-md hover:bg-dred hover:text-white w-full lg:w-auto self-start lg:self-auto flex-shrink-0"
-      onClick={() => setState({ isPrefferedLocation: true })}
-    >
-      Edit
-    </Button>
-  </CardContent>
-</Card>
-
-            
-            
+                <Button
+                  variant="outline"
+                  className="text-dred border-dred hover:bg-lred text-sm px-3 py-2 lg:py-0 rounded-md hover:bg-dred hover:text-white w-full lg:w-auto self-start lg:self-auto flex-shrink-0"
+                  onClick={() => setState({ isPrefferedLocation: true })}
+                >
+                  Edit
+                </Button>
+              </CardContent>
+            </Card>
 
             {/* <Card className="bg-white border-none text-white rounded-xl flex-1">
               <CardContent className="flex justify-between items-center p-4 h-full">
@@ -623,40 +625,46 @@ const getPropertyTypeNames = (ids: string[]) => {
             </Card> */}
 
             {state.user?.newsletter !== undefined && (
-  <div className="mt-3 rounded-xl border border-dashed border-gray-300 bg-white/80 p-4 text-sm text-[#383838]">
-    {state.user?.newsletter ? (
-      <>
-        <p className="font-medium text-black">You&apos;re subscribed!</p>
-        <p>
-          Enjoy regular property post updates, featured listings, and exclusive alerts.
-        </p>
+              <div className="mt-3 rounded-xl border border-dashed border-gray-300 bg-white/80 p-4 text-sm text-[#383838]">
+                {state.user?.newsletter ? (
+                  <>
+                    <p className="font-medium text-black">
+                      You&apos;re subscribed!
+                    </p>
+                    <p>
+                      Enjoy regular property post updates, featured listings,
+                      and exclusive alerts.
+                    </p>
 
-        <Button
-          variant="outline"
-          className="mt-4 text-red-400 border-red-500 hover:bg-red-500/10 text-sm px-3 py-2 rounded-md w-full sm:w-auto"
-          onClick={handleNewsletterSubmit}
-        >
-          Unsubscribe
-        </Button>
-      </>
-    ) : (
-      <>
-        <p className="font-medium text-black">Subscribe to our newsletter</p>
-        <p>
-          Get the latest property listings, updates, and special offers straight to your inbox.
-        </p>
+                    <Button
+                      variant="outline"
+                      className="mt-4 text-red-400 border-red-500 hover:bg-red-500/10 text-sm px-3 py-2 rounded-md w-full sm:w-auto"
+                      onClick={handleNewsletterSubmit}
+                    >
+                      Unsubscribe
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <p className="font-medium text-black">
+                      Subscribe to our newsletter
+                    </p>
+                    <p>
+                      Get the latest property listings, updates, and special
+                      offers straight to your inbox.
+                    </p>
 
-        <Button
-          variant="outline"
-          className="mt-4 text-emerald-400 border-emerald-500 hover:bg-emerald-500/10 text-sm px-3 py-2 rounded-md w-full sm:w-auto"
-          onClick={handleNewsletterSubmit}
-        >
-          Subscribe
-        </Button>
-      </>
-    )}
-  </div>
-)}
+                    <Button
+                      variant="outline"
+                      className="mt-4 text-emerald-400 border-emerald-500 hover:bg-emerald-500/10 text-sm px-3 py-2 rounded-md w-full sm:w-auto"
+                      onClick={handleNewsletterSubmit}
+                    >
+                      Subscribe
+                    </Button>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Right Column - My Activity */}
@@ -673,7 +681,9 @@ const getPropertyTypeNames = (ids: string[]) => {
                     <div className="relative overflow-hidden">
                       <Image
                         src={property.primary_image}
-                        alt={property.title || property.name || "Saved property"}
+                        alt={
+                          property.title || property.name || "Saved property"
+                        }
                         width={400}
                         height={250}
                         className="w-full h-38 object-cover"
@@ -686,11 +696,23 @@ const getPropertyTypeNames = (ids: string[]) => {
                       </button>
                     </div>
                     <div className="p-4">
-                      <h3 className="text-black  text-base truncate">
+                      <h3 className="text-start text-black  text-base truncate mb-0">
                         {property.title || property.name || "Untitled Property"}
                       </h3>
-                      <p className="text-sm text-[#383838] mt-1">
-                        {property.price ? formatToINRS(property.price) : "Price on request"}
+                      <p className="flex text-sm text-black items-center gap-1 mt-1 mb-0 min-h-[24px]">
+                        {property?.location?.name && (
+                          <>
+                            <MapPin className="w-3.5 h-3.5 text-[#9b0f09]" />
+                            {`${capitalizeFLetter(
+                              property.area?.name,
+                            )}, ${capitalizeFLetter(property.location?.name)}`}
+                          </>
+                        )}
+                      </p>
+                      <p className="text-start mb-0 text-lg font-semibold text-[#9b0f09] mt-1">
+                        {property.price_range
+                          ? `₹ ${formatPriceRange(property?.price_range?.minimum_price, property?.price_range?.maximum_price)}`
+                          : "Price on request"}
                       </p>
                     </div>
                   </div>
@@ -698,29 +720,30 @@ const getPropertyTypeNames = (ids: string[]) => {
               </div>
             ) : (
               <div className="flex flex-col justify-center gap-4 items-center w-full rounded-md overflow-hidden bg-white p-6 min-h-[12rem] h-auto md:h-48">
-              <div className="flex justify-center items-center gap-4 sm:gap-8 w-full flex-wrap">
-                {" "}
-                {[1, 2, 3].map((i) => (
-                  <svg
-                    key={i}
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512"
-                    fill="none"
-                    stroke="#00FFCC"
-                    strokeWidth="24"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-12 h-12 sm:w-16 sm:h-16"
-                  >
-                    <path d="M64 240L256 64l192 176" />
-                    <path d="M112 224v224h288V224" />
-                    <path d="M192 448V320h128v128" />
-                  </svg>
-                ))}
+                <div className="flex justify-center items-center gap-4 sm:gap-8 w-full flex-wrap">
+                  {" "}
+                  {[1, 2, 3].map((i) => (
+                    <svg
+                      key={i}
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                      fill="none"
+                      stroke="#00FFCC"
+                      strokeWidth="24"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-12 h-12 sm:w-16 sm:h-16"
+                    >
+                      <path d="M64 240L256 64l192 176" />
+                      <path d="M112 224v224h288V224" />
+                      <path d="M192 448V320h128v128" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-base sm:text-xl text-black font-semibold text-center">
+                  No Properties added to Wishlist
+                </p>
               </div>
-              <p className="text-base sm:text-xl text-black font-semibold text-center">No Properties added to Wishlist</p>
-              </div>
-              
             )}
 
             <div className="flex flex-col sm:flex-row gap-3">
@@ -732,9 +755,17 @@ const getPropertyTypeNames = (ids: string[]) => {
               </Button>
               <Button
                 className="bg-color2 hover:bg-red-700 text-white w-full"
-                onClick={() => router.push(state?.properties?.length > 0 ? "/wishlist" : "/property-list")}
+                onClick={() =>
+                  router.push(
+                    state?.properties?.length > 0
+                      ? "/wishlist"
+                      : "/property-list",
+                  )
+                }
               >
-               {state?.properties?.length > 0 ? "View All Favorites" : "Add Properties to Wishlist"}
+                {state?.properties?.length > 0
+                  ? "View All Favorites"
+                  : "Add Properties to Wishlist"}
               </Button>
             </div>
 
@@ -783,9 +814,7 @@ const getPropertyTypeNames = (ids: string[]) => {
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
             >
-              <Card
-                className="rounded-2xl shadow-lg border border-gray-200 w-full max-w-xl mx-auto !bg-gray max-h-[90vh] overflow-y-auto"
-              >
+              <Card className="rounded-2xl shadow-lg border border-gray-200 w-full max-w-xl mx-auto !bg-gray max-h-[90vh] overflow-y-auto">
                 {state.isEditProfile && (
                   <div className="w-full text-right">
                     <button
@@ -810,8 +839,8 @@ const getPropertyTypeNames = (ids: string[]) => {
                     {/* Upload Profile Image - Full Width */}
                     <div className="flex flex-col items-center space-y-3 col-span-2">
                       {/* <label htmlFor="profileImage" className="cursor-pointer"> */}
-                        <div className="relative w-24 h-24">
-                          {/* {state.profileImage || state.user?.profile_image ? (
+                      <div className="relative w-24 h-24">
+                        {/* {state.profileImage || state.user?.profile_image ? (
                             <Image
                               src={
                                 state.profileImage || state.user?.profile_image
@@ -822,21 +851,23 @@ const getPropertyTypeNames = (ids: string[]) => {
                               className="rounded-full object-cover border-2 border-gray-300 w-24 h-24"
                             />
                           ) : ( */}
-                            <div
-                              className="w-24 h-24 rounded-full flex items-center justify-center bg-dred text-white text-4xl font-bold border-2 border-gray-300"
-                              style={{
-                                backgroundColor: '#9b0f09', // Ensure primary color for avatar background
-                                color: 'white',
-                                fontSize: '2.5rem', // Adjust font size as needed
-                              }}
-                            >
-                              {state.first_name ? state.first_name.charAt(0).toUpperCase() : ''}
-                            </div>
-                          {/* )} */}
-                          {/* <div className="absolute bottom-0 right-0 bg-color2 text-white rounded-full p-1.5 text-xs">
+                        <div
+                          className="w-24 h-24 rounded-full flex items-center justify-center bg-dred text-white text-4xl font-bold border-2 border-gray-300"
+                          style={{
+                            backgroundColor: "#9b0f09", // Ensure primary color for avatar background
+                            color: "white",
+                            fontSize: "2.5rem", // Adjust font size as needed
+                          }}
+                        >
+                          {state.first_name
+                            ? state.first_name.charAt(0).toUpperCase()
+                            : ""}
+                        </div>
+                        {/* )} */}
+                        {/* <div className="absolute bottom-0 right-0 bg-color2 text-white rounded-full p-1.5 text-xs">
                             <Pencil size={14} />
                           </div> */}
-                        </div>
+                      </div>
                       {/* </label> */}
                       <input
                         type="file"
@@ -845,7 +876,7 @@ const getPropertyTypeNames = (ids: string[]) => {
                         onChange={(e) =>
                           setState({
                             profileImage: URL.createObjectURL(
-                              e.target.files[0]
+                              e.target.files[0],
                             ),
                           })
                         }
@@ -989,9 +1020,7 @@ const getPropertyTypeNames = (ids: string[]) => {
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
             >
-              <Card
-                className="rounded-2xl shadow-lg border border-gray-200 w-full max-w-xl mx-auto !bg-gray max-h-[90vh] overflow-y-auto"
-              >
+              <Card className="rounded-2xl shadow-lg border border-gray-200 w-full max-w-xl mx-auto !bg-gray max-h-[90vh] overflow-y-auto">
                 {state.isChangePassword && (
                   <div className="w-full text-right">
                     <button
@@ -1065,7 +1094,7 @@ const getPropertyTypeNames = (ids: string[]) => {
         )}
       </AnimatePresence>
 
-       <AnimatePresence>
+      <AnimatePresence>
         {state.isPrefferedLocation && (
           <>
             {/* Overlay */}
@@ -1085,9 +1114,7 @@ const getPropertyTypeNames = (ids: string[]) => {
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
             >
-              <Card
-                className="rounded-2xl shadow-lg border border-gray-200 w-full max-w-xl mx-auto !bg-gray max-h-[90vh] overflow-y-auto"
-              >
+              <Card className="rounded-2xl shadow-lg border border-gray-200 w-full max-w-xl mx-auto !bg-gray max-h-[90vh] overflow-y-auto">
                 {state.isPrefferedLocation && (
                   <div className="w-full text-right">
                     <button
@@ -1104,23 +1131,24 @@ const getPropertyTypeNames = (ids: string[]) => {
                     state.isPrefferedLocation ? "pt-0" : ""
                   }`}
                 >
-                  <form onSubmit={handlePrefferedLocationSubmit} className="space-y-6">
+                  <form
+                    onSubmit={handlePrefferedLocationSubmit}
+                    className="space-y-6"
+                  >
                     {/* Upload Profile Image - Full Width */}
 
                     {/* Two-column grid for form fields */}
                     <div className="grid grid-cols-1 gap-3">
                       {/* Full Name */}
                       <CustomMultiSelect
-                      className="border border-gray-200 bg-white " 
-                                   options={state.locationList}
-                                   value={state.location || []}
-                                   onChange={(value) => setState({ location: value })}
-                                   placeholder="Location "
-                                    isMulti={true}
-                                    loadOptions={({ search }) => cityList(1, search)}
-                                 />
-
-                     
+                        className="border border-gray-200 bg-white "
+                        options={state.locationList}
+                        value={state.location || []}
+                        onChange={(value) => setState({ location: value })}
+                        placeholder="Location "
+                        isMulti={true}
+                        loadOptions={({ search }) => cityList(1, search)}
+                      />
                     </div>
 
                     {/* Submit Button */}

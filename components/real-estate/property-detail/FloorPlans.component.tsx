@@ -10,6 +10,7 @@ interface FloorPlan {
   price: string;
   image: string | null;
   type?: string;
+  floor_no?: string;
 }
 
 interface Props {
@@ -86,7 +87,8 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
     const min = Math.min(...prices);
     const max = Math.max(...prices);
 
-    return `${formatPrice(min.toString())} - ${formatPrice(max.toString())}`;
+    return ` ${formatPrice(max.toString())}`;
+    // return `${formatPrice(min.toString())} - ${formatPrice(max.toString())}`;
   };
 
   // ❌ Empty state
@@ -116,13 +118,13 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
                 setActiveType(type);
                 setSelectedSqft(plans[0]?.square_feet);
               }}
-              className={`px-4 py-2 rounded-lg border transition ${
+              className={`px-2 py-1 rounded-lg border transition ${
                 activeCategory === cat && activeType === type
                   ? "bg-dred text-white"
                   : "bg-color1 text-gray-700"
               }`}
             >
-              <div className=" pb-1">
+              <div className="text-sm pb-1">
                 {cat.toUpperCase()}  {type != null ? ` ${type}` : ""}
               </div>
 
@@ -141,7 +143,7 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
             <button
               key={plan.id}
               onClick={() => setSelectedSqft(plan.square_feet)}
-              className={`px-3 py-1 border-b-2 ${
+              className={`text-sm px-3 py-1 border-b-2 ${
                 selectedSqft === plan.square_feet
                   ? "border-dred text-dred"
                   : "border-transparent text-gray-500"
@@ -174,7 +176,7 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
 
       {/* ✅ Details */}
       {selectedPlan && (
-        <div className="flex justify-between mt-6 text-sm text-gray-700">
+        <div className="flex flex-wrap justify-between mt-6 gap-5 text-sm text-gray-700">
           <div>
             <p className="font-semibold pb-2 mb-0">Built-Up Area</p>
             <p>{formatNumber(selectedPlan.square_feet)} sq.ft</p>
@@ -183,6 +185,11 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
           <div>
             <p className="font-semibold pb-2 mb-0">Type</p>
             <p>{selectedPlan.type}</p>
+          </div>
+
+          <div>
+            <p className="font-semibold pb-2 mb-0">Floor No</p>
+            <p>{selectedPlan.floor_no}</p>
           </div>
 
           <div>

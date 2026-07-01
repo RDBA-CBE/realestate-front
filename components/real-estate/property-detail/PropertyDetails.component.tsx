@@ -13,6 +13,9 @@ import {
   ToiletIcon,
   ArmchairIcon,
   Building2,
+  StepForward,
+  Building,
+  LandPlot,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -255,6 +258,12 @@ export default function PropertyDetails({ data }: any) {
       value: capitalizeFLetter(data?.listing_type) ?? "-",
     },
 
+    {
+      icon: LandPlot,
+      label: "Total Units",
+      value: capitalizeFLetter(data?.total_unit) ?? "-",
+    },
+
     ...(data?.built_year
       ? [
           {
@@ -295,6 +304,16 @@ export default function PropertyDetails({ data }: any) {
             icon: ArmchairIcon,
             label: "Furnishing",
             value: capitalizeFLetter(data?.furnishing),
+          },
+        ]
+      : []),
+
+    ...(data?.floor_number
+      ? [
+          {
+            icon: Building,
+            label: "Floor Number",
+            value: capitalizeFLetter(data?.floor_number),
           },
         ]
       : []),

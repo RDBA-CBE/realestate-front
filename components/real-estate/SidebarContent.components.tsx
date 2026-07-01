@@ -19,6 +19,62 @@ function useIsMobile() {
 
 const PREVIEW_COUNT = 5;
 
+// Self-contained dropdown — uses local state so it works inside Sheet (overflow-y-auto)
+function InlineDropdown({
+  value, options, placeholder, onChange,
+}: {
+  value: string; options: { label: string; value: any }[];
+  placeholder: string; onChange: (val: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  const label = value ? getPriceLabel(value, options) || value : placeholder;
+
+  return (
+    <div ref={ref} className="relative w-full">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="w-full px-3 py-2 rounded-full border border-gray-300 bg-white flex items-center justify-between text-gray-700 text-sm"
+      >
+        <span className="truncate">{label}</span>
+        <ChevronDown size={16} className={`transition-transform flex-shrink-0 ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div className="absolute z-[9999] top-full mt-1 w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-52 overflow-y-auto">
+          <button
+            className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
+            onClick={() => { onChange(""); setOpen(false); }}
+          >
+            {placeholder}
+          </button>
+          {options.map((item) => (
+            <button
+              key={item.value}
+              className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-100 ${
+                String(value) === String(item.value) ? "font-semibold text-dred" : ""
+              }`}
+              onClick={() => { onChange(item.value); setOpen(false); }}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function FilterSection({
   label, list, selected, stateKey, handleChange, showAlphabetNav = false,
 }: {
@@ -102,15 +158,7 @@ export const SidebarContent = (props: any) => {
     listingTypeList = [],
   } = props;
 
-  const maxPriceOptions = state.priceMinInput
-    ? priceOptions.filter((item) => item.value >= state.priceMinInput)
-    : priceOptions;
-
-  const maxSqftOptions = state.sqftMin
-    ? sqftOptions.filter((item) => item.value >= state.sqftMin)
-    : sqftOptions;
-
-  return (
+return (
     <div className="space-y-6 pb-10">
 
       {/* Header */}
@@ -201,57 +249,21 @@ export const SidebarContent = (props: any) => {
       {/* Budget */}
       <div>
         <div className="font-semibold text-gray-900 mb-2">Budget</div>
-        <div className="flex gap-4">
-          {/* Min */}
-          <div className="relative w-full">
-            <button
-              type="button"
-              onClick={() => handleChange("openPriceDropdown", state.openPriceDropdown === "min" ? null : "min")}
-              className="w-full px-5 py-2 rounded-full border border-gray-300 bg-white flex items-center justify-between text-gray-700 text-sm"
-            >
-              <span>{state.priceMinInput ? getPriceLabel(state.priceMinInput, priceOptions) : "No min"}</span>
-              <ChevronDown size={16} className={`transition-transform ${state.openPriceDropdown === "min" ? "rotate-180" : ""}`} />
-            </button>
-            {state.openPriceDropdown === "min" && (
-              <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-60 overflow-y-auto">
-                <button className="w-full px-5 py-2 text-left text-sm hover:bg-gray-100"
-                  onClick={() => handleChange("openPriceDropdown", null) || handleChange("priceMinInput", "")}>
-                  No min
-                </button>
-                {priceOptions.map((item) => (
-                  <button key={item.value} className="w-full px-5 py-2 text-left text-sm hover:bg-gray-100"
-                    onClick={() => { handleChange("priceMinInput", item.value); handleChange("openPriceDropdown", null); }}>
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-          {/* Max */}
-          <div className="relative w-full">
-            <button
-              type="button"
-              onClick={() => handleChange("openPriceDropdown", state.openPriceDropdown === "max" ? null : "max")}
-              className="w-full px-5 py-2 rounded-full border border-gray-300 bg-white flex items-center justify-between text-gray-700 text-sm"
-            >
-              <span>{state.priceMaxInput ? getPriceLabel(state.priceMaxInput, maxPriceOptions) : "No max"}</span>
-              <ChevronDown size={16} className={`transition-transform ${state.openPriceDropdown === "max" ? "rotate-180" : ""}`} />
-            </button>
-            {state.openPriceDropdown === "max" && (
-              <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-60 overflow-y-auto">
-                <button className="w-full px-5 py-2 text-left text-sm hover:bg-gray-100"
-                  onClick={() => { handleChange("priceMaxInput", ""); handleChange("openPriceDropdown", null); }}>
-                  No max
-                </button>
-                {maxPriceOptions.map((item) => (
-                  <button key={item.value} className="w-full px-5 py-2 text-left text-sm hover:bg-gray-100"
-                    onClick={() => { handleChange("priceMaxInput", item.value); handleChange("openPriceDropdown", null); }}>
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+        <div className="flex gap-3">
+          <InlineDropdown
+            value={state.priceMinInput}
+            options={priceOptions}
+            placeholder="No min"
+            onChange={(val) => handleChange("priceMinInput", val)}
+          />
+          <InlineDropdown
+            value={state.priceMaxInput}
+            options={state.priceMinInput
+              ? priceOptions.filter((i) => i.value >= state.priceMinInput)
+              : priceOptions}
+            placeholder="No max"
+            onChange={(val) => handleChange("priceMaxInput", val)}
+          />
         </div>
       </div>
 
@@ -335,57 +347,21 @@ export const SidebarContent = (props: any) => {
       {/* Area (sqft) */}
       <div>
         <div className="mb-2 font-semibold text-gray-900">Area (sqft)</div>
-        <div className="flex gap-4">
-          {/* Min */}
-          <div className="relative w-full">
-            <button
-              type="button"
-              onClick={() => handleChange("openDropdown", state.openDropdown === "min" ? null : "min")}
-              className="w-full px-5 py-2 rounded-full border border-gray-300 bg-white flex items-center justify-between text-gray-700 text-sm"
-            >
-              <span>{state.sqftMin || "No min"}</span>
-              <ChevronDown size={16} className={`transition-transform ${state.openDropdown === "min" ? "rotate-180" : ""}`} />
-            </button>
-            {state.openDropdown === "min" && (
-              <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-60 overflow-y-auto">
-                <button className="w-full px-5 py-2 text-left text-sm hover:bg-gray-100"
-                  onClick={() => { handleChange("sqftMin", ""); handleChange("sqftMax", ""); handleChange("openDropdown", null); }}>
-                  No min
-                </button>
-                {sqftOptions.map((item) => (
-                  <button key={item.value} className="w-full px-5 py-2 text-left text-sm hover:bg-gray-100"
-                    onClick={() => { handleChange("sqftMin", item.value); handleChange("sqftMax", ""); handleChange("openDropdown", null); }}>
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-          {/* Max */}
-          <div className="relative w-full">
-            <button
-              type="button"
-              onClick={() => handleChange("openDropdown", state.openDropdown === "max" ? null : "max")}
-              className="w-full px-5 py-2 rounded-full border border-gray-300 bg-white flex items-center justify-between text-gray-700 text-sm"
-            >
-              <span>{state.sqftMax || "No max"}</span>
-              <ChevronDown size={16} className={`transition-transform ${state.openDropdown === "max" ? "rotate-180" : ""}`} />
-            </button>
-            {state.openDropdown === "max" && (
-              <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-60 overflow-y-auto">
-                <button className="w-full px-5 py-2 text-left text-sm hover:bg-gray-100"
-                  onClick={() => { handleChange("sqftMax", ""); handleChange("openDropdown", null); }}>
-                  No max
-                </button>
-                {maxSqftOptions.map((item) => (
-                  <button key={item.value} className="w-full px-5 py-2 text-left text-sm hover:bg-gray-100"
-                    onClick={() => { handleChange("sqftMax", item.value); handleChange("openDropdown", null); }}>
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+        <div className="flex gap-3">
+          <InlineDropdown
+            value={state.sqftMin}
+            options={sqftOptions}
+            placeholder="No min"
+            onChange={(val) => { handleChange("sqftMin", val); if (!val) handleChange("sqftMax", ""); }}
+          />
+          <InlineDropdown
+            value={state.sqftMax}
+            options={state.sqftMin
+              ? sqftOptions.filter((i) => i.value >= state.sqftMin)
+              : sqftOptions}
+            placeholder="No max"
+            onChange={(val) => handleChange("sqftMax", val)}
+          />
         </div>
       </div>
 

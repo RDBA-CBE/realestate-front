@@ -51,7 +51,7 @@ function getBotReply(text: string): string {
   if (t.includes("apartment") || t.includes("flat"))
     return "We have **apartments** in all configurations — 1BHK to 4BHK — across prime city locations.\n\n[Browse Apartments →](/property-list)";
   if (t.includes("agent") || t.includes("contact"))
-    return "Our expert agents are ready to help!\n\n**Email:** support@boomrealty.com\n**Phone:** +91 98765 43210\n\nOr submit an enquiry on any property page.";
+    return "Our expert agents are ready to help!\n\n**Email:** info@boomrealtys.com\n**Phone:** +91 98765 43210\n\nOr submit an enquiry on any property page.";
   if (t.includes("price") || t.includes("cost") || t.includes("budget"))
     return "We have properties across all budgets! Use our **price range filter** to narrow your search.\n\n[Search by Budget →](/property-list)";
   if (t.includes("lease"))
