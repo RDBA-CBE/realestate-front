@@ -189,10 +189,10 @@ export default function NewFooter() {
       <p className="text-white/70">Live Support?</p>
 
       <Link
-        href="mailto:support@realestate.com"
+        href="mailto:info@boomrealtys.com"
         className="mt-2 block"
       >
-        support@realestate.com
+        info@boomrealtys.com
       </Link>
     </div>
 

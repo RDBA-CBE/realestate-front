@@ -28,7 +28,7 @@ const sections = [
   {
     title: "4. User Accounts",
     content:
-      "Certain features of our Services require you to register and maintain a user account. You are responsible for providing accurate, current, and complete information during registration and for keeping your account credentials confidential. You are solely responsible for all activity that occurs under your account. You agree to notify us immediately at support@reputerealestate.com upon becoming aware of any unauthorised use of your account or any other breach of security. We reserve the right to suspend or terminate accounts that violate these Terms or that we determine, in our sole discretion, pose a risk to the integrity of our Services.",
+      "Certain features of our Services require you to register and maintain a user account. You are responsible for providing accurate, current, and complete information during registration and for keeping your account credentials confidential. You are solely responsible for all activity that occurs under your account. You agree to notify us immediately at info@boomrealtys.com upon becoming aware of any unauthorised use of your account or any other breach of security. We reserve the right to suspend or terminate accounts that violate these Terms or that we determine, in our sole discretion, pose a risk to the integrity of our Services.",
   },
   {
     title: "5. Property Listings and Content",

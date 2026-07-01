@@ -53,7 +53,7 @@ export default function FAQSection() {
 
            
             <Link
-              href={"mailto:support@gmail.com"}
+              href={"mailto:info@boomrealtys.com"}
               className="inline-flex items-center gap-2 bg-dred hover:bg-red-800 text-white font-semibold mt-5 px-8 py-2 rounded-full transition-colors duration-200 shadow-md"
             >
              
