@@ -35,8 +35,7 @@ export default function SellingOptionsSection() {
           </h2>
 
           <p className="section-cap mt-3">
-            We offer complete real estate services for buying, selling, and
-            renting residential properties.
+            We offer complete real estate services for buying and selling residential properties.
           </p>
         </div>
 

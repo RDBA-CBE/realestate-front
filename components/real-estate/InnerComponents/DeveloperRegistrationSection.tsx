@@ -6,7 +6,7 @@ const perks = [
   {
     icon: Building2,
     title: "List Your Properties",
-    desc: "Showcase your projects to thousands of active buyers and renters across the platform.",
+    desc: "Showcase your projects to thousands of active buyers  across the platform.",
  
   },
   {
@@ -17,14 +17,13 @@ const perks = [
   },
   {
     icon: BadgeCheck,
-    title: "Verified Developer Badge",
-    desc: "Build trust with buyers through our verified developer profile and credibility badge.",
-  
+    title: "Build Buyer Trust",
+    desc: "Build trust with verified business details and attract genuine buyers.",
   },
   {
     icon: Users,
     title: "Connect With Buyers",
-    desc: "Get direct inquiries from serious buyers and renters looking for properties like yours.",
+    desc: "Get direct inquiries from serious buyers looking for properties like yours.",
   
   },
 ];
@@ -46,7 +45,7 @@ export default function DeveloperRegistrationSection() {
               Register as a Developer &amp; List Your Properties
             </h2>
             <p className="section-cap mb-4 xl:mb-8 max-w-lg mx-auto lg:mx-0 !text-white">
-              Join our growing network of trusted real estate developers. Post your projects, reach verified buyers, and grow your business with ease.
+              Showcase your latest projects on Boom Realtys, connect with potential buyers, strengthen your brand presence and unlock new growth opportunities effortlessly.
             </p>
             <button
               onClick={() => router.push("/post-property")}

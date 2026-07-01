@@ -38,7 +38,7 @@ const NewPopuplarProperties = (props: any) => {
               Discover Popular Properties
             </h2>
             <p className="section-cap">
-              Aliquam lacinia diam quis lacus euismod
+             Find trending homes in prime locations
             </p>
             {locationLabel && !locationEmpty && ( 
                         <div className="flex items-center gap-2 mt-2 text-amber-700 text-sm">

@@ -11,24 +11,24 @@ import Link from "next/link";
 
 const faqs = [
   {
-    question: "How can I post my house for sale?",
+    question: "Are all property listings verified?",
     answer:
-      "You can easily list your property by contacting our team or filling out the property listing form on our website. You can easily list your property by contacting our team or filling out the property listing form on our website.",
+      "Yes. We review every listing to ensure accurate information, genuine properties and a trustworthy experience for buyers, sellers and investors.",
   },
   {
-    question: "What is your realtor sale commission?",
+    question: "How can I contact a property owner or agent?",
     answer:
-      "Our commission structure depends on the property type and location. Contact us for detailed pricing information.",
+      "Visit the property details page and click 'Call Back' or 'Booking Inquiry' in the developer section to get in touch with the property owner or agent.",
   },
   {
-    question: "Which type of house do you take for promoting?",
+    question: "How do I list my property on Boom Realtys?",
     answer:
-      "We promote apartments, villas, independent houses, gated communities, and commercial properties.",
+      "Sign up as an developer, provide your property details, upload high-quality photos and submit your listing for review before it goes live.",
   },
   {
-    question: "What's the average time to sell a house?",
+    question: "Can I update my property listing after publishing?",
     answer:
-      "The selling timeline depends on market conditions, pricing, and location, but most properties sell within a few weeks.",
+      "Yes, you can edit property details, update pricing, add new photos or mark the property as sold whenever needed.",
   },
 ];
 
@@ -93,13 +93,13 @@ export default function FAQSectionNew() {
             {/* Text over image */}
             <div className="relative z-10 flex flex-col justify-end h-full p-8 lg:p-12">
               <p className="text-white text-xs  uppercase tracking-widest mb-3">
-                Got Questions?
+                Quick answers
               </p>
               <h2 className="!text-white section-ti leading-tight mb-4">
-                We Have All The Answers
+                To help you make informed decisions
               </h2>
               <p className="!text-white section-cap leading-relaxed max-w-xs">
-                Everything you need to know about buying, selling, and renting properties with us.
+                Explore clear solutions for property listings, purchases, sales and developer services in one convenient place
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4">
