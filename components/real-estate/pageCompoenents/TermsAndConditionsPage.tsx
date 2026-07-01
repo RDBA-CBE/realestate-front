@@ -552,12 +552,12 @@ const TermsAndConditionsPage = () => {
               <p className="leading-relaxed mb-3">
                 User agrees to treat all information obtained from the Service,
                 including listings, member directory, and any information
-                otherwise made available to User in the Service ("Content") as
+                otherwise made available to User in the Service (&quot;Content&quot;) as
                 proprietary to Boom Realtys. User agrees that Content reserved
                 for members will be maintained as confidential and shall be
                 protected as a trade secret of Boom Realtys. Boom Realtys does
                 not ensure the accuracy of, endorse or recommend any Content and
-                a User uses such Content at the User's own risk. A User may
+                a User uses such Content at the User&apos;s own risk. A User may
                 access the listings/advertisements in the Service solely to
                 obtain initial information from which further evaluation and
                 investigation may commence. User shall limit access to and use
@@ -588,7 +588,7 @@ const TermsAndConditionsPage = () => {
               </h3>
 
               <p className="leading-relaxed mb-3">
-                All logos, brands, trademarks and Service marks ("Marks")
+                All logos, brands, trademarks and Service marks (&quot;Marks&quot;)
                 appearing in Boom Realtys are the properties either owned or
                 used under license by RRE and/or its associates. All rights
                 accruing from the same, statutory or otherwise, wholly vest with
@@ -614,7 +614,7 @@ const TermsAndConditionsPage = () => {
               <p className="leading-relaxed">
                 By allowing Users to access Boom Realtys, RRE grants the Users a
                 limited, non-exclusive, non-assignable, revocable license (the
-                "License") to access and use the Services, provided that the
+                &quot;License&quot;) to access and use the Services, provided that the
                 User is in compliance with the terms and conditions of the
                 Agreement.
               </p>
@@ -698,7 +698,7 @@ const TermsAndConditionsPage = () => {
 
                 <li className="leading-relaxed">
                   Gaining or attempting to gain unauthorized access (inter alia
-                  by hacking, password "mining" or any other means) to:
+                  by hacking, password &quot;mining&quot; or any other means) to:
                   <ul className="list-disc pl-6 mt-2 space-y-2">
                     <li>
                       Any portion or feature of Boom Realtys or any of the
@@ -1089,7 +1089,7 @@ const TermsAndConditionsPage = () => {
                 RRE assumes no responsibility for any error, omission,
                 interruption, deletion, defect, delay in operation or
                 transmission, communication line failure, theft, destruction,
-                unauthorized access to, or alteration of any User's information
+                unauthorized access to, or alteration of any User&apos;s information
                 or data. RRE shall also not be responsible for technical
                 malfunctions relating to online systems, servers, providers,
                 computer equipment, software, email failures, internet
