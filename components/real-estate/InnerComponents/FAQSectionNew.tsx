@@ -66,9 +66,9 @@ export default function FAQSectionNew() {
             </div>
 
             <div className="mt-5">
-              <p className="text-sm text-gray-500 mb-3">Still have questions? <Link href="mailto:support@gmail.com" className="uppercase text-dred font-semibold ps-3">Contact Us</Link></p>
+              <p className="text-sm text-gray-500 mb-3">Still have questions? <Link href="mailto:info@boomrealtys.com" className="uppercase text-dred font-semibold ps-3">Contact Us</Link></p>
               {/* <Link
-                href="mailto:support@gmail.com"
+                href="mailto:info@boomrealtys.com"
                 className="inline-flex items-center gap-2 bg-[#9b0f09] hover:bg-[#7d0c07] text-white text-sm font-semibold px-14 py-3 rounded-full transition-colors duration-200 shadow-md"
               >
                 Contact Us

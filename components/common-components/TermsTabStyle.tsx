@@ -79,10 +79,10 @@ const TermsTabStyle = ({sections}) => {
             to us.
           </p>
           <a
-            href="mailto:support@realestate.com"
+            href="mailto:info@boomrealtys.com"
             className="inline-block bg-white text-dred font-semibold text-sm px-6 py-3 rounded-full hover:bg-white/90 transition-colors"
           >
-            support@realestate.com
+            info@boomrealtys.com
           </a>
         </div>
       </div>

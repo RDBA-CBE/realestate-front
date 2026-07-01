@@ -232,10 +232,10 @@ const Header = () => {
                 {/* <div className="flex items-center gap-3 me-4 hidden xl:flex">
                   <Mail className="w-4 h-4 text-dred" />
                   <Link
-                    href={"mailto:support@realestate.com"}
+                    href={"mailto:info@boomrealtys.com"}
                     className="font-[500] text-[16px] nav-ti"
                   >
-                    support@realestate.com
+                    info@boomrealtys.com
                   </Link>
                 </div> */}
 
@@ -585,10 +585,10 @@ const Header = () => {
                         <div className="flex items-center gap-3 me-4 mt-6 lg:flex">
                           <Mail className="w-4 h-4 text-dred" />
                           <Link
-                            href={"mailto:support@realestate.com"}
+                            href={"mailto:info@boomrealtys.com"}
                             className="font-normal text-[16px]"
                           >
-                            support@realestate.com
+                            info@boomrealtys.com 
                           </Link>
                         </div>
                       </div>

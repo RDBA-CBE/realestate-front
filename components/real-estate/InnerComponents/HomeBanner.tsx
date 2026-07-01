@@ -124,7 +124,7 @@ const HomeBanner = ({ locationLabel }: { locationLabel?: any }) => {
           <a href="/property-list" className="adv-btn lg:mb-12 border border-dred inline-flex items-center justify-center">
             Find Your Home
           </a>
-          <a href="mailto:support@gmail.com" className="!border !border-white !bg-transparent adv-btn hover:!bg-white hover:!text-black lg:mb-12 ms-4 inline-flex items-center justify-center">
+          <a href="mailto:info@boomrealtys.com" className="!border !border-white !bg-transparent adv-btn hover:!bg-white hover:!text-black lg:mb-12 ms-4 inline-flex items-center justify-center">
             Contact Us
           </a>
 
