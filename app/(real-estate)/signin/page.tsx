@@ -59,6 +59,7 @@ const SigninPage = () => {
         const errors = {};
         error.inner.forEach((err) => { errors[err.path] = err.message; });
         setState({ error: errors });
+        console.log("Validation Errors:", state.error);
       } else {
         if (error?.error) Failure(error.error);
         // else if (error?.password?.length > 0) Failure(error.password[0]);
