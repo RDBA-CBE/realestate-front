@@ -255,12 +255,12 @@ const AboutPage = () => {
             <div>
               <span className="text-dred font-bold uppercase tracking-[0.2em] text-xs mb-4 inline-block">Our principles</span>
               <h2 className="section-ti mb-4">Driven by purpose and values</h2>
-              <p className="section-cap mb-10 leading-relaxed">
+              <p className="section-cap mb-8 leading-relaxed">
                Everything we do is guided by integrity, innovation, transparency, and customer-first values that create meaningful property experiences together.
               </p>
               <div className="space-y-6">
                 {values.map((item, i) => (
-                  <div key={i} className="flex gap-5 items-start group border-b border-[#d1d0d0]">
+                  <div key={i} className="flex gap-5 items-start group pb-4 border-b border-[#d1d0d0]">
                     <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center flex-shrink-0 group-hover:bg-dred transition-colors duration-300">
                       <item.icon className="h-6 w-6 text-dred group-hover:text-white transition-colors duration-300" />
                     </div>
