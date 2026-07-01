@@ -133,7 +133,7 @@ const AboutPage = () => {
                 Connecting you to better properties
               </h2>
               <p className="section-cap mb-8 leading-relaxed">
-                At Boom Realtys, we believe finding the perfect property should be simple, transparent and rewarding. Since our inception, we've been dedicated to connecting buyers, sellers, investors and developers through a trusted real estate platform that delivers verified listings, expert guidance and seamless experiences. Whether you're buying, selling a property or exploring investment opportunities, Boom Realty provides the expertise, transparency and support you need to make confident decisions.
+                At Boom Realtys, we believe finding the perfect property should be simple, transparent and rewarding. Since our inception, we&apos;ve been dedicated to connecting buyers, sellers, investors and developers through a trusted real estate platform that delivers verified listings, expert guidance and seamless experiences. Whether you&apos;re buying, selling a property or exploring investment opportunities, Boom Realty provides the expertise, transparency and support you need to make confident decisions.
               </p>
 
               <div className="grid sm:grid-cols-2 !gap-4 mb-10">
@@ -175,7 +175,7 @@ const AboutPage = () => {
               {
       title: "Looking for the new home?",
       description:
-        "Browse thousands of trusted listings, explore prime locations, and confidently move into the home you've always wanted.",
+        "Browse thousands of trusted listings, explore prime locations, and confidently move into the home you&apos;ve always wanted.",
       buttonText: "Get Started",
       image: "/assets/images/real-estate/home/buy-1.webp",
       bgImage:
