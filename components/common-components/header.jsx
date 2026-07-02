@@ -582,7 +582,7 @@ const Header = () => {
                           </Button>
                         </div>
 
-                        <div className="flex items-center gap-3 me-4 mt-6 lg:flex">
+                        {/* <div className="flex items-center gap-3 me-4 mt-6 lg:flex">
                           <Mail className="w-4 h-4 text-dred" />
                           <Link
                             href={"mailto:info@boomrealtys.com"}
@@ -590,7 +590,8 @@ const Header = () => {
                           >
                             info@boomrealtys.com 
                           </Link>
-                        </div>
+                        </div> */}
+                        
                       </div>
                     </SheetContent>
                   </Sheet>
