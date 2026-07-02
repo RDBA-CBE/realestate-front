@@ -106,7 +106,7 @@ const PrivacyPolicyPage = () => {
           {/* Preamble */}
           <div className="mb-10 pb-8 border-b border-gray-200">
             <p className="text-xs text-gray-500 uppercase tracking-widest mb-4">
-              Effective Date: January 1, 2025
+              Effective Date: July 1, 2026
             </p>
             <p className=" leading-relaxed ">
               We, at Repute Real Estate and our affiliated companies worldwide,

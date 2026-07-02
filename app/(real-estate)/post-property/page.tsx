@@ -59,11 +59,12 @@ const PostPropertyPage = () => {
         email: state.email,
         password: state.password,
         industry: state.industry_name,
+        gst_number: state.gst_number,
         terms_accepted: true,
         user_type: "developer",
         groups: [state.developerGroup],
       };
-      await Utils.Validation.signup.validate(body, { abortEarly: false });
+      await Utils.Validation.developrSignup.validate(body, { abortEarly: false });
       const res: any = await Models.auth.singup(body);
       Success(res?.message || "Account created! Please verify your email.");
       router.push("/");
@@ -186,12 +187,13 @@ const PostPropertyPage = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
-              <Input title="First Name" name="first_name" placeholder="John" value={state.first_name} onChange={handleInputChange} error={state.error?.first_name} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" />
-              <Input title="Last Name" name="last_name" placeholder="Doe" value={state.last_name} onChange={handleInputChange} error={state.error?.last_name} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" />
+              <Input title="First Name" name="first_name" placeholder="John" value={state.first_name} onChange={handleInputChange} error={state.error?.first_name} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" required />
+              <Input title="Last Name" name="last_name" placeholder="Doe" value={state.last_name} onChange={handleInputChange} error={state.error?.last_name} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" required />
             </div>
-            <Input title="Email" name="email" type="email" placeholder="you@example.com" value={state.email} onChange={handleInputChange} error={state.error?.email} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" />
-            <Input title="Password" name="password" type="password" placeholder="Create a password" value={state.password} onChange={handleInputChange} error={state.error?.password} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" />
-            <Input title="Industry / Company Name" name="industry_name" placeholder="e.g. Casagrand Builders" value={state.industry_name} onChange={handleInputChange} error={state.error?.industry_name} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" />
+            <Input title="Email" name="email" type="email" placeholder="you@example.com" value={state.email} onChange={handleInputChange} error={state.error?.email} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" required />
+            <Input title="Password" name="password" type="password" placeholder="Create a password" value={state.password} onChange={handleInputChange} error={state.error?.password} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" required/>
+            <Input title="Industry / Company Name" name="industry_name" placeholder="e.g. Casagrand Builders" value={state.industry_name} onChange={handleInputChange} error={state.error?.industry} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" required/>
+             <Input title="GST Number" name="gst_number" placeholder="Enter your GST number" value={state.gst_number} onChange={handleInputChange} error={state.error?.gst_number} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" required />
 
             <p className="text-xs text-gray-400">
               By creating an account you agree to our{" "}

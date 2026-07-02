@@ -175,6 +175,14 @@ export function PropertyView(props: any) {
   const filterSectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
 
+  useEffect(() => {
+    if (state.isMobileFormOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [state.isMobileFormOpen]);
+
 
 
 

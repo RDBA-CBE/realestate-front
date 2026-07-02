@@ -125,7 +125,7 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
         type="button"
         onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); }}
         onClick={onWishlist}
-        className={`rounded-full p-2 shadow transition-colors ${wishlisted ? "bg-[#9b0f09] text-white" : "bg-white text-gray-600 hover:bg-[#9b0f09] hover:text-white"}`}
+        className={`rounded-full p-2 shadow transition-colors ${wishlisted ? "bg-[#9b0f09] text-white" : "bg-white text-gray-600 lg:hover:bg-[#9b0f09] lg:hover:text-white"}`}
       >
         <Heart size={16} fill={wishlisted ? "currentColor" : "none"} />
       </button>
@@ -133,7 +133,7 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
         type="button"
         onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); }}
         onClick={onCompare}
-        className={`rounded-full p-2 shadow transition-colors ${compared ? "bg-[#9b0f09] text-white" : "bg-white text-gray-600 hover:bg-[#9b0f09] hover:text-white"}`}
+        className={`rounded-full p-2 shadow transition-colors ${compared ? "bg-[#9b0f09] text-white" : "bg-white text-gray-600 lg:hover:bg-[#9b0f09] lg:hover:text-white"}`}
       >
         <GitCompareArrowsIcon size={16} />
       </button>
@@ -141,7 +141,7 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
         type="button"
         onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); }}
         onClick={onShare}
-        className="rounded-full p-2 shadow bg-white text-gray-600 hover:bg-[#9b0f09] hover:text-white transition-colors"
+        className="rounded-full p-2 shadow bg-white text-gray-600 lg:hover:bg-[#9b0f09] lg:hover:text-white transition-colors"
       >
         <Share size={16} />
       </button>
