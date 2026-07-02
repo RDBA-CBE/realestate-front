@@ -51,7 +51,7 @@ function InlineDropdown({
         <ChevronDown size={16} className={`transition-transform flex-shrink-0 ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
-        <div className="absolute z-[9999] top-full mt-1 w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-52 overflow-y-auto">
+        <div className="absolute z-[9999] bottom-full mb-2 w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-52 overflow-y-auto">
           <button
             className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
             onClick={() => { onChange(""); setOpen(false); }}
