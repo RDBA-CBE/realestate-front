@@ -58,6 +58,24 @@ const chat = {
     return promise;
   },
 
+  global: (body: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `ai-flow/`;
+      instance()
+        .post(url, body)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            reject(error.response?.data);
+          } else {
+            reject(error);
+          }
+        });
+    });
+    return promise;
+  },
   
   
 
