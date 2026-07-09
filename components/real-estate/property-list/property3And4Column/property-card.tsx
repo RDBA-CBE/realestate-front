@@ -18,7 +18,7 @@ import Models from "@/imports/models.import";
 
 interface PropertyImage { id: number; image_url: string; is_primary: boolean; order: number; }
 interface Property {
-  id: string; title: string; location: any; area: any; price: number;
+  id: string; title: string; location: any; area: any; price: number; slug:string;
   listing_type: "rent" | "sale" | "lease"; bedrooms: number; bathrooms: number;
   primary_image: string; built_up_area: any; state: string; city: string;
   is_compare: string; user_wishlists: boolean; images?: PropertyImage[];
