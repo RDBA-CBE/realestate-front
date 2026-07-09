@@ -109,14 +109,14 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
     e.stopPropagation();
     e.preventDefault();
     try {
-      if (navigator.share) await navigator.share({ title: property.title, url: `https://realestate-front-eight.vercel.app/property-detail/${property.id}` });
-      else { navigator.clipboard.writeText(`https://realestate-front-eight.vercel.app/property-detail/${property.id}`); Success("Link copied!"); }
+      if (navigator.share) await navigator.share({ title: property.title, url: `https://realestate-front-eight.vercel.app/property-detail/${property.slug}` });
+      else { navigator.clipboard.writeText(`https://realestate-front-eight.vercel.app/property-detail/${property.slug}`); Success("Link copied!"); }
     } catch {}
   };
 
   const onNext = (e: React.MouseEvent) => { e.stopPropagation(); e.preventDefault(); setImgIndex((p) => p === images.length - 1 ? 0 : p + 1); };
   const onPrev = (e: React.MouseEvent) => { e.stopPropagation(); e.preventDefault(); setImgIndex((p) => p === 0 ? images.length - 1 : p - 1); };
-  const onCardClick = () => handleClick ? handleClick() : router.push(`/property-detail/${property?.id}`);
+  const onCardClick = () => handleClick ? handleClick() : router.push(`/property-detail/${property?.slug}`);
 
   /* ── Action buttons row (rendered outside image div) ── */
   const ActionButtons = (

@@ -18,7 +18,7 @@ const PropertyCard = ({ listing }: { listing: any }) => {
   });
 
   const handleClick = () => {
-    router.push(`property-detail/${listing?.id}`);
+    router.push(`property-detail/${listing?.slug}`);
   };
 
   const handleWishList = async (e) => {
