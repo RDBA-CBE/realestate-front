@@ -8,14 +8,16 @@ import Link from "next/link";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { Failure, Success, useSetState } from "@/utils/function.utils";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Loader, Home, CheckCircle2, ArrowRight, ArrowLeft } from "lucide-react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { CAPTCHA_SITE_KEY } from "@/utils/constant.utils";
 
 const perks = [
-  "Sell or lease your property quickly",
-  "Verified buyers and genuine enquiries",
-  "Quick property activation process",
-  "List for free with zero fees",
+  "List your property for Sale or Lease",
+  "Get verified leads from serious buyers",
+  "Property activated in just 30 minutes",
+  "Free listing — no hidden charges",
 ];
 
 const PostPropertyPage = () => {
@@ -31,6 +33,18 @@ const PostPropertyPage = () => {
     error: {},
     developerGroup: null,
   });
+
+  const captchaRef = useRef<any>(null);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaLoaded, setCaptchaLoaded] = useState(false);
+  const isResettingRef = useRef(false);
+
+  const resetCaptcha = () => {
+    isResettingRef.current = true;
+    captchaRef.current?.reset();
+    setCaptchaToken("");
+    setTimeout(() => { isResettingRef.current = false; }, 500);
+  };
 
   useEffect(() => { getGroup(); }, []);
 
@@ -59,25 +73,26 @@ const PostPropertyPage = () => {
         email: state.email,
         password: state.password,
         industry: state.industry_name,
-        gst_number: state.gst_number,
         terms_accepted: true,
         user_type: "developer",
         groups: [state.developerGroup],
       };
-      await Utils.Validation.developrSignup.validate(body, { abortEarly: false });
-      const res: any = await Models.auth.singup(body);
+      await Utils.Validation.signup.validate(body, { abortEarly: false });
+      if (!captchaToken) {
+        setState({ loading: false, error: { ...state.error, captcha: "Please complete the captcha" } });
+        return;
+      }
+      const res: any = await Models.auth.singup({ ...body, recaptcha_token: captchaToken });
+      resetCaptcha();
       Success(res?.message || "Account created! Please verify your email.");
       router.push("/");
     } catch (error) {
+      resetCaptcha();
       if (error instanceof Yup.ValidationError) {
         const errors = {};
         error.inner.forEach((err) => { errors[err.path] = err.message; });
         setState({ error: errors });
-      } 
-      else if (error?.error){
-        Failure(error?.error);
-      }
-      else {
+      } else {
         Failure(error?.email?.[0] || error?.password?.[0] || "Something went wrong.");
       }
     } finally {
@@ -120,10 +135,10 @@ const PostPropertyPage = () => {
 </div>
         <div className="z-10 space-y-6">
           <h1 className="text-5xl font-semibold text-white leading-tight">
-            Post your property and find genuine buyers
+            Sell or Lease your property with ease.
           </h1>
           <p className="text-white/70 text-lg max-w-xs">
-            Get noticed faster by buyers ready to make decisions
+            Reach thousands of verified buyers and tenants instantly.
           </p>
           <ul className="space-y-4 pt-2">
             {perks.map((perk, i) => (
@@ -187,13 +202,36 @@ const PostPropertyPage = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
-              <Input title="First Name" name="first_name" placeholder="John" value={state.first_name} onChange={handleInputChange} error={state.error?.first_name} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" required />
-              <Input title="Last Name" name="last_name" placeholder="Doe" value={state.last_name} onChange={handleInputChange} error={state.error?.last_name} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" required />
+              <Input title="First Name" name="first_name" placeholder="John" value={state.first_name} onChange={handleInputChange} error={state.error?.first_name} autoComplete="off" className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" />
+              <Input title="Last Name" name="last_name" placeholder="Doe" value={state.last_name} onChange={handleInputChange} error={state.error?.last_name} autoComplete="off" className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" />
             </div>
-            <Input title="Email" name="email" type="email" placeholder="you@example.com" value={state.email} onChange={handleInputChange} error={state.error?.email} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" required />
-            <Input title="Password" name="password" type="password" placeholder="Create a password" value={state.password} onChange={handleInputChange} error={state.error?.password} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" required/>
-            <Input title="Industry / Company Name" name="industry_name" placeholder="e.g. Casagrand Builders" value={state.industry_name} onChange={handleInputChange} error={state.error?.industry} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" required/>
-             <Input title="GST Number" name="gst_number" placeholder="Enter your GST number" value={state.gst_number} onChange={handleInputChange} error={state.error?.gst_number} className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" required />
+            <Input title="Email" name="email" type="email" placeholder="you@example.com" value={state.email} onChange={handleInputChange} error={state.error?.email} autoComplete="off" className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" />
+            <Input title="Password" name="password" type="password" placeholder="Create a password" value={state.password} onChange={handleInputChange} error={state.error?.password} autoComplete="new-password" className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" />
+            <Input title="Industry / Company Name" name="industry_name" placeholder="e.g. Casagrand Builders" value={state.industry_name} onChange={handleInputChange} error={state.error?.industry_name} autoComplete="off" className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" />
+
+            <div className="relative flex w-full flex-col items-center justify-center py-2">
+              <ReCAPTCHA
+                ref={captchaRef}
+                sitekey={CAPTCHA_SITE_KEY}
+                asyncScriptOnLoad={() => setCaptchaLoaded(true)}
+                onChange={(token) => {
+                  setCaptchaToken(token || "");
+                  if (token) setState({ error: { ...state.error, captcha: undefined } });
+                }}
+                onExpired={() => resetCaptcha()}
+              />
+              {!captchaLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center rounded border border-gray-300 bg-gray-50">
+                  <svg className="h-6 w-6 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                  </svg>
+                </div>
+              )}
+              {state.error?.captcha && (
+                <p className="mt-1 text-sm text-red-600">{state.error.captcha}</p>
+              )}
+            </div>
 
             <p className="text-xs text-gray-400">
               By creating an account you agree to our{" "}
