@@ -18,7 +18,7 @@ import Models from "@/imports/models.import";
 
 interface PropertyImage { id: number; image_url: string; is_primary: boolean; order: number; }
 interface Property {
-  id: string; title: string; location: any; area: any; price: number;
+  id: string; title: string; location: any; area: any; price: number; slug:string;
   listing_type: "rent" | "sale" | "lease"; bedrooms: number; bathrooms: number;
   primary_image: string; built_up_area: any; state: string; city: string;
   is_compare: string; user_wishlists: boolean; images?: PropertyImage[];
@@ -109,14 +109,14 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
     e.stopPropagation();
     e.preventDefault();
     try {
-      if (navigator.share) await navigator.share({ title: property.title, url: `https://realestate-front-eight.vercel.app/property-detail/${property.id}` });
-      else { navigator.clipboard.writeText(`https://realestate-front-eight.vercel.app/property-detail/${property.id}`); Success("Link copied!"); }
+      if (navigator.share) await navigator.share({ title: property.title, url: `https://realestate-front-eight.vercel.app/property-detail/${property.slug}` });
+      else { navigator.clipboard.writeText(`https://realestate-front-eight.vercel.app/property-detail/${property.slug}`); Success("Link copied!"); }
     } catch {}
   };
 
   const onNext = (e: React.MouseEvent) => { e.stopPropagation(); e.preventDefault(); setImgIndex((p) => p === images.length - 1 ? 0 : p + 1); };
   const onPrev = (e: React.MouseEvent) => { e.stopPropagation(); e.preventDefault(); setImgIndex((p) => p === 0 ? images.length - 1 : p - 1); };
-  const onCardClick = () => handleClick ? handleClick() : router.push(`/property-detail/${property?.id}`);
+  const onCardClick = () => handleClick ? handleClick() : router.push(`/property-detail/${property?.slug}`);
 
   /* ── Action buttons row (rendered outside image div) ── */
   const ActionButtons = (

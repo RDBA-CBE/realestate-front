@@ -25,7 +25,7 @@ const NewPopuplarProperties = (props: any) => {
 
 
   const handleClick = (property) => {
-    router.push(`property-detail/${property?.id}`);
+    router.push(`property-detail/${property?.slug}`);
   };
 
   return (

@@ -544,7 +544,7 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
     : state.detail?.description;
 
   const handleRedirect = () => {
-    router.push(`/property-detail/${state.detail?.id}`);
+    router.push(`/property-detail/${state.detail?.slug}`);
   };
 
   const getIcon = (name) => {

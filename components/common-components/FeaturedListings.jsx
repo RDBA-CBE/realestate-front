@@ -34,7 +34,7 @@ const FeaturedListings = (props) => {
   };
 
   const handleClick = (property) => {
-    router.push(`property-detail/${property?.id}`);
+    router.push(`property-detail/${property?.slug}`);
   };
 
   return (
