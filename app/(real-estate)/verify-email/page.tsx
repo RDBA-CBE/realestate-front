@@ -69,6 +69,7 @@ export default function VerifyEmailPage() {
         <button
           type="button"
           onClick={() => router.push("/property-list")}
+
           className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 bg-dred text-sm font-medium text-white hover:border-[#9b0f09]  transition-all shadow-sm"
         >
           <ArrowLeft className="w-4 h-4" />

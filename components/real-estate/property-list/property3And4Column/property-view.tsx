@@ -223,7 +223,7 @@ export function PropertyView(props: any) {
   );
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("demo_token");
     const userId = localStorage.getItem("userId");
     setState({ userLoggedIn: !!token, userId });
     if (token && userId) {

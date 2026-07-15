@@ -52,7 +52,7 @@ export default function DeveloperDetailPage() {
     fetchDeveloper();
     fetchProperties();
 
-    setToken(localStorage.getItem("token"));
+    setToken(localStorage.getItem("demo_token"));
   }, [developerId]);
 
   const redirect = () => {

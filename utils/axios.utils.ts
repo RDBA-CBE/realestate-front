@@ -52,7 +52,7 @@ export const instance = (): AxiosInstance => {
   // Request interceptor
   api.interceptors.request.use(
     (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-      const accessToken = localStorage.getItem("token");
+      const accessToken = localStorage.getItem("demo_token");
       if (accessToken && config.headers) {
         config.headers["Authorization"] = `Bearer ${accessToken}`;
       }
@@ -76,7 +76,7 @@ export const instance = (): AxiosInstance => {
       )  {
         originalRequest._retry = true;
 
-        const refreshToken = localStorage.getItem("refresh");
+        const refreshToken = localStorage.getItem("demo_refresh");
          if (!refreshToken) {
           showTokenExpiredAlert();
           return Promise.reject(error);

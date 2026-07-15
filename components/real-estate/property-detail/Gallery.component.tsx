@@ -67,7 +67,7 @@ export default function Gallery({ data, images, updateList }: GalleryProps) {
     console.log("hello");
 
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("demo_token");
       if (token) {
         if (!data?.user_wishlists) {
           await Models.wishlist.add_property({

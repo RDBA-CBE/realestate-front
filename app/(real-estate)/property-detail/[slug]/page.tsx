@@ -259,7 +259,7 @@ export default function PropertyDetailPage() {
   const getDetails = async () => {
     try {
       setState({ loading: true });
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("demo_token");
       const res: any = await Models.property.details(propertyId);
       setState({ detail: res, token, loading: false });
       similarProperty(res?.property_type?.id);

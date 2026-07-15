@@ -70,7 +70,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const id = localStorage.getItem("userId");
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("demo_token");
 
     if (!id || !token) {
       setState({
@@ -388,7 +388,7 @@ export default function ProfilePage() {
 
   const handleAuthAlertOk = async () => {
     try {
-      const refresh = localStorage.getItem("refresh");
+      const refresh = localStorage.getItem("demo_refresh");
       if (refresh) {
         await Models.auth.logout({ refresh });
       }

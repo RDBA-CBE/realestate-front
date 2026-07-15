@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Failure, Success, useSetState } from "@/utils/function.utils";
-import { Loader, Home, CheckCircle2, ArrowRight, ArrowLeft } from "lucide-react";
+import { Loader, Home, CheckCircle2, ArrowLeft, X } from "lucide-react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { CAPTCHA_SITE_KEY } from "@/utils/constant.utils";
 
@@ -35,6 +35,7 @@ const LoginPage = () => {
     error: {},
   });
 
+  const [restrictionModal, setRestrictionModal] = useState(false);
   const [captchaPopupRect, setCaptchaPopupRect] = useState<DOMRect | null>(null);
   const [loginCaptchaToken, setLoginCaptchaToken] = useState("");
   const [captchaLoaded, setCaptchaLoaded] = useState(false);
@@ -93,10 +94,18 @@ const LoginPage = () => {
         return;
       }
       const res: any = await Models.auth.login(body);
+
+      if (res?.user_type && res.user_type !== "buyer") {
+        resetCaptcha();
+        setState({ loading: false, email: "", password: "", error: {} });
+        setRestrictionModal(true);
+        return;
+      }
+
       resetCaptcha();
       Success("Login Successfully");
-      localStorage.setItem("token", res?.access);
-      localStorage.setItem("refresh", res?.refresh);
+      localStorage.setItem("demo_token", res?.access);
+      localStorage.setItem("demo_refresh", res?.refresh);
       localStorage.setItem("userId", res?.user_id);
       localStorage.setItem("name", res?.name);
       localStorage.setItem("wishlist_id", res?.wishlist_id);
@@ -124,11 +133,38 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen flex bg-white font-sans relative">
 
+      {/* Restriction Modal */}
+      {restrictionModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full mx-4 relative text-center">
+            <button onClick={() => setRestrictionModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+              <X className="w-5 h-5" />
+            </button>
+            <div className="w-14 h-14 rounded-full bg-[#fff0f0] flex items-center justify-center mx-auto mb-4">
+              <Home className="w-7 h-7 text-[#9b0f09]" />
+            </div>
+            <h3 className="text-xl font-bold text-black mb-2">Buyers Only Platform</h3>
+            <p className="text-gray-500 text-sm mb-6">
+              This platform is exclusively for buyers. If you are an admin, seller, or developer, please use the dedicated portal.
+            </p>
+            <a
+              href="https://dev.boomrealtys.com/auth/signin"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full py-3 rounded-xl bg-[#9b0f09] text-white font-semibold text-sm hover:bg-[#7d0c07] transition-colors"
+            >
+              Go to Admin / Seller / Developer Portal
+            </a>
+          </div>
+        </div>
+      )}
+
       {/* Top-right: View Properties */}
      <div className="absolute top-5 right-5 z-30 flex gap-2">
         <button
           type="button"
           onClick={() => router.push("/property-list")}
+
           className="flex items-center gap-2 px-4 py-1 rounded-full border bg-white text-sm text-dred font-medium text-black border border-[#9b0f09] hover:bg-[#fff6f6] hover:text-[#9b0f09] transition-all shadow-sm"
         >
           <Home className="w-4 h-4" />
@@ -137,7 +173,10 @@ const LoginPage = () => {
         </button>
         <button
           type="button"
-          onClick={() => router.push("/property-list")}
+    
+          onClick={() => router.back()}
+
+          
           className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 bg-dred text-sm font-medium text-white hover:border-[#9b0f09]  transition-all shadow-sm"
         >
           <ArrowLeft className="w-4 h-4" />

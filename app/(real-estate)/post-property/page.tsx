@@ -93,7 +93,8 @@ const PostPropertyPage = () => {
         error.inner.forEach((err) => { errors[err.path] = err.message; });
         setState({ error: errors });
       } else {
-        Failure(error?.email?.[0] || error?.password?.[0] || "Something went wrong.");
+        Failure(error?.email?.[0] || error?.password?.[0] ||error?.error|| "Something went wrong.");
+
       }
     } finally {
       setState({ loading: false });
@@ -116,7 +117,8 @@ const PostPropertyPage = () => {
         </button>
         <button
           type="button"
-          onClick={() => router.push("/property-list")}
+          onClick={() => router.back()}
+
           className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 bg-dred text-sm font-medium text-white hover:border-[#9b0f09]  transition-all shadow-sm"
         >
           <ArrowLeft className="w-4 h-4" />

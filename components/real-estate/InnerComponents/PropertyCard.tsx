@@ -24,7 +24,7 @@ const PropertyCard = ({ listing }: { listing: any }) => {
   const handleWishList = async (e) => {
     e.stopPropagation();
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("demo_token");
       if (!token) { setShowLoginPopup(true); return; }
       if (!isWishlisted) {
         await Models.wishlist.add_property({ property_id: listing?.id });

@@ -77,7 +77,7 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
   const onWishlist = async (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("demo_token");
     if (!token) { setLoginPopup(true); return; }
     try {
       if (!wishlisted) {

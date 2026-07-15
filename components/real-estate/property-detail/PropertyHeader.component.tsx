@@ -59,7 +59,7 @@ export default function PropertyHeader(props: any) {
   const handleWishList = async () => {
       // e.stopPropagation();
       // e.preventDefault();
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("demo_token");
       if (!token) { setLoginPopup(true); return; }
       try {
        if (!data?.user_wishlists) {
@@ -96,7 +96,7 @@ export default function PropertyHeader(props: any) {
 
   const handleWishLis = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("demo_token");
       if (token) {
         if (!data?.user_wishlists) {
           await Models.wishlist.add_property({
