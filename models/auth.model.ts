@@ -155,8 +155,9 @@ const auth = {
 
   request_account_removal_otp: (body: any) => {
     let promise = new Promise((resolve, reject) => {
+      let url = `account-deletion/request/`;
       instance()
-        .post("authentication/remove-account/send-otp/", body)
+        .post(url , body)
         .then((res) => resolve(res.data))
         .catch((error) => reject(error.response ? error.response?.data : error));
     });
@@ -165,8 +166,9 @@ const auth = {
 
   verify_account_removal_otp: (body: any) => {
     let promise = new Promise((resolve, reject) => {
+      let url = `account-deletion/verify-otp/`
       instance()
-        .post("authentication/remove-account/verify-otp/", body)
+        .post(url, body)
         .then((res) => resolve(res.data))
         .catch((error) => reject(error.response ? error.response?.data : error));
     });
