@@ -265,7 +265,7 @@ export default function ContactAgentForm({
       <CardContent className={`p-6 space-y-6 ${onClose ? "pt-0" : ""}`}>
         {/* Agent info */}
         <div className="flex items-center gap-4 border-b border-gray-200 pb-4">
-          <div className="flex-shrink-0 cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.id}`)}>
+          <div className="flex-shrink-0 cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.slug}`)}>
             {/* <Image
               src="/assets/images/real-estate/dummy.png"
               alt="Agent"
@@ -291,7 +291,7 @@ export default function ContactAgentForm({
               )}
           </div>
           <div className="text-left">
-            <h3 className="font-semibold cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.id}`)}>
+            <h3 className="font-semibold cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.slug}`)}>
               {capitalizeFLetter(data?.developer?.industry)}
             </h3>
             <p className="text-gray-600 text-sm">

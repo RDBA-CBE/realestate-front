@@ -235,13 +235,13 @@ export default function NewFooter() {
         <div className="flex flex-col gap-6  py-8 md:flex-row md:items-center md:justify-center">
           <h3 className="section-ti !text-white !font-normal mb-0 pb-0">Get Mobile App</h3>
           <div className="flex gap-4">
-            <button className="rounded-xl  w-[150px] h-15 text-black">
+            <div className="rounded-xl  w-[150px] h-15 text-black">
               <img src="/assets/images/real-estate/home/app-store.png" alt="" className="rounded-xl object-cover w-[100%] h-[100%]" />
-            </button>
-            <button className="rounded-xl  w-[150px] h-15 text-black">
+            </div>
+            <div className="rounded-xl  w-[150px] h-15 text-black">
                             <img src="/assets/images/real-estate/home/play-store.png" alt="" className="rounded-xl object-cover w-[100%] h-[100%]" />
 
-            </button>
+            </div>
           </div>
         </div>
 
@@ -250,7 +250,7 @@ export default function NewFooter() {
 
         <div className="flex flex-col gap-4 pt-6 text-sm text-white md:flex-row md:items-center md:justify-between">
           <p>
-            Copyright 2026 © Realestate. Concept by{" "}
+            Copyright 2026 © Boomrealtys. Concept by{" "}
             <Link href="https://irepute.in/" target="_blank">
               repute
             </Link>

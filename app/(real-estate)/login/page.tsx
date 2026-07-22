@@ -6,30 +6,77 @@ import Models from "@/imports/models.import";
 import Utils from "@/imports/utils.import";
 import Link from "next/link";
 import * as Yup from "yup";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Failure, Success, useSetState } from "@/utils/function.utils";
-import { Loader, Home, CheckCircle2, ArrowRight, ArrowLeft, X } from "lucide-react";
-import { ROLE } from "@/utils/constant.utils";
+import { Loader, Home, CheckCircle2, ArrowLeft, X } from "lucide-react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { CAPTCHA_SITE_KEY } from "@/utils/constant.utils";
 
 
 const perks = [
-  "Discover properties that match your preferences",
-  "Shortlist properties you love instantly",
-  "Receive personalized property recommendations",
-  "Chat directly with sellers and developers",
+  "Browse thousands of verified listings",
+  "Save your favourite properties",
+  "Get price alerts & new arrivals",
+  "Connect directly with developers",
 ];
 
 const LoginPage = () => {
   const router = useRouter();
+
+  const captchaRef = useRef<any>(null);
+  const captchaVerifiedRef = useRef(false);
+  const captchaPopupOpenRef = useRef(false);
 
   const [state, setState] = useSetState({
     email: "",
     password: "",
     loading: false,
     error: {},
-    showAccessDenied: false,
   });
+
+  const [restrictionModal, setRestrictionModal] = useState(false);
+  const [captchaPopupRect, setCaptchaPopupRect] = useState<DOMRect | null>(null);
+  const [loginCaptchaToken, setLoginCaptchaToken] = useState("");
+  const [captchaLoaded, setCaptchaLoaded] = useState(false);
+  const isResettingRef = useRef(false);
+
+
+  // Detect when reCAPTCHA image popup opens/closes
+  useEffect(() => {
+    let debounceTimer: any = null;
+
+    const updatePopupState = () => {
+      if (isResettingRef.current) return;
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const iframe = document.querySelector<HTMLIFrameElement>("iframe[src*='recaptcha'][src*='bframe']");
+        if (iframe) {
+          const rect = iframe.getBoundingClientRect();
+          const isVisible = rect.width > 0 && rect.height > 0;
+          captchaPopupOpenRef.current = isVisible;
+          setCaptchaPopupRect(isVisible ? rect : null);
+        } else {
+          captchaPopupOpenRef.current = false;
+          setCaptchaPopupRect(null);
+        }
+      }, 100);
+    };
+
+    const observer = new MutationObserver(updatePopupState);
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["style"] });
+    return () => { observer.disconnect(); clearTimeout(debounceTimer); };
+  }, []);
+
+  const resetCaptcha = () => {
+    isResettingRef.current = true;
+    captchaRef.current?.reset();
+    setLoginCaptchaToken("");
+    captchaVerifiedRef.current = false;
+    captchaPopupOpenRef.current = false;
+    setCaptchaPopupRect(null);
+    setTimeout(() => { isResettingRef.current = false; }, 500);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -40,12 +87,25 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       setState({ loading: true });
-      const body = { email: state.email, password: state.password };
+      const body = { email: state.email, password: state.password, recaptcha_token: loginCaptchaToken };
       await Utils.Validation.signin.validate(body, { abortEarly: false });
+      if (!loginCaptchaToken) {
+        setState({ loading: false, error: { ...state.error, loginCaptchaInput: "Please complete the captcha" } });
+        return;
+      }
       const res: any = await Models.auth.login(body);
-      if(res?.user_type == ROLE.buyer){
-      localStorage.setItem("token", res?.access);
-      localStorage.setItem("refresh", res?.refresh);
+
+      if (res?.user_type && res.user_type !== "buyer") {
+        resetCaptcha();
+        setState({ loading: false, email: "", password: "", error: {} });
+        setRestrictionModal(true);
+        return;
+      }
+
+      resetCaptcha();
+      Success("Login Successfully");
+      localStorage.setItem("demo_token", res?.access);
+      localStorage.setItem("demo_refresh", res?.refresh);
       localStorage.setItem("userId", res?.user_id);
       localStorage.setItem("name", res?.name);
       localStorage.setItem("wishlist_id", res?.wishlist_id);
@@ -55,22 +115,16 @@ const LoginPage = () => {
         localStorage.setItem("groupId", res?.groups?.[0]?.id);
       }
       window.location.href = "/property-list";
-      Success("Login Successfully");
-
-    } else {
-      setState({ loading: false, showAccessDenied: true });
-    }
     } catch (error) {
+      resetCaptcha();
       setState({ loading: false });
       if (error instanceof Yup.ValidationError) {
         const errors = {};
         error.inner.forEach((err) => { errors[err.path] = err.message; });
         setState({ error: errors });
       } else if (error?.detail) {
-        // Display error message from API response's 'detail' field
         Failure(error.detail);
-      }
-      else {
+      } else {
         Failure(error?.error || "Login failed. Please check your credentials.");
       }
     }
@@ -79,36 +133,28 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen flex bg-white font-sans relative">
 
-      {/* Access Denied Modal */}
-      {state.showAccessDenied && (
+      {/* Restriction Modal */}
+      {restrictionModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full mx-4 relative">
-            <button
-              onClick={() => setState({ showAccessDenied: false })}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-            >
+          <div className="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full mx-4 relative text-center">
+            <button onClick={() => setRestrictionModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
               <X className="w-5 h-5" />
             </button>
-            <div className="flex flex-col items-center text-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center">
-                <span className="text-3xl">🚫</span>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900">Access Restricted</h3>
-              <p className="text-gray-500 text-sm">
-                This website is exclusively for <span className="font-semibold text-[#9b0f09]">Buyers</span>. As a developer you do not have permission to access this platform.
-              </p>
-              <p className="text-gray-500 text-sm">
-                To manage your data, please use the admin panel 
-              </p>
-              <a
-                href="https://realestate-admin-navy.vercel.app/auth/signin"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-2.5 rounded-xl bg-[#9b0f09] text-white text-sm font-semibold hover:bg-[#7d0c07] transition-colors text-center"
-              >
-                Go to Admin Panel
-              </a>
+            <div className="w-14 h-14 rounded-full bg-[#fff0f0] flex items-center justify-center mx-auto mb-4">
+              <Home className="w-7 h-7 text-[#9b0f09]" />
             </div>
+            <h3 className="text-xl font-bold text-black mb-2">Buyers Only Platform</h3>
+            <p className="text-gray-500 text-sm mb-6">
+              This platform is exclusively for buyers. If you are an admin, seller, or developer, please use the dedicated portal.
+            </p>
+            <a
+              href="https://dev.boomrealtys.com/auth/signin"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full py-3 rounded-xl bg-[#9b0f09] text-white font-semibold text-sm hover:bg-[#7d0c07] transition-colors"
+            >
+              Go to Admin / Seller / Developer Portal
+            </a>
           </div>
         </div>
       )}
@@ -118,6 +164,7 @@ const LoginPage = () => {
         <button
           type="button"
           onClick={() => router.push("/property-list")}
+
           className="flex items-center gap-2 px-4 py-1 rounded-full border bg-white text-sm text-dred font-medium text-black border border-[#9b0f09] hover:bg-[#fff6f6] hover:text-[#9b0f09] transition-all shadow-sm"
         >
           <Home className="w-4 h-4" />
@@ -126,7 +173,10 @@ const LoginPage = () => {
         </button>
         <button
           type="button"
-          onClick={() => router.push("/property-list")}
+    
+          onClick={() => router.back()}
+
+          
           className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 bg-dred text-sm font-medium text-white hover:border-[#9b0f09]  transition-all shadow-sm"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -146,10 +196,10 @@ const LoginPage = () => {
 
         <div className="z-10 space-y-6">
           <h1 className="text-5xl font-semibold text-white leading-tight">
-            Sign in to discover better property opportunities
+            Welcome back! Sign in
           </h1>
           <p className="text-white/70 text-lg max-w-xs">
-            Easily manage your properties and enquiries.
+            Your dream property is just a login away.
           </p>
           <ul className="space-y-4 pt-2">
             {perks.map((perk, i) => (
@@ -221,6 +271,7 @@ const LoginPage = () => {
               value={state.email}
               onChange={handleInputChange}
               error={state.error?.email}
+              autoComplete="off"
               className="rounded-xl border-gray-200 text-black placeholder:text-gray-400"
             />
             <div>
@@ -232,6 +283,7 @@ const LoginPage = () => {
                 value={state.password}
                 onChange={handleInputChange}
                 error={state.error?.password}
+                autoComplete="new-password"
                 className="rounded-xl border-gray-200 text-black placeholder:text-gray-400"
               />
               <div className="text-right mt-1">
@@ -240,6 +292,34 @@ const LoginPage = () => {
                 </Link>
               </div>
             </div>
+            <div className="relative flex w-full flex-col items-center justify-center py-2">
+                  <ReCAPTCHA
+                    ref={captchaRef}
+                    sitekey={CAPTCHA_SITE_KEY}
+                    asyncScriptOnLoad={() => setCaptchaLoaded(true)}
+                    onChange={(token) => {
+                      setLoginCaptchaToken(token || "");
+                    console.log('✌️token --->', token);
+
+                      if (token) {
+                        captchaVerifiedRef.current = true;
+                        setState({ error: { ...state.error, loginCaptchaInput: undefined } });
+                      }
+                    }}
+                    onExpired={() => resetCaptcha()}
+                  />
+                  {!captchaLoaded && (
+                    <div className="absolute inset-0 flex items-center justify-center rounded border border-gray-300 bg-gray-50">
+                      <svg className="h-6 w-6 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                      </svg>
+                    </div>
+                  )}
+                  {state.error?.loginCaptchaInput && (
+                    <p className="mt-1 text-sm text-red-600">{state.error.loginCaptchaInput}</p>
+                  )}
+                </div>
 
             <Button
               type="submit"

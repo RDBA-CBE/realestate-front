@@ -68,7 +68,7 @@ const Header = () => {
   const isHomePage = pathname === "/" || pathname === "/home";
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("demo_token");
     const savedLocation = localStorage.getItem("userLocation");
 
     const parsedLocation = savedLocation ? JSON.parse(savedLocation) : null;
@@ -97,7 +97,7 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       setState({ logoutLoading: true });
-      const refresh = localStorage.getItem("refresh");
+      const refresh = localStorage.getItem("demo_refresh");
       await Models.auth.logout({ refresh });
       localStorage.clear();
       window.location.href = "/login";
@@ -582,7 +582,7 @@ const Header = () => {
                           </Button>
                         </div>
 
-                        <div className="flex items-center gap-3 me-4 mt-6 lg:flex">
+                        {/* <div className="flex items-center gap-3 me-4 mt-6 lg:flex">
                           <Mail className="w-4 h-4 text-dred" />
                           <Link
                             href={"mailto:info@boomrealtys.com"}
@@ -590,7 +590,8 @@ const Header = () => {
                           >
                             info@boomrealtys.com 
                           </Link>
-                        </div>
+                        </div> */}
+                        
                       </div>
                     </SheetContent>
                   </Sheet>

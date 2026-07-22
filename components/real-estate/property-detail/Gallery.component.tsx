@@ -67,7 +67,7 @@ export default function Gallery({ data, images, updateList }: GalleryProps) {
     console.log("hello");
 
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("demo_token");
       if (token) {
         if (!data?.user_wishlists) {
           await Models.wishlist.add_property({
@@ -246,13 +246,13 @@ export default function Gallery({ data, images, updateList }: GalleryProps) {
               variant="outline"
               className={`rounded-full ${
                 data?.user_wishlists
-                  ? "bg-color2 border-dred text-white hover:bg-color2 hover:border-[#9b0f09]"
+                  ? "!bg-color2 border-dred text-white lg:hover:bg-color2 lg:hover:border-[#9b0f09]"
                   : "bg-white text-black"
               }`}
             >
               <Heart
                 size={18}
-                fill={data?.user_wishlists ? "currentColor" : "none"}
+                // fill={data?.user_wishlists ? "currentColor" : "none"}
               />
             </Button>
 
@@ -262,7 +262,7 @@ export default function Gallery({ data, images, updateList }: GalleryProps) {
               variant="outline"
               className={`rounded-full ${
                 state?.is_compare
-                  ? "bg-green-500 border-green-500 text-white hover:bg-green-600 hover:border-green-600"
+                  ? "bg-color2 border-dred text-white lg:hover:bg-color2 lg:hover:border-[#9b0f09]"
                   : "bg-white text-black"
               }`}
             >

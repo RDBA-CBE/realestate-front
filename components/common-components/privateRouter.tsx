@@ -11,7 +11,7 @@ const ProtectedRoute = (WrappedComponent) => {
     const [authorized, setAuthorized] = useState(false);
 
     useEffect(() => {
-      const token = localStorage.getItem("zentoken");
+      const token = localStorage.getItem("demo_token");
       if (!token) {
         router.replace("/login");
       } else {

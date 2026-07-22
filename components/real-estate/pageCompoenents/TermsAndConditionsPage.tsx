@@ -1333,7 +1333,7 @@ const TermsAndConditionsPage = () => {
   </h2>
 
   <p className="leading-relaxed mb-3">
-    The courts situated in <strong>Coimbatore, Tamil Nadu, India</strong>
+    The courts situated in <strong>Coimbatore, Tamil Nadu, India </strong>
     shall have exclusive jurisdiction over all disputes arising out of or
     relating to Boom Realtys and these Terms and Conditions, irrespective
     of the place from which the Platform is accessed.

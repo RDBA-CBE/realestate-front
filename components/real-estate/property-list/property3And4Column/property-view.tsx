@@ -25,6 +25,7 @@ import {
   X,
   ListCollapseIcon,
   LayoutGrid,
+  HomeIcon,
 } from "lucide-react";
 import FilterDropdown from "../../FilterDropdown.component";
 import Modal from "@/components/common-components/modal";
@@ -175,6 +176,14 @@ export function PropertyView(props: any) {
   const filterSectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
 
+  useEffect(() => {
+    if (state.isMobileFormOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [state.isMobileFormOpen]);
+
 
 
 
@@ -214,7 +223,7 @@ export function PropertyView(props: any) {
   );
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("demo_token");
     const userId = localStorage.getItem("userId");
     setState({ userLoggedIn: !!token, userId });
     if (token && userId) {
@@ -1672,19 +1681,7 @@ export function PropertyView(props: any) {
             </div>
           ) : properties?.length === 0 && !loading ? (
             <div className="flex flex-col justify-center items-center w-full py-12">
-              <svg
-                className="w-20 h-20 text-gray-300 mb-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M3 12a9 9 0 110-18 9 9 0 010 18zm0 0a9.001 9.001 0 008.154-14.856m0 0A9 9 0 1122.154 9.144m0 0a9.001 9.001 0 00-8.154 14.856"
-                />
-              </svg>
+              <HomeIcon className="text-[20px] w-20 h-20 text-gray-300 mb-4"/>
               <h3 className="text-lg font-semibold text-gray-800 mb-2">No Properties Available</h3>
               <p className="text-gray-600 mb-6 text-center max-w-md">We couldn&apos;t find any properties matching your criteria. Try adjusting your filters or search terms.</p>
               <Button

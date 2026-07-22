@@ -6,6 +6,7 @@ export const CLIENT_ID =
 
 export const KEY="AIzaSyB70Z-zjsu-TbF0F8ex3GgymPoR0IdPN6U"
 
+export const  CAPTCHA_SITE_KEY = "6LfnN1MtAAAAAPV6RW89JCZzOcnuLZHk-fdp2UDO"
 
 export const PROPERTY_LIST_PAGE = 12;
 

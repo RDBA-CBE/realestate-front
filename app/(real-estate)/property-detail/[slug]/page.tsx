@@ -201,7 +201,10 @@ function ContactSection() {
 
 // ---------------- PAGE ----------------
 export default function PropertyDetailPage() {
-  const params = useParams();
+  const {slug} : any = useParams();
+
+  const propertyId = Number(slug.match(/-id-(\d+)(?:-|$)/)?.[1]);
+
 
   const router = useRouter();
   const [state, setState] = useSetState({
@@ -251,13 +254,13 @@ export default function PropertyDetailPage() {
       top: 0,
       behavior: "smooth",
     });
-  }, [params]);
+  }, [slug, propertyId]);
 
   const getDetails = async () => {
     try {
       setState({ loading: true });
-      const token = localStorage.getItem("token");
-      const res: any = await Models.property.details(params?.id);
+      const token = localStorage.getItem("demo_token");
+      const res: any = await Models.property.details(propertyId);
       setState({ detail: res, token, loading: false });
       similarProperty(res?.property_type?.id);
     } catch (error) {
@@ -276,7 +279,7 @@ export default function PropertyDetailPage() {
       console.log("✌️res --->", res);
       // const filter = res?.results?.filter((item) => item?.id !== params?.id);
       const filter = res?.results?.filter(
-        (item) => Number(item?.id) !== Number(params?.id)
+        (item) => Number(item?.id) !== Number(propertyId)
       );
       console.log("✌️filter --->", filter);
       setState({ similarProperty: filter });

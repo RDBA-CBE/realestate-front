@@ -59,7 +59,7 @@ export default function PropertyHeader(props: any) {
   const handleWishList = async () => {
       // e.stopPropagation();
       // e.preventDefault();
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("demo_token");
       if (!token) { setLoginPopup(true); return; }
       try {
        if (!data?.user_wishlists) {
@@ -96,7 +96,7 @@ export default function PropertyHeader(props: any) {
 
   const handleWishLis = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("demo_token");
       if (token) {
         if (!data?.user_wishlists) {
           await Models.wishlist.add_property({
@@ -169,7 +169,7 @@ export default function PropertyHeader(props: any) {
             }
           <h1 className="section-ti">{data?.title}</h1>
           {data?.developer?.industry &&
-          <p>By <span className="text-dred cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.id}`)}>{data?.developer?.industry} </span></p>
+          <p>By <span className="text-dred cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.slug}`)}>{data?.developer?.industry} </span></p>
         }
           <p className="text-black leading-relaxed " style={{wordBreak:"break-all"}}>{capitalizeFLetter(data?.address)}</p>
           {/* <div className="block sm:hidden">

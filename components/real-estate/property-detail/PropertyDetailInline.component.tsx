@@ -140,7 +140,7 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
 
   const handleWishList = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("demo_token");
       if (token) {
         if (!data?.user_wishlists) {
           await Models.wishlist.add_property({
@@ -216,7 +216,7 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
 
   const getDetails = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("demo_token");
       const res: any = await Models.property.details(id);
       setState({ detail: res, token });
       if (res?.property_type?.id) {
@@ -544,7 +544,7 @@ export default function PropertyDetailInline(props: PropertyDetailInlineProps) {
     : state.detail?.description;
 
   const handleRedirect = () => {
-    router.push(`/property-detail/${state.detail?.id}`);
+    router.push(`/property-detail/${state.detail?.slug}`);
   };
 
   const getIcon = (name) => {

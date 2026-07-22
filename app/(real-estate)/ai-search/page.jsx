@@ -21,7 +21,7 @@ export default function AISearchPage() {
 
   const init = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("demo_token");
       const id = localStorage.getItem("userId");
       const wishlist_id = localStorage.getItem("wishlist_id");
 
