@@ -153,7 +153,7 @@ const Header = () => {
                 <img
                   src="/assets/images/real-estate/home/boom-logo.png"
                   alt="Logo"
-                  className="h-8 xs:h-10 sm:h-12 w-60 object-contain"
+                  className=" w-[260px]"
                 />
               </Link>
 
