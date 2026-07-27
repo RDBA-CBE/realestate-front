@@ -99,7 +99,7 @@ export default function NewFooter() {
             <img
               src="/assets/images/real-estate/home/boom-logo-wt.png"
               alt="Logo"
-              className="h-12 w-auto object-contain"
+              className="h-10 w-auto object-contain"
             />
           </Link>
 
