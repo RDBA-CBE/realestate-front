@@ -261,6 +261,8 @@ export default function PropertyDetailPage() {
       setState({ loading: true });
       const token = localStorage.getItem("demo_token");
       const res: any = await Models.property.details(propertyId);
+      console.log('✌️res --->', res);
+
       setState({ detail: res, token, loading: false });
       similarProperty(res?.property_type?.id);
     } catch (error) {
@@ -314,7 +316,7 @@ export default function PropertyDetailPage() {
     {
       id: "map",
       component: <MapSection data={state.detail} />,
-      className: "hidden xl:block", // only show on xl+
+      // className: "hidden xl:block", // only show on xl+
     },
 
    
@@ -471,7 +473,7 @@ export default function PropertyDetailPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 ">
         <div className="lg:col-span-2 space-y-4 lg:space-y-6">
-          {sections.map((sec, idx) => {
+          {sections.map((sec:any, idx) => {
             // Define an array of background colors to cycle through
             const bgColors = ["bg-gray-50", "bg-white"];
             const bgClass = bgColors[idx % bgColors.length]; // cycle dynamically

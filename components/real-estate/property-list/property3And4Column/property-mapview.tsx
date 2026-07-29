@@ -14,7 +14,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { useSetState } from "@/utils/function.utils";
-import PriceRangeSlider from "@/components/common-components/priceRange";
 import { FURNISHING_TYPE } from "@/utils/constant.utils";
 import { TextInput } from "@/components/common-components/textInput";
 import { PropertyMapCardSkeleton } from "@/components/common-components/skeleton/PropertyMapCardSkeleton.component";
@@ -24,58 +23,73 @@ import PropertyDetailInline from "../../property-detail/PropertyDetailInline.com
 export function MapView(props) {
   const {
     properties = [],
-    title = "List View",
     filters,
     loading,
+    isFilterLoading,
     isLoadingMore,
     handNext,
     loadMore,
-    categoryList,
+    categoryList = [],
+    locationList = [],
+    areaList = [],
+    projectList = [],
+    developerList = [],
+    floorPlanList = [],
+    furnishingList = [],
     minPrice,
     maxPrice,
     updateList,
     clearFilter,
+    initialSearch,
+    initialListingStatus,
+    initialPropertyType,
+    initialLocation,
+    initialArea,
+    initialDeveloper,
+    initialFurnishingList,
   } = props;
 
   const [state, setState] = useSetState({
     view: "grid",
     search: "",
-    listingStatus: "",
+    listingStatus: "All",
     propertyType: [],
     furnishing: [],
+    location: [],
+    area: [],
+    project: [],
+    developer: [],
+    floorPlan: [],
+    priceMinInput: "",
+    priceMaxInput: "",
     priceRange: [0, 0],
-    minPrice: 0,
-    maxPrice: 0,
     bedrooms: "",
     bathrooms: "",
-    location: "",
     sqftMin: "",
     sqftMax: "",
     yearBuiltMin: "",
     yearBuiltMax: "",
     sort: null,
+    prefferedLocation: false,
     isOpen: false,
+    selectedProperty: null,
   });
 
   const initialLoadRef = useRef(true);
   const filterTimeoutRef = useRef(null);
   const previousFiltersRef = useRef({});
-
   const observer = useRef<IntersectionObserver | null>(null);
-
   const propertyDetailRef = useRef<HTMLDivElement>(null);
 
   const lastPropertyElementRef = useCallback(
     (node: HTMLElement | null) => {
       if (isLoadingMore) return;
       if (observer.current) observer.current.disconnect();
-
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && handNext) {
           loadMore(state);
         }
       });
-
       if (node) observer.current.observe(node);
     },
     [isLoadingMore, handNext, loadMore, state]
@@ -84,49 +98,64 @@ export function MapView(props) {
   const resetFilters = () => {
     setState({
       search: "",
-      listingStatus: "",
+      listingStatus: "All",
       propertyType: [],
+      furnishing: [],
+      location: [],
+      area: [],
+      project: [],
+      developer: [],
+      floorPlan: [],
+      priceMinInput: "",
+      priceMaxInput: "",
       priceRange: [minPrice, maxPrice],
-      minPrice: "",
-      maxPrice: "",
       bedrooms: "",
       bathrooms: "",
-      location: "",
       sqftMin: "",
       sqftMax: "",
       yearBuiltMin: "",
       yearBuiltMax: "",
+      prefferedLocation: false,
       isOpen: false,
     });
     previousFiltersRef.current = {};
-
-    // Call parent clear filter
-    if (clearFilter) {
-      clearFilter();
-    }
+    if (clearFilter) clearFilter();
   };
 
   useEffect(() => {
+    setState({
+      search: initialSearch || "",
+      listingStatus: initialListingStatus || "All",
+      propertyType: initialPropertyType || [],
+      location: initialLocation || [],
+      area: initialArea || [],
+      developer: initialDeveloper || [],
+      furnishing: initialFurnishingList || [],
+    });
+  }, [
+    initialSearch,
+    initialListingStatus,
+    initialPropertyType,
+    initialLocation,
+    initialArea,
+    initialDeveloper,
+    initialFurnishingList,
+  ]);
+
+  useEffect(() => {
     if (initialLoadRef.current && minPrice > 0 && maxPrice > 0) {
-      setState({
-        minPrice,
-        maxPrice,
-        priceRange: [minPrice, maxPrice],
-      });
+      setState({ priceRange: [minPrice, maxPrice] });
       initialLoadRef.current = false;
     }
   }, [minPrice, maxPrice]);
 
   useEffect(() => {
-    filters(state);
+    if (state.sort !== null) filters(state);
   }, [state.sort]);
 
   useEffect(() => {
     if (state.selectedProperty && propertyDetailRef.current) {
-      propertyDetailRef.current.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
+      propertyDetailRef.current.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [state.selectedProperty]);
 
@@ -145,13 +174,6 @@ export function MapView(props) {
     setState({ [name]: value });
   };
 
-  const formatINR = (value: number) => {
-    if (isNaN(value)) return "";
-    return value.toLocaleString("en-IN");
-  };
-
-  const parseINR = (value: string) => Number(value.replace(/,/g, ""));
-
   const handleFilter = () => {
     filters(state);
     setState({ isOpen: false });
@@ -160,11 +182,10 @@ export function MapView(props) {
   return (
     <div className="min-h-[91vh] bg-white">
       <div className="grid grid-cols-1 xl:grid-cols-12 !gap-0 min-h-[91vh]">
-        <div className=" xl:col-span-3 p-6 lg:py-3 px-3 overflow-y-auto h-[calc(100vh-65px)] flex flex-col items-start">
-          {/* First sticky header */}
+        <div className="xl:col-span-3 p-6 lg:py-3 px-3 overflow-y-auto h-[calc(100vh-65px)] flex flex-col items-start">
+          {/* Sticky header */}
           <div className="sticky top-3 lg:-top-8 z-10 w-full p-3 rounded-lg mb-3 bg-color1">
-            {/* First sticky header */}
-            <div className="flex items-center justify-between  w-full">
+            <div className="flex items-center justify-between w-full">
               <Button
                 onClick={() => setState({ isOpen: true })}
                 variant="outline"
@@ -172,51 +193,36 @@ export function MapView(props) {
               >
                 <SlidersHorizontal className="h-4 w-4" /> More Filter
               </Button>
-              <div>
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-gray-600 whitespace-nowrap">
-                    Sort by:
-                  </span>
-                  <Select
-                    defaultValue="default"
-                    onValueChange={(value) => {
-                      let sortValue = "new";
-                      switch (value) {
-                        case "price-low":
-                          sortValue = "price";
-                          break;
-                        case "price-high":
-                          sortValue = "-price";
-                          break;
-                        case "default":
-                          sortValue = "";
-                          break;
-                        case "newest":
-                          sortValue = "created_at";
-                          break;
-                      }
-                      handleChange("sort", sortValue);
-                    }}
-                  >
-                    <SelectTrigger className="border-0 shadow-none focus:ring-0 p-0 h-auto text-sm font-medium text-gray-900">
-                      <SelectValue placeholder="Newest" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="default">Default</SelectItem>
-                      <SelectItem value="newest">Newest</SelectItem>
-                      <SelectItem value="price-low">
-                        Price: Low to High
-                      </SelectItem>
-                      <SelectItem value="price-high">
-                        Price: High to Low
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-gray-600 whitespace-nowrap">
+                  Sort by:
+                </span>
+                <Select
+                  defaultValue="default"
+                  onValueChange={(value) => {
+                    let sortValue = "";
+                    switch (value) {
+                      case "price-low": sortValue = "price"; break;
+                      case "price-high": sortValue = "-price"; break;
+                      case "newest": sortValue = "created_at"; break;
+                      default: sortValue = "";
+                    }
+                    handleChange("sort", sortValue);
+                  }}
+                >
+                  <SelectTrigger className="border-0 shadow-none focus:ring-0 p-0 h-auto text-sm font-medium text-gray-900">
+                    <SelectValue placeholder="Newest" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">Default</SelectItem>
+                    <SelectItem value="newest">Newest</SelectItem>
+                    <SelectItem value="price-low">Price: Low to High</SelectItem>
+                    <SelectItem value="price-high">Price: High to Low</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-            </div>{" "}
-            {/* Second sticky header */}
-            {/* <div className="flex items-center justify-between mb-2 w-full">
+            </div>
+            <div className="flex items-center justify-between mt-3 w-full">
               <div className="flex items-center gap-0 rounded-lg overflow-hidden border">
                 <Button
                   onClick={() => setState({ view: "grid" })}
@@ -242,15 +248,14 @@ export function MapView(props) {
                   List
                 </Button>
               </div>
-            </div> */}
+            </div>
           </div>
 
           <p className="text-sm text-gray-500 mb-3">
             Showing 1–{properties?.length} of {properties?.length} results
           </p>
 
-          {/* Rest of the content remains the same */}
-          {loading ? (
+          {loading || isFilterLoading ? (
             <div className={"flex flex-col w-full gap-6"}>
               {Array.from({ length: skeletonCount }).map((_, index) => (
                 <PropertyMapCardSkeleton
@@ -261,7 +266,7 @@ export function MapView(props) {
               ))}
             </div>
           ) : properties?.length === 0 ? (
-            <div className="flex flex-col justify-center items-center w-full ">
+            <div className="flex flex-col justify-center items-center w-full">
               <img
                 src="/assets/images/not_founds.jpg"
                 alt="No Property Found"
@@ -272,8 +277,8 @@ export function MapView(props) {
             <>
               <div
                 className={
-                  state.view === "list"
-                    ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 w-full"
+                  state.view === "grid"
+                    ? "grid grid-cols-1 gap-6 w-full"
                     : "flex flex-col gap-6 w-full"
                 }
               >
@@ -290,9 +295,7 @@ export function MapView(props) {
                     <PropertyCard
                       property={property}
                       view={state.view}
-                      handleClick={() => {
-                        setState({ selectedProperty: property });
-                      }}
+                      handleClick={() => setState({ selectedProperty: property })}
                       list={properties}
                       updateList={(data) => updateList(data)}
                     />
@@ -336,18 +339,11 @@ export function MapView(props) {
           </div>
         )}
 
-        {/* Map section remains the same */}
         <div
           className={`${
-            state.selectedProperty ? "xl:col-span-6" : "xl:col-span-9 "
+            state.selectedProperty ? "xl:col-span-6" : "xl:col-span-9"
           } relative h-full bg-gray-200`}
         >
-          {/* <iframe
-            title='Map'
-            className='w-full h-full'
-            src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31510.7524969315!2d-118.343!3d34.052!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c0!2sLos%20Angeles!5e0!3m2!1sen!2sus!4v1700000000000'
-            loading='lazy'
-          ></iframe> */}
           <GoogleMapPropertyList
             properties={properties}
             selectedProperties={state.selectedProperty}
@@ -355,7 +351,7 @@ export function MapView(props) {
         </div>
       </div>
 
-      {/* Filter modal remains the same */}
+      {/* Filter modal */}
       <AnimatePresence>
         {state.isOpen && (
           <>
@@ -378,21 +374,15 @@ export function MapView(props) {
             >
               <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
                 <div className="flex items-center justify-between p-6 border-b">
-                  <h3 className="text-xl font-semibold text-gray-900">
-                    Filters
-                  </h3>
-
+                  <h3 className="text-xl font-semibold text-gray-900">Filters</h3>
                   <div className="flex items-center gap-3">
                     <Button
                       className="bg-[#F35C48] hover:bg-[#d94d3c] flex items-center justify-center gap-2"
-                      onClick={() => {
-                        handleFilter();
-                      }}
+                      onClick={handleFilter}
                     >
                       <SearchIcon className="h-4 w-4" />
                       Search
                     </Button>
-
                     <Button
                       variant="outline"
                       className="flex items-center justify-center gap-2"
@@ -401,7 +391,6 @@ export function MapView(props) {
                       <RotateCcw className="h-4 w-4" />
                       Reset
                     </Button>
-
                     <Button
                       variant="ghost"
                       size="icon"
@@ -415,37 +404,29 @@ export function MapView(props) {
 
                 <div className="overflow-y-auto max-h-[calc(90vh-80px)] p-6">
                   <div className="space-y-6">
-                    <div className=" font-semibold text-gray-900">
+                    {/* Search */}
+                    <div className="font-semibold text-gray-900">
                       Search Property
                       <div className="mt-3">
                         <TextInput
                           placeholder="What are you looking for?"
                           value={state.search}
-                          onChange={(e) =>
-                            handleChange("search", e.target.value)
-                          }
+                          onChange={(e) => handleChange("search", e.target.value)}
                         />
                       </div>
                     </div>
 
+                    {/* Listing Status */}
                     <div>
-                      <div className="mb-2 font-semibold text-gray-900">
-                        Listing Status
-                      </div>
-
+                      <div className="mb-2 font-semibold text-gray-900">Listing Status</div>
                       <div className="flex items-center justify-start gap-6">
-                        {["All", "Sale", "Lease"].map((option) => (
-                          <label
-                            key={option}
-                            className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
-                          >
+                        {["All", "For Sale", "For Lease"].map((option) => (
+                          <label key={option} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
                             <input
                               type="radio"
                               name="listingStatus"
                               checked={state.listingStatus === option}
-                              onChange={() =>
-                                handleChange("listingStatus", option)
-                              }
+                              onChange={() => handleChange("listingStatus", option)}
                               className="accent-blue-600 cursor-pointer"
                             />
                             {option}
@@ -454,108 +435,183 @@ export function MapView(props) {
                       </div>
                     </div>
 
-                    <div>
-                      <div className="mb-2 font-semibold text-gray-900">
-                        Property Type
-                      </div>
-                      <div className="flex items-center justify-start gap-6">
-                        {categoryList?.map((option) => (
-                          <label
-                            key={option?.value}
-                            className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
-                          >
-                            <input
-                              type="checkbox"
-                              className="cursor-pointer"
-                              checked={state.propertyType?.some(
-                                (t) => t.value === option.value
-                              )}
-                              onChange={(e) => {
-                                let updated;
-                                if (e.target.checked) {
-                                  // ✅ Add selected option
-                                  updated = [...state.propertyType, option];
-                                } else {
-                                  // ✅ Remove unchecked option
-                                  updated = state.propertyType.filter(
-                                    (t) => t.value !== option.value
-                                  );
+                    {/* Property Type */}
+                    {categoryList?.length > 0 && (
+                      <div>
+                        <div className="mb-2 font-semibold text-gray-900">Property Type</div>
+                        <div className="flex flex-wrap gap-4">
+                          {categoryList.map((option) => (
+                            <label key={option?.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                className="cursor-pointer"
+                                checked={state.propertyType?.some((t) => t.value === option.value)}
+                                onChange={(e) =>
+                                  handleChange("propertyType", e.target.checked
+                                    ? [...state.propertyType, option]
+                                    : state.propertyType.filter((t) => t.value !== option.value))
                                 }
-                                handleChange("propertyType", updated);
-                              }}
-                            />
-                            <span>{option?.label}</span>
-                          </label>
-                        ))}
+                              />
+                              <span>{option?.label}</span>
+                            </label>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    )}
 
+                    {/* Location */}
+                    {locationList?.length > 0 && (
+                      <div>
+                        <div className="mb-2 font-semibold text-gray-900">Location</div>
+                        <div className="flex flex-wrap gap-4">
+                          {locationList.map((option) => (
+                            <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                className="cursor-pointer"
+                                checked={state.location.some((t) => t.value === option.value)}
+                                onChange={(e) =>
+                                  handleChange("location", e.target.checked
+                                    ? [...state.location, option]
+                                    : state.location.filter((t) => t.value !== option.value))
+                                }
+                              />
+                              <span>{option.label}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Area */}
+                    {areaList?.length > 0 && (
+                      <div>
+                        <div className="mb-2 font-semibold text-gray-900">Area</div>
+                        <div className="flex flex-wrap gap-4">
+                          {areaList.map((option) => (
+                            <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                className="cursor-pointer"
+                                checked={state.area.some((t) => t.value === option.value)}
+                                onChange={(e) =>
+                                  handleChange("area", e.target.checked
+                                    ? [...state.area, option]
+                                    : state.area.filter((t) => t.value !== option.value))
+                                }
+                              />
+                              <span>{option.label}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Developer */}
+                    {developerList?.length > 0 && (
+                      <div>
+                        <div className="mb-2 font-semibold text-gray-900">Developer</div>
+                        <div className="flex flex-wrap gap-4">
+                          {developerList.map((option) => (
+                            <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                className="cursor-pointer"
+                                checked={state.developer.some((t) => t.value === option.value)}
+                                onChange={(e) =>
+                                  handleChange("developer", e.target.checked
+                                    ? [...state.developer, option]
+                                    : state.developer.filter((t) => t.value !== option.value))
+                                }
+                              />
+                              <span>{option.label}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Project */}
+                    {projectList?.length > 0 && (
+                      <div>
+                        <div className="mb-2 font-semibold text-gray-900">Project</div>
+                        <div className="flex flex-wrap gap-4">
+                          {projectList.map((option) => (
+                            <label key={option.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                className="cursor-pointer"
+                                checked={state.project.some((t) => t.value === option.value)}
+                                onChange={(e) =>
+                                  handleChange("project", e.target.checked
+                                    ? [...state.project, option]
+                                    : state.project.filter((t) => t.value !== option.value))
+                                }
+                              />
+                              <span>{option.label}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Budget */}
                     <div>
-                      <PriceRangeSlider
-                        min={0}
-                        max={50000000}
-                        value={state.priceRange}
-                        onChange={(val) => {
-                          setState({ priceRange: val });
-                          handleChange("minPrice", val[0]);
-                          handleChange("maxPrice", val[1]);
-                        }}
-                      />
-
-                      <div className="flex gap-3 mt-4 items-center">
+                      <div className="mb-2 font-semibold text-gray-900">Budget</div>
+                      <div className="flex gap-3 items-center">
                         <div className="relative w-full">
-                          <span className="absolute left-3 top-2 text-gray-600">
-                            ₹
-                          </span>
+                          <span className="absolute left-3 top-2 text-gray-600">₹</span>
                           <Input
                             type="text"
-                            className="pl-6 pr-0"
+                            className="pl-6"
                             placeholder="Min."
-                            value={formatINR(state.priceRange?.[0] ?? 0)}
-                            onChange={(e) => {
-                              const newMin = parseINR(e.target.value);
-                              const newMax = Math.max(
-                                newMin,
-                                state.priceRange?.[1] ?? 0
-                              );
-                              const updated = [newMin, newMax];
-                              handleChange("priceRange", updated);
-                              setState({ priceRange: updated });
-                            }}
+                            value={state.priceMinInput}
+                            onChange={(e) => handleChange("priceMinInput", e.target.value)}
                           />
                         </div>
-
-                        <span className="flex items-center">-</span>
-
+                        <span>-</span>
                         <div className="relative w-full">
-                          <span className="absolute left-3 top-2 text-gray-600">
-                            ₹
-                          </span>
+                          <span className="absolute left-3 top-2 text-gray-600">₹</span>
                           <Input
                             type="text"
-                            className="pl-6 pr-0"
+                            className="pl-6"
                             placeholder="Max."
-                            value={formatINR(state.priceRange?.[1] ?? 0)}
-                            onChange={(e) => {
-                              const newMax = parseINR(e.target.value);
-                              const newMin = Math.min(
-                                newMax,
-                                state.priceRange?.[0] ?? 0
-                              );
-                              const updated = [newMin, newMax];
-                              handleChange("priceRange", updated);
-                              setState({ priceRange: updated });
-                            }}
+                            value={state.priceMaxInput}
+                            onChange={(e) => handleChange("priceMaxInput", e.target.value)}
                           />
                         </div>
                       </div>
                     </div>
 
-                    <div>
-                      <div className="mb-2 font-semibold text-gray-900">
-                        Bedrooms
+                    {/* Unit Configuration / Floor Plan */}
+                    {floorPlanList?.length > 0 && (
+                      <div>
+                        <div className="mb-2 font-semibold text-gray-900">Unit Configuration</div>
+                        <div className="flex flex-wrap gap-2">
+                          {floorPlanList.map((option) => (
+                            <label key={option.value}>
+                              <input
+                                type="checkbox"
+                                checked={state.floorPlan.some((t) => t.value === option.value)}
+                                onChange={(e) =>
+                                  handleChange("floorPlan", e.target.checked
+                                    ? [...state.floorPlan, option]
+                                    : state.floorPlan.filter((t) => t.value !== option.value))
+                                }
+                                className="peer hidden"
+                              />
+                              <span className="flex items-center justify-center px-4 py-1 rounded-lg border text-sm font-medium cursor-pointer border-gray-300 text-gray-700 bg-white peer-checked:border-red-600 peer-checked:text-red-500">
+                                {option.label}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
                       </div>
+                    )}
 
+                    {/* Bedrooms */}
+                    <div>
+                      <div className="mb-2 font-semibold text-gray-900">Bedrooms</div>
                       <div className="flex flex-wrap gap-2">
                         {["Any", "2+", "3+", "4+", "5+"].map((option) => (
                           <label key={option}>
@@ -574,106 +630,25 @@ export function MapView(props) {
                       </div>
                     </div>
 
+                    {/* Furnishing */}
                     <div>
-                      <div className="mb-2 font-semibold text-gray-900">
-                        Bathrooms
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {["Any", "2+", "3+", "4+", "5+"].map((option) => (
-                          <label key={option}>
-                            <input
-                              type="radio"
-                              name="bathrooms"
-                              checked={state.bathrooms === option}
-                              onChange={() => handleChange("bathrooms", option)}
-                              className="peer hidden"
-                            />
-                            <span className="flex items-center justify-center px-3 py-1.5 border rounded-md text-sm text-gray-700 hover:border-red-400 peer-checked:border-dred">
-                              {option}
-                            </span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="mb-2 font-semibold text-gray-900">
-                        Furnishing
-                      </div>
-                      <div className="flex items-center justify-start gap-6">
-                        {FURNISHING_TYPE?.map((option) => (
-                          <label
-                            key={option?.value}
-                            className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
-                          >
+                      <div className="mb-2 font-semibold text-gray-900">Furnishing</div>
+                      <div className="flex flex-wrap gap-4">
+                        {(furnishingList?.length ? furnishingList : FURNISHING_TYPE)?.map((option) => (
+                          <label key={option?.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
                             <input
                               type="checkbox"
                               className="cursor-pointer"
-                              checked={state.furnishing.some(
-                                (t) => t.value === option.value
-                              )}
-                              onChange={(e) => {
-                                let updated;
-                                if (e.target.checked) {
-                                  updated = [option];
-                                } else {
-                                  updated = [];
-                                }
-                                handleChange("furnishing", updated);
-                              }}
+                              checked={state.furnishing.some((t) => t.value === option.value)}
+                              onChange={(e) =>
+                                handleChange("furnishing", e.target.checked
+                                  ? [...state.furnishing, option]
+                                  : state.furnishing.filter((t) => t.value !== option.value))
+                              }
                             />
                             <span>{option?.label}</span>
                           </label>
                         ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="mb-2 font-semibold text-gray-900">
-                        Square Feet
-                      </div>
-                      <div className="flex gap-3">
-                        <Input
-                          type="number"
-                          placeholder="Min."
-                          value={state.sqftMin}
-                          onChange={(e) =>
-                            handleChange("sqftMin", e.target.value)
-                          }
-                        />
-                        <span className="flex items-center">-</span>
-                        <Input
-                          type="number"
-                          placeholder="Max."
-                          value={state.sqftMax}
-                          onChange={(e) =>
-                            handleChange("sqftMax", e.target.value)
-                          }
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="mb-2 font-semibold text-gray-900">
-                        Year Built
-                      </div>
-                      <div className="flex gap-3">
-                        <Input
-                          type="number"
-                          placeholder=""
-                          value={state.yearBuiltMin}
-                          onChange={(e) =>
-                            handleChange("yearBuiltMin", e.target.value)
-                          }
-                        />
-                        <Input
-                          type="number"
-                          placeholder=""
-                          value={state.yearBuiltMax}
-                          onChange={(e) =>
-                            handleChange("yearBuiltMax", e.target.value)
-                          }
-                        />
                       </div>
                     </div>
                   </div>
