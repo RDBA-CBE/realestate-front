@@ -235,13 +235,13 @@ export default function NewFooter() {
         <div className="flex flex-col gap-6  py-8 md:flex-row md:items-center md:justify-center">
           <h3 className="section-ti !text-white !font-normal mb-0 pb-0">Get Mobile App</h3>
           <div className="flex gap-4">
-            <div className="rounded-xl  w-[150px] h-15 text-black">
+            {/* <div className="rounded-xl  w-[150px] h-15 text-black">
               <img src="/assets/images/real-estate/home/app-store.png" alt="" className="rounded-xl object-cover w-[100%] h-[100%]" />
-            </div>
-            <div className="rounded-xl  w-[150px] h-15 text-black">
+            </div> */}
+            <Link href={'https://play.google.com/store/apps/details?id=boomrealtys.com'} target="_blank" className="rounded-xl  w-[150px] h-15 text-black">
                             <img src="/assets/images/real-estate/home/play-store.png" alt="" className="rounded-xl object-cover w-[100%] h-[100%]" />
 
-            </div>
+            </Link>
           </div>
         </div>
 

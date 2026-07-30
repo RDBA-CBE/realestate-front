@@ -28,7 +28,7 @@ import { useState } from "react";
 import ContactAgentForm from "./ContactAgentForm.component";
 
 export default function FeaturedListings(props: any) {
-  const { data } = props;
+  const { data, onPropertyClick, mobileLayout = false } = props;
     const params = useParams();
 
 
@@ -81,7 +81,7 @@ export default function FeaturedListings(props: any) {
         spaceBetween={20}
         slidesPerView={1}
         navigation={{ prevEl: ".featured-prev", nextEl: ".featured-next" }}
-        breakpoints={{
+        breakpoints={mobileLayout ? undefined : {
           640: { slidesPerView: 1 },
           1024: { slidesPerView: 3 },
         }}
@@ -98,6 +98,7 @@ export default function FeaturedListings(props: any) {
                   property={property}
                   view="grid"
                   list={data}
+                  handleClick={() => onPropertyClick?.(property)}
                    onContactClick={(prop) => {
                         setSelectedProperty(prop);
                         setIsContactModalOpen(true);

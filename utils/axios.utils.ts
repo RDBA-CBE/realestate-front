@@ -27,19 +27,17 @@ const showTokenExpiredAlert = () => {
   if (isAlertShown) return;
   isAlertShown = true;
 
+  // flush queued requests immediately
+  processQueue(new Error("Session expired"), null);
+
   const userConfirmed = window.confirm(
-    "Your token has expired. Click OK to login again.",
+    "Your session has expired. Click OK to login again.",
   );
 
-  if (userConfirmed) {
-    localStorage.clear();
-    window.location.href = "/login";
-  } else {
-    setTimeout(() => {
-      localStorage.clear();
-      window.location.href = "/login";
-    }, 1000);
-  }
+  isAlertShown = false;
+
+  localStorage.clear();
+  window.location.href = "/login";
 };
 
 export const instance = (): AxiosInstance => {
@@ -68,12 +66,11 @@ export const instance = (): AxiosInstance => {
       const originalRequest: any = error.config;
 
       if (
-        (error.response?.status === 401 &&
-          error.response?.data?.code === "token_not_valid" &&
-          !originalRequest._retry) ||
-        error.response?.data?.error ===
-          "Given token not valid for any token type"
-      )  {
+        error.response?.status === 401 &&
+        (error.response?.data?.code === "token_not_valid" ||
+          error.response?.data?.error === "Given token not valid for any token type") &&
+        !originalRequest._retry
+      ) {
         originalRequest._retry = true;
 
         const refreshToken = localStorage.getItem("demo_refresh");
@@ -113,8 +110,8 @@ export const instance = (): AxiosInstance => {
             );
 
             const { access, refresh } = response.data;
-            localStorage.setItem("token", access);
-            localStorage.setItem("refresh", refresh);
+            localStorage.setItem("demo_token", access);
+            localStorage.setItem("demo_refresh", refresh);
 
             api!.defaults.headers.common["Authorization"] = "Bearer " + access;
             originalRequest.headers["Authorization"] = "Bearer " + access;

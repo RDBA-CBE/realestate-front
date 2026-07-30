@@ -19,6 +19,9 @@ import { TextInput } from "@/components/common-components/textInput";
 import { PropertyMapCardSkeleton } from "@/components/common-components/skeleton/PropertyMapCardSkeleton.component";
 import GoogleMapPropertyList from "../../property-detail/gooleMapPropertyList.component";
 import PropertyDetailInline from "../../property-detail/PropertyDetailInline.component";
+import useDebounce from "@/components/common-components/useDebounce";
+import ContactAgentForm from "../../property-detail/ContactAgentForm.component";
+import { useRouter } from "next/navigation";
 
 export function MapView(props) {
   const {
@@ -63,6 +66,10 @@ export function MapView(props) {
     priceMinInput: "",
     priceMaxInput: "",
     priceRange: [0, 0],
+    minPrice: 0,
+    maxPrice: 0,
+    priceFloor: 0,
+    priceCeiling: 0,
     bedrooms: "",
     bathrooms: "",
     sqftMin: "",
@@ -94,6 +101,20 @@ export function MapView(props) {
     },
     [isLoadingMore, handNext, loadMore, state]
   );
+
+  const router = useRouter()
+
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState<any>(null);
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+      setToken(localStorage.getItem("demo_token"));
+    }, []);
+
+  const redirect = () => {
+    router.push(`/property-list?developerId=${`developerId`}`);
+  };
 
   const resetFilters = () => {
     setState({
@@ -150,10 +171,6 @@ export function MapView(props) {
   }, [minPrice, maxPrice]);
 
   useEffect(() => {
-    if (state.sort !== null) filters(state);
-  }, [state.sort]);
-
-  useEffect(() => {
     if (state.selectedProperty && propertyDetailRef.current) {
       propertyDetailRef.current.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -168,6 +185,86 @@ export function MapView(props) {
     }
   }, [properties, isLoadingMore, lastPropertyElementRef]);
 
+  // Debounced filter values
+  const debouncedSearch = useDebounce(state.search, 500);
+  const debouncedSqftMin = useDebounce(state.sqftMin, 500);
+  const debouncedSqftMax = useDebounce(state.sqftMax, 500);
+  const debouncedYearBuiltMin = useDebounce(state.yearBuiltMin, 500);
+  const debouncedYearBuiltMax = useDebounce(state.yearBuiltMax, 500);
+  const debouncedPriceMinInput = useDebounce(state.priceMinInput, 500);
+  const debouncedPriceMaxInput = useDebounce(state.priceMaxInput, 500);
+
+  // Auto-trigger filters when any filter changes (dynamic filtering)
+  useEffect(() => {
+    if (initialLoadRef.current) {
+      return;
+    }
+
+    if (filterTimeoutRef.current) {
+      clearTimeout(filterTimeoutRef.current);
+    }
+
+    const currentFilters = {
+      listingStatus: state.listingStatus,
+      propertyType: state.propertyType,
+      bedrooms: state.bedrooms,
+      bathrooms: state.bathrooms,
+      location: state.location,
+      area: state.area,
+      project: state.project,
+      developer: state.developer,
+      floorPlan: state.floorPlan,
+      furnishing: state.furnishing,
+      search: debouncedSearch,
+      sqftMin: debouncedSqftMin,
+      sqftMax: debouncedSqftMax,
+      yearBuiltMin: debouncedYearBuiltMin,
+      yearBuiltMax: debouncedYearBuiltMax,
+      sort: state.sort,
+      prefferedLocation: state.prefferedLocation,
+      priceMinInput: debouncedPriceMinInput,
+      priceMaxInput: debouncedPriceMaxInput,
+    };
+
+    const hasFiltersChanged =
+      JSON.stringify(currentFilters) !==
+      JSON.stringify(previousFiltersRef.current);
+
+    if (hasFiltersChanged) {
+      filterTimeoutRef.current = setTimeout(() => {
+        filters(currentFilters);
+        if (props.onFilterChange) props.onFilterChange(currentFilters);
+        previousFiltersRef.current = currentFilters;
+      }, 400);
+    }
+
+    return () => {
+      if (filterTimeoutRef.current) {
+        clearTimeout(filterTimeoutRef.current);
+      }
+    };
+  }, [
+    state.listingStatus,
+    state.propertyType,
+    state.bedrooms,
+    state.bathrooms,
+    state.location,
+    state.area,
+    state.project,
+    state.developer,
+    state.floorPlan,
+    state.furnishing,
+    debouncedSearch,
+    debouncedSqftMin,
+    debouncedSqftMax,
+    debouncedYearBuiltMin,
+    debouncedYearBuiltMax,
+    debouncedPriceMinInput,
+    debouncedPriceMaxInput,
+    state.prefferedLocation,
+    state.sort,
+  ]);
+
   const skeletonCount = state.view === "grid" ? 2 : 1;
 
   const handleChange = (name: string, value: any) => {
@@ -175,9 +272,80 @@ export function MapView(props) {
   };
 
   const handleFilter = () => {
-    filters(state);
+    // Close modal - filters will auto-trigger via useEffect
     setState({ isOpen: false });
   };
+
+  const removeSelection = (key: string, value: any) => {
+    setState({
+      [key]: (state[key] || []).filter((item: any) => item?.value !== value),
+    });
+  };
+
+  const activeFilters = [
+    ...(state.search ? [{ label: `Search: ${state.search}`, remove: () => setState({ search: "" }) }] : []),
+    ...(state.listingStatus && state.listingStatus !== "All"
+      ? [{ label: state.listingStatus, remove: () => setState({ listingStatus: "All" }) }]
+      : []),
+    ...(state.propertyType || []).map((item: any) => ({
+      label: item.label,
+      remove: () => removeSelection("propertyType", item.value),
+    })),
+    ...(state.location || []).map((item: any) => ({
+      label: item.label,
+      remove: () => removeSelection("location", item.value),
+    })),
+    ...(state.area || []).map((item: any) => ({
+      label: item.label,
+      remove: () => removeSelection("area", item.value),
+    })),
+    ...(state.project || []).map((item: any) => ({
+      label: item.label,
+      remove: () => removeSelection("project", item.value),
+    })),
+    ...(state.developer || []).map((item: any) => ({
+      label: item.label,
+      remove: () => removeSelection("developer", item.value),
+    })),
+    ...(state.floorPlan || []).map((item: any) => ({
+      label: item.label,
+      remove: () => removeSelection("floorPlan", item.value),
+    })),
+    ...(state.furnishing || []).map((item: any) => ({
+      label: item.label,
+      remove: () => removeSelection("furnishing", item.value),
+    })),
+    ...(state.priceMinInput || state.priceMaxInput
+      ? [{
+          label: `Budget: ₹${state.priceMinInput || "0"} - ₹${state.priceMaxInput || "Any"}`,
+          remove: () => setState({ priceMinInput: "", priceMaxInput: "" }),
+        }]
+      : []),
+    ...(state.bedrooms && state.bedrooms !== "Any"
+      ? [{ label: `${state.bedrooms} Bedrooms`, remove: () => setState({ bedrooms: "" }) }]
+      : []),
+    ...(state.bathrooms && state.bathrooms !== "Any"
+      ? [{ label: `${state.bathrooms} Bathrooms`, remove: () => setState({ bathrooms: "" }) }]
+      : []),
+    ...(state.sqftMin || state.sqftMax
+      ? [{
+          label: `Area: ${state.sqftMin || "0"} - ${state.sqftMax || "Any"} sq.ft`,
+          remove: () => setState({ sqftMin: "", sqftMax: "" }),
+        }]
+      : []),
+    ...(state.yearBuiltMin || state.yearBuiltMax
+      ? [{
+          label: `Year: ${state.yearBuiltMin || "Any"} - ${state.yearBuiltMax || "Any"}`,
+          remove: () => setState({ yearBuiltMin: "", yearBuiltMax: "" }),
+        }]
+      : []),
+    ...(state.sort
+      ? [{
+          label: state.sort === "price" ? "Price: Low to High" : state.sort === "-price" ? "Price: High to Low" : "Newest",
+          remove: () => setState({ sort: null }),
+        }]
+      : []),
+  ];
 
   return (
     <div className="min-h-[91vh] bg-white">
@@ -198,7 +366,7 @@ export function MapView(props) {
                   Sort by:
                 </span>
                 <Select
-                  defaultValue="default"
+                  value={state.sort || "default"}
                   onValueChange={(value) => {
                     let sortValue = "";
                     switch (value) {
@@ -222,7 +390,7 @@ export function MapView(props) {
                 </Select>
               </div>
             </div>
-            <div className="flex items-center justify-between mt-3 w-full">
+            {/* <div className="flex items-center justify-between mt-3 w-full">
               <div className="flex items-center gap-0 rounded-lg overflow-hidden border">
                 <Button
                   onClick={() => setState({ view: "grid" })}
@@ -248,10 +416,39 @@ export function MapView(props) {
                   List
                 </Button>
               </div>
-            </div>
+            </div> */}
           </div>
 
-          <p className="text-sm text-gray-500 mb-3">
+          {activeFilters.length > 0 && (
+            <div className="w-full mb-4 px-1">
+              <div className="flex items-center justify-between gap-3 mb-2">
+                <span className="text-sm font-medium text-gray-700">Active filters</span>
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="text-sm font-medium text-dred hover:underline"
+                >
+                  Clear all
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {activeFilters.map((filter, index) => (
+                  <button
+                    key={`${filter.label}-${index}`}
+                    type="button"
+                    onClick={filter.remove}
+                    className="inline-flex items-center gap-1 rounded-full border border-dred/30 bg-red-50 px-3 py-1 text-xs font-medium text-dred hover:bg-red-100"
+                    aria-label={`Remove ${filter.label} filter`}
+                  >
+                    {filter.label}
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <p className="text-sm text-gray-500 mb-3 ms-auto">
             Showing 1–{properties?.length} of {properties?.length} results
           </p>
 
@@ -298,6 +495,10 @@ export function MapView(props) {
                       handleClick={() => setState({ selectedProperty: property })}
                       list={properties}
                       updateList={(data) => updateList(data)}
+                      onContactClick={(prop) => {
+                          setSelectedProperty(prop);
+                          setIsContactModalOpen(true);
+                        }}
                     />
                   </div>
                 ))}
@@ -326,7 +527,7 @@ export function MapView(props) {
 
         {state.selectedProperty && (
           <div
-            className="xl:col-span-3 h-[calc(100vh-65px)] overflow-y-auto"
+            className="xl:col-span-3 relative h-[calc(100vh-65px)] overflow-y-auto"
             ref={propertyDetailRef}
           >
             <PropertyDetailInline
@@ -377,7 +578,7 @@ export function MapView(props) {
                   <h3 className="text-xl font-semibold text-gray-900">Filters</h3>
                   <div className="flex items-center gap-3">
                     <Button
-                      className="bg-[#F35C48] hover:bg-[#d94d3c] flex items-center justify-center gap-2"
+                      className="bg-dred hover:bg-dred rounded-full flex items-center justify-center gap-2"
                       onClick={handleFilter}
                     >
                       <SearchIcon className="h-4 w-4" />
@@ -385,7 +586,7 @@ export function MapView(props) {
                     </Button>
                     <Button
                       variant="outline"
-                      className="flex items-center justify-center gap-2"
+                      className="flex items-center justify-center gap-2 border border-dred rounded-full text-dred hover:text-dred"
                       onClick={resetFilters}
                     >
                       <RotateCcw className="h-4 w-4" />
@@ -658,6 +859,38 @@ export function MapView(props) {
           </>
         )}
       </AnimatePresence>
+
+       {/* CONTACT MODAL */}
+            <AnimatePresence>
+              {isContactModalOpen && (
+                <>
+                  {/* OVERLAY */}
+                  <motion.div
+                    className="fixed inset-0 z-40 bg-black/50"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setIsContactModalOpen(false)}
+                  />
+      
+                  {/* MODAL */}
+                  <motion.div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    <ContactAgentForm
+                      data={selectedProperty}
+                      token={token}
+                      onClose={() => setIsContactModalOpen(false)}
+                      industryClick={() => redirect()}
+                    />
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
     </div>
   );
 }

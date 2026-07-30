@@ -17,6 +17,14 @@ export default function Page() {
   const locationParam = searchParams.get("location");
   const furnishing = searchParams.get("furnishing");
 
+  const ai_location = searchParams.get("ai_location");
+  const ai_area = searchParams.get("ai_area");
+  const ai_propertyType = searchParams.get("ai_propertyType");
+  const ai_floor_plans_category = searchParams.get("ai_floor_plans_category");
+  const ai_maxPrice = searchParams.get("ai_maxPrice");
+  const ai_furnishing = searchParams.get("ai_furnishing");
+  const ai_amenities = searchParams.get("ai_amenities");
+
   const [state, setState] = useSetState({
     propertyList: [],
     loading: false,
@@ -45,7 +53,7 @@ export default function Page() {
   useEffect(() => {
     initPage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [developerId, search, type, propertyType, locationParam, furnishing]);
+  }, [developerId, search, type, propertyType, locationParam, ai_location, furnishing]);
 
   const toFilterOptions = (items: any[] = []) =>
     items.map((item: any) => ({
@@ -126,22 +134,180 @@ export default function Page() {
     return urlFilter;
   };
 
+  // Progressively match ai_ params against dynamicFilter response step by step
+  const buildAiFilter = async () => {
+    const matched: any = {};
+
+    // Step 1: match ai_location by name
+    if (ai_location) {
+      const res1: any = await Models.property.dynamicFilter({});
+      const loc = (res1?.location || []).find(
+        (item: any) =>
+          item.name?.toLowerCase() === ai_location.toLowerCase() ||
+          item.id == ai_location
+      );
+      if (loc) matched.location = [loc.id];
+    }
+
+    if (ai_area) {
+      const res2: any = await Models.property.dynamicFilter(
+        matched.location ? { location: matched.location } : {}
+      );
+      const pt = (res2?.area || []).find(
+        (item: any) => item.name == ai_area
+      );
+      if (pt) matched.area = [pt.id];
+    }
+
+    // Step 2: match ai_propertyType by name, passing location so far
+    if (ai_propertyType) {
+      const res2: any = await Models.property.dynamicFilter({
+        ...(matched.location ? { location: matched.location } : {}),
+        ...(matched.area ? { area: matched.area } : {}),
+      });
+      const pt = (res2?.property_type || []).find(
+        (item: any) =>
+          item.name?.toLowerCase() === ai_propertyType.toLowerCase() ||
+          item.id == ai_propertyType
+      );
+      if (pt) matched.property_type = [pt.id];
+    }
+
+    // Step 3: match ai_floor_plans_category by value/name
+    if (ai_floor_plans_category) {
+      const res3: any = await Models.property.dynamicFilter({
+        ...(matched.location ? { location: matched.location } : {}),
+        ...(matched.area ? { area: matched.area } : {}),
+        ...(matched.property_type ? { property_type: matched.property_type } : {}),
+      });
+      const fp = (res3?.floor_plans || []).find(
+        (item: any) =>
+          item.value?.toLowerCase() === ai_floor_plans_category.toLowerCase() ||
+          item.name?.toLowerCase() === ai_floor_plans_category.toLowerCase()
+      );
+      if (fp) matched.floor_plan = [fp.value];
+    }
+
+    // Step 4: match ai_furnishing by value/name
+    if (ai_furnishing) {
+      const res4: any = await Models.property.dynamicFilter({
+        ...(matched.location ? { location: matched.location } : {}),
+        ...(matched.area ? { area: matched.area } : {}),
+        ...(matched.property_type ? { property_type: matched.property_type } : {}),
+        ...(matched.floor_plan ? { floor_plan: matched.floor_plan } : {}),
+      });
+      const fur = (res4?.furnishing || []).find(
+        (item: any) =>
+          item.value?.toLowerCase() === ai_furnishing.toLowerCase() ||
+          item.name?.toLowerCase() === ai_furnishing.toLowerCase()
+      );
+      if (fur) matched.furnishing = fur.value;
+    }
+
+    // Step 5: ai_maxPrice — use directly as max_price
+    if (ai_maxPrice) {
+      matched.max_price = Number(ai_maxPrice);
+    }
+
+    // Final: fetch with all matched filters, get final dynamicFilter response
+    const finalRes: any = await Models.property.dynamicFilter({
+      ...(matched.location ? { location: matched.location } : {}),
+      ...(matched.area ? { area: matched.area } : {}),
+      ...(matched.property_type ? { property_type: matched.property_type } : {}),
+      ...(matched.floor_plan ? { floor_plan: matched.floor_plan } : {}),
+      ...(matched.furnishing ? { furnishing: matched.furnishing } : {}),
+      ...(matched.max_price ? { max_price: matched.max_price } : {}),
+    });
+
+    return { matched, finalFilterResponse: finalRes };
+  };
+
   const initPage = async () => {
     try {
       setState({ loading: true });
+
+      const hasAiParams =
+        ai_location ||
+        ai_propertyType ||
+        ai_floor_plans_category ||
+        ai_maxPrice ||
+        ai_furnishing ||
+        ai_amenities;
+
+      // 1. fetch dynamic filters first
       const res: any = await Models.property.dynamicFilter({});
       setFilterLists(res);
 
-      const urlFilter = buildUrlParamFilter(res);
-      setState({
-        initialLocation: urlFilter.location || [],
-        initialPropertyType: urlFilter.propertyType || [],
-        initialArea: [],
-        initialDeveloper: urlFilter.developer || [],
-        initialFurnishingList: urlFilter.furnishing || [],
-      });
+      if (hasAiParams) {
+        // 2a. Build ai filter progressively
+        const { matched, finalFilterResponse } = await buildAiFilter();
 
-      await propertyList(1, false, Object.keys(urlFilter).length ? urlFilter : null);
+        // Map matched ids back to label/value format for UI
+        const aiLocation = (matched.location || [])
+          .map((id: number) => {
+            const found = (finalFilterResponse?.location || res?.location || []).find((l: any) => l.id === id);
+            return found ? { label: found.name, value: found.id } : null;
+          })
+          .filter(Boolean);
+
+        const aiPropertyType = (matched.property_type || [])
+          .map((id: number) => {
+            const found = (res?.property_type || []).find((p: any) => p.id === id);
+            return found ? { label: found.name, value: found.id } : null;
+          })
+          .filter(Boolean);
+
+        const aiFloorPlan = (matched.floor_plan || [])
+          .map((val: string) => {
+            const found = (res?.floor_plans || []).find((f: any) => f.value === val);
+            return found ? { label: found.name.toUpperCase(), value: found.value } : null;
+          })
+          .filter(Boolean);
+
+        const aiFurnishing = matched.furnishing
+          ? (res?.furnishing || [])
+              .filter((f: any) => f.value === matched.furnishing)
+              .map((f: any) => ({ label: f.name, value: f.value }))
+          : [];
+
+        const aiArea = (matched.area || [])
+          .map((id: number) => {
+            const found = (res?.area || []).find((a: any) => a.id === id);
+            return found ? { label: found.name, value: found.id } : null;
+          })
+          .filter(Boolean);
+
+        setState({
+          initialLocation: aiLocation,
+          initialPropertyType: aiPropertyType,
+          initialArea: aiArea,
+          initialDeveloper: [],
+        });
+
+        const aiFilterBody: any = {
+          ...(matched.location?.length ? { location: aiLocation } : {}),
+          ...(matched.area?.length ? { area: aiArea } : {}),
+          ...(matched.property_type?.length ? { propertyType: aiPropertyType } : {}),
+          ...(matched.floor_plan?.length ? { floorPlan: aiFloorPlan } : {}),
+          ...(aiFurnishing.length ? { furnishing: aiFurnishing } : {}),
+          ...(matched.max_price ? { priceMaxInput: matched.max_price } : {}),
+        };
+
+        await propertyList(1, false, aiFilterBody);
+      } else {
+        // 2b. validate URL params against filter response
+        const urlFilter = buildUrlParamFilter(res);
+
+        setState({
+          initialLocation: urlFilter.location || [],
+          initialPropertyType: urlFilter.propertyType || [],
+          initialArea: [],
+          initialDeveloper: urlFilter.developer || [],
+          initialFurnishingList: urlFilter.furnishing || [],
+        });
+
+        await propertyList(1, false, Object.keys(urlFilter).length ? urlFilter : null);
+      }
     } catch (error: any) {
       toastEmitter.emit("error", error?.error || error?.response?.data?.error || "Failed to load properties");
       setState({ loading: false, isFilterLoading: false, isLoadingMore: false });
@@ -260,6 +426,7 @@ export default function Page() {
       floorPlanList={state.floorPlanList}
       furnishingList={state.furnishingList}
       listingTypeList={state.listingTypeList}
+      bedroomList={state.bedroomList}
       filters={(data: any) => filterList(1, false, data)}
       onFilterChange={(data: any) => dynamicFilterList(data)}
       loading={state.loading}
