@@ -1,6 +1,7 @@
 "use client";
 
 import { MapView } from "@/components/real-estate/property-list/property3And4Column/property-mapview";
+import { MobileMapView } from "@/components/real-estate/property-list/property3And4Column/property-mapview-mobile";
 import Models from "@/imports/models.import";
 import { PROPERTY_LIST_PAGE } from "@/utils/constant.utils";
 import { removePlus, useSetState } from "@/utils/function.utils";
@@ -413,38 +414,45 @@ export default function Page() {
     dynamicFilterList(null);
   };
 
+  const mapViewProps = {
+    minPrice: state.minPrice,
+    maxPrice: state.maxPrice,
+    properties: state.propertyList,
+    categoryList: state.categoryList,
+    locationList: state.locationList,
+    areaList: state.areaList,
+    projectList: state.projectList,
+    developerList: state.developerList,
+    floorPlanList: state.floorPlanList,
+    furnishingList: state.furnishingList,
+    listingTypeList: state.listingTypeList,
+    bedroomList: state.bedroomList,
+    filters: (data: any) => filterList(1, false, data),
+    onFilterChange: (data: any) => dynamicFilterList(data),
+    loading: state.loading,
+    isFilterLoading: state.isFilterLoading,
+    isLoadingMore: state.isLoadingMore,
+    handNext: state.handNext,
+    loadMore: (data: any) => filterList(state.page + 1, true, data),
+    updateList: (data: any) => setState({ propertyList: data }),
+    clearFilter: clearAllFilters,
+    initialSearch: search,
+    initialLocation: state.initialLocation,
+    initialPropertyType: state.initialPropertyType,
+    initialArea: state.initialArea,
+    initialDeveloper: state.initialDeveloper,
+    initialFurnishingList: state.initialFurnishingList,
+    initialListingStatus: type ? (type === "all" ? "All" : type === "sale" ? "For Sale" : "For Lease") : "All",
+  };
+
   return (
-    <MapView
-      minPrice={state.minPrice}
-      maxPrice={state.maxPrice}
-      properties={state.propertyList}
-      categoryList={state.categoryList}
-      locationList={state.locationList}
-      areaList={state.areaList}
-      projectList={state.projectList}
-      developerList={state.developerList}
-      floorPlanList={state.floorPlanList}
-      furnishingList={state.furnishingList}
-      listingTypeList={state.listingTypeList}
-      bedroomList={state.bedroomList}
-      filters={(data: any) => filterList(1, false, data)}
-      onFilterChange={(data: any) => dynamicFilterList(data)}
-      loading={state.loading}
-      isFilterLoading={state.isFilterLoading}
-      isLoadingMore={state.isLoadingMore}
-      handNext={state.handNext}
-      loadMore={(data: any) => filterList(state.page + 1, true, data)}
-      updateList={(data: any) => setState({ propertyList: data })}
-      clearFilter={clearAllFilters}
-      initialSearch={search}
-      initialLocation={state.initialLocation}
-      initialPropertyType={state.initialPropertyType}
-      initialArea={state.initialArea}
-      initialDeveloper={state.initialDeveloper}
-      initialFurnishingList={state.initialFurnishingList}
-      initialListingStatus={
-        type ? (type === "all" ? "All" : type === "sale" ? "For Sale" : "For Lease") : "All"
-      }
-    />
+    <>
+      <div className="hidden xl:block">
+        <MapView {...mapViewProps} />
+      </div>
+      <div className="block xl:hidden">
+        <MobileMapView {...mapViewProps} />
+      </div>
+    </>
   );
 }

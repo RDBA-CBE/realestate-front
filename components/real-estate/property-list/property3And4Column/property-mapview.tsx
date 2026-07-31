@@ -265,6 +265,16 @@ export function MapView(props) {
     state.sort,
   ]);
 
+  // Lock body scroll when filter sheet is open
+  useEffect(() => {
+    if (state.isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [state.isOpen]);
+
   const skeletonCount = state.view === "grid" ? 2 : 1;
 
   const handleChange = (name: string, value: any) => {
@@ -603,7 +613,11 @@ export function MapView(props) {
                   </div>
                 </div>
 
-                <div className="overflow-y-auto max-h-[calc(90vh-80px)] p-6">
+                <div
+                  className="overflow-y-auto overscroll-contain max-h-[calc(90vh-80px)] p-6"
+                  onWheel={(e) => e.stopPropagation()}
+                  onTouchMove={(e) => e.stopPropagation()}
+                >
                   <div className="space-y-6">
                     {/* Search */}
                     <div className="font-semibold text-gray-900">

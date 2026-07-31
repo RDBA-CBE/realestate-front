@@ -127,9 +127,9 @@ export default function PropertyDetailInline({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
-        className="px-3 pt-3 pb-24"
+        className="px-4 pb-24"
       >
-        <div className="flex justify-end mb-3">
+        <div className=" justify-end mb-3 hidden lg:flex">
           <button
             type="button"
             onClick={handleClick}
