@@ -72,6 +72,7 @@ export default function NewFooter() {
     }
   };
 
+  
   const cityList = async (page) => {
     try {
       const body: any = {};
