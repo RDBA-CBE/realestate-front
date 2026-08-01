@@ -27,6 +27,8 @@ export default function NewFooter() {
     email: "",
   });
 
+   const [subscribeLoading, setSubscribeLoading] = useState(false);
+
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     setState({ id: userId });
@@ -38,6 +40,8 @@ export default function NewFooter() {
 
   const handleSubscribe = async () => {
     try {
+
+      setSubscribeLoading(true);
       const body = {
         user: state.id,
         email: state.email,
@@ -50,13 +54,21 @@ export default function NewFooter() {
       await schema.validate({ email: state.email });
 
       const res: any = await Models.user.newsletter(body);
+      setSubscribeLoading(false);
       Success(res?.message || "Subscribed to newsletter successfully");
+
+      setState({ email: "" })
+
     } catch (error) {
+
+      console.log("error -->", error);
       if (error.name === "ValidationError") {
         return Failure(error.message);
       }
-      Failure(error?.detail || "Something went wrong");
+      Failure(error?.error || "Something went wrong");
+      setState({ email: "" })
       setState({ loading: false });
+      setSubscribeLoading(false);
     }
   };
 
@@ -222,8 +234,9 @@ export default function NewFooter() {
         <button
           onClick={handleSubscribe}
           className="rounded-full bg-dred px-5 py-2 whitespace-nowrap"
+          disabled={subscribeLoading}
         >
-          Subscribe
+           {subscribeLoading ? "Submitting..." : "Subscribe"}
         </button>
       </div>
     </div>

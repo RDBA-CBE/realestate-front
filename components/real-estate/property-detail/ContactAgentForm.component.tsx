@@ -16,6 +16,10 @@ import TextArea from "@/components/common-components/textArea";
 import { Building2, CalendarCheck, Phone, X } from "lucide-react";
 import moment from "moment";
 import { useRouter } from "next/navigation";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
+import dayjs, { Dayjs } from "dayjs";
 
 interface ContactAgentFormProps {
   data: any;
@@ -58,11 +62,16 @@ export default function ContactAgentForm({
   });
   const [callbackLoading, setCallbackLoading] = useState(false);
 
-  const [bookingForm, setBookingForm] = useState({
+  const [bookingForm, setBookingForm] = useState<{
+    email: string;
+    phone: string;
+    message: string;
+    date: Dayjs | null;
+  }>({
     email: "",
     phone: "",
     message: "",
-    date: "",
+    date: null,
   });
   const [bookingErrors, setBookingErrors] = useState({ email: "", phone: "", date: "", message: "" });
   const [bookingLoading, setBookingLoading] = useState(false);
@@ -88,7 +97,7 @@ export default function ContactAgentForm({
           email: response?.email,
           phone: response?.phone,
           message: "",
-          date: "",
+          date: null,
         });
         // setState({
         //   first_name: response?.first_name,
@@ -219,7 +228,7 @@ export default function ContactAgentForm({
     if (!bookingForm.phone.trim()){ errs.phone = "Phone is required"; setBookingLoading(false);}
     else if (!/^[0-9]{10}$/.test(bookingForm.phone))
      { errs.phone = "Enter a valid 10-digit number"; setBookingLoading(false);}
-    if (!bookingForm.date.trim()){ errs.date = "Date is required"; setBookingLoading(false);}
+    if (!bookingForm.date){ errs.date = "Date is required"; setBookingLoading(false);}
     if (!bookingForm.message.trim()) { errs.message = "Inquiry details are required"; setBookingLoading(false); }
     setBookingErrors(errs);
     if (errs.email || errs.phone || errs.message) return;
@@ -229,7 +238,7 @@ export default function ContactAgentForm({
       message: bookingForm.message,
       email: bookingForm.email,
       phone_number: bookingForm.phone,
-      schedule_date_time:bookingForm?.date?moment(bookingForm?.date).format("YYYY-MM-DD HH:mm:ss"):null,
+      schedule_date_time: bookingForm?.date ? bookingForm.date.format("YYYY-MM-DD HH:mm:ss") : null,
       user_id:state.userId,
     };
     const res: any = await Models.chat.booking_inquiry(payload);
@@ -237,7 +246,7 @@ export default function ContactAgentForm({
     setInquiryMode("done");
     setBookingLoading(false);
     console.log("Booking Inquiry Payload:", payload);
-    setBookingForm({ email: "", phone: "", message: "", date: "" });
+    setBookingForm({ email: "", phone: "", message: "", date: null });
     setBookingErrors({ email: "", phone: "", date: "", message: "" });
     } catch (e) {
     setBookingLoading(false);
@@ -424,19 +433,37 @@ export default function ContactAgentForm({
                   <label className="text-xs text-muted-foreground font-medium">
                     Preferred Date and Time <span className="text-red-500">*</span>
                   </label>
-                  <input
-                    type="datetime-local"
-                    value={bookingForm.date}
-                    onChange={(e) => {
-                      setBookingForm((p) => ({ ...p, date: e.target.value }));
-                      setBookingErrors((p) => ({ ...p, date: "" }));
-                    }}
-                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors ${bookingErrors.date ? "border-red-500" : "border-border focus:border-themeColor1"}`}
-                  />
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <MobileDateTimePicker
+                      value={bookingForm.date}
+                      onChange={(val) => {
+                        setBookingForm((p) => ({ ...p, date: val }));
+                        setBookingErrors((p) => ({ ...p, date: "" }));
+                      }}
+                      disablePast
+                      slotProps={{
+                        textField: {
+                          size: "small",
+                          placeholder: "Select date and time",
+                          sx: {
+                            width: "100%",
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "12px",
+                              fontSize: "14px",
+                              backgroundColor: "transparent",
+                              border: bookingErrors.date ? "1px solid #ef4444" : "1px solid hsl(var(--border))",
+                              "& fieldset": { border: "none" },
+                              "&:hover": { border: bookingErrors.date ? "1px solid #ef4444" : "1px solid hsl(var(--border))" },
+                              "&.Mui-focused": { border: "1px solid #9b0f09" },
+                            },
+                            "& .MuiInputBase-input": { padding: "8px 12px" },
+                          },
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
                   {bookingErrors.date && (
-                    <p className="text-xs text-red-500 pl-1">
-                      {bookingErrors.date}
-                    </p>
+                    <p className="text-xs text-red-500 pl-1">{bookingErrors.date}</p>
                   )}
                 </div>
             <div className="flex flex-col gap-1">

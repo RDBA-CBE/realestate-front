@@ -28,7 +28,7 @@ const PostPropertyPage = () => {
     last_name: "",
     email: "",
     password: "",
-    industry_name: "",
+    industry: "",
     loading: false,
     error: {},
     developerGroup: null,
@@ -72,7 +72,7 @@ const PostPropertyPage = () => {
         last_name: state.last_name,
         email: state.email,
         password: state.password,
-        industry: state.industry_name,
+        industry: state.industry,
         terms_accepted: true,
         user_type: "developer",
         groups: [state.developerGroup],
@@ -204,12 +204,12 @@ const PostPropertyPage = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
-              <Input title="First Name" name="first_name" placeholder="John" value={state.first_name} onChange={handleInputChange} error={state.error?.first_name} autoComplete="off" className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" />
-              <Input title="Last Name" name="last_name" placeholder="Doe" value={state.last_name} onChange={handleInputChange} error={state.error?.last_name} autoComplete="off" className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" />
+              <Input title="First Name" name="first_name" placeholder="John" value={state.first_name} onChange={handleInputChange} error={state.error?.first_name} autoComplete="off" className="rounded-xl border-gray-200 text-black placeholder:text-gray-400"  required/>
+              <Input title="Last Name" name="last_name" placeholder="Doe" value={state.last_name} onChange={handleInputChange} error={state.error?.last_name} autoComplete="off" className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" required/>
             </div>
-            <Input title="Email" name="email" type="email" placeholder="you@example.com" value={state.email} onChange={handleInputChange} error={state.error?.email} autoComplete="off" className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" />
-            <Input title="Password" name="password" type="password" placeholder="Create a password" value={state.password} onChange={handleInputChange} error={state.error?.password} autoComplete="new-password" className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" />
-            <Input title="Industry / Company Name" name="industry_name" placeholder="e.g. Casagrand Builders" value={state.industry_name} onChange={handleInputChange} error={state.error?.industry_name} autoComplete="off" className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" />
+            <Input title="Email" name="email" type="email" placeholder="you@example.com" value={state.email} onChange={handleInputChange} error={state.error?.email} autoComplete="off" className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" required/>
+            <Input title="Password" name="password" type="password" placeholder="Create a password" value={state.password} onChange={handleInputChange} error={state.error?.password} autoComplete="new-password" className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" required/>
+            <Input title="Industry / Company Name" name="industry" placeholder="e.g. Casagrand Builders" value={state.industry} onChange={handleInputChange} error={state.error?.industry} autoComplete="off" className="rounded-xl border-gray-200 text-black placeholder:text-gray-400" required />
 
             <div className="relative flex w-full flex-col items-center justify-center py-2">
               <ReCAPTCHA
