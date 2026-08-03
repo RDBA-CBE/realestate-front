@@ -493,6 +493,7 @@ export default function AISearchComponent(props:any) {
               onChange={(e) => setFreeInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && freeInput.trim().length > 0 && startChat(freeInput)}
               placeholder="e.g. 3BHK apartment in Chennai under 1 Cr..."
+              maxLength={50}
               className="flex-1 bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground"
               autoFocus
             />
@@ -675,7 +676,7 @@ export default function AISearchComponent(props:any) {
                                   src={prop.primary_image}
                                   alt={prop.title}
                                   onClick={() =>
-                                    router.push(`/property-detail/${prop.id}`)
+                                    router.push(`/property-detail/${prop.slug}`)
                                   }
                                   className="w-14 h-14 rounded-lg object-cover shrink-0 cursor-pointer"
                                 />
@@ -683,7 +684,7 @@ export default function AISearchComponent(props:any) {
                               <div
                                 className="flex flex-col justify-center gap-0.5 min-w-0 flex-1 cursor-pointer"
                                 onClick={() =>
-                                  router.push(`/property-detail/${prop.id}`)
+                                  router.push(`/property-detail/${prop.slug}`)
                                 }
                               >
                                 <div className="text-sm font-semibold text-foreground truncate">
@@ -704,7 +705,7 @@ export default function AISearchComponent(props:any) {
                                   onClick={(e) => {
                                     console.log("View Property:", prop);
                                     e.stopPropagation();
-                                    router.push(`/property-detail/${prop.id}`);
+                                    router.push(`/property-detail/${prop.slug}`);
                                   }}
                                   className="p-1.5 rounded-full hover:bg-themeColor1/10 text-themeColor1 transition-colors"
                                   title="View Property"
@@ -1142,6 +1143,7 @@ export default function AISearchComponent(props:any) {
               onChange={(e) => setFreeInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendFreeMessage()}
               placeholder="Type a message..."
+              maxLength={25}
               autoFocus
               className="flex-1 bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground"
             />

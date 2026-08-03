@@ -6,16 +6,18 @@ import Models from "@/imports/models.import";
 import Utils from "@/imports/utils.import";
 import Link from "next/link";
 import * as Yup from "yup";
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Failure, Success, useSetState } from "@/utils/function.utils";
 import { Loader, Home, CheckCircle2, Building2, ArrowRight, ArrowLeft } from "lucide-react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { CAPTCHA_SITE_KEY } from "@/utils/constant.utils";
 
 const perks = [
-  "Browse exclusive verified properties",
-  "Save and compare your favourite properties",
-  "Get alerts on latest listings",
-  "Contact trusted developers directly",
+  "Access exclusive property listings",
+  "Save and compare your favourites",
+  "Get notified on new properties",
+  "Connect directly with developers",
 ];
 
 const SigninPage = () => {
@@ -29,6 +31,18 @@ const SigninPage = () => {
     loading: false,
     error: {},
   });
+
+  const captchaRef = useRef<any>(null);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaLoaded, setCaptchaLoaded] = useState(false);
+  const isResettingRef = useRef(false);
+
+  const resetCaptcha = () => {
+    isResettingRef.current = true;
+    captchaRef.current?.reset();
+    setCaptchaToken("");
+    setTimeout(() => { isResettingRef.current = false; }, 500);
+  };
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
@@ -50,19 +64,23 @@ const SigninPage = () => {
       };
 
       await Utils.Validation.signup.validate(body, { abortEarly: false });
-      const res: any = await Models.auth.singup(body);
+      if (!captchaToken) {
+        setState({ loading: false, error: { ...state.error, captcha: "Please complete the captcha" } });
+        return;
+      }
+      const res: any = await Models.auth.singup({ ...body, recaptcha_token: captchaToken });
+      resetCaptcha();
       Success(res?.message);
       router.push("/");
     } catch (error) {
+      resetCaptcha();
       setState({ loading: false });
       if (error instanceof Yup.ValidationError) {
         const errors = {};
         error.inner.forEach((err) => { errors[err.path] = err.message; });
         setState({ error: errors });
-        console.log("Validation Errors:", state.error);
       } else {
         if (error?.error) Failure(error.error);
-        // else if (error?.password?.length > 0) Failure(error.password[0]);
         else Failure("Something went wrong. Please try again.");
       }
     }
@@ -84,7 +102,7 @@ const SigninPage = () => {
         </button>
         <button
           type="button"
-          onClick={() => router.push("/property-list")}
+          onClick={() => router.back()}
           className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 bg-dred text-sm font-medium text-white hover:border-[#9b0f09]  transition-all shadow-sm"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -111,10 +129,10 @@ const SigninPage = () => {
         {/* headline */}
         <div className="z-10 space-y-6">
           <h1 className="text-5xl font-semibold text-white leading-tight">
-            Sign in to discover better homes faster
+            Find your dream home today.
           </h1>
           <p className="text-white/70 text-lg max-w-xs">
-            Unlock personalized property experiences with one secure login.
+            Join thousands of buyers and investors discovering the best properties.
           </p>
 
           <ul className="space-y-4 pt-2">
@@ -211,6 +229,7 @@ const SigninPage = () => {
                 value={state.first_name}
                 onChange={handleInputChange}
                 error={state.error?.first_name}
+                autoComplete="off"
                 className="rounded-xl border-gray-200 focus:border-[#9b0f09] focus:ring-[#9b0f09]/20 text-black placeholder:text-gray-400"
               />
               <Input
@@ -220,6 +239,7 @@ const SigninPage = () => {
                 value={state.last_name}
                 onChange={handleInputChange}
                 error={state.error?.last_name}
+                autoComplete="off"
                 className="rounded-xl border-gray-200 focus:border-[#9b0f09] focus:ring-[#9b0f09]/20 text-black placeholder:text-gray-400"
               />
             </div>
@@ -232,6 +252,7 @@ const SigninPage = () => {
               value={state.email}
               onChange={handleInputChange}
               error={state.error?.email}
+              autoComplete="off"
               className="rounded-xl border-gray-200 focus:border-[#9b0f09] focus:ring-[#9b0f09]/20 text-black placeholder:text-gray-400"
             />
 
@@ -243,8 +264,33 @@ const SigninPage = () => {
               value={state.password}
               onChange={handleInputChange}
               error={state.error?.password}
+              autoComplete="new-password"
               className="rounded-xl border-gray-200 focus:border-[#9b0f09] focus:ring-[#9b0f09]/20 text-black placeholder:text-gray-400"
             />
+
+            <div className="relative flex w-full flex-col items-center justify-center py-2">
+              <ReCAPTCHA
+                ref={captchaRef}
+                sitekey={CAPTCHA_SITE_KEY}
+                asyncScriptOnLoad={() => setCaptchaLoaded(true)}
+                onChange={(token) => {
+                  setCaptchaToken(token || "");
+                  if (token) setState({ error: { ...state.error, captcha: undefined } });
+                }}
+                onExpired={() => resetCaptcha()}
+              />
+              {!captchaLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center rounded border border-gray-300 bg-gray-50">
+                  <svg className="h-6 w-6 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                  </svg>
+                </div>
+              )}
+              {state.error?.captcha && (
+                <p className="mt-1 text-sm text-red-600">{state.error.captcha}</p>
+              )}
+            </div>
 
             <p className="text-xs text-gray-400">
               By creating an account you agree to our{" "}

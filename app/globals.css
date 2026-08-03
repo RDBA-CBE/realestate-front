@@ -2148,3 +2148,11 @@ body {
 .privacy strong{
   color:#000
 }
+
+input[type="checkbox"] {
+  accent-color: #9b0f09 !important;
+}
+
+input[type="radio"] {
+  accent-color: #9b0f09 !important;
+}

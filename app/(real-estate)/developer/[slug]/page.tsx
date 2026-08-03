@@ -27,10 +27,14 @@ import { PropertyCard } from "@/components/real-estate/property-list/property3An
 import ContactAgentForm from "@/components/real-estate/property-detail/ContactAgentForm.component";
 
 export default function DeveloperDetailPage() {
-  const params = useParams();
+  const {slug}: any = useParams();
+
+  const developerId = Number(
+  slug.match(/-id-(\d+)(?:-|$)/)?.[1]
+);
   const router = useRouter();
 
-  const developerId = params?.id;
+  // const developerId = params?.id;
 
   const [developer, setDeveloper] = useState<any>(null);
   const [properties, setProperties] = useState<any[]>([]);
@@ -48,7 +52,7 @@ export default function DeveloperDetailPage() {
     fetchDeveloper();
     fetchProperties();
 
-    setToken(localStorage.getItem("token"));
+    setToken(localStorage.getItem("demo_token"));
   }, [developerId]);
 
   const redirect = () => {

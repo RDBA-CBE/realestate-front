@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-export default function PropertyDetails({ data }: any) {
+export default function PropertyDetails({ data, mobileLayout = false }: any) {
   console.log("✌️data --->", data);
 
   const [expanded, setExpanded] = useState(false);
@@ -324,7 +324,7 @@ export default function PropertyDetails({ data }: any) {
   return (
     <>
       <h3 className="section-in-ti mb-3">Overview</h3>
-      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+      <div className={`grid ${mobileLayout ? "grid-cols-2" : "grid-cols-1 xs:grid-cols-2 lg:grid-cols-4"} gap-4 lg:gap-6`}>
         {details.map((item, idx) => (
           <div
             key={idx}

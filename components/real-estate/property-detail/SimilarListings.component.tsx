@@ -71,7 +71,7 @@ export default function FeaturedListings(props: any) {
           <SwiperSlide key={property.id}>
             <Card
               // onClick={() => router.push(`property-detail/${property?.id}`)}
-              onClick={() => router.push(`/property-detail/${property?.id}`)}
+              onClick={() => router.push(`/property-detail/${property?.slug}`)}
               className="overflow-hidden cursor-pointer rounded-2xl border shadow-md hover:shadow-xl transition-all duration-300"
             >
               {/* Image */}

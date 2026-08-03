@@ -951,17 +951,17 @@ const onPlaceChanged = () => {
             Property Types
           </div>
           <div className="space-y-2">
-            <div className="flex items-center text-xs">
+            {/* <div className="flex items-center text-xs">
               <div className="w-4 h-4 bg-color2 rounded-full mr-3 flex items-center justify-center">
                 <div className="w-2 h-2 bg-white rounded-full"></div>
               </div>
               <span className="font-medium">For Sale</span>
-            </div>
+            </div> */}
             <div className="flex items-center text-xs">
               <div className="w-4 h-4 bg-blue-500 rounded-full mr-3 flex items-center justify-center">
                 <div className="w-2 h-2 bg-white rounded-full"></div>
               </div>
-              <span className="font-medium">For Rent</span>
+              <span className="font-medium">For Sale</span>
             </div>
             <div className="flex items-center text-xs">
               <div className="w-4 h-4 bg-green-500 rounded-full mr-3 flex items-center justify-center">
@@ -969,14 +969,14 @@ const onPlaceChanged = () => {
               </div>
               <span className="font-medium">For Lease</span>
             </div>
-            {selectedPropertyWithCoords && (
+            {/* {selectedPropertyWithCoords && (
               <div className="flex items-center text-xs">
                 <div className="w-4 h-4 bg-yellow-500 rounded-full mr-3 flex items-center justify-center">
                   <div className="w-2 h-2 bg-white rounded-full"></div>
                 </div>
                 <span className="font-medium">Selected Property</span>
               </div>
-            )}
+            )} */}
             {searchLocation && (
               <div className="flex items-center text-xs">
                 <div className="w-4 h-4 bg-blue-500 rounded-full mr-3 flex items-center justify-center">

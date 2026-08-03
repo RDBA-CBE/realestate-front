@@ -39,6 +39,7 @@ export default function PropertyHeader(props: any) {
    const [loginPopup, setLoginPopup] = useState(false);
 
   const { data, updateList } = props;
+  const mobileLayout = props.mobileLayout ?? false;
   console.log("data",data)
 
    useEffect(() => {
@@ -59,7 +60,7 @@ export default function PropertyHeader(props: any) {
   const handleWishList = async () => {
       // e.stopPropagation();
       // e.preventDefault();
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("demo_token");
       if (!token) { setLoginPopup(true); return; }
       try {
        if (!data?.user_wishlists) {
@@ -96,7 +97,7 @@ export default function PropertyHeader(props: any) {
 
   const handleWishLis = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("demo_token");
       if (token) {
         if (!data?.user_wishlists) {
           await Models.wishlist.add_property({
@@ -153,23 +154,23 @@ export default function PropertyHeader(props: any) {
     <div className=" mt-5 md:mt-0 ">
       <div className="flex flex-row items-between md:items-start justify-between gap-4">
         <div className="space-y-2 md:w-[70%]">
-          <p className="section-ti mb-2 !text-dred block sm:hidden">
+          <p className={` mb-2 !text-dred ${mobileLayout ? "block section-ti !text-[24px]" : "block sm:hidden section-ti"}`}>
              ₹ {formatPriceRange(
                 data?.price_range?.minimum_price,
                 data?.price_range?.maximum_price
               )}{" "}
             </p>
             {data?.price_per_sqft && 
-            <span className="block sm:hidden">
+            <span className={mobileLayout ? "block" : "block sm:hidden"}>
             {/* <span></span> */}
             <p className="text-[14px] text-black  mb-0">
               Approx ₹ {(data?.price_per_sqft)} / sq.ft
             </p>
             </span>
             }
-          <h1 className="section-ti">{data?.title}</h1>
+          <h1 className={mobileLayout ? "section-ti !text-[22px]" : "section-ti"}>{data?.title}</h1>
           {data?.developer?.industry &&
-          <p>By <span className="text-dred cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.id}`)}>{data?.developer?.industry} </span></p>
+          <p>By <span className="text-dred cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.slug}`)}>{data?.developer?.industry} </span></p>
         }
           <p className="text-black leading-relaxed " style={{wordBreak:"break-all"}}>{capitalizeFLetter(data?.address)}</p>
           {/* <div className="block sm:hidden">
@@ -215,7 +216,7 @@ export default function PropertyHeader(props: any) {
         </div>
 
         {/* Right side */}
-        <div className="flex flex-col items-end justify-end  gap-1 hidden sm:block">
+        <div className={`flex flex-col items-end justify-end gap-1 ${mobileLayout ? "hidden" : "hidden sm:block"}`}>
          
          
             <p className=" text-2xl 2xl:text-3xl font-medium mb-1 !text-dred pt-2 text-right pb-1">

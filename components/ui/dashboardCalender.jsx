@@ -78,7 +78,7 @@ const DashboardCalender = ({ events, setEvents }) => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const Token = localStorage?.getItem("zentoken");
+      const Token = localStorage?.getItem("demo_token");
       setToken(Token);
     }
   }, []);

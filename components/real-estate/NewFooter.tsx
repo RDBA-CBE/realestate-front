@@ -27,6 +27,8 @@ export default function NewFooter() {
     email: "",
   });
 
+   const [subscribeLoading, setSubscribeLoading] = useState(false);
+
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     setState({ id: userId });
@@ -38,6 +40,8 @@ export default function NewFooter() {
 
   const handleSubscribe = async () => {
     try {
+
+      setSubscribeLoading(true);
       const body = {
         user: state.id,
         email: state.email,
@@ -50,16 +54,25 @@ export default function NewFooter() {
       await schema.validate({ email: state.email });
 
       const res: any = await Models.user.newsletter(body);
+      setSubscribeLoading(false);
       Success(res?.message || "Subscribed to newsletter successfully");
+
+      setState({ email: "" })
+
     } catch (error) {
+
+      console.log("error -->", error);
       if (error.name === "ValidationError") {
         return Failure(error.message);
       }
-      Failure(error?.detail || "Something went wrong");
+      Failure(error?.error || "Something went wrong");
+      setState({ email: "" })
       setState({ loading: false });
+      setSubscribeLoading(false);
     }
   };
 
+  
   const cityList = async (page) => {
     try {
       const body: any = {};
@@ -99,7 +112,7 @@ export default function NewFooter() {
             <img
               src="/assets/images/real-estate/home/boom-logo-wt.png"
               alt="Logo"
-              className="h-12 w-auto object-contain"
+              className="h-10 w-auto object-contain"
             />
           </Link>
 
@@ -222,8 +235,9 @@ export default function NewFooter() {
         <button
           onClick={handleSubscribe}
           className="rounded-full bg-dred px-5 py-2 whitespace-nowrap"
+          disabled={subscribeLoading}
         >
-          Subscribe
+           {subscribeLoading ? "Submitting..." : "Subscribe"}
         </button>
       </div>
     </div>
@@ -235,13 +249,13 @@ export default function NewFooter() {
         <div className="flex flex-col gap-6  py-8 md:flex-row md:items-center md:justify-center">
           <h3 className="section-ti !text-white !font-normal mb-0 pb-0">Get Mobile App</h3>
           <div className="flex gap-4">
-            <button className="rounded-xl  w-[150px] h-15 text-black">
+            {/* <div className="rounded-xl  w-[150px] h-15 text-black">
               <img src="/assets/images/real-estate/home/app-store.png" alt="" className="rounded-xl object-cover w-[100%] h-[100%]" />
-            </button>
-            <button className="rounded-xl  w-[150px] h-15 text-black">
+            </div> */}
+            <Link href={'https://play.google.com/store/apps/details?id=boomrealtys.com'} target="_blank" className="rounded-xl  w-[150px] h-15 text-black">
                             <img src="/assets/images/real-estate/home/play-store.png" alt="" className="rounded-xl object-cover w-[100%] h-[100%]" />
 
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -250,7 +264,7 @@ export default function NewFooter() {
 
         <div className="flex flex-col gap-4 pt-6 text-sm text-white md:flex-row md:items-center md:justify-between">
           <p>
-            Copyright 2026 © Realestate. Concept by{" "}
+            Copyright 2026 © Boomrealtys. Concept by{" "}
             <Link href="https://irepute.in/" target="_blank">
               repute
             </Link>
