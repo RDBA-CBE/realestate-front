@@ -3,39 +3,51 @@ import * as Yup from "yup";
 
 export const signup = Yup.object().shape({
   email: Yup.string()
-  .email("Please enter a valid email address")
-  .required("Email is required"),
+    .email("Please enter a valid email address")
+    .required("Email is required"),
   first_name: Yup.string().required("First Name is required"),
   last_name: Yup.string().required("Last Name is required"),
   password: Yup.string()
-  .min(8, "Password must be at least 8 characters")
-  .required("Password is required"),
+    .min(8, "Password must be at least 8 characters")
+    .required("Password is required"),
   industry: Yup.string().required("Industry / Company Name is required"),
+});
+
+export const buyer_signup = Yup.object().shape({
+  email: Yup.string()
+    .email("Please enter a valid email address")
+    .required("Email is required"),
+  first_name: Yup.string().required("First Name is required"),
+  last_name: Yup.string().required("Last Name is required"),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters")
+    .required("Password is required"),
+  // industry: Yup.string().required("Industry / Company Name is required"),
 });
 
 export const developrSignup = Yup.object().shape({
   email: Yup.string()
-  .email("Please enter a valid email address")
-  .required("Email is required"),
+    .email("Please enter a valid email address")
+    .required("Email is required"),
   first_name: Yup.string().required("First Name is required"),
   last_name: Yup.string().required("Last Name is required"),
   password: Yup.string().required("Password is required"),
   gst_number: Yup.string().required("GST Number is required"),
   industry: Yup.string().required("Industry / Company Name is required"),
-}); 
+});
 
 export const signin = Yup.object().shape({
   email: Yup.string()
-  .email("Please enter a valid email address")
-  .required("Email is required"),
+    .email("Please enter a valid email address")
+    .required("Email is required"),
   password: Yup.string().required("Password is required"),
 });
 
 export const forgetPassword = Yup.object().shape({
-  
+
   email: Yup.string()
-  .email("Please enter a valid email address")
-  .required("Email is required"),
+    .email("Please enter a valid email address")
+    .required("Email is required"),
 });
 
 export const changePassword = Yup.object().shape({
@@ -50,9 +62,9 @@ changePassword
 
 export const profileSchema = Yup.object({
   first_name: Yup.string()
-  .required("First Name is required"),
+    .required("First Name is required"),
   last_name: Yup.string()
-  .required("Last Name is required"),
+    .required("Last Name is required"),
   email: Yup.string()
     .email("Please enter a valid email address")
     .required("Email is required"),

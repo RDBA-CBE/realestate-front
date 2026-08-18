@@ -63,7 +63,7 @@ const SigninPage = () => {
         groups: [1],
       };
 
-      await Utils.Validation.signup.validate(body, { abortEarly: false });
+      await Utils.Validation.buyer_signup.validate(body, { abortEarly: false });
       if (!captchaToken) {
         setState({ loading: false, error: { ...state.error, captcha: "Please complete the captcha" } });
         return;
@@ -98,7 +98,7 @@ const SigninPage = () => {
         >
           <Home className="w-4 h-4" />
           View Properties
-        
+
         </button>
         <button
           type="button"
@@ -107,7 +107,7 @@ const SigninPage = () => {
         >
           <ArrowLeft className="w-4 h-4" />
           Go back
-          
+
         </button>
       </div>
 
@@ -147,7 +147,7 @@ const SigninPage = () => {
 
         {/* bottom illustration */}
         <div className="z-10">
-          <svg viewBox="0 0 400 160" className="w-full opacity-20" xmlns="http://www.w3.org/2000/svg" style={{marginBottom:"-15px"}}>
+          <svg viewBox="0 0 400 160" className="w-full opacity-20" xmlns="http://www.w3.org/2000/svg" style={{ marginBottom: "-15px" }}>
             <rect x="20" y="60" width="80" height="90" rx="4" fill="white" />
             <polygon points="60,20 100,60 20,60" fill="white" />
             <rect x="45" y="100" width="30" height="50" rx="2" fill="#9b0f09" />
