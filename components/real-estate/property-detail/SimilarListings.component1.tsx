@@ -98,7 +98,7 @@ export default function FeaturedListings(props: any) {
                   property={property}
                   view="grid"
                   list={data}
-                  handleClick={() => onPropertyClick?.(property)}
+                  handleClick={onPropertyClick ? () => onPropertyClick(property) : undefined}
                    onContactClick={(prop) => {
                         setSelectedProperty(prop);
                         setIsContactModalOpen(true);

@@ -247,7 +247,7 @@ export function MobileMapView(props) {
     if (isNaN(value)) return "";
     return value.toLocaleString("en-IN");
   };
-  const parseINR = (value: string) => Number(value.replace(/,/g, ""));
+  const parseINR = (value: any) => (value ? Number(String(value).replace(/,/g, "")) : 0);
   const handleFilter = () => {
     // useEffect auto-fires filters — just close the sheet
     setState({ isOpen: false });

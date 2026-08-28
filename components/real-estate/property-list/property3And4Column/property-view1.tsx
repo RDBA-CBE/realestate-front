@@ -133,8 +133,9 @@ export function PropertyView1(props: any) {
     return value.toLocaleString("en-IN");
   };
 
-  const parseINR = (value: string) => {
-    return Number(value.replace(/,/g, ""));
+  const parseINR = (value: any) => {
+    if (value === undefined || value === null || value === "") return 0;
+    return Number(String(value).replace(/,/g, ""));
   };
 
 
