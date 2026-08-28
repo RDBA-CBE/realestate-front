@@ -51,7 +51,7 @@ export function ToastProvider() {
   if (!mounted) return null;
 
   return createPortal(
-    <div className="fixed top-5 right-5 z-[9999] flex flex-col gap-3 w-full max-w-sm pointer-events-none">
+    <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-3 w-[calc(100%-2rem)] max-w-sm pointer-events-none">
       {toasts.map((toast) => (
         <div
           key={toast.id}

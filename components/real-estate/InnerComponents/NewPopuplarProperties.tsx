@@ -6,14 +6,16 @@ import { useRouter } from "next/navigation";
 import { MapPin } from "lucide-react";
 import PropertyCard from "./PropertyCard";
 import { NewPopularPropertiesSkeleton } from "./HomeSectionSkeletons";
+import { getPropertyPathValue } from "@/utils/seo.utils";
 
-const NewPopuplarProperties = (props: any) => {
+
+const NewPopuplarProperties = (props) => {
   const router = useRouter();
   const { propertyList, updatePropertyType, locationEmpty, locationLabel, loading } = props;
   const [activeFilter, setActiveFilter] = useState("all");
 
   // Swiper breakpoints configuration
-   const breakpoints = {
+  const breakpoints = {
     320: { slidesPerView: 1, spaceBetween: 16 },
     640: { slidesPerView: 1.5, spaceBetween: 20 },
     860: { slidesPerView: 2, spaceBetween: 20 },
@@ -25,7 +27,7 @@ const NewPopuplarProperties = (props: any) => {
 
 
   const handleClick = (property) => {
-    router.push(`property-detail/${property?.id}`);
+    router.push(`property-detail/${getPropertyPathValue(property)}`);
   };
 
   return (
@@ -38,50 +40,48 @@ const NewPopuplarProperties = (props: any) => {
               Discover Popular Properties
             </h2>
             <p className="section-cap">
-             Find trending homes in prime locations
+              Aliquam lacinia diam quis lacus euismod
             </p>
-            {locationLabel && !locationEmpty && ( 
-                        <div className="flex items-center gap-2 mt-2 text-amber-700 text-sm">
-                          <MapPin className="w-4 h-4 shrink-0" />
-                          Showing properties in<span className="font-semibold mx-1">{locationLabel}</span> 
-                        </div>
-                        )}
+            {locationLabel && !locationEmpty && (
+              <div className="flex items-center gap-2 mt-2 text-amber-700 text-sm">
+                <MapPin className="w-4 h-4 shrink-0" />
+                Showing properties in<span className="font-semibold mx-1">{locationLabel}</span>
+              </div>
+            )}
             {locationEmpty && (
-              <div className="flex  gap-2 mt-2 text-amber-700 text-sm">
-                <MapPin className="w-4 h-4 shrink-0 mt-0.5" />
-                 <span> {capitalizeFLetter(activeFilter)} properties are not available in <span className="font-semibold mx-1">{locationLabel}</span> — showing all available properties. </span>
+              <div className="flex items-center gap-2 mt-2 text-amber-700 text-sm">
+                <MapPin className="w-4 h-4 shrink-0" />
+                No {activeFilter} properties found in <span className="font-semibold mx-1">{locationLabel}</span> — showing all available properties.
               </div>
             )}
           </div>
 
           {/* Filter Buttons - Moved to right end */}
-          <div className="gap-2 md:gap-4  inline-flex mt-4 md:mt-0">
+          <div className="gap-2 md:gap-4  inline-flex">
             <button
               onClick={() => {
-                 setActiveFilter("all");
+                setActiveFilter("all");
                 updatePropertyType("all");
-               
+
               }}
-              className={`px-3 md:px-6 py-2 text-sm rounded-full transition-colors ${
-                activeFilter === "all"
-                  ? "bg-color2 text-white"
-                  : "border border-[#d1d0d0]  hover:text-dred"
-              }`}
+              className={`px-3 md:px-6 py-2 text-sm rounded-full transition-colors ${activeFilter === "all"
+                ? "bg-color2 text-white"
+                : "border border-[#d1d0d0]  hover:text-dred"
+                }`}
             >
               All Properties
             </button>
             <button
               onClick={() => {
-                  setActiveFilter("lease");
+                setActiveFilter("lease");
                 updatePropertyType("lease");
 
-              
+
               }}
-              className={`px-6 py-2 text-sm rounded-full transition-colors ${
-                activeFilter === "lease"
-                  ? "bg-color2 text-white"
-                  : "border border-[#d1d0d0]  hover:text-dred"
-              }`}
+              className={`px-6 py-2 text-sm rounded-full transition-colors ${activeFilter === "lease"
+                ? "bg-color2 text-white"
+                : "border border-[#d1d0d0]  hover:text-dred"
+                }`}
             >
               For Lease
             </button>
@@ -90,13 +90,12 @@ const NewPopuplarProperties = (props: any) => {
                 setActiveFilter("sale");
                 updatePropertyType("sale");
 
-                
+
               }}
-              className={`px-6 py-2 text-sm rounded-full transition-colors ${
-                activeFilter === "sale"
-                  ? "bg-color2 text-white"
-                  : "border border-[#d1d0d0]  hover:text-dred"
-              }`}
+              className={`px-6 py-2 text-sm rounded-full transition-colors ${activeFilter === "sale"
+                ? "bg-color2 text-white"
+                : "border border-[#d1d0d0]  hover:text-dred"
+                }`}
             >
               For Sale
             </button>

@@ -22,6 +22,7 @@ import {
   formatToINR,
 } from "@/utils/function.utils";
 import { useRouter } from "next/navigation";
+import { getPropertyPathValue } from "@/utils/seo.utils";
 
 
 export default function FeaturedListings(props: any) {
@@ -71,7 +72,7 @@ export default function FeaturedListings(props: any) {
           <SwiperSlide key={property.id}>
             <Card
               // onClick={() => router.push(`property-detail/${property?.id}`)}
-              onClick={() => router.push(`/property-detail/${property?.id}`)}
+              onClick={() => router.push(`/property-list/${getPropertyPathValue(property)}`)}
               className="overflow-hidden cursor-pointer rounded-2xl border shadow-md hover:shadow-xl transition-all duration-300"
             >
               {/* Image */}
@@ -85,12 +86,12 @@ export default function FeaturedListings(props: any) {
                     className="w-full h-72 object-cover"
                   />
                 )}
-               
+
                 <Badge className="absolute top-2 right-2 bg-white text-black font-bold px-2 py-1 text-sm shadow-md">
                   {formatPriceRange(
-                                property?.price_range?.minimum_price,
-                                property?.price_range?.maximum_price
-                              )}{" "}
+                    property?.price_range?.minimum_price,
+                    property?.price_range?.maximum_price
+                  )}{" "}
                   {property.listing_type === "rent" && "/ mo"}
                 </Badge>
               </div>
@@ -134,8 +135,8 @@ export default function FeaturedListings(props: any) {
                     {property.listing_type === "rent"
                       ? "FOR RENT"
                       : property.listing_type === "sale"
-                      ? "FOR SALE"
-                      : "FOR LEASE"}
+                        ? "FOR SALE"
+                        : "FOR LEASE"}
                   </Badge>
                 </div>
               </CardContent>

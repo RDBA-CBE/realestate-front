@@ -3,7 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2, Car, Banknote, Shield, Zap, ShoppingBag, Landmark, Users } from 'lucide-react';
 
-export  default function Amenities({ data }) {
+export  default function Amenities({ data, mobileLayout = false }) {
   
 
   
@@ -32,7 +32,7 @@ const getIcon = (name) => {
         
 
         {/* Responsive Icon Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className={`grid grid-cols-2 ${mobileLayout ? "" : "sm:grid-cols-3 lg:grid-cols-4"} gap-4 md:gap-6`}>
             {data?.map((item, i) => {
                 const Icon = getIcon(item.name);
                 return (

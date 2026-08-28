@@ -139,5 +139,5 @@ Rules:
     );
   }
 
-  return <AISearchComponent suggestions={state.suggestions} refresh={()=>init()} />;
+  return <AISearchComponent suggestions={state.suggestions} refresh={() => init()} />;
 }

@@ -7,6 +7,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay, Pagination } from "swiper/modules";
 import { formatPriceRange } from "@/utils/function.utils";
 import { useRouter } from "next/navigation";
+import { getPropertyPathValue } from "@/utils/seo.utils";
 
 const FeaturedListings = (props) => {
   const { list } = props;
@@ -27,14 +28,14 @@ const FeaturedListings = (props) => {
       slidesPerView: 3,
       spaceBetween: 24,
     },
-     1200: {
+    1200: {
       slidesPerView: 4,
       spaceBetween: 24,
     },
   };
 
   const handleClick = (property) => {
-    router.push(`property-detail/${property?.id}`);
+    router.push(`/property-list/${getPropertyPathValue(property)}`);
   };
 
   return (

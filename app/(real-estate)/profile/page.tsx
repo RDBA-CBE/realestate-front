@@ -12,6 +12,7 @@ import {
   MessageCircle,
   Pencil,
   Search,
+  Trash,
   UserCircle2,
   X,
 } from "lucide-react";
@@ -70,7 +71,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const id = localStorage.getItem("userId");
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("demo_token");
 
     if (!id || !token) {
       setState({
@@ -388,7 +389,7 @@ export default function ProfilePage() {
 
   const handleAuthAlertOk = async () => {
     try {
-      const refresh = localStorage.getItem("refresh");
+      const refresh = localStorage.getItem("demo_refresh");
       if (refresh) {
         await Models.auth.logout({ refresh });
       }
@@ -501,6 +502,15 @@ export default function ProfilePage() {
             >
               <MessageCircle size={16} />
               Change Password
+            </Button>
+
+             <Button
+              variant="outline"
+              className="w-full md:w-auto rounded-full border-dred bg-transparent text-dred hover:text-white hover:bg-[#9b0f09]"
+              onClick={() => router.push("/remove-account")}
+            >
+              <Trash size={16} />
+              Delete Account
             </Button>
           </div>
         </div>

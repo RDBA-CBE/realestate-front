@@ -43,7 +43,7 @@
 //   return (
 //     <div
 //       onClick={() =>
-//         router.push(`/developer/${developer?.id}`)
+//         router.push(`/developer/${developer?.slug}`)
 //       }
 //       className="group cursor-pointer border border-gray-100 rounded-2xl bg-dred p-7 transition-all duration-500 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.12)] hover:-translate-y-2 hover:z-20 flex flex-col h-full w-full relative"
 //     >
@@ -212,7 +212,7 @@ function DeveloperCard({ developer }: { developer: any }) {
 
   return (
     <div
-      onClick={() => router.push(`/developer/${developer?.id}`)}
+      onClick={() => router.push(`/developer/${developer?.slug}`)}
       className="group cursor-pointer bg-white rounded-2xl py-10 px-5 lg:px-8 transition-all duration-500 hover:-translate-y-1 hover:shadow-xl relative overflow-hidden"
     >
       {/* Arrow */}
@@ -269,7 +269,7 @@ function DeveloperCard({ developer }: { developer: any }) {
         {description ? (
           <>
             {truncateText(description, 150)}{" "}
-            <Link href={`/developer/${developer?.id}`} className="text-dred hover:underline">read more </Link>
+            <Link href={`/developer/${developer?.slug}`} className="text-dred hover:underline">read more </Link>
           </>
         ) : (
           "No description available."

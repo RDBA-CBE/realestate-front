@@ -13,9 +13,13 @@ import {
 } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import TextArea from "@/components/common-components/textArea";
-import { Building2, CalendarCheck, Phone, X } from "lucide-react";
+import { Building2, CalendarCheck, FileDown, Phone, X } from "lucide-react";
 import moment from "moment";
 import { useRouter } from "next/navigation";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
+import dayjs, { Dayjs } from "dayjs";
 
 interface ContactAgentFormProps {
   data: any;
@@ -39,7 +43,7 @@ export default function ContactAgentForm({
     last_name: "",
     phone: "",
     email: "",
-    userId:""
+    userId:"",
   });
 
   const router = useRouter()
@@ -58,11 +62,16 @@ export default function ContactAgentForm({
   });
   const [callbackLoading, setCallbackLoading] = useState(false);
 
-  const [bookingForm, setBookingForm] = useState({
+  const [bookingForm, setBookingForm] = useState<{
+    email: string;
+    phone: string;
+    message: string;
+    date: Dayjs | null;
+  }>({
     email: "",
     phone: "",
     message: "",
-    date: "",
+    date: null,
   });
   const [bookingErrors, setBookingErrors] = useState({ email: "", phone: "", date: "", message: "" });
   const [bookingLoading, setBookingLoading] = useState(false);
@@ -88,7 +97,7 @@ export default function ContactAgentForm({
           email: response?.email,
           phone: response?.phone,
           message: "",
-          date: "",
+          date: null,
         });
         // setState({
         //   first_name: response?.first_name,
@@ -219,7 +228,7 @@ export default function ContactAgentForm({
     if (!bookingForm.phone.trim()){ errs.phone = "Phone is required"; setBookingLoading(false);}
     else if (!/^[0-9]{10}$/.test(bookingForm.phone))
      { errs.phone = "Enter a valid 10-digit number"; setBookingLoading(false);}
-    if (!bookingForm.date.trim()){ errs.date = "Date is required"; setBookingLoading(false);}
+    if (!bookingForm.date){ errs.date = "Date is required"; setBookingLoading(false);}
     if (!bookingForm.message.trim()) { errs.message = "Inquiry details are required"; setBookingLoading(false); }
     setBookingErrors(errs);
     if (errs.email || errs.phone || errs.message) return;
@@ -229,7 +238,7 @@ export default function ContactAgentForm({
       message: bookingForm.message,
       email: bookingForm.email,
       phone_number: bookingForm.phone,
-      schedule_date_time:bookingForm?.date?moment(bookingForm?.date).format("YYYY-MM-DD HH:mm:ss"):null,
+      schedule_date_time: bookingForm?.date ? bookingForm.date.format("YYYY-MM-DD HH:mm:ss") : null,
       user_id:state.userId,
     };
     const res: any = await Models.chat.booking_inquiry(payload);
@@ -237,7 +246,7 @@ export default function ContactAgentForm({
     setInquiryMode("done");
     setBookingLoading(false);
     console.log("Booking Inquiry Payload:", payload);
-    setBookingForm({ email: "", phone: "", message: "", date: "" });
+    setBookingForm({ email: "", phone: "", message: "", date: null });
     setBookingErrors({ email: "", phone: "", date: "", message: "" });
     } catch (e) {
     setBookingLoading(false);
@@ -248,6 +257,12 @@ export default function ContactAgentForm({
 
   const inputCls = (err: string) =>
     `w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground ${err ? "border-red-500" : "border-border focus:border-themeColor1"}`;
+
+  const handleVoucherDownload = async () => {
+    if (!data?.voucher_url) return;
+    // Open in new tab — browser will prompt download for PDFs
+    window.open(data.voucher_url, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <Card
@@ -265,7 +280,7 @@ export default function ContactAgentForm({
       <CardContent className={`p-6 space-y-6 ${onClose ? "pt-0" : ""}`}>
         {/* Agent info */}
         <div className="flex items-center gap-4 border-b border-gray-200 pb-4">
-          <div className="flex-shrink-0 cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.id}`)}>
+          <div className="flex-shrink-0 cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.slug}`)}>
             {/* <Image
               src="/assets/images/real-estate/dummy.png"
               alt="Agent"
@@ -291,7 +306,7 @@ export default function ContactAgentForm({
               )}
           </div>
           <div className="text-left">
-            <h3 className="font-semibold cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.id}`)}>
+            <h3 className="font-semibold cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.slug}`)}>
               {capitalizeFLetter(data?.developer?.industry)}
             </h3>
             <p className="text-gray-600 text-sm">
@@ -424,19 +439,37 @@ export default function ContactAgentForm({
                   <label className="text-xs text-muted-foreground font-medium">
                     Preferred Date and Time <span className="text-red-500">*</span>
                   </label>
-                  <input
-                    type="datetime-local"
-                    value={bookingForm.date}
-                    onChange={(e) => {
-                      setBookingForm((p) => ({ ...p, date: e.target.value }));
-                      setBookingErrors((p) => ({ ...p, date: "" }));
-                    }}
-                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors ${bookingErrors.date ? "border-red-500" : "border-border focus:border-themeColor1"}`}
-                  />
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <MobileDateTimePicker
+                      value={bookingForm.date}
+                      onChange={(val) => {
+                        setBookingForm((p) => ({ ...p, date: val }));
+                        setBookingErrors((p) => ({ ...p, date: "" }));
+                      }}
+                      disablePast
+                      slotProps={{
+                        textField: {
+                          size: "small",
+                          placeholder: "Select date and time",
+                          sx: {
+                            width: "100%",
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "12px",
+                              fontSize: "14px",
+                              backgroundColor: "transparent",
+                              border: bookingErrors.date ? "1px solid #ef4444" : "1px solid hsl(var(--border))",
+                              "& fieldset": { border: "none" },
+                              "&:hover": { border: bookingErrors.date ? "1px solid #ef4444" : "1px solid hsl(var(--border))" },
+                              "&.Mui-focused": { border: "1px solid #9b0f09" },
+                            },
+                            "& .MuiInputBase-input": { padding: "8px 12px" },
+                          },
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
                   {bookingErrors.date && (
-                    <p className="text-xs text-red-500 pl-1">
-                      {bookingErrors.date}
-                    </p>
+                    <p className="text-xs text-red-500 pl-1">{bookingErrors.date}</p>
                   )}
                 </div>
             <div className="flex flex-col gap-1">
@@ -518,6 +551,33 @@ export default function ContactAgentForm({
           </div>
         )}
       </CardContent>
+
+      {/* Voucher / Brochure PDF Download */}
+      {data?.voucher_url && (
+        <div className="px-6 pb-6">
+          <div className="flex items-center gap-3 p-3 rounded-xl border border-dashed border-[#9b0f09]/40 bg-[#fff6f6]">
+            {/* PDF icon */}
+            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#9b0f09]/10 flex items-center justify-center">
+              <FileDown className="w-5 h-5 text-[#9b0f09]" />
+            </div>
+
+            {/* Label */}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900 leading-tight">Brochure</p>
+              <p className="text-xs text-gray-500 mt-0.5">PDF Document</p>
+            </div>
+
+            {/* Download button */}
+            <button
+              onClick={handleVoucherDownload}
+              className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#9b0f09] hover:bg-[#7d0c07] text-white text-xs font-medium transition-colors"
+            >
+              <FileDown className="w-3.5 h-3.5" />
+              Download
+            </button>
+          </div>
+        </div>
+      )}
     </Card>
   );
 }

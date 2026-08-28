@@ -196,7 +196,7 @@ export default function ChatWidget() {
   };
 
   useEffect(() => {
-    setToken(localStorage.getItem("token"));
+    setToken(localStorage.getItem("demo_token"));
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try { setMessages(JSON.parse(stored)); } catch { setMessages([WELCOME]); }

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, Heart } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PropertyCardSkeleton } from "@/components/common-components/skeleton/PropertyCardSkeleton.componenet";
@@ -8,6 +8,7 @@ import { useSetState } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import { useRouter } from "next/navigation";
 import { PropertyCard } from "@/components/real-estate/property-list/property3And4Column/property-card";
+import ContactAgentForm from "@/components/real-estate/property-detail/ContactAgentForm.component";
 
 const Favorites = () => {
   const router = useRouter();
@@ -16,6 +17,8 @@ const Favorites = () => {
     properties: [],
     loading: true,
     error: null,
+    contactOpen: false,
+    selectedProperty: null,
   });
 
   useEffect(() => {
@@ -58,6 +61,10 @@ const Favorites = () => {
       </motion.div>
     );
   }
+  
+   const redirect = () => {
+    router.push(`/property-list?developerId=${state.detail?.developer?.id}`);
+  };
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="">
@@ -109,12 +116,41 @@ const Favorites = () => {
                   view="grid"
                   list={state.properties}
                   updateList={(data) => setState({ properties: data })}
+                  onContactClick={(prop) => setState({ contactOpen: true, selectedProperty: prop })}
                 />
               </motion.div>
             ))}
           </div>
         )}
       </div>
+
+      <AnimatePresence>
+        {state.contactOpen && (
+          <>
+            <motion.div
+              className="fixed inset-0 bg-black/50 z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setState({ contactOpen: false })}
+            />
+            <motion.div
+              className="fixed inset-0 flex items-center justify-center z-50 p-4"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+            >
+              <ContactAgentForm
+                data={state.selectedProperty}
+                onClose={() => setState({ contactOpen: false })}
+                token={state.token}
+                industryClick={() => redirect()}
+              />
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

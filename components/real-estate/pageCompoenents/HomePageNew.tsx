@@ -2,36 +2,36 @@
 
 import React, { useEffect } from 'react'
 import { motion } from "framer-motion";
+import dynamic from 'next/dynamic';
+
+// Above-the-fold: static imports (visible on initial load)
 import HomeBanner from '../InnerComponents/HomeBanner';
-import { Dropdown, useSetState } from '@/utils/function.utils';
-import Models from '@/imports/models.import';
-import { toastEmitter } from '@/utils/toast.utils';
 import PropertyByCity from '../InnerComponents/PropertyByCity';
 import PropertyByType from '../InnerComponents/PropertyByType';
 import FeaturedListings from '../InnerComponents/FeaturedListings';
-import HowItWorks from '../InnerComponents/HowItWorks';
-import NewTestimonial from '../InnerComponents/NewTestimonial';
-import SellingOptionsSection from '../InnerComponents/SellingOptionsSection';
-import DeveloperRegistrationSection from '../InnerComponents/DeveloperRegistrationSection';
 import FeaturedDevelopers from '../InnerComponents/FeaturedDevelopers';
-import NewFooter from '../NewFooter';
-import NewPopuplarProperties from '../InnerComponents/NewPopuplarProperties';
-import Testimonials from '@/components/common-components/Testimonials';
-import ExploreDreamHomeSection from '../InnerComponents/ExploreDreamHomeSection';
-import FAQSection from '../InnerComponents/FAQSection';
-import AboutSection from '../InnerComponents/AboutSection';
-import SectionTestimonial from '../InnerComponents/SectionTestimonial';
-import LocationPickerModal from '../InnerComponents/LocationPickerModal';
-import PropertyByCityNew from '../InnerComponents/PropertyByCityNew';
-import FAQSectionNew from '../InnerComponents/FAQSectionNew';
-import SectionTestimonialNew from '../InnerComponents/SectionTestimonialNew';
+
+// Utilities
+import { Dropdown, useSetState } from '@/utils/function.utils';
+import Models from '@/imports/models.import';
+import { toastEmitter } from '@/utils/toast.utils';
+
+// Skeletons for above-fold loading states
 import {
   PropertyByCitySkeleton,
   FeaturedListingsSkeleton,
   PropertyByTypeSkeleton,
   FeaturedDevelopersSkeleton,
-  NewPopularPropertiesSkeleton,
 } from '../InnerComponents/HomeSectionSkeletons';
+
+// Below-the-fold: dynamic imports (deferred until needed)
+const LocationPickerModal = dynamic(() => import('../InnerComponents/LocationPickerModal'), { ssr: false });
+const DeveloperRegistrationSection = dynamic(() => import('../InnerComponents/DeveloperRegistrationSection'), { ssr: false });
+const NewPopuplarProperties = dynamic(() => import('../InnerComponents/NewPopuplarProperties'), { ssr: false });
+const HowItWorks = dynamic(() => import('../InnerComponents/HowItWorks'), { ssr: false });
+const SellingOptionsSection = dynamic(() => import('../InnerComponents/SellingOptionsSection'), { ssr: false });
+const FAQSectionNew = dynamic(() => import('../InnerComponents/FAQSectionNew'), { ssr: false });
+const SectionTestimonialNew = dynamic(() => import('../InnerComponents/SectionTestimonialNew'), { ssr: false });
 
 
 
@@ -256,24 +256,11 @@ const HomePageNew = () => {
 
           <HowItWorks />
 
-        {/* <AboutSection /> */}
          <SellingOptionsSection/>
-         
 
-        {/* <FAQSection/> */}
         <FAQSectionNew/>
-        
 
-        {/* <ExploreDreamHomeSection/> */}
-
-        {/* <SectionTestimonial/> */}
         <SectionTestimonialNew/>
-
-        {/* <Testimonials /> */}
-
-        {/* <NewTestimonial/> */}
-
-        {/* <NewFooter/> */}
 
       </motion.div>
     </div>

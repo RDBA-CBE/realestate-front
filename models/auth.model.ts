@@ -153,6 +153,38 @@ const auth = {
      return promise;
   },
 
+  request_account_removal_otp: (body: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `account-deletion/request/`;
+      instance()
+        .post(url , body)
+        .then((res) => resolve(res.data))
+        .catch((error) => reject(error.response ? error.response?.data : error));
+    });
+    return promise;
+  },
+
+  verify_account_removal_otp: (body: any) => {
+    let promise = new Promise((resolve, reject) => {
+      let url = `account-deletion/verify-otp/`
+      instance()
+        .post(url, body)
+        .then((res) => resolve(res.data))
+        .catch((error) => reject(error.response ? error.response?.data : error));
+    });
+    return promise;
+  },
+
+  remove_account: (body: any) => {
+    let promise = new Promise((resolve, reject) => {
+      instance()
+        .post("authentication/remove-account/", body)
+        .then((res) => resolve(res.data))
+        .catch((error) => reject(error.response ? error.response?.data : error));
+    });
+    return promise;
+  },
+
   group : () => {
     let promise = new Promise((resolve, reject) => {
       let url = `groups/`;
