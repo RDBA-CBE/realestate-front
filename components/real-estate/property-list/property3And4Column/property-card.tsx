@@ -15,12 +15,14 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { capitalizeFLetter, formatPriceRange, Success, truncateText } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
+import { getPropertyPathValue, getPropertyUrl } from "@/utils/seo.utils";
 
 interface PropertyImage { id: number; image_url: string; is_primary: boolean; order: number; }
 interface Property {
-  id: string; title: string; location: any; area: any; price: number; slug:string;
+  id: string; title: string; location: any; area: any; price: number;
   listing_type: "rent" | "sale" | "lease"; bedrooms: number; bathrooms: number;
   primary_image: string; built_up_area: any; state: string; city: string;
+  slug?: string;
   is_compare: string; user_wishlists: boolean; images?: PropertyImage[];
   price_range?: any; developer: any; broker_name?: string; deposit?: number;
   price_per_sqft?: number; highlights?: string[]; possession_date?: string;
@@ -77,7 +79,7 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
   const onWishlist = async (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    const token = localStorage.getItem("demo_token");
+    const token = localStorage.getItem("token");
     if (!token) { setLoginPopup(true); return; }
     try {
       if (!wishlisted) {
@@ -108,15 +110,16 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
   const onShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
+    const url = getPropertyUrl(property);
     try {
-      if (navigator.share) await navigator.share({ title: property.title, url: `https://realestate-front-eight.vercel.app/property-detail/${property.slug}` });
-      else { navigator.clipboard.writeText(`https://realestate-front-eight.vercel.app/property-detail/${property.slug}`); Success("Link copied!"); }
-    } catch {}
+      if (navigator.share) await navigator.share({ title: property.title, url });
+      else { navigator.clipboard.writeText(url); Success("Link copied!"); }
+    } catch { }
   };
 
   const onNext = (e: React.MouseEvent) => { e.stopPropagation(); e.preventDefault(); setImgIndex((p) => p === images.length - 1 ? 0 : p + 1); };
   const onPrev = (e: React.MouseEvent) => { e.stopPropagation(); e.preventDefault(); setImgIndex((p) => p === 0 ? images.length - 1 : p - 1); };
-  const onCardClick = () => handleClick ? handleClick() : router.push(`/property-detail/${property?.slug}`);
+  const onCardClick = () => handleClick ? handleClick() : router.push(`/property-list/${getPropertyPathValue(property)}`);
 
   /* ── Action buttons row (rendered outside image div) ── */
   const ActionButtons = (
@@ -125,7 +128,7 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
         type="button"
         onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); }}
         onClick={onWishlist}
-        className={`rounded-full p-2 shadow transition-colors ${wishlisted ? "bg-[#9b0f09] text-white" : "bg-white text-gray-600 lg:hover:bg-[#9b0f09] lg:hover:text-white"}`}
+        className={`rounded-full p-2 shadow transition-colors ${wishlisted ? "bg-[#9b0f09] text-white" : "bg-white text-gray-600 hover:bg-[#9b0f09] hover:text-white"}`}
       >
         <Heart size={16} fill={wishlisted ? "currentColor" : "none"} />
       </button>
@@ -133,7 +136,7 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
         type="button"
         onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); }}
         onClick={onCompare}
-        className={`rounded-full p-2 shadow transition-colors ${compared ? "bg-[#9b0f09] text-white" : "bg-white text-gray-600 lg:hover:bg-[#9b0f09] lg:hover:text-white"}`}
+        className={`rounded-full p-2 shadow transition-colors ${compared ? "bg-[#9b0f09] text-white" : "bg-white text-gray-600 hover:bg-[#9b0f09] hover:text-white"}`}
       >
         <GitCompareArrowsIcon size={16} />
       </button>
@@ -141,7 +144,7 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
         type="button"
         onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); }}
         onClick={onShare}
-        className="rounded-full p-2 shadow bg-white text-gray-600 lg:hover:bg-[#9b0f09] lg:hover:text-white transition-colors"
+        className="rounded-full p-2 shadow bg-white text-gray-600 hover:bg-[#9b0f09] hover:text-white transition-colors"
       >
         <Share size={16} />
       </button>
@@ -149,10 +152,10 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
   );
 
   /* ── Image area (inlined — no inner component to avoid stale closures) ── */
-  const imageAreaJSX = (height: number | string) => (
+  const imageAreaJSX = (height: number | string, isPriority = false) => (
     <div className="relative overflow-hidden w-full h-full" style={{ height }}>
       {images[imgIndex]?.image_url && (
-        <Image src={images[imgIndex].image_url} alt={property.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 400px" />
+        <Image src={images[imgIndex].image_url} alt={property.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 400px" priority={isPriority && imgIndex === 0} />
       )}
       {images.length > 1 && (
         <>
@@ -216,16 +219,16 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
         <div className="h-full" onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
           <Card onClick={onCardClick} className="bg-white border-gray overflow-hidden rounded-2xl shadow-sm hover:shadow-xl cursor-pointer h-full flex flex-col transition-shadow duration-300">
             <div className="relative flex-shrink-0" style={{ height: GRID_IMAGE_HEIGHT }}>
-              {imageAreaJSX(GRID_IMAGE_HEIGHT)}
+              {imageAreaJSX(GRID_IMAGE_HEIGHT, true)}
               {ActionButtons}
             </div>
             <CardContent className="flex flex-col flex-grow py-4 gap-1">
               <div className="flex items-start justify-between gap-1">
                 <h3 className="font-semibold text-gray-900 text-base leading-snug line-clamp-2">{property.title}</h3>
-                <div onClick={(e) =>{
-                    e.stopPropagation()
-                    window.open(property?.location_url, "_blank")
-                }}  title="View on Map">
+                <div onClick={(e) => {
+                  e.stopPropagation()
+                  window.open(property?.location_url, "_blank")
+                }} title="View on Map">
                   <MapPinHouse className="w-5 h-5 text-[#9b0f09] hover:scale-110 transition-transform" />
                 </div>
               </div>
@@ -282,19 +285,19 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
       <div onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
         <Card onClick={onCardClick} className="bg-white border border-gray-100 overflow-hidden rounded-2xl shadow-sm hover:shadow-xl cursor-pointer transition-shadow duration-300 flex flex-col sm:flex-row">
           <div className="relative sm:w-[380px] w-full flex-shrink-0 h-52 sm:h-auto">
-            {imageAreaJSX("100%")}
+            {imageAreaJSX("100%", false)}
             {ActionButtons}
           </div>
           <CardContent className="flex flex-col flex-grow p-5 gap-1">
             <div className="flex items-start justify-between gap-1">
-            <h3 className="font-semibold text-gray-900 text-lg leading-snug line-clamp-2">{capitalizeFLetter(property.title)}</h3>
-            <div onClick={(e) =>{
-                    e.stopPropagation()
-                    window.open(property?.location_url, "_blank")
-                }} title="View on Map">
-                  <MapPinHouse className="w-5 h-5 text-[#9b0f09] hover:scale-110 transition-transform" />
-                </div>
-                </div>
+              <h3 className="font-semibold text-gray-900 text-lg leading-snug line-clamp-2">{property.title}</h3>
+              <div onClick={(e) => {
+                e.stopPropagation()
+                window.open(property?.location_url, "_blank")
+              }} title="View on Map">
+                <MapPinHouse className="w-5 h-5 text-[#9b0f09] hover:scale-110 transition-transform" />
+              </div>
+            </div>
             {(property.location?.name || property.location?.label) && (
               <div className="flex items-center gap-1 text-sm">
                 <MapPin className="w-3.5 h-3.5 text-[#9b0f09] shrink-0" />

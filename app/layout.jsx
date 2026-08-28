@@ -1,75 +1,107 @@
-"use client";
-
-import { Poppins, Roboto } from "next/font/google";
+import { Poppins, Roboto_Flex } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/common-components/header";
 import { Toaster } from "@/components/ui/sonner";
 import { Provider } from "react-redux";
 import store from "@/store";
 import { Suspense } from "react";
-import PageTransition from "@/components/common-components/PageTransition";
-import { usePathname } from "next/navigation";
-import NewHeader from "@/components/real-estate/NewHeader";
-import ChatWidget from "@/components/common-components/ChatWidget";
-import PropertyFinderChat from "@/components/common-components/ChatWidget";
 import NewFooter from "@/components/real-estate/NewFooter";
 import { ToastProvider } from "@/components/common-components/ToastProvider";
+import RootLayoutClient from "@/components/common-components/root-layout";
+import { SITE_URL } from "@/utils/seo.utils";
 
-// Poppins as the main sans font
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"], // pick the weights you need
+  weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
+  display: "swap",
 });
 
-// Roboto as secondary font (for mono / UI text)
-const roboto = Roboto({
+const robotoFlex = Roboto_Flex({
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
   variable: "--font-roboto",
+  display: "swap",
 });
+
+export const metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Boom Realty | Find Properties for Sale & Lease",
+    template: "%s | Boom Realty",
+  },
+  description:
+    "Discover verified residential and commercial properties for sale and lease across India. Browse apartments, villas, plots, and more on Boom Realty.",
+  keywords: [
+    "real estate",
+    "properties for sale",
+    "properties for lease",
+    "apartments",
+    "villas",
+    "plots",
+    "Boom Realty",
+    "India real estate",
+  ],
+  authors: [{ name: "Boom Realty", url: SITE_URL }],
+  creator: "Boom Realty",
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: SITE_URL,
+    siteName: "Boom Realty",
+    title: "Boom Realty | Find Properties for Sale & Lease",
+    description:
+      "Discover verified residential and commercial properties for sale and lease across India.",
+    images: [
+      {
+        url: `${SITE_URL}/assets/images/logo.png`,
+        width: 1200,
+        height: 630,
+        alt: "Boom Realty",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Boom Realty | Find Properties for Sale & Lease",
+    description:
+      "Discover verified residential and commercial properties for sale and lease across India.",
+    images: [`${SITE_URL}/assets/images/logo.png`],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+};
 
 export default function RootLayout({ children }) {
-  const pathname = usePathname(); // ✅ correct hook
-  const isLoginPath = pathname?.startsWith("/login");
-  const isSigninPath = pathname?.startsWith("/signin");
-  const isForgetPassword = pathname?.startsWith("/forgot-password");
-  const isSignup = pathname?.startsWith("/signin");
-  const isPostProperty = pathname?.startsWith("/post-property");
-  const isResetPassword = pathname?.startsWith("/reset-password");
-  const isVerifyEmail = pathname?.startsWith("/verify-email");
-  const AISerach = pathname?.startsWith("/ai-search");
-
   return (
-    <Provider store={store}>
-      <html lang="en" className={`${poppins.variable} ${roboto.variable}`}>
-        <body className="font-sans antialiased bg-[#f9f9f9]">
-          <Suspense
-            fallback={
-              <div className="fixed inset-0 flex items-center justify-center bg-white z-[9999]">
-                <div className="w-12 h-12 rounded-full border-4 border-[#9b0f09]/20 border-t-[#9b0f09] animate-spin" />
-              </div>
-            }
-          >
-            <div className="flex flex-col w-full min-h-screen">
-              {!isLoginPath &&
-                !isSigninPath &&
-                !isForgetPassword &&
-                !isSignup &&
-                !isPostProperty &&
-                !isResetPassword &&
-                !isVerifyEmail && <Header />}
-
-              <main className="w-full">{children}</main>
-
-             {!AISerach && <NewFooter />}
+    <html lang="en" className={`${poppins.variable} ${robotoFlex.variable}`}>
+      <head>
+        <link
+          rel="preload"
+          as="image"
+          href="/assets/images/real-estate/home/heropage.webp"
+          fetchPriority="high"
+        />
+      </head>
+      <body className="font-sans antialiased bg-[#f9f9f9]">
+        <Suspense
+          fallback={
+            <div className="fixed inset-0 flex items-center justify-center bg-white z-[9999]">
+              <div className="w-12 h-12 rounded-full border-4 border-[#9b0f09]/20 border-t-[#9b0f09] animate-spin" />
             </div>
-            {/* <PropertyFinderChat /> */}
-            <Toaster position="top-center" />
-            <ToastProvider />
-          </Suspense>
-        </body>
-      </html>
-    </Provider>
+          }
+        >
+          <RootLayoutClient>{children}</RootLayoutClient>
+          <Toaster position="top-center" />
+          <ToastProvider />
+        </Suspense>
+      </body>
+    </html>
   );
 }

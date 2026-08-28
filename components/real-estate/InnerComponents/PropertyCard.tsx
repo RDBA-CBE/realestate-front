@@ -1,11 +1,13 @@
 "use client";
 import React, { useState } from "react";
+import Image from "next/image";
 import { MapPin, BedDouble, Bath, Maximize2, Heart, GitCompare } from "lucide-react";
 import { capitalizeFLetter, formatPriceRange, Success, truncateText } from "@/utils/function.utils";
 import { useRouter } from "next/navigation";
 import Models from "@/imports/models.import";
+import { getPropertyPathValue } from "@/utils/seo.utils";
 
-const PropertyCard = ({ listing }: { listing: any }) => {
+const PropertyCard = ({ listing }) => {
   const router = useRouter();
   const [isWishlisted, setIsWishlisted] = useState(listing?.user_wishlists || false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
@@ -18,13 +20,13 @@ const PropertyCard = ({ listing }: { listing: any }) => {
   });
 
   const handleClick = () => {
-    router.push(`property-detail/${listing?.slug}`);
+    router.push(`/property-list/${getPropertyPathValue(listing)}`);
   };
 
   const handleWishList = async (e) => {
     e.stopPropagation();
     try {
-      const token = localStorage.getItem("demo_token");
+      const token = localStorage.getItem("token");
       if (!token) { setShowLoginPopup(true); return; }
       if (!isWishlisted) {
         await Models.wishlist.add_property({ property_id: listing?.id });
@@ -68,10 +70,12 @@ const PropertyCard = ({ listing }: { listing: any }) => {
       >
         {/* Image */}
         <div className="relative h-52 overflow-hidden rounded-t-2xl">
-          <img
-            src={listing?.primary_image}
-            alt={listing?.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          <Image
+            src={listing?.primary_image || "/assets/images/real-estate/home/boom-logo.png"}
+            alt={listing?.title || "Property"}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
 
           {/* For Sale badge */}
@@ -104,20 +108,20 @@ const PropertyCard = ({ listing }: { listing: any }) => {
           <h3 className="section-in-ti mb-2" title={listing?.title}>{truncateText(listing?.title, 34)}</h3>
           <p className="flex items-center gap-1 mb-4 min-h-[24px]">
             {listing?.location?.name && (<><MapPin className="w-3.5 h-3.5" />{`${capitalizeFLetter(
-                                listing.area?.name,
-                              )}, ${capitalizeFLetter(listing.location?.name)}`}</>)}
+              listing.area?.name,
+            )}, ${capitalizeFLetter(listing.location?.name)}`}</>)}
           </p>
           <div className="flex flex-row items-center justify-between border-t pt-4 pb-2 border-[#ededed] mt-auto">
             {listing.floor_plans && listing.floor_plans.length > 0 && (
-               <span className="flex items-center gap-1"><BedDouble className="w-4 h-4" />   {`${[
-                        ...new Set(
-                          listing.floor_plans.map((floor_plan: any) =>
-                            floor_plan.category?.match(/\d+/)?.[0]
-                          )
-                        ),
-                      ].join(", ")} BHK`}</span>
+              <span className="flex items-center gap-1"><BedDouble className="w-4 h-4" />   {`${[
+                ...new Set(
+                  listing.floor_plans.map((floor_plan: any) =>
+                    floor_plan.category?.match(/\d+/)?.[0]
+                  )
+                ),
+              ].join(", ")} BHK`}</span>
             )}
-           
+
             {/* <span className="flex items-center gap-1"><Bath className="w-4 h-4" /> {listing?.bathrooms}</span> */}
             <span className="flex items-center gap-1"><Maximize2 className="w-4 h-4" /> {listing?.price_per_sqft} sqft</span>
           </div>
