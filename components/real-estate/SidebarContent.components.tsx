@@ -61,9 +61,8 @@ function InlineDropdown({
           {options.map((item) => (
             <button
               key={item.value}
-              className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-100 ${
-                String(value) === String(item.value) ? "font-semibold text-dred" : ""
-              }`}
+              className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-100 ${String(value) === String(item.value) ? "font-semibold text-dred" : ""
+                }`}
               onClick={() => { onChange(item.value); setOpen(false); }}
             >
               {item.label}
@@ -105,11 +104,11 @@ function FilterSection({
               <input
                 type="checkbox"
                 className="cursor-pointer"
-                checked={selected?.some((t) => t.value === option.value)}
+                checked={selected?.some((t) => String(t.value) === String(option.value))}
                 onChange={(e) =>
                   handleChange(stateKey, e.target.checked
                     ? [...(selected || []), option]
-                    : selected.filter((t) => t.value !== option.value))
+                    : selected.filter((t) => String(t.value) !== String(option.value)))
                 }
               />
               <span>{option.label}</span>
@@ -158,7 +157,7 @@ export const SidebarContent = (props: any) => {
     listingTypeList = [],
   } = props;
 
-return (
+  return (
     <div className="space-y-6 pb-10">
 
       {/* Header */}
@@ -174,12 +173,12 @@ return (
       </div>
 
       {/* Search */}
-      <TextInput
+      {/* <TextInput
         className="bg-white"
         placeholder="What are you looking for?"
         value={state.search}
         onChange={(e) => handleChange("search", e.target.value)}
-      />
+      /> */}
 
       {/* Listing Status */}
       <div>
@@ -237,13 +236,13 @@ return (
         <FilterSection label="Location" list={locationList} selected={state.location} stateKey="location" handleChange={handleChange} showAlphabetNav />
       )}
       {areaList.length > 0 && (
-        <FilterSection label="Area" list={areaList} selected={state.area} stateKey="area" handleChange={handleChange} showAlphabetNav/>
+        <FilterSection label="Area" list={areaList} selected={state.area} stateKey="area" handleChange={handleChange} showAlphabetNav />
       )}
       {developerList.length > 0 && (
-        <FilterSection label="Developer" list={developerList} selected={state.developer} stateKey="developer" handleChange={handleChange} showAlphabetNav/>
+        <FilterSection label="Developer" list={developerList} selected={state.developer} stateKey="developer" handleChange={handleChange} showAlphabetNav />
       )}
       {projectList.length > 0 && (
-        <FilterSection label="Project" list={projectList} selected={state.project} stateKey="project" handleChange={handleChange} showAlphabetNav/>
+        <FilterSection label="Project" list={projectList} selected={state.project} stateKey="project" handleChange={handleChange} showAlphabetNav />
       )}
 
       {/* Budget */}

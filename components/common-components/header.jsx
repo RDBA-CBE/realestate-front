@@ -134,12 +134,7 @@ const Header = () => {
 
   return (
     <>
-      <motion.header
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="bg-white sticky top-0 z-[50]"
-      >
+      <header className="bg-white sticky top-0 z-[50]">
         <div className="section-wid  web-header">
           <div className="  flex justify-between items-center gap-3 md:gap-20 ">
             <div className="flex items-center gap-20">
@@ -154,10 +149,13 @@ const Header = () => {
                   />
                 </Link> */}
 
-                <img
+                <Image
                   src="/assets/images/real-estate/home/boom-logo.png"
-                  alt="Logo"
-                  className=" w-[260px]"
+                  alt="Boom Realty Logo"
+                  width={260}
+                  height={48}
+                  priority
+                  className="w-[200px] md:w-[260px] h-auto"
                 />
               </Link>
 
@@ -384,10 +382,12 @@ const Header = () => {
                 )}
                 
                 <div className="p-1 rounded-full group hidden xl:block cursor-pointer ">
-                  <img
+                  <Image
                     src="/assets/images/real-estate/home/ai-search-1.png"
-                    alt=""
-                    className="w-10 h-10 transition-transform duration-500  ease-out group-hover:scale-[1.2]"
+                    alt="AI Search"
+                    width={40}
+                    height={40}
+                    className="w-10 h-10 transition-transform duration-500 ease-out group-hover:scale-[1.2]"
                     onClick={() => router.push("/ai-search")}
                   />
                 </div>
@@ -396,9 +396,11 @@ const Header = () => {
                   <Sheet open={open} onOpenChange={setOpen}>
                     <div className="flex items-center gap-2 md:gap-3">
                       {/* AI Search icon */}
-                      <img
+                      <Image
                         src="/assets/images/real-estate/home/ai-search-1.png"
                         alt="AI Search"
+                        width={32}
+                        height={32}
                         className="w-8 h-8 cursor-pointer"
                         onClick={() => router.push("/ai-search")}
                       />
@@ -420,10 +422,12 @@ const Header = () => {
                       <SheetHeader>
                         <SheetTitle>
                           {/* <div className="flex justify-center gap-3 py-4"> */}
-                          <img
+                          <Image
                             src="/assets/images/real-estate/home/boom-logo.png"
-                            alt="Logo"
-                            className="h-10 w-auto object-contain -mt-2"
+                            alt="Boom Realty Logo"
+                            width={160}
+                            height={36}
+                            className="h-10 w-auto object-contain -mt-2 cursor-pointer"
                             onClick={() => {
                               router.push("/");
                               setOpen(false);
@@ -733,7 +737,7 @@ const Header = () => {
             </Dialog>
           </div>
         </div>
-      </motion.header>
+      </header>
     </>
   );
 };

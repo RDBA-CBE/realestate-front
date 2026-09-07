@@ -13,7 +13,7 @@ import {
 } from "@/utils/function.utils";
 import Models from "@/imports/models.import";
 import TextArea from "@/components/common-components/textArea";
-import { Building2, CalendarCheck, Phone, X } from "lucide-react";
+import { Building2, CalendarCheck, FileDown, Phone, X } from "lucide-react";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -43,7 +43,7 @@ export default function ContactAgentForm({
     last_name: "",
     phone: "",
     email: "",
-    userId:""
+    userId:"",
   });
 
   const router = useRouter()
@@ -257,6 +257,12 @@ export default function ContactAgentForm({
 
   const inputCls = (err: string) =>
     `w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground ${err ? "border-red-500" : "border-border focus:border-themeColor1"}`;
+
+  const handleVoucherDownload = async () => {
+    if (!data?.voucher_url) return;
+    // Open in new tab — browser will prompt download for PDFs
+    window.open(data.voucher_url, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <Card
@@ -545,6 +551,33 @@ export default function ContactAgentForm({
           </div>
         )}
       </CardContent>
+
+      {/* Voucher / Brochure PDF Download */}
+      {data?.voucher_url && (
+        <div className="px-6 pb-6">
+          <div className="flex items-center gap-3 p-3 rounded-xl border border-dashed border-[#9b0f09]/40 bg-[#fff6f6]">
+            {/* PDF icon */}
+            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#9b0f09]/10 flex items-center justify-center">
+              <FileDown className="w-5 h-5 text-[#9b0f09]" />
+            </div>
+
+            {/* Label */}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900 leading-tight">Brochure</p>
+              <p className="text-xs text-gray-500 mt-0.5">PDF Document</p>
+            </div>
+
+            {/* Download button */}
+            <button
+              onClick={handleVoucherDownload}
+              className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#9b0f09] hover:bg-[#7d0c07] text-white text-xs font-medium transition-colors"
+            >
+              <FileDown className="w-3.5 h-3.5" />
+              Download
+            </button>
+          </div>
+        </div>
+      )}
     </Card>
   );
 }
