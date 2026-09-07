@@ -98,11 +98,15 @@ const Header = () => {
     try {
       setState({ logoutLoading: true });
       const refresh = localStorage.getItem("demo_refresh");
+      const compare = localStorage.getItem("compare");
       await Models.auth.logout({ refresh });
       localStorage.clear();
+      if (compare) localStorage.setItem("compare", compare);
       window.location.href = "/login";
     } catch (error) {
+      const compare = localStorage.getItem("compare");
       localStorage.clear();
+      if (compare) localStorage.setItem("compare", compare);
       window.location.href = "/login";
     } finally {
       setState({ logoutLoading: false });
