@@ -9,11 +9,12 @@ import { clearAuthData } from "@/store/slice/AuthSlice";
 import { Failure, Success } from "@/utils/function.utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 const OTP_DURATION_SECONDS = 900; // 15 minutes
 
 const errorMessage = (error: any) =>
-  error?.detail || error?.message || error?.email?.[0] || error?.otp?.[0] || "Something went wrong. Please try again.";
+  error?.detail || error?.message || error?.error ||  error?.email?.[0] || error?.otp?.[0] || "Something went wrong. Please try again.";
 
 export default function RemoveAccountPage() {
   const router = useRouter();
@@ -46,6 +47,8 @@ export default function RemoveAccountPage() {
       if (!isResend) setStep("verify");
       Success(isResend ? "A new OTP has been sent to your email." : "OTP sent to your email address.");
     } catch (error) {
+      console.log("error", error);
+      
       Failure(errorMessage(error));
     } finally {
       setIsSubmitting(false);
@@ -172,6 +175,7 @@ export default function RemoveAccountPage() {
             </Button>
           </form>
         ) : (
+          <>
           <form onSubmit={handleVerifyAndRemove} className="space-y-6">
             <div className="text-center">
               <div className="mx-auto mb-4 w-fit rounded-full bg-red-50 p-3 text-[#9b0f09]">
@@ -226,7 +230,19 @@ export default function RemoveAccountPage() {
               {isSubmitting ? <><Loader2 className="animate-spin" /> Verifying...</> : <><CheckCircle2 /> Verify & Remove Account</>}
             </Button>
           </form>
+
+          <p className="text-center text-sm text-gray-600 mt-5">
+              Don't want to delete account?{" "}
+              <Link
+                href="/profile"
+                className="font-medium text-dred hover:underline"
+              >
+                Go to profile
+              </Link>
+            </p>
+            </>
         )}
+        
       </div>
     </div>
   );
