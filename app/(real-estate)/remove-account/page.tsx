@@ -232,7 +232,7 @@ export default function RemoveAccountPage() {
           </form>
 
           <p className="text-center text-sm text-gray-600 mt-5">
-              Don't want to delete account?{" "}
+              Don&#39;t want to delete account?{" "}
               <Link
                 href="/profile"
                 className="font-medium text-dred hover:underline"
