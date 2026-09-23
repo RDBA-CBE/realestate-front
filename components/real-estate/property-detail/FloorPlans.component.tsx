@@ -15,9 +15,11 @@ interface FloorPlan {
 
 interface Props {
   data: FloorPlan[];
+  masterPlan?: string | null;
 }
 
-const FloorPlans: React.FC<Props> = ({ data }) => {
+const FloorPlans: React.FC<Props> = ({ data, masterPlan }) => {
+  const [activeTab, setActiveTab] = useState<"floorplan" | "masterplan">("floorplan");
   // ✅ Nested grouping: category → type → plans
   const groupedData = useMemo(() => {
     if (!data || !Array.isArray(data)) return {};
@@ -92,7 +94,7 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
   };
 
   // ❌ Empty state
-  if (!categories.length) {
+  if (!categories.length && !masterPlan) {
     return (
       <div className="text-center py-10 text-gray-500">
         No floor plans available
@@ -103,9 +105,38 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
 
   return (
     <div className="bg-transparent">
-      <h3 className="section-in-ti mb-6">
-        Price & Floor Plan
-      </h3>
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="section-in-ti">Price & Floor Plan</h3>
+        {masterPlan && (
+          <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
+            {categories.length > 0 && 
+            <button
+              onClick={() => setActiveTab("floorplan")}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
+                activeTab === "floorplan" ? "bg-white shadow text-dred" : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Floor Plan
+            </button>}
+            <button
+              onClick={() => setActiveTab("masterplan")}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
+                activeTab === "masterplan" ? "bg-white shadow text-dred" : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Master Plan
+            </button>
+          </div>
+        )}
+      </div>
+
+      {activeTab === "masterplan" && masterPlan && (
+        <div className="relative w-full h-[420px] rounded-xl overflow-hidden border">
+          <Image src={masterPlan} alt="Master Plan" fill className="object-contain" />
+        </div>
+      )}
+
+      {activeTab === "floorplan" && (<>
 
       {/* ✅ Category + Type Tabs */}
       <div className="flex flex-wrap gap-2  pb-2">
@@ -187,10 +218,11 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
             <p>{selectedPlan.type}</p>
           </div>
 
+          {selectedPlan.floor_no && 
           <div>
             <p className="font-semibold pb-2 mb-0">Floor No</p>
             <p>{selectedPlan.floor_no}</p>
-          </div>
+          </div>}
 
           <div>
             <p className="font-semibold pb-2 mb-0">Status</p>
@@ -200,6 +232,7 @@ const FloorPlans: React.FC<Props> = ({ data }) => {
           </div>
         </div>
       )}
+      </>)}
     </div>
   );
 };

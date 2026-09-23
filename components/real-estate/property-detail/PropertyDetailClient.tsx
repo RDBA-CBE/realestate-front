@@ -292,11 +292,11 @@ export default function PropertyDetailPage() {
     { id: "overview", component: <PropertyDetails data={state.detail} /> },
     { id: "description", component: <PropertyDesc data={state.detail} /> },
 
-    ...(state.detail?.floor_plans?.length > 0
+    ...(state.detail?.floor_plans?.length > 0 || state.detail?.master_plan
       ? [
         {
           id: "floorplans",
-          component: <FloorPlans data={state.detail?.floor_plans} />,
+          component: <FloorPlans data={state.detail?.floor_plans} masterPlan={state.detail?.master_plan} />,
         },
       ]
       : []),
@@ -319,7 +319,7 @@ export default function PropertyDetailPage() {
     //   ? [{ id: "video", component: <Video data={state.detail?.videos?.[0]} /> }]
     //   : []),
     ...(state.detail?.virtual_tours?.length > 0
-      ? [{ id: "virtualtour", component: <VirtualTour /> }]
+      ? [{ id: "virtualtour", component: <VirtualTour data={state.detail?.virtual_tours} /> }]
       : []),
     // { id: "nearby", component: <Nearby /> },
     // { id: "walkscore", component: <WalkScore /> },
@@ -456,6 +456,7 @@ export default function PropertyDetailPage() {
                 images={state.detail?.images}
                 data={state.detail}
                 updateList={() => getDetails()}
+                videos={state.detail?.videos}
               />
             </div>
           </div>
