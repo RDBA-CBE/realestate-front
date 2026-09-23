@@ -22,6 +22,7 @@ import {
   Success,
   TimeAgo,
   useSetState,
+  isPlotProperty,
 } from "@/utils/function.utils";
 import { useEffect, useState } from "react";
 import Models from "@/imports/models.import";
@@ -40,6 +41,7 @@ export default function PropertyHeader(props: any) {
 
   const { data, updateList } = props;
   const mobileLayout = props.mobileLayout ?? false;
+  const isPlot = isPlotProperty(data);
   console.log("data",data)
 
    useEffect(() => {
@@ -160,14 +162,23 @@ export default function PropertyHeader(props: any) {
                 data?.price_range?.maximum_price
               )}{" "}
             </p>
-            {data?.price_per_sqft && 
-            <span className={mobileLayout ? "block" : "block sm:hidden"}>
-            {/* <span></span> */}
-            <p className="text-[14px] text-black  mb-0">
-              Approx ₹ {(data?.price_per_sqft)} / sq.ft
-            </p>
-            </span>
-            }
+            {isPlot ? (
+              data?.price_per_cent && (
+                <span className={mobileLayout ? "block" : "block sm:hidden"}>
+                  <p className="text-[14px] text-black mb-0">
+                    Approx ₹ {(data?.price_per_cent)} / cent
+                  </p>
+                </span>
+              )
+            ) : (
+              data?.price_per_sqft && (
+                <span className={mobileLayout ? "block" : "block sm:hidden"}>
+                  <p className="text-[14px] text-black mb-0">
+                    Approx ₹ {(data?.price_per_sqft)} / sq.ft
+                  </p>
+                </span>
+              )
+            )}
           <h1 className={mobileLayout ? "section-ti !text-[22px]" : "section-ti"}>{data?.title}</h1>
           {data?.developer?.industry &&
           <p>By <span className="text-dred cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.slug}`)}>{data?.developer?.industry} </span></p>
@@ -225,14 +236,23 @@ export default function PropertyHeader(props: any) {
                 data?.price_range?.maximum_price
               )}{" "}
             </p>
-            {data?.price_per_sqft && 
-            <span className="">
-            {/* <span></span> */}
-            <p className="text-[16px] text-black text-right mb-0">
-              Approx ₹ {(data?.price_per_sqft)} / sq.ft
-            </p>
-            </span>
-            }
+            {isPlot ? (
+              data?.price_per_cent && (
+                <span className="">
+                  <p className="text-[16px] text-black text-right mb-0">
+                    Approx ₹ {(data?.price_per_cent)} / cent
+                  </p>
+                </span>
+              )
+            ) : (
+              data?.price_per_sqft && (
+                <span className="">
+                  <p className="text-[16px] text-black text-right mb-0">
+                    Approx ₹ {(data?.price_per_sqft)} / sq.ft
+                  </p>
+                </span>
+              )
+            )}
         
 
            <div className="flex items-center justify-end gap-2 mt-3">

@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { capitalizeFLetter, formatNumber } from "@/utils/function.utils";
+import { capitalizeFLetter, formatNumber, isPlotProperty } from "@/utils/function.utils";
 import {
   Bed,
   Bath,
@@ -225,6 +225,8 @@ export default function PropertyDetails({ data, mobileLayout = false }: any) {
   //   ];
   // }
 
+  const isPlot = isPlotProperty(data);
+
   const uniConfig = data?.floor_plans?.length
     ? `${[...new Set(data.floor_plans.map((fp: any) => fp.category?.match(/\d+/)?.[0]))].filter(Boolean).join(", ")} BHK`
     : "-";
@@ -232,7 +234,7 @@ export default function PropertyDetails({ data, mobileLayout = false }: any) {
 
   const details = [
 
-    ...(data.floor_plans
+    ...(!isPlot && data.floor_plans
       ? [{ icon: Bed, label: "Unit Configuration", value: uniConfig }]
       : []),
 
@@ -242,7 +244,17 @@ export default function PropertyDetails({ data, mobileLayout = false }: any) {
       value: data?.total_area ?? "-",
     },
 
-    ...(data?.built_up_area
+    ...(isPlot
+      ? [
+          {
+            icon: LandPlot,
+            label: "Plot Area",
+            value: data?.plot_area ?? "-",
+          },
+        ]
+      : []),
+
+    ...(!isPlot && data?.built_up_area
       ? [
           {
             icon: Maximize2,
@@ -298,7 +310,7 @@ export default function PropertyDetails({ data, mobileLayout = false }: any) {
       ? [{ icon: Building2, label: "Balcony", value: data?.balcony }]
       : []),
 
-    ...(data?.furnishing
+    ...(!isPlot && data?.furnishing
       ? [
           {
             icon: ArmchairIcon,

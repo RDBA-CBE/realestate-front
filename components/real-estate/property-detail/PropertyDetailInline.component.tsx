@@ -91,7 +91,7 @@ export default function PropertyDetailInline({
     { id: "overview", content: <PropertyDetails data={state.detail} mobileLayout /> },
     { id: "description", content: <PropertyDesc data={state.detail} /> },
     ...(state.detail?.floor_plans?.length
-      ? [{ id: "floorplans", content: <FloorPlans data={state.detail.floor_plans} /> }]
+      ? [{ id: "floorplans", content: <FloorPlans data={state.detail.floor_plans} masterPlan={state.detail?.master_plan} /> }]
       : []),
     ...(state.detail?.amenities?.length
       ? [{ id: "amenities", content: <Amenities data={state.detail.amenities} mobileLayout /> }]

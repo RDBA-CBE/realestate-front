@@ -11,6 +11,7 @@ import {
   ImagePlus,
   ImagesIcon,
   Share2,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Failure, Success, useSetState } from "@/utils/function.utils";
@@ -22,10 +23,12 @@ interface GalleryProps {
   data: any;
   updateList;
   mobileLayout?: boolean;
+  videos?: any[];
 }
 
-export default function Gallery({ data, images, updateList, mobileLayout = false }: GalleryProps) {
+export default function Gallery({ data, images, updateList, mobileLayout = false, videos = [] }: GalleryProps) {
   const [startIndex, setStartIndex] = useState(0);
+  const [videoOpen, setVideoOpen] = useState(false);
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [clickedImageIndex, setClickedImageIndex] = useState(0);
@@ -55,6 +58,8 @@ export default function Gallery({ data, images, updateList, mobileLayout = false
     setClickedImageIndex(index);
     setLightboxOpen(true);
   };
+
+  const firstVideo = videos?.[0];
 
   if (!images || images.length === 0) return null;
 
@@ -123,19 +128,16 @@ export default function Gallery({ data, images, updateList, mobileLayout = false
     <>
       {/* Layout with next/image */}
 
-      {images.length === 1 ? (
+      {images.length === 1 && !firstVideo ? (
         <div className={mobileLayout ? "hidden" : "hidden md:block"}>
           <Card
             className="overflow-hidden rounded-2xl shadow-lg h-[500px] relative cursor-pointer"
             onClick={() => handleOpen(0)}
           >
-            {/* Blurry background */}
             <div
               className="absolute inset-0 z-0 bg-cover bg-center filter blur-lg scale-110"
               style={{ backgroundImage: `url(${images?.[0]?.image})` }}
             ></div>
-
-            {/* Main Image */}
             <Image
               src={images?.[0]?.image}
               alt="Gallery Image"
@@ -147,8 +149,25 @@ export default function Gallery({ data, images, updateList, mobileLayout = false
       ) : (
         <div className={mobileLayout ? "hidden" : "hidden md:block"}>
           <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-4 w-full">
-            {/* Left big image */}
-
+            {/* Left big — video if available, else first image */}
+            {firstVideo ? (
+              <Card
+                className="overflow-hidden rounded-2xl shadow-lg h-[400px] lg:h-[500px] relative cursor-pointer bg-black"
+                onClick={() => setVideoOpen(true)}
+              >
+                <video
+                  src={firstVideo.video}
+                  className="w-full h-full object-cover"
+                  muted
+                  playsInline
+                />
+                <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                  <div className="bg-white/30 backdrop-blur-sm rounded-full p-4">
+                    <svg className="w-12 h-12 text-white fill-white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  </div>
+                </div>
+              </Card>
+            ) : (
             <Card
               className="overflow-hidden rounded-2xl shadow-lg h-[400px] lg:h-[500px] relative cursor-pointer"
               onClick={() => handleOpen(0)}
@@ -157,7 +176,6 @@ export default function Gallery({ data, images, updateList, mobileLayout = false
                 className="absolute inset-0 z-0 bg-cover bg-center filter blur-lg scale-110"
                 style={{ backgroundImage: `url(${images?.[0]?.image})` }}
               ></div>
-
               <Image
                 src={images?.[0]?.image}
                 alt="Main Gallery"
@@ -165,6 +183,7 @@ export default function Gallery({ data, images, updateList, mobileLayout = false
                 className="object-cover 2xl:object-contain"
               />
             </Card>
+            )}
 
             {/* Right grid */}
             <div
@@ -214,22 +233,56 @@ export default function Gallery({ data, images, updateList, mobileLayout = false
         </div>
       )}
 
+      {/* Video modal */}
+      {videoOpen && firstVideo && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+          onClick={() => setVideoOpen(false)}
+        >
+          <div className="relative w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setVideoOpen(false)}
+              className="absolute top-3 right-3 z-10 bg-black/70 rounded-full p-2 text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="aspect-video">
+              <video controls autoPlay className="w-full h-full rounded-xl">
+                <source src={firstVideo.video} type="video/mp4" />
+              </video>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* -------------responsive gallery------------ */}
 
       <div className={mobileLayout ? "block" : "block md:hidden"}>
         <div className="relative w-full h-[250px] rounded-2xl overflow-hidden shadow-lg cursor-pointer">
-          {/* Main image */}
-          {images?.[0] && (
+          {/* Video as first item on mobile */}
+          {firstVideo ? (
+            <>
+              <video src={firstVideo.video} className="w-full h-full object-cover" muted playsInline />
+              <div
+                className="absolute inset-0 bg-black/40 flex items-center justify-center"
+                onClick={() => setVideoOpen(true)}
+              >
+                <div className="bg-white/30 backdrop-blur-sm rounded-full p-3">
+                  <svg className="w-8 h-8 text-white fill-white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+              </div>
+            </>
+          ) : images?.[0] ? (
             <Image
               src={images[0].image}
               alt="Main Property Image"
               fill
               className="object-cover"
             />
-          )}
+          ) : null}
 
           {/* Overlay for dim + tap text */}
-          {images?.length > 1 && (
+          {!firstVideo && images?.length > 1 && (
             <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
               <span
                 className="bg-white/60 text-gray-800 px-3 py-1.5 rounded-md text-sm font-medium shadow"

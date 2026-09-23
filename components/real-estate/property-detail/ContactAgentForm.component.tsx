@@ -312,9 +312,9 @@ export default function ContactAgentForm({
             <p className="text-gray-600 text-sm">
               {capitalizeFLetter(data?.developer?.user_type)}
             </p>
-            <p className="text-gray-800 font-medium mt-1">
+            {/* <p className="text-gray-800 font-medium mt-1">
               {formatPhoneNumber(data?.developer?.phone)}
-            </p>
+            </p> */}
           </div>
         </div>
 
