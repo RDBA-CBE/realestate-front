@@ -47,7 +47,7 @@ const FloorPlans: React.FC<Props> = ({ data, masterPlan }) => {
 
   const [activeCategory, setActiveCategory] = useState("");
   const [activeType, setActiveType] = useState("");
-  const [selectedSqft, setSelectedSqft] = useState("");
+  const [selectedPlanId, setSelectedPlanId] = useState<number | null>(null);
 
   // ✅ Initial selection
   useEffect(() => {
@@ -58,7 +58,7 @@ const FloorPlans: React.FC<Props> = ({ data, masterPlan }) => {
 
       setActiveCategory(firstCategory);
       setActiveType(firstType);
-      setSelectedSqft(firstPlan?.square_feet);
+      setSelectedPlanId(firstPlan?.id ?? null);
     }
   }, [categories, groupedData, activeCategory]);
 
@@ -66,7 +66,7 @@ const FloorPlans: React.FC<Props> = ({ data, masterPlan }) => {
   const currentPlans = groupedData?.[activeCategory]?.[activeType] || [];
 
   const selectedPlan =
-    currentPlans.find((p) => p.square_feet === selectedSqft) || currentPlans[0];
+    currentPlans.find((p) => p.id === selectedPlanId) || currentPlans[0];
 
   // ✅ Price formatter
   const formatPrice = (price: string) => {
@@ -115,6 +115,7 @@ const FloorPlans: React.FC<Props> = ({ data, masterPlan }) => {
           <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
             {categories.length > 0 && (
               <button
+                type="button"
                 onClick={() => setActiveTab("floorplan")}
                 className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
                   activeTab === "floorplan"
@@ -126,6 +127,7 @@ const FloorPlans: React.FC<Props> = ({ data, masterPlan }) => {
               </button>
             )}
             <button
+              type="button"
               onClick={() => setActiveTab("masterplan")}
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
                 activeTab === "masterplan"
@@ -158,10 +160,11 @@ const FloorPlans: React.FC<Props> = ({ data, masterPlan }) => {
               Object.entries(groupedData[cat]).map(([type, plans]) => (
                 <button
                   key={`${cat}-${type}`}
+                  type="button"
                   onClick={() => {
                     setActiveCategory(cat);
                     setActiveType(type);
-                    setSelectedSqft(plans[0]?.square_feet);
+                    setSelectedPlanId(plans[0]?.id ?? null);
                   }}
                   className={`px-2 py-1 rounded-lg border transition ${
                     activeCategory === cat && activeType === type
@@ -189,9 +192,10 @@ const FloorPlans: React.FC<Props> = ({ data, masterPlan }) => {
               {currentPlans.map((plan) => (
                 <button
                   key={plan.id}
-                  onClick={() => setSelectedSqft(plan.square_feet)}
+                  type="button"
+                  onClick={() => setSelectedPlanId(plan.id)}
                   className={`text-sm px-3 py-1 border-b-2 ${
-                    selectedSqft === plan.square_feet
+                    selectedPlanId === plan.id
                       ? "border-dred text-dred"
                       : "border-transparent text-gray-500"
                   }`}
