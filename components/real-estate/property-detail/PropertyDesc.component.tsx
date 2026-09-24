@@ -55,7 +55,7 @@ export default function PropertyDesc(props: any) {
      { data.rera_number &&
      <>
       <br />
-      <p><b>RERE : </b>{data.rera_number}</p>
+      <p><b>RERA : </b>{data.rera_number}</p>
       </>
       }
       </div>
