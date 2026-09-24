@@ -1,7 +1,11 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { capitalizeFLetter, formatNumber, isPlotProperty } from "@/utils/function.utils";
+import {
+  capitalizeFLetter,
+  formatNumber,
+  isPlotProperty,
+} from "@/utils/function.utils";
 import {
   Bed,
   Bath,
@@ -230,35 +234,57 @@ export default function PropertyDetails({ data, mobileLayout = false }: any) {
   const uniConfig = data?.floor_plans?.length
     ? `${[...new Set(data.floor_plans.map((fp: any) => fp.category?.match(/\d+/)?.[0]))].filter(Boolean).join(", ")} BHK`
     : "-";
-  
 
   const details = [
-
     ...(!isPlot && data.floor_plans
       ? [{ icon: Bed, label: "Unit Configuration", value: uniConfig }]
       : []),
 
-    {
-      icon: Maximize2,
-      label: "Total Area",
-      value: data?.total_area ?? "-",
-    },
-
-    ...(isPlot
+    ...(data?.total_area
       ? [
           {
-            icon: LandPlot,
-            label: "Plot Area",
-            value: data?.plot_area ?? "-",
+            icon: Maximize2,
+            label: "Total Area (sq.ft)",
+            value: data.total_area,
           },
         ]
       : []),
+
+    ...(data?.total_acres
+      ? [
+          {
+            icon: Maximize2,
+            label: "Total Area (acres)",
+            value: data?.total_acres ?? "-",
+          },
+        ]
+      : []),
+
+   ...(isPlot
+  ? data?.plot_area
+    ? [
+        {
+          icon: LandPlot,
+          label: "Plot Area (cents)",
+          value: data.plot_area,
+        },
+      ]
+    : []
+  : data?.plot_area
+    ? [
+        {
+          icon: LandPlot,
+          label: "Total Area (cents)",
+          value: data.plot_area,
+        },
+      ]
+    : []),
 
     ...(!isPlot && data?.built_up_area
       ? [
           {
             icon: Maximize2,
-            label: "Built up Area",
+            label: "Built up Area (sq.ft)",
             value: data?.built_up_area ?? "-",
           },
         ]
@@ -291,8 +317,6 @@ export default function PropertyDetails({ data, mobileLayout = false }: any) {
       label: "Status",
       value: capitalizeFLetter(data?.status) ?? "-",
     },
-
-  
 
     // ...(data?.bathrooms
     //   ? [
@@ -336,7 +360,9 @@ export default function PropertyDetails({ data, mobileLayout = false }: any) {
   return (
     <>
       <h3 className="section-in-ti mb-3">Overview</h3>
-      <div className={`grid ${mobileLayout ? "grid-cols-2" : "grid-cols-1 xs:grid-cols-2 lg:grid-cols-4"} gap-4 lg:gap-6`}>
+      <div
+        className={`grid ${mobileLayout ? "grid-cols-2" : "grid-cols-1 xs:grid-cols-2 lg:grid-cols-4"} gap-4 lg:gap-6`}
+      >
         {details.map((item, idx) => (
           <div
             key={idx}

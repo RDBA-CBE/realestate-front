@@ -23,6 +23,8 @@ import {
   TimeAgo,
   useSetState,
   isPlotProperty,
+  formatToINRS,
+  formatIndianNumber,
 } from "@/utils/function.utils";
 import { useEffect, useState } from "react";
 import Models from "@/imports/models.import";
@@ -41,7 +43,13 @@ export default function PropertyHeader(props: any) {
 
   const { data, updateList } = props;
   const mobileLayout = props.mobileLayout ?? false;
-  const isPlot = isPlotProperty(data);
+  const isPlot =
+    isPlotProperty(data) ||
+    (Array.isArray(data?.property_type) &&
+      data.property_type.some(
+        (propertyType: any) =>
+          propertyType?.name?.toLowerCase().trim() === "plot"
+      ));
   console.log("data",data)
 
    useEffect(() => {
@@ -166,7 +174,7 @@ export default function PropertyHeader(props: any) {
               data?.price_per_cent && (
                 <span className={mobileLayout ? "block" : "block sm:hidden"}>
                   <p className="text-[14px] text-black mb-0">
-                    Approx ₹ {(data?.price_per_cent)} / cent
+                    Approx ₹ {formatIndianNumber(data?.price_per_cent)} / cent
                   </p>
                 </span>
               )
@@ -240,7 +248,7 @@ export default function PropertyHeader(props: any) {
               data?.price_per_cent && (
                 <span className="">
                   <p className="text-[16px] text-black text-right mb-0">
-                    Approx ₹ {(data?.price_per_cent)} / cent
+                    Approx ₹ {formatIndianNumber(data?.price_per_cent)} / cent
                   </p>
                 </span>
               )

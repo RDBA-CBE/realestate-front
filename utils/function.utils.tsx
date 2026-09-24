@@ -355,6 +355,27 @@ export const formatToINR = (amount) => {
   }).format(amount);
 };
 
+
+// 175000    to   1,75,000
+export const formatIndianNumber = (
+  amount: number | string | null | undefined
+): string => {
+  if (amount === null || amount === undefined || amount === "") {
+    return "-";
+  }
+
+  const value = String(amount).replace(/,/g, "").trim();
+  const [integerPart, decimalPart] = value.split(".");
+
+  const formattedInteger = new Intl.NumberFormat("en-IN").format(
+    Number(integerPart)
+  );
+
+  return decimalPart !== undefined
+    ? `${formattedInteger}.${decimalPart}`
+    : formattedInteger;
+};
+
 export const formattedNoDecimal = (number) => {
   return Math.round(number).toLocaleString("en-IN");
 };
@@ -460,18 +481,18 @@ export const formatPriceRange = (
     if (isNaN(value)) return "";
 
     if (value >= 10000000) {
-      return `₹${(value / 10000000).toFixed(2).replace(/\.?0+$/, "")} Cr`;
+      return `${(value / 10000000).toFixed(2).replace(/\.?0+$/, "")} Cr`;
     }
 
     if (value >= 100000) {
-      return `₹${(value / 100000).toFixed(2).replace(/\.?0+$/, "")} L`;
+      return `${(value / 100000).toFixed(2).replace(/\.?0+$/, "")} L`;
     }
 
     if (value >= 1000) {
-      return `₹${(value / 1000).toFixed(2).replace(/\.?0+$/, "")} K`;
+      return `${(value / 1000).toFixed(2).replace(/\.?0+$/, "")} K`;
     }
 
-    return `₹${value}`;
+    return `${value}`;
   };
 
   if (minPrice === null) {
