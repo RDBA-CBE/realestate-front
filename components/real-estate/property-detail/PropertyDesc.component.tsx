@@ -40,6 +40,8 @@ export default function PropertyDesc(props: any) {
         <h3 className="section-in-ti mb-3">Property Description</h3>
         <p className="text-gray-700 text-sm md:text-base leading-relaxed mb-1">
         {expanded ? data.description : shortText}
+
+        
       </p>
 
       {isLong && ( // ✅ Show button only if text is long
@@ -50,6 +52,12 @@ export default function PropertyDesc(props: any) {
           {expanded ? "Show less" : "Show more"}
         </button>
       )}
+     { data.rera_number &&
+     <>
+      <br />
+      <p><b>RERE : </b>{data.rera_number}</p>
+      </>
+      }
       </div>
 
       {/* Property Details */}

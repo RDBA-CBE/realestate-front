@@ -21,7 +21,7 @@ interface PropertyImage { id: number; image_url: string; is_primary: boolean; or
 interface Property {
   id: string; title: string; location: any; area: any; price: number;
   listing_type: "rent" | "sale" | "lease"; bedrooms: number; bathrooms: number;
-  primary_image: string; built_up_area: any; state: string; city: string;
+  primary_image: string; built_up_area: any; state: string; city: string; plot_area:any;
   slug?: string;
   is_compare: string; user_wishlists: boolean; images?: PropertyImage[];
   price_range?: any; developer: any; broker_name?: string; deposit?: number;
@@ -65,9 +65,21 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
     : [{ id: 0, image_url: property.primary_image, is_primary: true, order: 0 }];
 
   const amenities: any[] = ((property as any)?.amenities || []).slice(0, 3);
-  const bhkLabel = property.floor_plans?.length > 0
-    ? `${[...new Set(property.floor_plans.map((fp: any) => fp.category?.match(/\d+/)?.[0]))].join(", ")} BHK`
-    : property.bedrooms ? `${property.bedrooms} Bed` : null;
+ const bhkLabel = property.floor_plans?.length > 0
+  ? property.floor_plans.some(
+      (fp: any) => fp.category?.toLowerCase() === "plots"
+    )
+    ? "Plot"
+    : `${[
+        ...new Set(
+          property.floor_plans.map(
+            (fp: any) => fp.category?.match(/\d+/)?.[0]
+          )
+        ),
+      ].join(", ")} BHK`
+  : property.bedrooms
+    ? `${property.bedrooms} Bed`
+    : null;
 
   useEffect(() => {
     if (hover && images.length > 1) {
@@ -246,6 +258,7 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
                 </div>
                 {bhkLabel && (<><span className="text-gray-300">|</span><span className="flex items-center gap-1"><Home className="w-3.5 h-3.5 text-[#9b0f09]" />{bhkLabel}</span></>)}
                 {property?.built_up_area && (<><span className="text-gray-300">|</span><span className="flex items-center gap-1"><Maximize2 className="w-3.5 h-3.5 text-[#9b0f09]" />{property.built_up_area} sqft</span></>)}
+                {property?.plot_area && (<><span className="text-gray-300">|</span><span className="flex items-center gap-1"><Maximize2 className="w-3.5 h-3.5 text-[#9b0f09]" />{property.plot_area} cents</span></>)}
               </div>
               {amenities.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
@@ -312,6 +325,7 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
               </div>
               {bhkLabel && (<><span className="text-gray-300">|</span><span className="flex items-center gap-1"><Home className="w-3.5 h-3.5 text-[#9b0f09]" />{bhkLabel}</span></>)}
               {property?.built_up_area && (<><span className="text-gray-300">|</span><span className="flex items-center gap-1"><Maximize2 className="w-3.5 h-3.5 text-[#9b0f09]" />{property.built_up_area} sqft</span></>)}
+              {property?.plot_area && (<><span className="text-gray-300">|</span><span className="flex items-center gap-1"><Maximize2 className="w-3.5 h-3.5 text-[#9b0f09]" />{property.plot_area} cents</span></>)}
             </div>
             {amenities.length > 0 && (
               <div className="flex flex-wrap gap-2">

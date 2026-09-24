@@ -149,25 +149,6 @@ export default function Gallery({ data, images, updateList, mobileLayout = false
       ) : (
         <div className={mobileLayout ? "hidden" : "hidden md:block"}>
           <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-4 w-full">
-            {/* Left big — video if available, else first image */}
-            {firstVideo ? (
-              <Card
-                className="overflow-hidden rounded-2xl shadow-lg h-[400px] lg:h-[500px] relative cursor-pointer bg-black"
-                onClick={() => setVideoOpen(true)}
-              >
-                <video
-                  src={firstVideo.video}
-                  className="w-full h-full object-cover"
-                  muted
-                  playsInline
-                />
-                <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                  <div className="bg-white/30 backdrop-blur-sm rounded-full p-4">
-                    <svg className="w-12 h-12 text-white fill-white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                  </div>
-                </div>
-              </Card>
-            ) : (
             <Card
               className="overflow-hidden rounded-2xl shadow-lg h-[400px] lg:h-[500px] relative cursor-pointer"
               onClick={() => handleOpen(0)}
@@ -183,29 +164,42 @@ export default function Gallery({ data, images, updateList, mobileLayout = false
                 className="object-cover 2xl:object-contain"
               />
             </Card>
-            )}
 
             {/* Right grid */}
             <div
-              className={`md:grid h-[400px] lg:h-[500px] gap-4  ${
-                images.length - 1 === 1
-                  ? "md:grid-rows-1"
-                  : images.length - 1 === 2
-                  ? "md:grid-rows-2"
-                  : images.length - 1 >= 2
-                  ? "md:grid-cols-1 md:grid-rows-2"
-                  : "md:grid-cols-1 md:grid-rows-2"
+              className={`md:grid h-[400px] lg:h-[500px] gap-4 ${
+                !firstVideo && images.length === 2 ? "md:grid-rows-1" : "md:grid-rows-2"
               }`}
             >
-              {images.slice(1, 3).map((img, i) => {
-                const remaining = images.length - 3; // total - shown (1 main + 2)
-                const isLastCard = i === 1 && images.length > 3; // show overlay only if > 3
+              {firstVideo && (
+                <Card
+                  className="overflow-hidden rounded-2xl shadow-lg relative cursor-pointer bg-black"
+                  onClick={() => setVideoOpen(true)}
+                >
+                  <video
+                    src={firstVideo.video}
+                    className="w-full h-full object-cover"
+                    muted
+                    playsInline
+                  />
+                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                    <div className="bg-white/30 backdrop-blur-sm rounded-full p-4">
+                      <svg className="w-12 h-12 text-white fill-white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                    </div>
+                  </div>
+                </Card>
+              )}
+
+              {images.slice(1, firstVideo ? 2 : 3).map((img, i) => {
+                const remaining = images.length - (firstVideo ? 2 : 3);
+                const isLastCard = i === (firstVideo ? 0 : 1) && remaining > 0;
+                const imageIndex = i + 1;
 
                 return (
                   <Card
                     key={i}
                     className="overflow-hidden rounded-2xl shadow-lg relative cursor-pointer"
-                    onClick={() => handleOpen(i + 1)}
+                    onClick={() => handleOpen(imageIndex)}
                   > 
                    <div
                       className="absolute inset-0 z-0 bg-cover bg-center filter blur-lg scale-110"
@@ -260,19 +254,7 @@ export default function Gallery({ data, images, updateList, mobileLayout = false
       <div className={mobileLayout ? "block" : "block md:hidden"}>
         <div className="relative w-full h-[250px] rounded-2xl overflow-hidden shadow-lg cursor-pointer">
           {/* Video as first item on mobile */}
-          {firstVideo ? (
-            <>
-              <video src={firstVideo.video} className="w-full h-full object-cover" muted playsInline />
-              <div
-                className="absolute inset-0 bg-black/40 flex items-center justify-center"
-                onClick={() => setVideoOpen(true)}
-              >
-                <div className="bg-white/30 backdrop-blur-sm rounded-full p-3">
-                  <svg className="w-8 h-8 text-white fill-white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                </div>
-              </div>
-            </>
-          ) : images?.[0] ? (
+          {images?.[0] ? (
             <Image
               src={images[0].image}
               alt="Main Property Image"
@@ -347,6 +329,25 @@ export default function Gallery({ data, images, updateList, mobileLayout = false
             </div>
           )}
         </div>
+
+        {firstVideo && (
+          <div
+            className="relative mt-3 h-[180px] overflow-hidden rounded-2xl bg-black shadow-lg cursor-pointer"
+            onClick={() => setVideoOpen(true)}
+          >
+            <video
+              src={firstVideo.video}
+              className="h-full w-full object-cover"
+              muted
+              playsInline
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+              <div className="rounded-full bg-white/30 p-3 backdrop-blur-sm">
+                <svg className="h-8 w-8 fill-white text-white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="h-full wi-full">
