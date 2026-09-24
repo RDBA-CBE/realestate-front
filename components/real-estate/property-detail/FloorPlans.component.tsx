@@ -112,31 +112,33 @@ const FloorPlans: React.FC<Props> = ({ data, masterPlan }) => {
       <div className="flex items-center justify-between mb-6">
         <h3 className="section-in-ti">Price & Floor Plan</h3>
         {masterPlan && (
-          <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
-            {categories.length > 0 && (
+          <div className="flex gap-1 bg-gray-100 rounded-lg p-1 overflow-x-auto whitespace-nowrap scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+            <div className="flex min-w-max gap-1">
+              {categories.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("floorplan")}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition whitespace-nowrap ${
+                    activeTab === "floorplan"
+                      ? "bg-white shadow text-dred"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Floor Plan
+                </button>
+              )}
               <button
                 type="button"
-                onClick={() => setActiveTab("floorplan")}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
-                  activeTab === "floorplan"
+                onClick={() => setActiveTab("masterplan")}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition whitespace-nowrap ${
+                  activeTab === "masterplan"
                     ? "bg-white shadow text-dred"
                     : "text-gray-500 hover:text-gray-700"
                 }`}
               >
-                Floor Plan
+                Master Plan
               </button>
-            )}
-            <button
-              type="button"
-              onClick={() => setActiveTab("masterplan")}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
-                activeTab === "masterplan"
-                  ? "bg-white shadow text-dred"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              Master Plan
-            </button>
+            </div>
           </div>
         )}
       </div>
@@ -155,58 +157,62 @@ const FloorPlans: React.FC<Props> = ({ data, masterPlan }) => {
       {activeTab === "floorplan" && (
         <>
           {/* ✅ Category + Type Tabs */}
-          <div className="flex flex-wrap gap-2  pb-2">
-            {categories.map((cat) =>
-              Object.entries(groupedData[cat]).map(([type, plans]) => (
-                <button
-                  key={`${cat}-${type}`}
-                  type="button"
-                  onClick={() => {
-                    setActiveCategory(cat);
-                    setActiveType(type);
-                    setSelectedPlanId(plans[0]?.id ?? null);
-                  }}
-                  className={`px-2 py-1 rounded-lg border transition ${
-                    activeCategory === cat && activeType === type
-                      ? "bg-dred text-white"
-                      : "bg-color1 text-gray-700"
-                  }`}
-                >
-                  <div className="text-sm pb-1">
-                    {cat === "plots"
-                      ? type != null
-                        ? ` ${type}`
-                        : ""
-                      : `${cat.toUpperCase()}${type != null ? ` ${type}` : ""}`}
-                  </div>
+          <div className="flex gap-2 pb-2 overflow-x-auto scroll-smooth whitespace-nowrap">
+            <div className="flex min-w-max gap-2">
+              {categories.map((cat) =>
+                Object.entries(groupedData[cat]).map(([type, plans]) => (
+                  <button
+                    key={`${cat}-${type}`}
+                    type="button"
+                    onClick={() => {
+                      setActiveCategory(cat);
+                      setActiveType(type);
+                      setSelectedPlanId(plans[0]?.id ?? null);
+                    }}
+                    className={`px-2 py-1 rounded-lg border transition flex-shrink-0 ${
+                      activeCategory === cat && activeType === type
+                        ? "bg-dred text-white"
+                        : "bg-color1 text-gray-700"
+                    }`}
+                  >
+                    <div className="text-sm pb-1 whitespace-nowrap">
+                      {cat === "plots"
+                        ? type != null
+                          ? ` ${type}`
+                          : ""
+                        : `${cat.toUpperCase()}${type != null ? ` ${type}` : ""}`}
+                    </div>
 
-                  <div className="text-xs">{getPriceRange(plans)}</div>
-                </button>
-              )),
-            )}
+                    <div className="text-xs whitespace-nowrap">{getPriceRange(plans)}</div>
+                  </button>
+                )),
+              )}
+            </div>
           </div>
 
           {/* ✅ SQFT Tabs */}
           {currentPlans.length > 0 && (
-            <div className="flex gap-3 overflow-x-auto mt-4 border-b pb-2">
-              {currentPlans.map((plan) => (
-                <button
-                  key={plan.id}
-                  type="button"
-                  onClick={() => setSelectedPlanId(plan.id)}
-                  className={`text-sm px-3 py-1 border-b-2 ${
-                    selectedPlanId === plan.id
-                      ? "border-dred text-dred"
-                      : "border-transparent text-gray-500"
-                  }`}
-                >
-                  {plan.total_cent && plan.square_feet
-                    ? `${formatNumber(plan.total_cent)} cent (${formatNumber(plan.square_feet)} SQ.FT)`
-                    : plan.total_cent
-                      ? `${formatNumber(plan.total_cent)} cent`
-                      : `${formatNumber(plan.square_feet)} SQ.FT`}
-                </button>
-              ))}
+            <div className="mt-4 border-b pb-2 overflow-x-auto scroll-smooth">
+              <div className="flex gap-3 min-w-max">
+                {currentPlans.map((plan) => (
+                  <button
+                    key={plan.id}
+                    type="button"
+                    onClick={() => setSelectedPlanId(plan.id)}
+                    className={`text-sm px-3 py-1 border-b-2 whitespace-nowrap ${
+                      selectedPlanId === plan.id
+                        ? "border-dred text-dred"
+                        : "border-transparent text-gray-500"
+                    }`}
+                  >
+                    {plan.total_cent && plan.square_feet
+                      ? `${formatNumber(plan.total_cent)} cent (${formatNumber(plan.square_feet)} SQ.FT)`
+                      : plan.total_cent
+                        ? `${formatNumber(plan.total_cent)} cent`
+                        : `${formatNumber(plan.square_feet)} SQ.FT`}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
