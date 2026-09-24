@@ -8,6 +8,7 @@ import PropertyHeader from "@/components/real-estate/property-detail/PropertyHea
 import MapSection from "@/components/real-estate/property-detail/MapSection.component";
 import MobileMapSection from "@/components/real-estate/property-detail/MobileMapSection.component";
 import PropertyHighlights from "@/components/real-estate/property-detail/PropertyHighlights.component";
+import PropertyMoreInfo from "@/components/real-estate/property-detail/PropertyMoreInfo.component";
 import FloorPlans from "@/components/real-estate/property-detail/FloorPlans.component";
 import Amenities from "@/components/real-estate/property-detail/Amenities.component";
 import Reviews from "@/components/real-estate/property-detail/Reviews.component";
@@ -318,6 +319,13 @@ export default function PropertyDetailPage() {
       ? [{
         id: "specialization",
         component: <PropertyHighlights data={state.detail.specialization} />,
+      }]
+      : []),
+
+    ...(state.detail?.more_info?.length > 0
+      ? [{
+        id: "more-info",
+        component: <PropertyMoreInfo data={state.detail.more_info} />,
       }]
       : []),
 
