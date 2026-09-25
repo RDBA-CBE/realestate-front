@@ -52,7 +52,7 @@ export const metadata = {
       "Discover verified residential and commercial properties for sale and lease across India.",
     images: [
       {
-        url: `${SITE_URL}/assets/images/logo.png`,
+        url: `${SITE_URL}/assets/home/boom-logo.png`,
         width: 1200,
         height: 630,
         alt: "Boom Realty",
@@ -64,7 +64,7 @@ export const metadata = {
     title: "Boom Realty | Find Properties for Sale & Lease",
     description:
       "Discover verified residential and commercial properties for sale and lease across India.",
-    images: [`${SITE_URL}/assets/images/logo.png`],
+    images: [`${SITE_URL}/assets/home/boom-logo.png`],
   },
   robots: {
     index: true,
