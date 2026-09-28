@@ -21,7 +21,7 @@ export default function PropertyMoreInfo({ data = [] }: PropertyMoreInfoProps) {
   return (
     <div>
       <div className="mb-5">
-        <h3 className="section-in-ti mb-1">More Information</h3>
+        <h3 className="section-in-ti mb-1 !font-bold">More Information</h3>
       </div>
 
       <div className="flex flex-wrap gap-4">

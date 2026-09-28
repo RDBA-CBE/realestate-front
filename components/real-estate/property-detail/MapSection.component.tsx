@@ -436,7 +436,7 @@ export default function GoogleMaps({ data }: { data: any }) {
 
   return (
     <Card className="border-none shadow-none bg-transparent">
-      <h3 className="section-in-ti mb-4">
+      <h3 className="section-in-ti mb-4 !font-bold">
         Explore Neighbourhood{data?.title ? ` - ${data.title}` : ""}
       </h3>
 
@@ -449,10 +449,10 @@ export default function GoogleMaps({ data }: { data: any }) {
           <span className="font-semibold w-24 text-gray-500">State</span>
           <span>{data?.state || "Not specified"}</span>
         </div>
-        <div className="flex gap-2">
+        {/* <div className="flex gap-2">
           <span className="font-semibold w-24 shrink-0 text-gray-500">Address</span>
           <span>{generatedAddress || "Not specified"}</span>
-        </div>
+        </div> */}
       </CardContent>
 
       {/* Map */}

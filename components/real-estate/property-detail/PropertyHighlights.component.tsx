@@ -24,7 +24,7 @@ export default function PropertyHighlights({ data = [] }: PropertyHighlightsProp
   return (
     <div>
       <div className="mb-5">
-        <h3 className="section-in-ti mb-1">Property Highlights</h3>
+        <h3 className="section-in-ti mb-1 !font-bold">Property Highlights</h3>
         <p className="mb-0 text-sm text-gray-500">
           Everything important is within easy reach.
         </p>

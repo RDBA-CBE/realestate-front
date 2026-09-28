@@ -110,7 +110,7 @@ const FloorPlans: React.FC<Props> = ({ data, masterPlan }) => {
   return (
     <div className="bg-transparent">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="section-in-ti">Price & Floor Plan</h3>
+        <h3 className="section-in-ti !font-bold">Price & Floor Plan</h3>
         {masterPlan && (
           <div className="flex gap-1 bg-gray-100 rounded-lg p-1 overflow-x-auto whitespace-nowrap scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
             <div className="flex min-w-max gap-1">
