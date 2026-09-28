@@ -255,29 +255,11 @@ export default function PropertyHeader(props: any) {
   // ─────────────────────────────────────────────────────────────────────────
 
   return (
-    <div className=" mt-5 md:mt-0 ">
+    <div className=" mt-3 md:mt-0 ">
       <div className="flex flex-row items-between md:items-start justify-between gap-4">
         <div className="space-y-2 md:w-[70%]">
-        <div className="flex items-center flex-wrap gap-2 md:gap-3 text-sm text-gray-600 ">
-            {/* <span>{`${capitalizeFLetter(data?.area?.name)} , ${capitalizeFLetter(
-              data?.location?.name
-            )} `}</span> */}
-            <span className="rounded-full px-4 py-1 bg-dred text-white flex items-center gap-1  font-medium">
-              ● For {capitalizeFLetter(data?.listing_type)}
-            </span>
-
-            {data?.rera_number && <span className="flex items-center gap-1 rounded-full px-4 py-1 border bg-white">
-              <Verified className="w-4 h-4 text-dred"/> RERA Approved
-            </span>}
-
-            <span className="flex items-center gap-1 rounded-full px-4 py-1 border bg-white">
-              <Clock className="w-4 h-4 text-dred" /> {TimeAgo(data?.created_at)}
-            </span>
-
-            
-            {/* <span className="flex items-center gap-1">🔗 8721</span> */}
-          </div>
-          <h1 className={mobileLayout ? "section-ti !text-[22px] !font-bold !mt-4" : "!text-[28px] section-ti !font-bold !mt-4"}>{data?.title}</h1>
+       
+          <h1 className={mobileLayout ? "section-ti !text-[22px] !font-bold " : "!text-[28px] section-ti !font-bold "}>{data?.title}</h1>
           {data?.developer?.industry &&
           <p>By <span className="text-dred cursor-pointer" onClick={()=> router.push(`/developer/${data?.developer?.slug}`)}>{data?.developer?.industry} </span></p>
         }
@@ -324,6 +306,60 @@ export default function PropertyHeader(props: any) {
                 </span>
               )
             )}
+
+             {/* ── Mobile action buttons (below price, hidden on sm+) ─────────────── */}
+      <div className={`mt-4 ${mobileLayout ? "block" : "block sm:hidden"}`}>
+        <div className="flex items-center gap-2 flex-wrap">
+         
+          {/* Call Back */}
+          <button
+            onClick={() => setInquiryMode("callback")}
+            className="flex items-center gap-2.5 px-4 py-2 rounded-full border border-gray-300 bg-dred text-white text-sm font-medium text-black"
+          >
+            <Phone className="w-3.5 h-3.5" /> Call Back
+          </button>
+
+          {/* Booking Inquiry */}
+          <button
+            onClick={() => setInquiryMode("booking")}
+            className="flex items-center gap-2.5 px-4 py-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-black hover:bg-dred hover:text-white"
+          >
+            <CalendarCheck className="w-3.5 h-3.5" /> Booking Inquiry
+          </button>
+        </div>
+
+        {/* Download Brochure */}
+        {data?.voucher_url && (
+          <button
+            onClick={() => window.open(data.voucher_url, "_blank", "noopener,noreferrer")}
+            className="mt-4 flex items-center gap-1.5 text-sm text-gray-600 font-medium"
+          >
+            <Download className="w-4 h-4 text-dred" /> Download Brochure
+          </button>
+        )}
+      </div>
+
+             <div className="flex items-center flex-wrap gap-3 text-sm text-gray-600 !mt-5">
+            {/* <span>{`${capitalizeFLetter(data?.area?.name)} , ${capitalizeFLetter(
+              data?.location?.name
+            )} `}</span> */}
+            <span className="text-dred flex items-center gap-1  font-medium">
+              ● For {capitalizeFLetter(data?.listing_type)}
+            </span>
+
+            {data?.rera_number && <span className="flex items-center gap-1">
+              <Verified className="w-4 h-4 text-dred"/> RERA Approved
+            </span>}
+
+            <span className="flex items-center gap-1 ">
+              <Clock className="w-4 h-4 text-dred" /> {TimeAgo(data?.created_at)}
+            </span>
+
+            
+            {/* <span className="flex items-center gap-1">🔗 8721</span> */}
+          </div>
+
+          
 
           {/* <div className="flex flex-wrap items-center gap-2 xs:gap-6 text-gray-700 pt-2">
             <div className="flex items-center gap-1  py-0.5 rounded-md">
@@ -424,37 +460,7 @@ export default function PropertyHeader(props: any) {
       </div>
       {LoginPopup}
 
-      {/* ── Mobile action buttons (below price, hidden on sm+) ─────────────── */}
-      <div className={`mt-4 ${mobileLayout ? "block" : "block sm:hidden"}`}>
-        <div className="flex items-center gap-2 flex-wrap">
-         
-          {/* Call Back */}
-          <button
-            onClick={() => setInquiryMode("callback")}
-            className="flex items-center gap-2.5 px-4 py-2 rounded-full border border-gray-300 bg-dred text-white text-sm font-medium text-black"
-          >
-            <Phone className="w-3.5 h-3.5" /> Call Back
-          </button>
-
-          {/* Booking Inquiry */}
-          <button
-            onClick={() => setInquiryMode("booking")}
-            className="flex items-center gap-2.5 px-4 py-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-black hover:bg-dred hover:text-white"
-          >
-            <CalendarCheck className="w-3.5 h-3.5" /> Booking Inquiry
-          </button>
-        </div>
-
-        {/* Download Brochure */}
-        {data?.voucher_url && (
-          <button
-            onClick={() => window.open(data.voucher_url, "_blank", "noopener,noreferrer")}
-            className="mt-4 flex items-center gap-1.5 text-sm text-gray-600 font-medium"
-          >
-            <Download className="w-4 h-4 text-dred" /> Download Brochure
-          </button>
-        )}
-      </div>
+     
 
       {/* ── Inquiry bottom sheet modal ────────────────────────────────────── */}
       <AnimatePresence>

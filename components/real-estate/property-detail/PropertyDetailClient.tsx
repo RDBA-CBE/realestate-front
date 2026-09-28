@@ -428,7 +428,7 @@ export default function PropertyDetailPage() {
           transition={{ duration: 0.6 }}
         >
           {/* BREADCRUMB */}
-          <div className="flex justify-between items-center pb-5">
+          <div className="flex justify-between items-center pb-3">
             <div className=" flex flex-wrap items-center gap-2 text-sm text-gray-500">
               <span
                 className="cursor-pointer hover:text-black"
