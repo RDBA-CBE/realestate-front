@@ -514,7 +514,7 @@ export default function PropertyHeader(props: any) {
                     <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
                       <Phone className="w-6 h-6 text-emerald-600" />
                     </div>
-                    <p className="text-sm font-semibold">We'll be in touch soon!</p>
+                    <p className="text-sm font-semibold">We&apos;ll be in touch soon!</p>
                     <p className="text-xs text-gray-500 text-center">Our team will reach out at the provided contact details.</p>
                     <button onClick={() => setInquiryMode("none")} className="mt-2 px-5 py-2 rounded-xl bg-dred text-white text-sm font-medium">Close</button>
                   </div>
