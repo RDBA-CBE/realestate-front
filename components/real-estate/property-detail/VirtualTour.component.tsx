@@ -13,7 +13,7 @@ export default function VirtualTour({ data }: { data?: any[] }) {
 
   return (
     <>
-      <h3 className="section-in-ti mb-4 flex items-center gap-2">
+      <h3 className="section-in-ti mb-4 flex items-center gap-2 !font-bold">
         <Compass className="w-5 h-5" />
         Virtual Tours
       </h3>

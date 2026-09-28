@@ -312,7 +312,7 @@ export default function PropertyDetailPage() {
     {
       id: "map",
       component: <MapSection data={state.detail} />,
-      className: "hidden xl:block", // only show on xl+
+      className: "", // only show on xl+
     },
 
     ...(state.detail?.specialization?.length > 0
@@ -464,10 +464,10 @@ export default function PropertyDetailPage() {
 
           {/* Header + Gallery */}
           <div className="conatiner flex flex-col md:flex-col space-y-6 md:space-y-6">
-            <div className="order-2 md:order-1 ">
+            <div className="order-1 ">
               <PropertyHeader data={state.detail} updateList={() => getDetails()} />
             </div>
-            <div className="order-1 md:order-2">
+            <div className="order-2">
               <Gallery
                 images={state.detail?.images}
                 data={state.detail}
@@ -476,9 +476,9 @@ export default function PropertyDetailPage() {
               />
             </div>
           </div>
-          <div className="block xl:hidden">
+          {/* <div className="block xl:hidden">
             <MobileMapSection data={state.detail} />
-          </div>
+          </div> */}
 
           <PropertyTabs sections={tabSections} />
 
@@ -522,7 +522,7 @@ export default function PropertyDetailPage() {
             </div>
           </div>
 
-          <div className="lg:hidden fixed bottom-8 right-0 w-auto flex justify-center z-20">
+          {/* <div className="lg:hidden fixed bottom-8 right-0 w-auto flex justify-center z-20">
             <Button
               className="bg-color2 hover:bg-color2 text-white px-4 py-4 rounded-l-full rounded-r-none font-normal shadow-lg text-md"
               onClick={() => setIsMobileFormOpen(true)}
@@ -530,7 +530,7 @@ export default function PropertyDetailPage() {
               <PhoneForwarded />
               Contact Developer
             </Button>
-          </div>
+          </div> */}
 
           {/* Similar Listings */}
           {state.similarProperty.length > 0 && (

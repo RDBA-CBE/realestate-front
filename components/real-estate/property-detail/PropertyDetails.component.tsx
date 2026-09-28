@@ -359,7 +359,7 @@ export default function PropertyDetails({ data, mobileLayout = false }: any) {
 
   return (
     <>
-      <h3 className="section-in-ti mb-3">Overview</h3>
+      <h3 className="section-in-ti mb-3 !font-bold">Overview</h3>
       <div
         className={`grid ${mobileLayout ? "grid-cols-2" : "grid-cols-1 xs:grid-cols-2 lg:grid-cols-4"} gap-4 lg:gap-6`}
       >
