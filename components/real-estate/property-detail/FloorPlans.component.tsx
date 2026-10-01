@@ -2,6 +2,8 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import { formatNumber, isPlotProperty } from "@/utils/function.utils";
+import LightboxGallery from "@/components/common-components/Lightbox.component";
+import { Expand } from "lucide-react";
 
 interface FloorPlan {
   id: number;
@@ -48,6 +50,22 @@ const FloorPlans: React.FC<Props> = ({ data, masterPlan }) => {
   const [activeCategory, setActiveCategory] = useState("");
   const [activeType, setActiveType] = useState("");
   const [selectedPlanId, setSelectedPlanId] = useState<number | null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  // All floor plan images as a flat array for lightbox navigation
+  const allFloorPlanImages = useMemo(() => {
+    if (!data || !Array.isArray(data)) return [];
+    return data.filter((p) => p.image).map((p) => ({
+      image_url: p.image as string,
+      alt: [
+        p.category ? p.category.toUpperCase() : "",
+        p.type ? p.type : "",
+        p.square_feet ? `${formatNumber(p.square_feet)} SQ.FT` : "",
+        p.total_cent ? `${formatNumber(p.total_cent)} cent` : "",
+      ].filter(Boolean).join(" · "),
+    }));
+  }, [data]);
 
   // ✅ Initial selection
   useEffect(() => {
@@ -144,13 +162,19 @@ const FloorPlans: React.FC<Props> = ({ data, masterPlan }) => {
       </div>
 
       {activeTab === "masterplan" && masterPlan && (
-        <div className="relative w-full h-[420px] rounded-xl overflow-hidden border">
+        <div
+          className="relative w-full h-[420px] rounded-xl overflow-hidden border cursor-zoom-in group"
+          onClick={() => { setLightboxIndex(0); setLightboxOpen(true); }}
+        >
           <Image
             src={masterPlan}
             alt="Master Plan"
             fill
-            className="object-contain"
+            className="object-contain transition-transform group-hover:scale-105 duration-300"
           />
+          <div className="absolute bottom-2 right-2 bg-black/60 text-white rounded-lg px-2 py-1 flex items-center gap-1 text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+            <Expand className="w-3.5 h-3.5" /> View full
+          </div>
         </div>
       )}
 
@@ -225,13 +249,24 @@ const FloorPlans: React.FC<Props> = ({ data, masterPlan }) => {
 
           {/* ✅ Image */}
           {selectedPlan?.image && (
-            <div className="relative w-full h-80 mt-4 border rounded-xl overflow-hidden">
+            <div
+              className="relative w-full h-80 mt-4 border rounded-xl overflow-hidden cursor-zoom-in group"
+              onClick={() => {
+                const idx = allFloorPlanImages.findIndex((img) => img.image_url === selectedPlan.image);
+                setLightboxIndex(idx >= 0 ? idx : 0);
+                setLightboxOpen(true);
+              }}
+            >
               <Image
                 src={selectedPlan.image}
                 alt="Floor Plan"
                 fill
-                className="object-contain"
+                className="object-contain transition-transform group-hover:scale-105 duration-300"
               />
+              {/* Expand hint */}
+              <div className="absolute bottom-2 right-2 bg-black/60 text-white rounded-lg px-2 py-1 flex items-center gap-1 text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                <Expand className="w-3.5 h-3.5" /> View full
+              </div>
             </div>
           )}
 
@@ -273,6 +308,29 @@ const FloorPlans: React.FC<Props> = ({ data, masterPlan }) => {
             </div>
           )}
         </>
+      )}
+
+      {/* Lightbox — floor plans */}
+      {activeTab === "floorplan" && allFloorPlanImages.length > 0 && (
+        <LightboxGallery
+          images={allFloorPlanImages}
+          initialIndex={lightboxIndex}
+          isOpen={lightboxOpen}
+          onClose={() => setLightboxOpen(false)}
+          autoSlide={false}
+          title="Price & Floor Plan"
+        />
+      )}
+
+      {/* Lightbox — master plan */}
+      {activeTab === "masterplan" && masterPlan && (
+        <LightboxGallery
+          images={[{ image_url: masterPlan }]}
+          initialIndex={0}
+          isOpen={lightboxOpen}
+          onClose={() => setLightboxOpen(false)}
+          autoSlide={false}
+        />
       )}
     </div>
   );
