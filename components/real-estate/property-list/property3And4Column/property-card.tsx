@@ -184,15 +184,37 @@ export function PropertyCard({ property, view, list, updateList, handleClick, on
             className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-1.5 z-10"
           ><ChevronRight size={16} /></button>
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-            {images.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); }}
-                onClick={(e) => { e.stopPropagation(); e.preventDefault(); setImgIndex(i); }}
-                className={`h-1.5 rounded-full transition-all ${i === imgIndex ? "bg-white w-3" : "bg-white/50 w-1.5"}`}
-              />
-            ))}
+            {(() => {
+              const MAX = 10;
+              const total = images.length;
+              if (total <= MAX) {
+                return images.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); setImgIndex(i); }}
+                    className={`h-1.5 rounded-full transition-all ${i === imgIndex ? "bg-white w-3" : "bg-white/50 w-1.5"}`}
+                  />
+                ));
+              }
+              // Sliding window of 8 dots centred around active index
+              let start = Math.max(0, imgIndex - Math.floor(MAX / 2));
+              const end = Math.min(total, start + MAX);
+              if (end - start < MAX) start = Math.max(0, end - MAX);
+              return Array.from({ length: end - start }, (_, k) => {
+                const i = start + k;
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    onMouseDown={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); setImgIndex(i); }}
+                    className={`h-1.5 rounded-full transition-all ${i === imgIndex ? "bg-white w-3" : "bg-white/50 w-1.5"}`}
+                  />
+                );
+              });
+            })()}
           </div>
         </>
       )}
