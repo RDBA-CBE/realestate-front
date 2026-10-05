@@ -20,6 +20,8 @@ import {
   StepForward,
   Building,
   LandPlot,
+  Ruler,
+  HomeIcon,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -308,6 +310,15 @@ export default function PropertyDetails({ data, mobileLayout = false }: any) {
             icon: Calendar,
             label: "Year Built",
             value: data?.built_year ?? "-",
+          },
+        ]
+      : []),
+    ...(data?.carpet_area
+      ? [
+          {
+            icon: HomeIcon ,
+            label: "Carpet Area (sq.ft)",
+            value: data.carpet_area,
           },
         ]
       : []),
