@@ -494,7 +494,7 @@ const PrivacyPolicyPage = () => {
             <div className="mt-4 bg-gray-50 border border-gray-200 rounded-xl p-5 text-sm text-gray-700 space-y-1">
               <p>
                 <span className="font-medium text-gray-900">Company:</span>{" "}
-                Boom Realtys
+                Boomrealtys
               </p>
               <p>
                 <span className="font-medium text-gray-900">Email:</span>{" "}
