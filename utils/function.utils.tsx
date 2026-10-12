@@ -467,11 +467,16 @@ export const formatToINRS = (price: number | string): string => {
   }
 };
 
+
+
 export const formatPriceRange = (
-  minPrice: number | string | null,
-  maxPrice: number | string | null
+  minPrice?: number | string | null,
+  maxPrice?: number | string | null
 ): string => {
-  if (minPrice === null && maxPrice === null) {
+  if (
+    (minPrice === null || minPrice === undefined || minPrice === "") &&
+    (maxPrice === null || maxPrice === undefined || maxPrice === "")
+  ) {
     return "Price on request";
   }
 
@@ -495,26 +500,34 @@ export const formatPriceRange = (
     return `${value}`;
   };
 
-  if (minPrice === null) {
-    return `Max: ${formatExactPrice(maxPrice!)}`;
+  const hasMin =
+    minPrice !== null && minPrice !== undefined && minPrice !== "";
+  const hasMax =
+    maxPrice !== null && maxPrice !== undefined && maxPrice !== "";
+
+  if (hasMin && !hasMax) {
+    return formatExactPrice(minPrice);
   }
 
-  if (maxPrice === null) {
-    return `Min: ${formatExactPrice(minPrice)}`;
+  if (!hasMin && hasMax) {
+    return `Max: ${formatExactPrice(maxPrice)}`;
   }
 
-  const numericMin =
-    typeof minPrice === "string" ? parseFloat(minPrice) : minPrice;
-
-  const numericMax =
-    typeof maxPrice === "string" ? parseFloat(maxPrice) : maxPrice;
+  const numericMin = Number(minPrice);
+  const numericMax = Number(maxPrice);
 
   if (isNaN(numericMin) || isNaN(numericMax)) {
     return "Contact for price";
   }
 
+  if (numericMin === numericMax) {
+    return formatExactPrice(numericMin);
+  }
+
   return `${formatExactPrice(numericMin)} - ${formatExactPrice(numericMax)}`;
 };
+
+
 
 export const getPriceLabel = (value, options) => {
   const found = options.find((item) => item.value === value);
