@@ -37,9 +37,11 @@ export default function PropertyDesc(props: any) {
     <Card className="border-none shadow-none bg-transparent space-y-6">
       {/* Description */}
       <div>
-        <h3 className="section-in-ti mb-3">Property Description</h3>
+        <h3 className="section-in-ti mb-3 !font-bold">Property Description</h3>
         <p className="text-gray-700 text-sm md:text-base leading-relaxed mb-1">
         {expanded ? data.description : shortText}
+
+        
       </p>
 
       {isLong && ( // ✅ Show button only if text is long
@@ -50,6 +52,12 @@ export default function PropertyDesc(props: any) {
           {expanded ? "Show less" : "Show more"}
         </button>
       )}
+     { data.rera_number &&
+     <>
+      <br />
+      <p><b>RERA : </b>{data.rera_number}</p>
+      </>
+      }
       </div>
 
       {/* Property Details */}

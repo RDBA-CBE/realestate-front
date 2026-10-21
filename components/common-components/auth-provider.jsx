@@ -15,7 +15,7 @@ export default function ClientAuth({ children }) {
     setIsMounted(true); // ✅ Ensure component mounts on the client
 
     const checkToken = () => {
-      const token = localStorage.getItem("zentoken");
+      const token = localStorage.getItem("demo_token");
       setHasToken(!!token);
       
       if (!token) {

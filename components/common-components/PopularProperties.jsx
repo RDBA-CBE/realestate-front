@@ -7,10 +7,11 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { capitalizeFLetter, truncateText } from "@/utils/function.utils";
 import { useRouter } from "next/navigation";
+import { getPropertyPathValue } from "@/utils/seo.utils";
 
 const PopularProperties = (props) => {
 
-  const router=useRouter()
+  const router = useRouter()
   const { propertyList, updatePropertyType } = props;
   const [activeFilter, setActiveFilter] = useState("all"); // 'all', 'rent', 'sale'
 
@@ -34,8 +35,8 @@ const PopularProperties = (props) => {
     },
   };
 
-  const handleClick=(property)=>{
-router.push(`property-detail/${property?.id}`)
+  const handleClick = (property) => {
+    router.push(`/property-list/${getPropertyPathValue(property)}`)
 
   }
 
@@ -60,11 +61,10 @@ router.push(`property-detail/${property?.id}`)
                 updatePropertyType("all");
                 setActiveFilter("all");
               }}
-              className={`px-6 py-2 rounded-md font-medium transition-colors ${
-                activeFilter === "all"
+              className={`px-6 py-2 rounded-md font-medium transition-colors ${activeFilter === "all"
                   ? "bg-color2 text-white"
                   : "text-gray-600 hover:text-dred"
-              }`}
+                }`}
             >
               All Properties
             </button>
@@ -74,11 +74,10 @@ router.push(`property-detail/${property?.id}`)
 
                 setActiveFilter("lease");
               }}
-              className={`px-6 py-2 rounded-md font-medium transition-colors ${
-                activeFilter === "lease"
+              className={`px-6 py-2 rounded-md font-medium transition-colors ${activeFilter === "lease"
                   ? "bg-color2 text-white"
                   : "text-gray-600 hover:text-dred"
-              }`}
+                }`}
             >
               For Lease
             </button>
@@ -88,11 +87,10 @@ router.push(`property-detail/${property?.id}`)
 
                 setActiveFilter("sale");
               }}
-              className={`px-6 py-2 rounded-md font-medium transition-colors ${
-                activeFilter === "sale"
+              className={`px-6 py-2 rounded-md font-medium transition-colors ${activeFilter === "sale"
                   ? "bg-color2 text-white"
                   : "text-gray-600 hover:text-dred"
-              }`}
+                }`}
             >
               For Sale
             </button>
@@ -137,10 +135,10 @@ router.push(`property-detail/${property?.id}`)
           {propertyList?.map((property, index) => (
             <SwiperSlide key={index}>
               <div
-              
-              key={property?.id}
-              onClick={()=>handleClick(property)}
- className="bg-white cursor-pointer border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow h-full">
+
+                key={property?.id}
+                onClick={() => handleClick(property)}
+                className="bg-white cursor-pointer border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow h-full">
                 <div
                   className="h-48 bg-cover bg-center relative"
                   style={{
@@ -151,11 +149,10 @@ router.push(`property-detail/${property?.id}`)
                   <div className="absolute inset-0 bg-black bg-opacity-20"></div>
 
                   <span
-                    className={`absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-medium ${
-                      property.listing_type === "sale"
+                    className={`absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-medium ${property.listing_type === "sale"
                         ? "bg-green-500 text-white"
                         : "bg-color2 text-white"
-                    }`}
+                      }`}
                   >
                     {capitalizeFLetter(property.listing_type)}
                   </span>

@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import FilterDropdown from "../../FilterDropdown.component";
 import Modal from "@/components/common-components/modal";
-import { getPriceLabel, truncateText, useSetState } from "@/utils/function.utils";
+import { getPriceLabel, useSetState } from "@/utils/function.utils";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -91,10 +91,10 @@ export function PropertyView(props: any) {
     initialSearch,
     initialListingStatus,
     initialLocation,
+    initialArea,
+    initialProject,
     initialPropertyType,
     initialDeveloper,
-    initialArea,
-    initialFurnishingList,
     propertyTypeFilter,
     onFilterChange,
     isFilterLoading = false,
@@ -160,7 +160,6 @@ export function PropertyView(props: any) {
   const priceFloorRef = useRef(0);
   const priceCeilingRef = useRef(0);
   const isResettingRef = useRef(false);
-  const hasBeenClearedRef = useRef(false);
   const dropdownRef = useRef(null);
   const sqftDropdownRef = useRef(null);
   const locationSectionRef = useRef<HTMLDivElement>(null);
@@ -263,16 +262,14 @@ export function PropertyView(props: any) {
   };
 
 
-  
-  
-
   useEffect(() => {
     if (propertyTypeFilter) setState({ propertyType: propertyTypeFilter });
     if (initialSearch) setState({ search: initialSearch });
     setState({ listingStatus: initialListingStatus || "All" });
     setState({ location: initialLocation || [] });
-    setState({ developer: initialDeveloper || [], furnishing: initialFurnishingList || [] });
-    if (initialArea?.length && !hasBeenClearedRef.current) setState({ area: initialArea });
+    setState({ area: initialArea || [] });
+    setState({ project: initialProject || [] });
+    setState({ developer: initialDeveloper || [] });
 
     // Ensure propertyType is handled as an array (it might be a string from URL)
     if (initialPropertyType) {
@@ -290,10 +287,10 @@ export function PropertyView(props: any) {
     initialSearch,
     initialListingStatus,
     initialLocation,
+    initialArea,
+    initialProject,
     initialPropertyType,
     initialDeveloper,
-    initialArea,
-    initialFurnishingList,
   ]);
 
   // Reconcile selected filters against updated dynamic filter lists
@@ -341,8 +338,6 @@ export function PropertyView(props: any) {
 
     if (Object.keys(updates).length > 0) setState(updates);
   }, [categoryList, locationList, areaList, developerList, projectList, floorPlanList, furnishingList]);
-  
-
   // Resolve string-based property types (names from URL) to objects with IDs once categoryList is loaded
   useEffect(() => {
     if (categoryList?.length > 0 && state.propertyType?.length > 0) {
@@ -393,7 +388,7 @@ export function PropertyView(props: any) {
   const debouncedSqftMax = useDebounce(state.sqftMax, 500);
   const debouncedYearBuiltMin = useDebounce(state.yearBuiltMin, 500);
   const debouncedYearBuiltMax = useDebounce(state.yearBuiltMax, 500); // Keep this one
-  
+
   // Debounced price inputs
   const debouncedPriceMinInput = useDebounce(state.priceMinInput, 500);
   const debouncedPriceMaxInput = useDebounce(state.priceMaxInput, 500);
@@ -481,11 +476,13 @@ export function PropertyView(props: any) {
   const isMobile = useIsMobile();
 
   const calcPopupPos = (key: string, ref: React.RefObject<HTMLDivElement>) => {
-    const el = ref.current;
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      setFilterPopupPos((prev) => ({ ...prev, [key]: { left: rect.left, top: rect.bottom + 8 } }));
-    }
+    requestAnimationFrame(() => {
+      const el = ref.current;
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        setFilterPopupPos((prev) => ({ ...prev, [key]: { left: rect.left, top: rect.bottom + 8 } }));
+      }
+    });
   };
 
   const openPopup = (key: string) => {
@@ -504,17 +501,19 @@ export function PropertyView(props: any) {
     setState({ [name]: value });
   };
 
-  //   const handleChange = (name: string, value: any) => {
-  //   setState((prev) => ({ // This is the correct way to use setState with a functional update
-  //     ...prev,
-  //     [name]: value,
-  //   }));
-  // };
-
   const resetFilter = () => {
     // Set flag to prevent filter effect from firing during reset
     isResettingRef.current = true; // Set flag to true
-    
+
+    if (typeof window !== "undefined") {
+      window.history.pushState(null, "", "/property-list");
+    }
+    try {
+      router.push("/property-list");
+    } catch (e) {
+      console.log(e);
+    }
+
     setState({
       search: "",
       listingStatus: "",
@@ -541,7 +540,6 @@ export function PropertyView(props: any) {
     });
     previousFiltersRef.current = {};
 
-    hasBeenClearedRef.current = true;
     // Reset the flag immediately before calling parent
     isResettingRef.current = false;
 
@@ -556,8 +554,9 @@ export function PropertyView(props: any) {
     return value.toLocaleString("en-IN");
   };
 
-  const parseINR = (value: string) => {
-    return Number(value.replace(/,/g, ""));
+  const parseINR = (value: any) => {
+    if (value === undefined || value === null || value === "") return 0;
+    return Number(String(value).replace(/,/g, ""));
   };
 
   const applyPriceInputs = () => {
@@ -612,9 +611,9 @@ export function PropertyView(props: any) {
     handleChange("priceRange", updated);
   };
 
- 
 
-  
+
+
 
   const maxPriceOptions = state.priceMinInput
     ? priceOptions.filter((item) => item.value >= state.priceMinInput)
@@ -624,7 +623,7 @@ export function PropertyView(props: any) {
     ? sqftOptions.filter((item) => item.value >= state.sqftMin)
     : sqftOptions;
 
-    const redirect = () => {
+  const redirect = () => {
     router.push(`/property-list?developerId=${state.detail?.developer?.id}`);
   };
 
@@ -638,17 +637,11 @@ export function PropertyView(props: any) {
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 items-start min-h-screen">
         <aside className="space-y-6 lg:col-span-1 xl:sticky md:top-16 lg:top-16  hidden xl:block ">
           <div className="p-4 pb-8 border rounded-2xl space-y-6 bg-color1 border-gray h-[91vh] overflow-auto thin-scrollbar">
-            <h3 className="mb-2 font-semibold text-gray-900">Filters</h3>
-            {/* <div className="w-full flex justify-end">
-              <Button
-                onClick={() => resetFilter()}
-                variant="ghost"
-                className="text-sm text-gray-500 underline flex items-center gap-1"
-              >
-                <RotateCcw className="h-4 w-4" />
-                Reset
-              </Button>
-            </div> */}
+            <div className="w-full flex justify-start">
+              <div className="mb-2 font-semibold text-gray-900">
+                Filter
+              </div>
+            </div>
 
             {/* <TextInput
               placeholder="What are you looking for?"
@@ -707,8 +700,8 @@ export function PropertyView(props: any) {
                             const updated = e.target.checked
                               ? [...state.propertyType, option]
                               : state.propertyType.filter(
-                                  (t) => t.value !== option.value,
-                                );
+                                (t) => t.value !== option.value,
+                              );
                             handleChange("propertyType", updated);
                           }}
                         />
@@ -745,8 +738,8 @@ export function PropertyView(props: any) {
                               e.target.checked
                                 ? [...state.location, option]
                                 : state.location.filter(
-                                    (t) => t.value !== option.value,
-                                  ),
+                                  (t) => t.value !== option.value,
+                                ),
                             )
                           }
                         />
@@ -825,7 +818,7 @@ export function PropertyView(props: any) {
               showAlphabetNav
             />
 
-            {developerList?.length > 0 && (
+            {developerList.length > 0 && (
               <div>
                 <div className="mb-2 font-semibold text-gray-900">Developer</div>
                 <div className="space-y-2" ref={developerSectionRef}>
@@ -836,7 +829,7 @@ export function PropertyView(props: any) {
                           checked={state.developer.some((t) => t.value === option.value)}
                           onChange={(e) => handleChange("developer", e.target.checked ? [...state.developer, option] : state.developer.filter((t) => t.value !== option.value))}
                         />
-                        <span className="  block" title={option.label}>{truncateText(option.label, 22)}</span>
+                        <span>{option.label}</span>
                       </div>
                       {option.count !== undefined && (
                         <span className="text-[11px] bg-dred/10 text-black rounded-full px-[8px] py-[1.6px]">{option.count}</span>
@@ -880,7 +873,7 @@ export function PropertyView(props: any) {
                         />
                         <span>{option.label}</span>
                       </div>
-                      {option.count  && (
+                      {option.count && (
                         <span className="text-[11px] bg-dred/10 text-black rounded-full px-[8px] py-[1.6px]">{option.count}</span>
                       )}
                     </label>
@@ -937,9 +930,8 @@ export function PropertyView(props: any) {
 
                     <ChevronDown
                       size={18}
-                      className={`transition-transform ${
-                        state.openPriceDropdown === "min" ? "rotate-180" : ""
-                      }`}
+                      className={`transition-transform ${state.openPriceDropdown === "min" ? "rotate-180" : ""
+                        }`}
                     />
                   </button>
 
@@ -1002,9 +994,8 @@ export function PropertyView(props: any) {
 
                     <ChevronDown
                       size={18}
-                      className={`transition-transform ${
-                        state.openPriceDropdown === "max" ? "rotate-180" : ""
-                      }`}
+                      className={`transition-transform ${state.openPriceDropdown === "max" ? "rotate-180" : ""
+                        }`}
                     />
                   </button>
 
@@ -1060,8 +1051,8 @@ export function PropertyView(props: any) {
                             e.target.checked
                               ? [...state.floorPlan, option]
                               : state.floorPlan.filter(
-                                  (t) => t.value !== option.value,
-                                ),
+                                (t) => t.value !== option.value,
+                              ),
                           )
                         }
                         className="peer hidden"
@@ -1085,9 +1076,7 @@ export function PropertyView(props: any) {
                 </div>
               </div>
             )}
-
-
-            {/* <div>
+            <div>
               <div className="mb-2 font-semibold text-gray-900">Bathrooms</div>
 
               <div className="flex flex-wrap gap-2">
@@ -1117,11 +1106,10 @@ export function PropertyView(props: any) {
             text-sm font-medium cursor-pointer
             transition-all duration-200
 
-            ${
-              isSelected
-                ? "border-red-500 text-red-500 "
-                : "border-gray-300 text-gray-700 bg-white hover:border-red-400 hover:text-red-500"
-            }
+            ${isSelected
+                          ? "border-red-500 text-red-500 "
+                          : "border-gray-300 text-gray-700 bg-white hover:border-red-400 hover:text-red-500"
+                        }
           `}
                     >
                       {option}
@@ -1129,7 +1117,7 @@ export function PropertyView(props: any) {
                   );
                 })}
               </div>
-            </div> */}
+            </div>
 
             {/* <div>
               <div className="mb-2 font-semibold text-gray-900">Bathrooms</div>
@@ -1210,16 +1198,15 @@ export function PropertyView(props: any) {
 
                     <ChevronDown
                       size={18}
-                      className={`transition-transform ${
-                        state.openDropdown === "min" ? "rotate-180" : ""
-                      }`}
+                      className={`transition-transform ${state.openDropdown === "min" ? "rotate-180" : ""
+                        }`}
                     />
                   </button>
 
                   {state.openDropdown === "min" && (
                     <div
-                    className="absolute z-50 bottom-full mb-2 min-w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto"
-                  >
+                      className="absolute z-50 bottom-full mb-2 min-w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto"
+                    >
                       <button
                         className="w-full px-2 py-3 text-left hover:bg-gray-100"
                         onClick={() => {
@@ -1277,16 +1264,15 @@ export function PropertyView(props: any) {
 
                     <ChevronDown
                       size={18}
-                      className={`transition-transform ${
-                        state.openDropdown === "max" ? "rotate-180" : ""
-                      }`}
+                      className={`transition-transform ${state.openDropdown === "max" ? "rotate-180" : ""
+                        }`}
                     />
                   </button>
 
                   {state.openDropdown === "max" && (
-                  <div
-                  className="absolute z-50 bottom-full mb-2 min-w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto"
-                >
+                    <div
+                      className="absolute z-50 bottom-full mb-2 min-w-full bg-white border border-gray-200 rounded-2xl shadow-lg max-h-72 overflow-y-auto"
+                    >
                       <button
                         className="w-full px-2 py-3 text-left hover:bg-gray-100"
                         onClick={() => {
@@ -1375,11 +1361,11 @@ export function PropertyView(props: any) {
                   className="pl-11 h-8 md:h-10 border-none  rounded-full shadow-none focus-visible:outline-none focus-visible:ring-0 w-full "
                 />
               </div>
-            
+
               <div className="hidden md:flex items-center justify-between md:justify-normal gap-4 w-full sm:w-auto">
                 {/* --------responsive filter sidebar start---------- */}
 
-                
+
 
                 {/* --------responsive filter sidebar end---------- */}
 
@@ -1401,39 +1387,39 @@ export function PropertyView(props: any) {
                 </Link> */}
                 {/* <span className="text-sm text-gray-600"></span> */}
 
-                
 
-                    {  state.userLoggedIn &&
-               (state.prefferedLocation == true ? ( 
-               <Button
-                  variant="outline"
-                  className="px-2 py-1 h-6.5 rounded-2xl text-xs  
+
+                {state.userLoggedIn &&
+                  (state.prefferedLocation == true ? (
+                    <Button
+                      variant="outline"
+                      className="px-2 py-1 h-6.5 rounded-2xl text-xs  
                       border-dred  bg-dred text-white
                       hover:bg-dred hover:text-white
                          shadow-none "
-                  onClick={handlePreferredLocationClick}
-                >
-                  <MapPinHouseIcon />
-                  Preffered Location
-                </Button>
-                ) :
-                (
-                   <Button
-                  variant="outline"
-                  className="px-2 py-1 h-6.5 rounded-2xl text-xs bg-[#fff6f6]  text-dred 
+                      onClick={handlePreferredLocationClick}
+                    >
+                      <MapPinHouseIcon />
+                      Preffered Location
+                    </Button>
+                  ) :
+                    (
+                      <Button
+                        variant="outline"
+                        className="px-2 py-1 h-6.5 rounded-2xl text-xs bg-[#fff6f6]  text-dred 
                       border-dred hover:text-dred
                      
                       shadow-none "
-                  onClick={handlePreferredLocationClick}
-                >
-                  <MapPinHouseIcon />
-                  Preffered Location
-                </Button>
-                ))}
+                        onClick={handlePreferredLocationClick}
+                      >
+                        <MapPinHouseIcon />
+                        Preffered Location
+                      </Button>
+                    ))}
               </div>
 
               <div className="flex items-center gap-4 justify-between md:justify-normal  w-auto">
-           
+
 
                 <div className="flex items-center gap-2 hidden md:flex">
                   <span className="text-sm text-gray-600 whitespace-nowrap">
@@ -1481,27 +1467,25 @@ export function PropertyView(props: any) {
                   <Button
                     onClick={() => setState({ view: "grid" })}
                     variant="ghost"
-                    className={`px-2 md:px-2 h-8 text-sm font-medium flex items-center gap-1 transition-colors  ${
-                      state.view === "grid"
-                        ? "text-white bg-dred hover:bg-dred hover:text-white"
-                        : "text-gray-600  hover:text-dred hover:bg-transparent"
-                    }`}
+                    className={`px-2 md:px-2 h-8 text-sm font-medium flex items-center gap-1 transition-colors  ${state.view === "grid"
+                      ? "text-white bg-dred hover:bg-dred hover:text-white"
+                      : "text-gray-600  hover:text-dred hover:bg-transparent"
+                      }`}
                   >
                     <LayoutGrid className="w-4 h-4" />
-                    
+
                   </Button>
                   <div className="h-6 w-px bg-gray-300"></div>
                   <Button
                     onClick={() => setState({ view: "list" })}
                     variant="ghost"
-                    className={` px-2 md:px-2 h-8 text-sm font-medium flex items-center gap-1 transition-colors ${
-                      state.view === "list"
-                        ? " text-white bg-dred hover:bg-dred hover:text-white"
-                        : "text-gray-600  hover:text-dred hover:bg-transparent"
-                    }`}
+                    className={` px-2 md:px-2 h-8 text-sm font-medium flex items-center gap-1 transition-colors ${state.view === "list"
+                      ? " text-white bg-dred hover:bg-dred hover:text-white"
+                      : "text-gray-600  hover:text-dred hover:bg-transparent"
+                      }`}
                   >
                     <List className="w-4 h-4" />
-                    
+
                   </Button>
                 </div>
               </div>
@@ -1510,89 +1494,89 @@ export function PropertyView(props: any) {
               <DeveloperCard variant="horizontal" />
             </div> */}
 
-            
+
           </div>
 
           <div className=" flex xl:hidden items-center justify-between gap-4 w-full">
-                {/* --------responsive filter sidebar start---------- */}
+            {/* --------responsive filter sidebar start---------- */}
 
-                <div className="xl:hidden">
-                  <Sheet
-                    open={state.sidebarOpen}
-                    onOpenChange={(open) => setState({ sidebarOpen: open })}
+            <div className="xl:hidden">
+              <Sheet
+                open={state.sidebarOpen}
+                onOpenChange={(open) => setState({ sidebarOpen: open })}
+              >
+                <SheetTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 border-none bg-transparent shadow-none px-2  "
                   >
-                    <SheetTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="flex items-center gap-2 border-none bg-transparent shadow-none px-2  "
-                      >
-                        <SlidersHorizontal className="h-4 w-4" />
-                        Filters
-                      </Button>
-                    </SheetTrigger>
+                    <SlidersHorizontal className="h-4 w-4" />
+                    Filters
+                  </Button>
+                </SheetTrigger>
 
-                    <SheetContent
-                      side="left"
-                      className="w-full max-w-full sm:w-[92vw] sm:max-w-[440px] p-0 overflow-y-auto overflow-x-hidden bg-color1"
-                      onPointerDownOutside={(e) => {
-                        const target = e.target as HTMLElement;
-                        if (target.closest('[data-filter-popup]')) e.preventDefault();
-                      }}
-                      onInteractOutside={(e) => {
-                        const target = e.target as HTMLElement;
-                        if (target.closest('[data-filter-popup]')) e.preventDefault();
-                      }}
-                      onFocusOutside={(e) => {
-                        const target = e.target as HTMLElement;
-                        if (target.closest('[data-filter-popup]')) e.preventDefault();
-                      }}
-                    >
-                      <div className="p-4">
-                        <SheetHeader className="flex items-center justify-between">
-                          <SheetTitle>{""}</SheetTitle>
-                        </SheetHeader>
+                <SheetContent
+                  side="left"
+                  className="w-100 p-0 overflow-y-auto bg-color1 "
+                  onPointerDownOutside={(e) => {
+                    const target = e.target as HTMLElement;
+                    if (target.closest('[data-filter-popup]')) e.preventDefault();
+                  }}
+                  onInteractOutside={(e) => {
+                    const target = e.target as HTMLElement;
+                    if (target.closest('[data-filter-popup]')) e.preventDefault();
+                  }}
+                  onFocusOutside={(e) => {
+                    const target = e.target as HTMLElement;
+                    if (target.closest('[data-filter-popup]')) e.preventDefault();
+                  }}
+                >
+                  <div className="p-4">
+                    <SheetHeader className="flex items-center justify-between">
+                      <SheetTitle>{""}</SheetTitle>
+                    </SheetHeader>
 
-                        <div className="mt-4 space-y-6">
-                          <SidebarContent
-                            state={state}
-                            handleChange={handleChange}
-                            resetFilter={() => {
-                              resetFilter();
-                              setState((prev) => ({
-                                ...prev,
-                                sidebarOpen: true,
-                              }));
-                            }}
-                            categoryList={categoryList}
-                            locationList={locationList}
-                            areaList={areaList}
-                            projectList={projectList}
-                            developerList={developerList}
-                            floorPlanList={floorPlanList}
-                            furnishingList={furnishingList}
-                            listingTypeList={listingTypeList}
-                            bedroomList={bedroomList}
-                            parseINR={parseINR}
-                            formatINR={formatINR}
-                          />
-                        </div>
-                      </div>
+                    <div className="mt-4 space-y-6">
+                      <SidebarContent
+                        state={state}
+                        handleChange={handleChange}
+                        resetFilter={() => {
+                          resetFilter();
+                          setState((prev) => ({
+                            ...prev,
+                            sidebarOpen: true,
+                          }));
+                        }}
+                        categoryList={categoryList}
+                        locationList={locationList}
+                        areaList={areaList}
+                        projectList={projectList}
+                        developerList={developerList}
+                        floorPlanList={floorPlanList}
+                        furnishingList={furnishingList}
+                        listingTypeList={listingTypeList}
+                        bedroomList={bedroomList}
+                        parseINR={parseINR}
+                        formatINR={formatINR}
+                      />
+                    </div>
+                  </div>
 
-                      <SheetFooter
-                        className="sticky bottom-0 left-0  border-t cursor-pointer"
-                        onClick={() => setState({ sidebarOpen: false })}
-                      >
-                        <div className="bg-color2 hover:bg-color2 py-5 px-3 text-white w-full text-center text-lg font-semibold">
-                          View {properties.length} Properties
-                        </div>
-                      </SheetFooter>
-                    </SheetContent>
-                  </Sheet>
-                </div>
+                  <SheetFooter
+                    className="sticky bottom-0 left-0  border-t cursor-pointer"
+                    onClick={() => setState({ sidebarOpen: false })}
+                  >
+                    <div className="bg-color2 hover:bg-color2 py-5 px-3 text-white w-full text-center text-lg font-semibold">
+                      View {properties.length} Properties
+                    </div>
+                  </SheetFooter>
+                </SheetContent>
+              </Sheet>
+            </div>
 
-                {/* --------responsive filter sidebar end---------- */}
+            {/* --------responsive filter sidebar end---------- */}
 
-                {/* <Link
+            {/* <Link
                   href="/property-listmv"
                   className="no-underline hidden xl:block"
                 >
@@ -1608,13 +1592,13 @@ export function PropertyView(props: any) {
                     Map View
                   </Button>
                 </Link> */}
-                {/* <span className="text-sm text-gray-600"></span> */}
+            {/* <span className="text-sm text-gray-600"></span> */}
 
-                
 
-                    {  state.userLoggedIn &&
-               (state.prefferedLocation == true ? ( 
-               <Button
+
+            {state.userLoggedIn &&
+              (state.prefferedLocation == true ? (
+                <Button
                   variant="outline"
                   className="flex md:hidden px-2 py-1 h-6.5 rounded-2xl text-xs  
                       border-dred  bg-dred text-white
@@ -1625,25 +1609,25 @@ export function PropertyView(props: any) {
                   <MapPinHouseIcon />
                   Preffered Location
                 </Button>
-                ) :
+              ) :
                 (
-                   <Button
-                  variant="outline"
-                  className="flex md:hidden px-2 py-1 h-6.5 rounded-2xl text-xs bg-[#fff6f6]  text-dred 
+                  <Button
+                    variant="outline"
+                    className="flex md:hidden px-2 py-1 h-6.5 rounded-2xl text-xs bg-[#fff6f6]  text-dred 
                       border-dred hover:text-dred
                      shadow-none "
-                  onClick={handlePreferredLocationClick}
-                >
-                  <MapPinHouseIcon />
-                  Preffered Location
-                </Button>
+                    onClick={handlePreferredLocationClick}
+                  >
+                    <MapPinHouseIcon />
+                    Preffered Location
+                  </Button>
                 ))}
           </div>
 
-              
-            
 
-        
+
+
+
 
           <ActiveFilters
             state={state}

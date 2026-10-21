@@ -1333,7 +1333,7 @@ const TermsAndConditionsPage = () => {
   </h2>
 
   <p className="leading-relaxed mb-3">
-    The courts situated in <strong>Coimbatore, Tamil Nadu, India</strong>
+    The courts situated in <strong>Coimbatore, Tamil Nadu, India </strong>
     shall have exclusive jurisdiction over all disputes arising out of or
     relating to Boom Realtys and these Terms and Conditions, irrespective
     of the place from which the Platform is accessed.
@@ -1399,8 +1399,7 @@ const TermsAndConditionsPage = () => {
           {/* Contact Card */}
           <div className="mt-10 bg-gray-50 border border-gray-200 rounded-xl p-5 text-sm text-gray-700 space-y-1">
             <p>
-              <span className="font-medium text-gray-900">Company:</span> Boom
-              Realtys
+              <span className="font-medium text-gray-900">Company:</span> Boomrealtys
             </p>
             <p>
               <span className="font-medium text-gray-900">Email:</span>{" "}

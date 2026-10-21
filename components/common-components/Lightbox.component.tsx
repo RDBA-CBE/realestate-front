@@ -24,6 +24,7 @@ interface LightboxProps {
   isOpen: boolean;
   onClose: () => void;
   autoSlide?: boolean;
+  title?: string;
 }
 
 const LightboxGallery = ({
@@ -32,13 +33,13 @@ const LightboxGallery = ({
   isOpen,
   onClose,
   autoSlide = false,
+  title,
 }: LightboxProps) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
   const imageRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -48,7 +49,11 @@ const LightboxGallery = ({
       setCurrentIndex(initialIndex);
       setScale(1);
       setPosition({ x: 0, y: 0 });
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
     }
+    return () => { document.body.style.overflow = ""; };
   }, [isOpen, initialIndex]);
 
   // Auto slide functionality (without interval parameter)
@@ -97,10 +102,11 @@ const LightboxGallery = ({
   };
 
   const zoomOut = () => {
-    setScale((prev) => Math.max(prev - 0.5, 1));
-    if (scale - 0.5 <= 1) {
-      setPosition({ x: 0, y: 0 });
-    }
+    setScale((prev) => {
+      const next = Math.max(prev - 0.5, 1);
+      if (next <= 1) setPosition({ x: 0, y: 0 });
+      return next;
+    });
   };
 
   const resetZoom = () => {
@@ -108,23 +114,11 @@ const LightboxGallery = ({
     setPosition({ x: 0, y: 0 });
   };
 
-  // Mini zoom on hover
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
-
   // Double click to zoom
   const handleDoubleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (scale === 1) {
-      zoomIn();
-    } else {
-      resetZoom();
-    }
+    if (scale === 1) zoomIn();
+    else resetZoom();
   };
 
   // Download image
@@ -248,8 +242,20 @@ const LightboxGallery = ({
           <div className="relative max-w-7xl max-h-full w-full h-full flex flex-col">
             {/* Header - Controls */}
             <div className="flex justify-between items-center text-white mb-4 px-4">
-              <div className="text-lg font-medium">
-                {currentIndex + 1} / {images.length}
+              <div className="flex flex-col gap-0.5">
+                {title && (
+                  <span className="text-sm  text-white/80 leading-tight">
+                    {title}
+                  </span>
+                )}
+                {images[currentIndex]?.alt && (
+                  <span className="pt-2 text-lg text-white leading-tight font-semibold">
+                    {images[currentIndex].alt}
+                  </span>
+                )}
+                <span className="text-sm text-white/50">
+                  {currentIndex + 1} / {images.length}
+                </span>
               </div>
 
               <div className="flex items-center gap-3">
@@ -331,47 +337,42 @@ const LightboxGallery = ({
                 transition={{ duration: 0.3 }}
                 className="relative w-full h-full max-w-5xl max-h-[70vh] overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
               >
                 <div
                   ref={imageRef}
-                  className="w-full h-full flex items-center justify-center cursor-move"
+                  className="w-full h-full flex items-center justify-center"
                   style={{
-                    transform: `scale(${
-                      isHovered && scale === 1 ? 1.05 : scale
-                    }) translate(${position.x}px, ${position.y}px)`,
-                    transition: isDragging ? "none" : "transform 0.3s ease",
+                    cursor: scale > 1 ? (isDragging ? "grabbing" : "grab") : "zoom-in",
+                    transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+                    transformOrigin: "center center",
+                    transition: isDragging ? "none" : "transform 0.2s ease",
+                    willChange: "transform",
                   }}
                   onDoubleClick={handleDoubleClick}
                   onWheel={handleWheel}
                   onMouseDown={handleMouseDown}
                   onMouseMove={handleMouseMove}
                   onMouseUp={handleMouseUp}
-                  onMouseLeave={() => {
-                    handleMouseUp();
-                    handleMouseLeave();
-                  }}
+                  onMouseLeave={handleMouseUp}
                   onTouchStart={handleTouchStart}
                   onTouchMove={handleTouchMove}
                   onTouchEnd={handleMouseUp}
                 >
                   <Image
                     src={images[currentIndex].image_url}
-                    alt={
-                      images[currentIndex].alt || `Image ${currentIndex + 1}`
-                    }
+                    alt={images[currentIndex].alt || `Image ${currentIndex + 1}`}
                     width={1200}
                     height={800}
-                    className="object-contain max-w-full max-h-full"
+                    className="object-contain max-w-full max-h-full pointer-events-none select-none"
                     priority
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                    draggable={false}
                   />
                 </div>
 
                 {/* Zoom Level Indicator */}
                 {scale > 1 && (
-                  <div className="absolute top-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
+                  <div className="absolute top-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm pointer-events-none">
                     {Math.round(scale * 100)}%
                   </div>
                 )}

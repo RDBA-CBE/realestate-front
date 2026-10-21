@@ -1,4 +1,5 @@
 "use client";
+import { GOOGLE_MAP_KEY } from "@/utils/constant.utils";
 import {
   GoogleMap,
   useLoadScript,
@@ -56,7 +57,9 @@ const GoogleMaps = () => {
   };
 
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY,
+    // googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY,
+    googleMapsApiKey: GOOGLE_MAP_KEY,
+
     libraries: ["places"],
   });
 

@@ -1,7 +1,11 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { capitalizeFLetter, formatNumber } from "@/utils/function.utils";
+import {
+  capitalizeFLetter,
+  formatNumber,
+  isPlotProperty,
+} from "@/utils/function.utils";
 import {
   Bed,
   Bath,
@@ -16,10 +20,12 @@ import {
   StepForward,
   Building,
   LandPlot,
+  Ruler,
+  HomeIcon,
 } from "lucide-react";
 import { useState } from "react";
 
-export default function PropertyDetails({ data }: any) {
+export default function PropertyDetails({ data, mobileLayout = false }: any) {
   console.log("✌️data --->", data);
 
   const [expanded, setExpanded] = useState(false);
@@ -225,28 +231,62 @@ export default function PropertyDetails({ data }: any) {
   //   ];
   // }
 
+  const isPlot = isPlotProperty(data);
+
   const uniConfig = data?.floor_plans?.length
     ? `${[...new Set(data.floor_plans.map((fp: any) => fp.category?.match(/\d+/)?.[0]))].filter(Boolean).join(", ")} BHK`
     : "-";
-  
 
   const details = [
-
-    ...(data.floor_plans
+    ...(!isPlot && data.floor_plans
       ? [{ icon: Bed, label: "Unit Configuration", value: uniConfig }]
       : []),
 
-    {
-      icon: Maximize2,
-      label: "Total Area",
-      value: data?.total_area ?? "-",
-    },
-
-    ...(data?.built_up_area
+    ...(data?.total_area
       ? [
           {
             icon: Maximize2,
-            label: "Built up Area",
+            label: "Total Area (sq.ft)",
+            value: data.total_area,
+          },
+        ]
+      : []),
+
+    ...(data?.total_acres
+      ? [
+          {
+            icon: Maximize2,
+            label: "Total Area (acres)",
+            value: data?.total_acres ?? "-",
+          },
+        ]
+      : []),
+
+   ...(isPlot
+  ? data?.plot_area
+    ? [
+        {
+          icon: LandPlot,
+          label: "Plot Area (cents)",
+          value: data.plot_area,
+        },
+      ]
+    : []
+  : data?.plot_area
+    ? [
+        {
+          icon: LandPlot,
+          label: "Total Area (cents)",
+          value: data.plot_area,
+        },
+      ]
+    : []),
+
+    ...(!isPlot && data?.built_up_area
+      ? [
+          {
+            icon: Maximize2,
+            label: "Built up Area (sq.ft)",
             value: data?.built_up_area ?? "-",
           },
         ]
@@ -273,14 +313,21 @@ export default function PropertyDetails({ data }: any) {
           },
         ]
       : []),
+    ...(data?.carpet_area
+      ? [
+          {
+            icon: HomeIcon ,
+            label: "Carpet Area (sq.ft)",
+            value: data.carpet_area,
+          },
+        ]
+      : []),
 
     {
       icon: Star,
       label: "Status",
       value: capitalizeFLetter(data?.status) ?? "-",
     },
-
-  
 
     // ...(data?.bathrooms
     //   ? [
@@ -298,7 +345,7 @@ export default function PropertyDetails({ data }: any) {
       ? [{ icon: Building2, label: "Balcony", value: data?.balcony }]
       : []),
 
-    ...(data?.furnishing
+    ...(!isPlot && data?.furnishing
       ? [
           {
             icon: ArmchairIcon,
@@ -323,8 +370,10 @@ export default function PropertyDetails({ data }: any) {
 
   return (
     <>
-      <h3 className="section-in-ti mb-3">Overview</h3>
-      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+      <h3 className="section-in-ti mb-3 !font-bold">Overview</h3>
+      <div
+        className={`grid ${mobileLayout ? "grid-cols-2" : "grid-cols-1 xs:grid-cols-2 lg:grid-cols-4"} gap-4 lg:gap-6`}
+      >
         {details.map((item, idx) => (
           <div
             key={idx}

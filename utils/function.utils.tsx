@@ -355,6 +355,27 @@ export const formatToINR = (amount) => {
   }).format(amount);
 };
 
+
+// 175000    to   1,75,000
+export const formatIndianNumber = (
+  amount: number | string | null | undefined
+): string => {
+  if (amount === null || amount === undefined || amount === "") {
+    return "-";
+  }
+
+  const value = String(amount).replace(/,/g, "").trim();
+  const [integerPart, decimalPart] = value.split(".");
+
+  const formattedInteger = new Intl.NumberFormat("en-IN").format(
+    Number(integerPart)
+  );
+
+  return decimalPart !== undefined
+    ? `${formattedInteger}.${decimalPart}`
+    : formattedInteger;
+};
+
 export const formattedNoDecimal = (number) => {
   return Math.round(number).toLocaleString("en-IN");
 };
@@ -446,35 +467,105 @@ export const formatToINRS = (price: number | string): string => {
   }
 };
 
+
+
 export const formatPriceRange = (
-  minPrice: number | string | null,
-  maxPrice: number | string | null
+  minPrice?: number | string | null,
+  maxPrice?: number | string | null
 ): string => {
-  if (minPrice === null && maxPrice === null) {
+  if (
+    (minPrice === null || minPrice === undefined || minPrice === "") &&
+    (maxPrice === null || maxPrice === undefined || maxPrice === "")
+  ) {
     return "Price on request";
   }
-  
-  if (minPrice === null) {
-    return `Max: ${formatToINRS(maxPrice)}`;
+
+  const formatExactPrice = (price: number | string): string => {
+    const value = typeof price === "string" ? parseFloat(price) : price;
+
+    if (isNaN(value)) return "";
+
+    if (value >= 10000000) {
+      return `${(value / 10000000).toFixed(2).replace(/\.?0+$/, "")} Cr`;
+    }
+
+    if (value >= 100000) {
+      return `${(value / 100000).toFixed(2).replace(/\.?0+$/, "")} L`;
+    }
+
+    if (value >= 1000) {
+      return `${(value / 1000).toFixed(2).replace(/\.?0+$/, "")} K`;
+    }
+
+    return `${value}`;
+  };
+
+  const hasMin =
+    minPrice !== null && minPrice !== undefined && minPrice !== "";
+  const hasMax =
+    maxPrice !== null && maxPrice !== undefined && maxPrice !== "";
+
+  if (hasMin && !hasMax) {
+    return formatExactPrice(minPrice);
   }
-  
-  if (maxPrice === null) {
-    return `Min: ${formatToINRS(minPrice)}`;
+
+  if (!hasMin && hasMax) {
+    return `Max: ${formatExactPrice(maxPrice)}`;
   }
 
-  const numericMin = typeof minPrice === "string" ? parseFloat(minPrice) : minPrice;
-  const numericMax = typeof maxPrice === "string" ? parseFloat(maxPrice) : maxPrice;
+  const numericMin = Number(minPrice);
+  const numericMax = Number(maxPrice);
 
-  if (isNaN(numericMin) || isNaN(numericMax)) return "Contact for price";
+  if (isNaN(numericMin) || isNaN(numericMax)) {
+    return "Contact for price";
+  }
 
-  const formattedMin = formatToINRS(numericMin).replace("₹", "");
-  const formattedMax = formatToINRS(numericMax).replace("₹", "");
+  if (numericMin === numericMax) {
+    return formatExactPrice(numericMin);
+  }
 
-  return `${formattedMin} - ${formattedMax}`;
+  return `${formatExactPrice(numericMin)} - ${formatExactPrice(numericMax)}`;
 };
 
 
-export  const getPriceLabel = (value, options) => {
+
+export const getPriceLabel = (value, options) => {
   const found = options.find((item) => item.value === value);
   return found ? found.label : "No min";
+};
+
+export const isPlotProperty = (data: any): boolean => {
+  if (!data) return false;
+
+  const checkValue = (val: any): boolean => {
+    if (!val) return false;
+    if (typeof val === "string") {
+      const lower = val.toLowerCase().trim();
+      return (
+        lower === "plot" ||
+        lower === "plots" ||
+        lower.includes("plot") ||
+        lower === "land"
+      );
+    }
+    if (typeof val === "object") {
+      if (val.name && checkValue(val.name)) return true;
+      if (val.slug && checkValue(val.slug)) return true;
+      if (val.title && checkValue(val.title)) return true;
+      if (val.property_type && checkValue(val.property_type)) return true;
+    }
+    return false;
+  };
+
+  if (Array.isArray(data?.property_type)) {
+    if (data.property_type.some((item: any) => checkValue(item))) return true;
+  } else if (data?.property_type && checkValue(data?.property_type)) {
+    return true;
+  }
+
+  if (checkValue(data?.type)) return true;
+  if (checkValue(data?.property_type_name)) return true;
+  if (checkValue(data?.category)) return true;
+
+  return false;
 };

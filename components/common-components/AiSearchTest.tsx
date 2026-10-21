@@ -14,12 +14,12 @@ import {
   Eye,
   SendIcon,
   ArrowLeft,
-  RefreshCcw,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import Models from "@/imports/models.import";
 import { capitalizeFLetter } from "@/utils/function.utils";
+import { getPropertyPathValue } from "@/utils/seo.utils";
 import moment from "moment";
 
 interface Step {
@@ -58,15 +58,14 @@ interface UserMsg {
 }
 type Message = BotMsg | UserMsg;
 
-// const suggestions = [
-//   "3BHK apartment in Chennai",
-//   "Villa under 2 Cr",
-//   "Commercial space in Coimbatore",
-//   "Affordable plots near Bangalore",
-// ];
+const suggestions = [
+  "3BHK apartment in Chennai",
+  "Villa under 2 Cr",
+  "Commercial space in Coimbatore",
+  "Affordable plots near Bangalore",
+];
 
-export default function AISearchComponent(props:any) {
-  const {suggestions}=props
+export default function AISearchTestComponent() {
   const router = useRouter();
   const [chatMode, setChatMode] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -108,6 +107,7 @@ export default function AISearchComponent(props:any) {
     user_id: "",
   });
   const [callbackErrors, setCallbackErrors] = useState({
+
     phone: "",
     message: "",
   });
@@ -128,11 +128,7 @@ export default function AISearchComponent(props:any) {
     message: "",
   });
   const [bookingLoading, setBookingLoading] = useState(false);
-  const [profileData, setProfileData] = useState({
-    email: "",
-    phone: "",
-    id: "",
-  });
+  const [profileData, setProfileData] = useState({ email: "", phone: "", id: "" });
   const bottomRef = useRef<HTMLDivElement>(null);
   const freeInputRef = useRef<HTMLInputElement>(null);
 
@@ -160,13 +156,10 @@ export default function AISearchComponent(props:any) {
       const userId = localStorage.getItem("userId");
       if (userId) {
         const response: any = await Models.user.details(userId);
-        setProfileData({
-          email: response?.email ?? "",
-          phone: response?.phone ?? "",
-          id: response?.id ?? "",
-        });
+        setProfileData({ email: response?.email ?? "", phone: response?.phone ?? "", id: response?.id ?? "" });
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.log("error", error);
     }
   };
@@ -193,8 +186,8 @@ export default function AISearchComponent(props:any) {
   };
 
   // Called when user submits from landing search box
-  const startChat = async (query: any) => {
-    const text = query?.label.trim();
+  const startChat = async (query: string) => {
+    const text = query.trim();
     if (!text || loading) return;
     setChatMode(true);
     setFreeInput("");
@@ -348,7 +341,7 @@ export default function AISearchComponent(props:any) {
 
   const toggleMulti = (opt: string) =>
     setSelectedOptions((prev) =>
-      prev.includes(opt) ? prev.filter((o) => o !== opt) : [...prev, opt]
+      prev.includes(opt) ? prev.filter((o) => o !== opt) : [...prev, opt],
     );
 
   const submitBooking = async () => {
@@ -356,26 +349,16 @@ export default function AISearchComponent(props:any) {
       setBookingLoading(true);
 
       const errs = { date: "", time: "", email: "", phone: "", message: "" };
-      if (!bookingForm.date) {
-        errs.date = "Preferred date and time is required";
-        setBookingLoading(false);
-      }
-      if (!bookingForm.email.trim()) {
-        errs.email = "Email is required";
-        setBookingLoading(false);
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bookingForm.email)) {
-        errs.email = "Enter a valid email";
-        setBookingLoading(false);
+      if (!bookingForm.date) { errs.date = "Preferred date and time is required"; setBookingLoading(false) }
+      if (!bookingForm.email.trim()) { errs.email = "Email is required"; setBookingLoading(false) }
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bookingForm.email)) {
+        errs.email = "Enter a valid email"; setBookingLoading(false)
       }
       if (!bookingForm.phone.trim()) errs.phone = "Phone is required";
       else if (!/^[0-9]{10}$/.test(bookingForm.phone)) {
-        errs.phone = "Enter a valid 10-digit number";
-        setBookingLoading(false);
+        errs.phone = "Enter a valid 10-digit number"; setBookingLoading(false)
       }
-      if (!bookingForm.message) {
-        errs.message = "Inquiry details is required";
-        setBookingLoading(false);
-      }
+      if (!bookingForm.message) { errs.message = "Inquiry details is required"; setBookingLoading(false); }
       setBookingErrors(errs);
       if (errs.email || errs.phone) return;
 
@@ -393,9 +376,7 @@ export default function AISearchComponent(props:any) {
         message: capitalizeFLetter(bookingForm.message),
         email: bookingForm.email,
         phone_number: bookingForm.phone,
-        schedule_date_time: bookingForm?.date
-          ? moment(bookingForm?.date).format("YYYY-MM-DD HH:mm:ss")
-          : null,
+        schedule_date_time: bookingForm?.date ? moment(bookingForm?.date).format("YYYY-MM-DD HH:mm:ss") : null,
       };
       console.log("Booking Inquiry Payload:", payload);
       const res: any = await Models.chat.booking_inquiry(payload);
@@ -422,17 +403,11 @@ export default function AISearchComponent(props:any) {
       // if (!callbackForm.email.trim()) errs.email = "Email is required";
       // else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(callbackForm.email))
       //   errs.email = "Enter a valid email";
-      if (!callbackForm.phone.trim()) {
-        errs.phone = "Phone is required";
-        setCallbackLoading(false);
-      } else if (!/^[0-9]{10}$/.test(callbackForm.phone)) {
-        errs.phone = "Enter a valid 10-digit number";
-        setCallbackLoading(false);
+      if (!callbackForm.phone.trim()) { errs.phone = "Phone is required"; setCallbackLoading(false); }
+      else if (!/^[0-9]{10}$/.test(callbackForm.phone)) {
+        errs.phone = "Enter a valid 10-digit number"; setCallbackLoading(false);
       }
-      if (!callbackForm.message) {
-        errs.message = "Inquiry details is required";
-        setCallbackLoading(false);
-      }
+      if (!callbackForm.message) { errs.message = "Inquiry details is required"; setCallbackLoading(false); }
       setCallbackErrors(errs);
       if (errs.message || errs.phone) return;
 
@@ -450,6 +425,7 @@ export default function AISearchComponent(props:any) {
       await sendContactForm(payload);
       await profile();
       setCallbackLoading(false);
+
     } catch (e) {
       setCallbackLoading(false);
 
@@ -483,16 +459,12 @@ export default function AISearchComponent(props:any) {
               type="text"
               value={freeInput}
               onChange={(e) => setFreeInput(e.target.value)}
-              onKeyDown={(e) =>
-                e.key === "Enter" &&
-                freeInput.trim().length > 0 &&
-                freeInput.trim() &&
-                startChat(freeInput)
-              }
+              // onKeyDown={(e) => e.key === "Enter" && freeInput.trim().length > 0 && freeInput.trim().length <= 25 && startChat(freeInput)}
               placeholder="e.g. 3BHK apartment in Chennai under 1 Cr..."
               className="flex-1 bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground"
               autoFocus
-              // maxLength={25}
+            // maxLength={25}
+
             />
             <button
               onClick={() => startChat(freeInput)}
@@ -510,13 +482,13 @@ export default function AISearchComponent(props:any) {
             Try asking
           </p>
           <div className="flex flex-wrap justify-center gap-2">
-            {suggestions.map((s,i) => (
+            {suggestions.map((s) => (
               <button
-                key={i}
+                key={s}
                 onClick={() => startChat(s)}
                 className="px-4 py-2 rounded-full border border-border bg-card text-sm text-muted-foreground hover:border-themeColor1 hover:text-themeColor1 transition-colors"
               >
-                {s?.label}
+                {s}
               </button>
             ))}
           </div>
@@ -527,7 +499,9 @@ export default function AISearchComponent(props:any) {
 
   // ── CHAT MODE ──────────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col w-full max-w-3xl mx-auto h-[calc(100vh-80px)]">
+    <div
+      className="flex flex-col w-full max-w-2xl mx-auto pb-6 min-h-[calc(100vh-80px)]"
+    >
       {/* Header */}
       <div className="flex items-center gap-3 px-2 py-4 border-b border-border shrink-0">
         <div onClick={() => router.back()}>
@@ -539,18 +513,11 @@ export default function AISearchComponent(props:any) {
         <span className="font-semibold text-sm text-foreground">
           AI Property Assistant
         </span>
-        {/* <span className="ml-auto w-2 h-2 rounded-full bg-emerald-400" /> */}
-        <button
-          onClick={()=>setChatMode(false)}
-          className="mt-3 ml-auto self-end px-4 py-1.5 rounded-xl bg-themeColor1 text-white text-xs font-medium disabled:opacity-40 hover:opacity-90 transition-opacity"
-        >
-          Refresh
-        </button>
-        {/* <RefreshCcw className="ml-auto  rounded-full " /> */}
+        <span className="ml-auto w-2 h-2 rounded-full bg-emerald-400" />
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-2 pt-5  flex flex-col gap-3">
+      <div className="flex-1 overflow-y-auto px-2 py-5 pb-10 flex flex-col gap-3">
         {messages.map((msg, i) => {
           if (msg.role === "user") {
             return (
@@ -594,22 +561,22 @@ export default function AISearchComponent(props:any) {
                     }}
                   >
                     {response.done &&
-                    response.results &&
-                    response.results.length > 0
+                      response.results &&
+                      response.results.length > 0
                       ? response.message
-                          .split("\n")
-                          .filter((line: string) => {
-                            const t = line.trim();
-                            return (
-                              !t.startsWith("**") &&
-                              !t.includes("₹") &&
-                              !response.results!.some((p: any) =>
-                                t.includes(p.title)
-                              )
-                            );
-                          })
-                          .join("\n")
-                          .trim()
+                        .split("\n")
+                        .filter((line: string) => {
+                          const t = line.trim();
+                          return (
+                            !t.startsWith("**") &&
+                            !t.includes("₹") &&
+                            !response.results!.some((p: any) =>
+                              t.includes(p.title),
+                            )
+                          );
+                        })
+                        .join("\n")
+                        .trim()
                       : response.message}
                   </ReactMarkdown>
                 </div>
@@ -633,12 +600,10 @@ export default function AISearchComponent(props:any) {
                           };
                           const priceStr =
                             minPrice && maxPrice && minPrice !== maxPrice
-                              ? `${formatPrice(minPrice)} – ${formatPrice(
-                                  maxPrice
-                                )}`
+                              ? `${formatPrice(minPrice)} – ${formatPrice(maxPrice)}`
                               : minPrice
-                              ? formatPrice(minPrice)
-                              : null;
+                                ? formatPrice(minPrice)
+                                : null;
                           return (
                             <div
                               key={prop.id}
@@ -649,7 +614,7 @@ export default function AISearchComponent(props:any) {
                                   src={prop.primary_image}
                                   alt={prop.title}
                                   onClick={() =>
-                                    router.push(`/property-detail/${prop.id}`)
+                                    router.push(`/property-detail/${getPropertyPathValue(prop)}`)
                                   }
                                   className="w-14 h-14 rounded-lg object-cover shrink-0 cursor-pointer"
                                 />
@@ -657,7 +622,7 @@ export default function AISearchComponent(props:any) {
                               <div
                                 className="flex flex-col justify-center gap-0.5 min-w-0 flex-1 cursor-pointer"
                                 onClick={() =>
-                                  router.push(`/property-detail/${prop.id}`)
+                                  router.push(`/property-detail/${getPropertyPathValue(prop)}`)
                                 }
                               >
                                 <div className="text-sm font-semibold text-foreground truncate">
@@ -678,7 +643,7 @@ export default function AISearchComponent(props:any) {
                                   onClick={(e) => {
                                     console.log("View Property:", prop);
                                     e.stopPropagation();
-                                    router.push(`/property-detail/${prop.id}`);
+                                    router.push(`/property-detail/${getPropertyPathValue(prop)}`);
                                   }}
                                   className="p-1.5 rounded-full hover:bg-themeColor1/10 text-themeColor1 transition-colors"
                                   title="View Property"
@@ -693,31 +658,10 @@ export default function AISearchComponent(props:any) {
                                       propTitle: prop.title,
                                     });
                                     setInquiryMode("menu");
-                                    setCallbackForm({
-                                      email: profileData.email,
-                                      phone: profileData.phone,
-                                      message: "",
-                                      user_id: profileData.id,
-                                    });
-                                    setCallbackErrors({
-                                      phone: "",
-                                      message: "",
-                                    });
-                                    setBookingForm({
-                                      date: "",
-                                      time: "",
-                                      email: profileData.email,
-                                      phone: profileData.phone,
-                                      message: "",
-                                      user_id: profileData.id,
-                                    });
-                                    setBookingErrors({
-                                      date: "",
-                                      time: "",
-                                      email: "",
-                                      phone: "",
-                                      message: "",
-                                    });
+                                    setCallbackForm({ email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
+                                    setCallbackErrors({ phone: "", message: "" });
+                                    setBookingForm({ date: "", time: "", email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
+                                    setBookingErrors({ date: "", time: "", email: "", phone: "", message: "" });
                                   }}
                                   className="p-1.5 rounded-full hover:bg-themeColor1/10 text-themeColor1 transition-colors"
                                   title="Inquiry"
@@ -747,17 +691,9 @@ export default function AISearchComponent(props:any) {
                             <div className="flex flex-row gap-2">
                               <button
                                 onClick={() => {
-                                  setInquiryPopup({
-                                    propId: null,
-                                    propTitle: "General Inquiry",
-                                  });
+                                  setInquiryPopup({ propId: null, propTitle: "General Inquiry" });
                                   setInquiryMode("callback");
-                                  setCallbackForm({
-                                    email: profileData.email,
-                                    phone: profileData.phone,
-                                    message: "",
-                                    user_id: profileData.id,
-                                  });
+                                  setCallbackForm({ email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
                                   setCallbackErrors({ phone: "", message: "" });
                                 }}
                                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-xs font-medium text-foreground"
@@ -767,26 +703,10 @@ export default function AISearchComponent(props:any) {
                               </button>
                               <button
                                 onClick={() => {
-                                  setInquiryPopup({
-                                    propId: null,
-                                    propTitle: "General Inquiry",
-                                  });
+                                  setInquiryPopup({ propId: null, propTitle: "General Inquiry" });
                                   setInquiryMode("booking");
-                                  setBookingForm({
-                                    date: "",
-                                    time: "",
-                                    email: profileData.email,
-                                    phone: profileData.phone,
-                                    message: "",
-                                    user_id: profileData.id,
-                                  });
-                                  setBookingErrors({
-                                    date: "",
-                                    time: "",
-                                    email: "",
-                                    phone: "",
-                                    message: "",
-                                  });
+                                  setBookingForm({ date: "", time: "", email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
+                                  setBookingErrors({ date: "", time: "", email: "", phone: "", message: "" });
                                 }}
                                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-xs font-medium text-foreground"
                               >
@@ -795,38 +715,26 @@ export default function AISearchComponent(props:any) {
                               </button>
                               <button
                                 onClick={() => {
-                                  console.log("sendContactForm", response);
-                                  const f = response.state;
-                                  console.log("f",f)
+                                  const f = response.applied_filters!;
                                   const params = new URLSearchParams();
-                                  if (f.location)
-                                    params.set("ai_location", f.location);
-                                  if (f.location_pref)
-                                    params.set("ai_location", f.location_pref);
-  
-                                  if (f.location_area)
-                                    params.set("ai_area", f.location_area);
-  
                                   if (f.property_type)
-                                    params.set("ai_propertyType", f.property_type);
+                                    params.set("propertyType", f.property_type);
                                   if (f.city) params.set("search", f.city);
-                                  if (f.apartment_config)
-                                    params.set("ai_floor_plans_category", f.apartment_config);
                                   if (f.max_price)
-                                    params.set("ai_maxPrice", f.max_price);
+                                    params.set("maxPrice", f.max_price);
                                   if (f.furnishing)
-                                    params.set("ai_furnishing", f.furnishing);
+                                    params.set("furnishing", f.furnishing);
                                   if (f.amenities)
-                                    params.set("ai_amenities", f.amenities);
+                                    params.set("amenities", f.amenities);
                                   router.push(
-                                    `/property-list?${params.toString()}`
+                                    `/property-list?${params.toString()}`,
                                   );
                                 }}
                                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-white text-xs font-semibold hover:opacity-90 transition-opacity"
                                 style={{ background: "#7a1010" }}
                               >
                                 <Building2 className="w-4 h-4 shrink-0" />
-                                View All{" "}
+                                View{" "}
                                 {response.results_count === 1
                                   ? "Property"
                                   : "Properties"}
@@ -862,13 +770,12 @@ export default function AISearchComponent(props:any) {
                                 }
                                 sendOption(opt);
                               }}
-                              className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                                opt === "Skip"
+                              className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${opt === "Skip"
                                   ? "border-slate-300 text-slate-400 hover:border-slate-400 hover:text-slate-500 bg-slate-50 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-500"
                                   : opt === "Enter Area"
-                                  ? "border-border text-muted-foreground hover:border-themeColor1 hover:text-themeColor1 bg-background"
-                                  : "border-themeColor1/30 text-foreground hover:bg-themeColor1 hover:text-white bg-card"
-                              }`}
+                                    ? "border-border text-muted-foreground hover:border-themeColor1 hover:text-themeColor1 bg-background"
+                                    : "border-themeColor1/30 text-foreground hover:bg-themeColor1 hover:text-white bg-card"
+                                }`}
                             >
                               {opt}
                             </button>
@@ -944,17 +851,9 @@ export default function AISearchComponent(props:any) {
                           <div className="flex flex-col md:flex-row gap-2">
                             <button
                               onClick={() => {
-                                setInquiryPopup({
-                                  propId: null,
-                                  propTitle: "General Inquiry",
-                                });
+                                setInquiryPopup({ propId: null, propTitle: "General Inquiry" });
                                 setInquiryMode("callback");
-                                setCallbackForm({
-                                  email: profileData.email,
-                                  phone: profileData.phone,
-                                  message: "",
-                                  user_id: profileData.id,
-                                });
+                                setCallbackForm({ email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
                                 setCallbackErrors({ phone: "", message: "" });
                               }}
                               className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-xs font-medium text-foreground"
@@ -964,26 +863,10 @@ export default function AISearchComponent(props:any) {
                             </button>
                             <button
                               onClick={() => {
-                                setInquiryPopup({
-                                  propId: null,
-                                  propTitle: "General Inquiry",
-                                });
+                                setInquiryPopup({ propId: null, propTitle: "General Inquiry" });
                                 setInquiryMode("booking");
-                                setBookingForm({
-                                  date: "",
-                                  time: "",
-                                  email: profileData.email,
-                                  phone: profileData.phone,
-                                  message: "",
-                                  user_id: profileData.id,
-                                });
-                                setBookingErrors({
-                                  date: "",
-                                  time: "",
-                                  email: "",
-                                  phone: "",
-                                  message: "",
-                                });
+                                setBookingForm({ date: "", time: "", email: profileData.email, phone: profileData.phone, message: "", user_id: profileData.id });
+                                setBookingErrors({ date: "", time: "", email: "", phone: "", message: "" });
                               }}
                               className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-border hover:border-themeColor1 hover:bg-themeColor1/5 transition-colors text-xs font-medium text-foreground"
                             >
@@ -994,29 +877,18 @@ export default function AISearchComponent(props:any) {
                               onClick={() => {
                                 console.log("sendContactForm", response);
                                 const f = response.state;
-                                console.log("f",f)
                                 const params = new URLSearchParams();
-                                if (f.location)
-                                  params.set("ai_location", f.location);
-                                if (f.location_pref)
-                                  params.set("ai_location", f.location_pref);
-
-                                if (f.location_area)
-                                  params.set("ai_area", f.location_area);
-
                                 if (f.property_type)
-                                  params.set("ai_propertyType", f.property_type);
+                                  params.set("propertyType", f.property_type);
                                 if (f.city) params.set("search", f.city);
-                                if (f.apartment_config)
-                                  params.set("ai_floor_plans_category", f.apartment_config);
                                 if (f.max_price)
-                                  params.set("ai_maxPrice", f.max_price);
+                                  params.set("maxPrice", f.max_price);
                                 if (f.furnishing)
-                                  params.set("ai_furnishing", f.furnishing);
+                                  params.set("furnishing", f.furnishing);
                                 if (f.amenities)
-                                  params.set("ai_amenities", f.amenities);
+                                  params.set("amenities", f.amenities);
                                 router.push(
-                                  `/property-list?${params.toString()}`
+                                  `/property-list?${params.toString()}`,
                                 );
                               }}
                               className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-white text-xs font-semibold hover:opacity-90 transition-opacity"
@@ -1024,10 +896,10 @@ export default function AISearchComponent(props:any) {
                               type="button"
                             >
                               <Building2 className="w-4 h-4 shrink-0" />
-                              View All
+                              View{" "}
                               {response.results_count === 1
-                                ? " Property"
-                                : " Properties"}
+                                ? "Property"
+                                : "Properties"}
                               <ArrowRight className="w-4 h-4 shrink-0" />
                             </button>
                           </div>
@@ -1090,28 +962,28 @@ export default function AISearchComponent(props:any) {
           .find((m) => m.role === "bot") as BotMsg | undefined;
         return lastBot && !lastBot.response.step?.id && !loading;
       })() && (
-        <div className="px-2 pb-4 pt-2 border-t border-border shrink-0 bg-background sticky bottom-0 z-10">
-          <div className="flex items-center gap-2 bg-card border border-border rounded-2xl px-4 py-2.5 focus-within:ring-2 focus-within:ring-themeColor1 transition-all">
-            <input
-              ref={freeInputRef}
-              type="text"
-              value={freeInput}
-              onChange={(e) => setFreeInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendFreeMessage()}
-              placeholder="Type a message..."
-              autoFocus
-              className="flex-1 bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground"
-            />
-            <button
-              onClick={sendFreeMessage}
-              disabled={!freeInput.trim()}
-              className="p-1.5 rounded-xl bg-themeColor1 text-white disabled:opacity-40 hover:opacity-90 transition-opacity"
-            >
-              <Send className="w-4 h-4" />
-            </button>
+          <div className="px-2 pb-4 pt-2 border-t border-border shrink-0">
+            <div className="flex items-center gap-2 bg-card border border-border rounded-2xl px-4 py-2.5 focus-within:ring-2 focus-within:ring-themeColor1 transition-all">
+              <input
+                ref={freeInputRef}
+                type="text"
+                value={freeInput}
+                onChange={(e) => setFreeInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && sendFreeMessage()}
+                placeholder="Type a message..."
+                autoFocus
+                className="flex-1 bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground"
+              />
+              <button
+                onClick={sendFreeMessage}
+                disabled={!freeInput.trim()}
+                className="p-1.5 rounded-xl bg-themeColor1 text-white disabled:opacity-40 hover:opacity-90 transition-opacity"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
       {/* Inquiry Popup */}
       {inquiryPopup && (
         <div
@@ -1167,11 +1039,7 @@ export default function AISearchComponent(props:any) {
                       setBookingForm((p) => ({ ...p, date: e.target.value }));
                       setBookingErrors((p) => ({ ...p, date: "" }));
                     }}
-                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors ${
-                      bookingErrors.date
-                        ? "border-red-500"
-                        : "border-border focus:border-themeColor1"
-                    }`}
+                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors ${bookingErrors.date ? "border-red-500" : "border-border focus:border-themeColor1"}`}
                   />
                   {bookingErrors.date && (
                     <p className="text-xs text-red-500 pl-1">
@@ -1228,11 +1096,7 @@ export default function AISearchComponent(props:any) {
                       setBookingErrors((p) => ({ ...p, email: "" }));
                     }}
                     placeholder="Email address"
-                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground ${
-                      bookingErrors.email
-                        ? "border-red-500"
-                        : "border-border focus:border-themeColor1"
-                    }`}
+                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground ${bookingErrors.email ? "border-red-500" : "border-border focus:border-themeColor1"}`}
                   />
                   {bookingErrors.email && (
                     <p className="text-xs text-red-500 pl-1">
@@ -1254,11 +1118,7 @@ export default function AISearchComponent(props:any) {
                       setBookingErrors((p) => ({ ...p, phone: "" }));
                     }}
                     placeholder="Phone number (10 digits)"
-                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground ${
-                      bookingErrors.phone
-                        ? "border-red-500"
-                        : "border-border focus:border-themeColor1"
-                    }`}
+                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground ${bookingErrors.phone ? "border-red-500" : "border-border focus:border-themeColor1"}`}
                   />
                   {bookingErrors.phone && (
                     <p className="text-xs text-red-500 pl-1">
@@ -1277,11 +1137,7 @@ export default function AISearchComponent(props:any) {
                     }
                     placeholder="Tell us more about your inquiry..."
                     rows={3}
-                    className={`w-full bg-background border  rounded-xl px-3 py-2 text-sm outline-none  transition-colors placeholder:text-muted-foreground resize-none  ${
-                      bookingErrors.message
-                        ? "border-red-500"
-                        : "border-border focus:border-themeColor1"
-                    }`}
+                    className={`w-full bg-background border  rounded-xl px-3 py-2 text-sm outline-none  transition-colors placeholder:text-muted-foreground resize-none  ${bookingErrors.message ? "border-red-500" : "border-border focus:border-themeColor1"}`}
                   />
 
                   {bookingErrors.message && (
@@ -1329,11 +1185,7 @@ export default function AISearchComponent(props:any) {
                       setCallbackErrors((p) => ({ ...p, phone: "" }));
                     }}
                     placeholder="Phone number (10 digits)"
-                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground ${
-                      callbackErrors.phone
-                        ? "border-red-500"
-                        : "border-border focus:border-themeColor1"
-                    }`}
+                    className={`w-full bg-background border rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground ${callbackErrors.phone ? "border-red-500" : "border-border focus:border-themeColor1"}`}
                     required
                   />
                   {callbackErrors.phone && (
@@ -1378,11 +1230,7 @@ export default function AISearchComponent(props:any) {
                     }
                     placeholder="Tell us more about your inquiry..."
                     rows={3}
-                    className={`w-full bg-background border  rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground resize-none ${
-                      callbackErrors.message
-                        ? "border-red-500"
-                        : "border-border focus:border-themeColor1"
-                    }`}
+                    className={`w-full bg-background border  rounded-xl px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground resize-none ${callbackErrors.message ? "border-red-500" : "border-border focus:border-themeColor1"}`}
                     required
                   />
 
@@ -1391,6 +1239,7 @@ export default function AISearchComponent(props:any) {
                       {callbackErrors.message}
                     </p>
                   )}
+
                 </div>
                 <div className="flex gap-2">
                   <button

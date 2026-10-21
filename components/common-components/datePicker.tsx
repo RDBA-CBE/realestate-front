@@ -84,7 +84,6 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             mode="single"
             selected={selectedDate || undefined}
             onSelect={(date) => onChange?.(date ?? null)}
-            initialFocus
             disabled={(date) => {
               if (disabled) return true;
               const today = new Date();
@@ -99,8 +98,8 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               return date < today;
             }}
             captionLayout="dropdown"
-            fromYear={1900}
-            toYear={new Date().getFullYear() + 5}
+            startMonth={new Date(1900, 0, 1)}
+            endMonth={new Date(new Date().getFullYear() + 5, 11, 31)}
           />
         </PopoverContent>
       </Popover>

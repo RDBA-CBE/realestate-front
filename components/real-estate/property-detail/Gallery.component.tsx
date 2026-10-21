@@ -11,6 +11,7 @@ import {
   ImagePlus,
   ImagesIcon,
   Share2,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Failure, Success, useSetState } from "@/utils/function.utils";
@@ -21,10 +22,13 @@ interface GalleryProps {
   images: any[];
   data: any;
   updateList;
+  mobileLayout?: boolean;
+  videos?: any[];
 }
 
-export default function Gallery({ data, images, updateList }: GalleryProps) {
+export default function Gallery({ data, images, updateList, mobileLayout = false, videos = [] }: GalleryProps) {
   const [startIndex, setStartIndex] = useState(0);
+  const [videoOpen, setVideoOpen] = useState(false);
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [clickedImageIndex, setClickedImageIndex] = useState(0);
@@ -55,6 +59,8 @@ export default function Gallery({ data, images, updateList }: GalleryProps) {
     setLightboxOpen(true);
   };
 
+  const firstVideo = videos?.[0];
+
   if (!images || images.length === 0) return null;
 
   const handleOpen = (index: number) => {
@@ -67,7 +73,7 @@ export default function Gallery({ data, images, updateList }: GalleryProps) {
     console.log("hello");
 
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("demo_token");
       if (token) {
         if (!data?.user_wishlists) {
           await Models.wishlist.add_property({
@@ -122,19 +128,16 @@ export default function Gallery({ data, images, updateList }: GalleryProps) {
     <>
       {/* Layout with next/image */}
 
-      {images.length === 1 ? (
-        <div className="hidden md:block">
+      {images.length === 1 && !firstVideo ? (
+        <div className={mobileLayout ? "hidden" : "hidden md:block"}>
           <Card
             className="overflow-hidden rounded-2xl shadow-lg h-[500px] relative cursor-pointer"
             onClick={() => handleOpen(0)}
           >
-            {/* Blurry background */}
             <div
               className="absolute inset-0 z-0 bg-cover bg-center filter blur-lg scale-110"
               style={{ backgroundImage: `url(${images?.[0]?.image})` }}
             ></div>
-
-            {/* Main Image */}
             <Image
               src={images?.[0]?.image}
               alt="Gallery Image"
@@ -144,10 +147,8 @@ export default function Gallery({ data, images, updateList }: GalleryProps) {
           </Card>
         </div>
       ) : (
-        <div className=" hidden md:block">
+        <div className={mobileLayout ? "hidden" : "hidden md:block"}>
           <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-4 w-full">
-            {/* Left big image */}
-
             <Card
               className="overflow-hidden rounded-2xl shadow-lg h-[400px] lg:h-[500px] relative cursor-pointer"
               onClick={() => handleOpen(0)}
@@ -156,7 +157,6 @@ export default function Gallery({ data, images, updateList }: GalleryProps) {
                 className="absolute inset-0 z-0 bg-cover bg-center filter blur-lg scale-110"
                 style={{ backgroundImage: `url(${images?.[0]?.image})` }}
               ></div>
-
               <Image
                 src={images?.[0]?.image}
                 alt="Main Gallery"
@@ -167,25 +167,39 @@ export default function Gallery({ data, images, updateList }: GalleryProps) {
 
             {/* Right grid */}
             <div
-              className={`md:grid h-[400px] lg:h-[500px] gap-4  ${
-                images.length - 1 === 1
-                  ? "md:grid-rows-1"
-                  : images.length - 1 === 2
-                  ? "md:grid-rows-2"
-                  : images.length - 1 >= 2
-                  ? "md:grid-cols-1 md:grid-rows-2"
-                  : "md:grid-cols-1 md:grid-rows-2"
+              className={`md:grid h-[400px] lg:h-[500px] gap-4 ${
+                !firstVideo && images.length === 2 ? "md:grid-rows-1" : "md:grid-rows-2"
               }`}
             >
-              {images.slice(1, 3).map((img, i) => {
-                const remaining = images.length - 3; // total - shown (1 main + 2)
-                const isLastCard = i === 1 && images.length > 3; // show overlay only if > 3
+              {firstVideo && (
+                <Card
+                  className="overflow-hidden rounded-2xl shadow-lg relative cursor-pointer bg-black"
+                  onClick={() => setVideoOpen(true)}
+                >
+                  <video
+                    src={firstVideo.video}
+                    className="w-full h-full object-cover"
+                    muted
+                    playsInline
+                  />
+                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                    <div className="bg-white/30 backdrop-blur-sm rounded-full p-4">
+                      <svg className="w-12 h-12 text-white fill-white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                    </div>
+                  </div>
+                </Card>
+              )}
+
+              {images.slice(1, firstVideo ? 2 : 3).map((img, i) => {
+                const remaining = images.length - (firstVideo ? 2 : 3);
+                const isLastCard = i === (firstVideo ? 0 : 1) && remaining > 0;
+                const imageIndex = i + 1;
 
                 return (
                   <Card
                     key={i}
                     className="overflow-hidden rounded-2xl shadow-lg relative cursor-pointer"
-                    onClick={() => handleOpen(i + 1)}
+                    onClick={() => handleOpen(imageIndex)}
                   > 
                    <div
                       className="absolute inset-0 z-0 bg-cover bg-center filter blur-lg scale-110"
@@ -213,11 +227,36 @@ export default function Gallery({ data, images, updateList }: GalleryProps) {
         </div>
       )}
 
-      {/* -------------responsive gallery------------ */}
+      {/* Video modal */}
+      {videoOpen && firstVideo && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+          onClick={() => setVideoOpen(false)}
+        >
+          <div className="relative w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setVideoOpen(false)}
+              className="absolute top-3 right-3 z-10 bg-black/70 rounded-full p-2 text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="aspect-video">
+              <video controls autoPlay className="w-full h-full rounded-xl">
+                <source src={firstVideo.video} type="video/mp4" />
+              </video>
+            </div>
+          </div>
+        </div>
+      )}
 
-      <div className=" block md:hidden">
-        <div className="relative w-full h-[250px] rounded-2xl overflow-hidden shadow-lg cursor-pointer">
-          {/* Main image */}
+      {/* ── MOBILE GALLERY ─────────────────────────────────────────────────── */}
+      <div className={mobileLayout ? "block" : "block md:hidden"}>
+
+        {/* Row 1 — full-width first image */}
+        <div
+          className="relative w-full h-[220px] rounded-2xl overflow-hidden shadow-lg cursor-pointer"
+          onClick={() => handleOpen(0)}
+        >
           {images?.[0] && (
             <Image
               src={images[0].image}
@@ -227,72 +266,98 @@ export default function Gallery({ data, images, updateList }: GalleryProps) {
             />
           )}
 
-          {/* Overlay for dim + tap text */}
-          {images?.length > 1 && (
-            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-              <span
-                className="bg-white/60 text-gray-800 px-3 py-1.5 rounded-md text-sm font-medium shadow"
-                onClick={() => handleOpen(0)}
-              >
-                Tap to see all images
-              </span>
-            </div>
-          )}
-
-          <div className="absolute top-3 right-3 flex items-center gap-2 block sm:hidden">
+          {/* Wish / Compare / Share buttons top-right */}
+          <div className="absolute top-3 right-3 flex items-center gap-2">
             <Button
-              onClick={() => handleWishList()}
+              onClick={(e) => { e.stopPropagation(); handleWishList(); }}
               size="icon"
               variant="outline"
-              className={`rounded-full ${
-                data?.user_wishlists
-                  ? "bg-color2 border-dred text-white hover:bg-color2 hover:border-[#9b0f09]"
-                  : "bg-white text-black"
-              }`}
+              className={`rounded-full ${data?.user_wishlists ? "!bg-color2 border-dred text-white" : "bg-white text-black"}`}
             >
-              <Heart
-                size={18}
-                fill={data?.user_wishlists ? "currentColor" : "none"}
-              />
+              <Heart size={16} />
             </Button>
-
             <Button
-              onClick={() => handleCompareList()}
+              onClick={(e) => { e.stopPropagation(); handleCompareList(); }}
               size="icon"
               variant="outline"
-              className={`rounded-full ${
-                state?.is_compare
-                  ? "bg-green-500 border-green-500 text-white hover:bg-green-600 hover:border-green-600"
-                  : "bg-white text-black"
-              }`}
+              className={`rounded-full ${state?.is_compare ? "bg-color2 border-dred text-white" : "bg-white text-black"}`}
             >
-              <GitCompareArrowsIcon size={18} />
+              <GitCompareArrowsIcon size={16} />
             </Button>
-           <RWebShare
-              data={{
-                title: "Karpagam Institute Of Technology",
-                text: `Check this out!`,
-                url: state.url,
-              }}
-              onClick={() => console.log("shared successfully!")}
-            >
+            <RWebShare data={{ title: data?.title, text: "Check this out!", url: state.url }} onClick={() => {}}>
               <Button size="icon" variant="outline" className="rounded-full">
-                <Share2 size={18} />
+                <Share2 size={16} />
               </Button>
             </RWebShare>
           </div>
-
-          {/* Bottom-right image count */}
-          {images?.length > 1 && (
-            <div
-              className="absolute bottom-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded-md flex items-center gap-1"
-              onClick={() => handleOpen(0)}
-            >
-              <ImagesIcon className="w-4 h-4" />
-              <span>{images.length}</span>
-            </div>
-          )}
         </div>
+
+        {/* Row 2 — video + 2 images (only if there's at least 1 more item) */}
+        {(firstVideo || images.length > 1) && (
+          <div className="mt-2 grid grid-cols-3 !gap-2">
+
+            {/* Cell 1: video (or image[1] if no video) */}
+            {firstVideo ? (
+              <div
+                className="relative h-[100px] rounded-xl overflow-hidden bg-black shadow cursor-pointer"
+                onClick={() => setVideoOpen(true)}
+              >
+                <video src={firstVideo.video} className="w-full h-full object-cover" muted playsInline />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                  <div className="rounded-full bg-white/30 p-2 backdrop-blur-sm">
+                    <svg className="h-5 w-5 fill-white text-white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                  </div>
+                </div>
+              </div>
+            ) : images[1] ? (
+              <div
+                className="relative h-[100px] rounded-xl overflow-hidden shadow cursor-pointer"
+                onClick={() => handleOpen(1)}
+              >
+                <Image src={images[1].image} alt="Gallery 2" fill className="object-cover" />
+              </div>
+            ) : <div />}
+
+            {/* Cell 2: image[1] if video exists, else image[2] */}
+            {(() => {
+              const idx = firstVideo ? 1 : 2;
+              const img = images[idx];
+              if (!img) return <div />;
+              return (
+                <div
+                  className="relative h-[100px] rounded-xl overflow-hidden shadow cursor-pointer"
+                  onClick={() => handleOpen(idx)}
+                >
+                  <Image src={img.image} alt={`Gallery ${idx + 1}`} fill className="object-cover" />
+                </div>
+              );
+            })()}
+
+            {/* Cell 3: image[2] if video exists, else image[3] — with remaining count */}
+            {(() => {
+              const idx = firstVideo ? 2 : 3;
+              const img = images[idx];
+              if (!img) return <div />;
+              const remaining = images.length - (idx + 1);
+              return (
+                <div
+                  className="relative h-[100px] rounded-xl overflow-hidden shadow cursor-pointer"
+                  onClick={() => handleOpen(idx)}
+                >
+                  <Image src={img.image} alt={`Gallery ${idx + 1}`} fill className="object-cover" />
+                  {/* Bottom-right image count */}
+                  {remaining > 0 && (
+                    <div className="absolute bottom-2 right-2 bg-black/70 text-white text-[11px] font-medium px-2 py-0.5 rounded-md flex items-center gap-1">
+                      <ImagesIcon className="w-3 h-3" />
+                      +{remaining}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+
+          </div>
+        )}
       </div>
 
       <div className="h-full wi-full">

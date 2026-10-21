@@ -177,11 +177,11 @@ export function FilterListPopup({
                     <div className="flex items-center gap-2">
                       <input
                         type="checkbox"
-                        checked={selected.some((t) => t.value === item.value)}
+                        checked={selected.some((t) => String(t.value) === String(item.value))}
                         onChange={(e) => onChange(
                           e.target.checked
                             ? [...selected, item]
-                            : selected.filter((t) => t.value !== item.value)
+                            : selected.filter((t) => String(t.value) !== String(item.value))
                         )}
                         className="w-3 h-3 accent-dred"
                       />

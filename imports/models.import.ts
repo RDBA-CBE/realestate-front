@@ -18,7 +18,6 @@ import virtualTour from "@/models/virtual_tour.model";
 import wishlist from "@/models/wishlist.model";
 import chat from "@/models/chat.model";
 
-
 export const Models = {
   auth,
   test,

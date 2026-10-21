@@ -7,6 +7,8 @@ import PropertyDetails from "@/components/real-estate/property-detail/PropertyDe
 import PropertyHeader from "@/components/real-estate/property-detail/PropertyHeader.component";
 import MapSection from "@/components/real-estate/property-detail/MapSection.component";
 import MobileMapSection from "@/components/real-estate/property-detail/MobileMapSection.component";
+import PropertyHighlights from "@/components/real-estate/property-detail/PropertyHighlights.component";
+import PropertyMoreInfo from "@/components/real-estate/property-detail/PropertyMoreInfo.component";
 import FloorPlans from "@/components/real-estate/property-detail/FloorPlans.component";
 import Amenities from "@/components/real-estate/property-detail/Amenities.component";
 import Reviews from "@/components/real-estate/property-detail/Reviews.component";
@@ -202,6 +204,7 @@ function ContactSection() {
 // ---------------- PAGE ----------------
 export default function PropertyDetailPage() {
   const params = useParams();
+  const propertySlug = Array.isArray(params?.slug) ? params?.slug[0] : params?.slug;
 
   const router = useRouter();
   const [state, setState] = useSetState({
@@ -251,15 +254,19 @@ export default function PropertyDetailPage() {
       top: 0,
       behavior: "smooth",
     });
-  }, [params]);
+  }, [propertySlug]);
 
   const getDetails = async () => {
     try {
       setState({ loading: true });
       const token = localStorage.getItem("token");
-      const res: any = await Models.property.details(params?.id);
+      const res: any = await Models.property.detailByUrl(propertySlug);
       setState({ detail: res, token, loading: false });
-      similarProperty(res?.property_type?.id);
+      // property_type can be array or object
+      const typeId = Array.isArray(res?.property_type)
+        ? res?.property_type?.[0]?.id
+        : res?.property_type?.id;
+      if (typeId) similarProperty(typeId);
     } catch (error) {
       setState({ loading: false });
       console.log("✌️error --->", error);
@@ -268,17 +275,11 @@ export default function PropertyDetailPage() {
 
   const similarProperty = async (id) => {
     try {
-      const body = {
-        property_type: id,
-        is_approved: "Yes",
-      };
+      const body = { property_type: id, is_approved: "Yes" };
       const res: any = await Models.property.list(1, body);
-      console.log("✌️res --->", res);
-      // const filter = res?.results?.filter((item) => item?.id !== params?.id);
       const filter = res?.results?.filter(
-        (item) => Number(item?.id) !== Number(params?.id)
+        (item) => item?.slug !== propertySlug && Number(item?.id) !== Number(propertySlug)
       );
-      console.log("✌️filter --->", filter);
       setState({ similarProperty: filter });
     } catch (error) {
       console.log("✌️error --->", error);
@@ -293,16 +294,16 @@ export default function PropertyDetailPage() {
     { id: "overview", component: <PropertyDetails data={state.detail} /> },
     { id: "description", component: <PropertyDesc data={state.detail} /> },
 
-    ...(state.detail?.floor_plans?.length > 0
+    ...(state.detail?.floor_plans?.length > 0 || state.detail?.master_plan
       ? [
-          {
-            id: "floorplans",
-            component: <FloorPlans data={state.detail?.floor_plans} />,
-          },
-        ]
+        {
+          id: "floorplans",
+          component: <FloorPlans data={state.detail?.floor_plans} masterPlan={state.detail?.master_plan} />,
+        },
+      ]
       : []),
 
-      {
+    {
       id: "amenities",
       component: <Amenities data={state.detail?.amenities} />,
     },
@@ -311,16 +312,30 @@ export default function PropertyDetailPage() {
     {
       id: "map",
       component: <MapSection data={state.detail} />,
-      className: "hidden xl:block", // only show on xl+
+      className: "", // only show on xl+
     },
 
-   
-    
+    ...(state.detail?.specialization?.length > 0
+      ? [{
+        id: "specialization",
+        component: <PropertyHighlights data={state.detail.specialization} />,
+      }]
+      : []),
+
+    ...(state.detail?.more_info?.length > 0
+      ? [{
+        id: "more-info",
+        component: <PropertyMoreInfo data={state.detail.more_info} />,
+      }]
+      : []),
+
+
+
     // ...(state.detail?.videos?.length > 0
     //   ? [{ id: "video", component: <Video data={state.detail?.videos?.[0]} /> }]
     //   : []),
     ...(state.detail?.virtual_tours?.length > 0
-      ? [{ id: "virtualtour", component: <VirtualTour /> }]
+      ? [{ id: "virtualtour", component: <VirtualTour data={state.detail?.virtual_tours} /> }]
       : []),
     // { id: "nearby", component: <Nearby /> },
     // { id: "walkscore", component: <WalkScore /> },
@@ -407,13 +422,13 @@ export default function PropertyDetailPage() {
   return (
     <div className="xl:max-w-[80rem] max-w-[85rem] mx-auto p-6">
       {state.loading ? PropertyDetailSkeleton : (
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        {/* BREADCRUMB */}
-        <div className="flex justify-between items-center pb-5">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          {/* BREADCRUMB */}
+          <div className="flex justify-between items-center pb-3">
             <div className=" flex flex-wrap items-center gap-2 text-sm text-gray-500">
               <span
                 className="cursor-pointer hover:text-black"
@@ -438,7 +453,7 @@ export default function PropertyDetailPage() {
 
             {/* BACK BUTTON */}
             <button
-              
+
               onClick={() => router.back()}
               className="mb-0 flex !gap-1 items-center pe-2 text-sm rounded-2xl border-none bg-transparent shadow-none  py-1  md:py-3.5 text-black hover:text-gray-700 h-6 hover:shadow-none hover:bg-transparent"
             >
@@ -447,117 +462,117 @@ export default function PropertyDetailPage() {
             </button>
           </div>
 
-      {/* Header + Gallery */}
-      <div className="conatiner flex flex-col md:flex-col space-y-6 md:space-y-6">
-        <div className="order-2 md:order-1 ">
-          <PropertyHeader data={state.detail} updateList={() => getDetails()} />
-        </div>
-        <div className="order-1 md:order-2">
-          <Gallery
-            images={state.detail?.images}
-            data={state.detail}
-            updateList={() => getDetails()}
-          />
-        </div>
-      </div>
-      <div className="block xl:hidden">
-        <MobileMapSection data={state.detail} />
-      </div>
+          {/* Header + Gallery */}
+          <div className="conatiner flex flex-col md:flex-col space-y-6 md:space-y-6">
+            <div className="order-1 ">
+              <PropertyHeader data={state.detail} updateList={() => getDetails()} />
+            </div>
+            <div className="order-2">
+              <Gallery
+                images={state.detail?.images}
+                data={state.detail}
+                updateList={() => getDetails()}
+                videos={state.detail?.videos}
+              />
+            </div>
+          </div>
+          {/* <div className="block xl:hidden">
+            <MobileMapSection data={state.detail} />
+          </div> */}
 
-      <PropertyTabs sections={tabSections} />
+          <PropertyTabs sections={tabSections} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 ">
-        <div className="lg:col-span-2 space-y-4 lg:space-y-6">
-          {sections.map((sec, idx) => {
-            // Define an array of background colors to cycle through
-            const bgColors = ["bg-gray-50", "bg-white"];
-            const bgClass = bgColors[idx % bgColors.length]; // cycle dynamically
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 ">
+            <div className="lg:col-span-2 space-y-4 lg:space-y-6">
+              {sections.map((sec, idx) => {
+                // Define an array of background colors to cycle through
+                const bgColors = ["bg-gray-50", "bg-white"];
+                const bgClass = bgColors[idx % bgColors.length]; // cycle dynamically
 
-            return (
-              <div
-                key={sec.id}
-                id={sec.id}
-                className={`${bgClass} border border-gray rounded-2xl  p-6 ${
-                  sec.className || ""
-                }`}
-              >
-                {sec.component}
-              </div>
-            );
-          })}
-        </div>
+                return (
+                  <div
+                    key={sec.id}
+                    id={sec.id}
+                    className={`${bgClass} border border-gray rounded-2xl  p-6 ${sec.className || ""
+                      }`}
+                  >
+                    {sec.component}
+                  </div>
+                );
+              })}
+            </div>
 
-        {/* Sticky Contact Section */}
-        {/* <div className='lg:col-span-1'>
+            {/* Sticky Contact Section */}
+            {/* <div className='lg:col-span-1'>
           <div className='sticky top-32'>
             <ContactSection />
           </div>
         </div> */}
-        <div className="lg:col-span-1 hidden lg:block ">
-          <div
-            className={`sticky ${state.isActive ? "top-[8rem]" : "top-[6rem]"}`}
-          >
-            <ContactAgentForm
-              data={state.detail}
-              token={state.token}
-              onClose={false}
-              industryClick={() => redirect()}
-            />
+            <div className="lg:col-span-1 hidden lg:block ">
+              <div
+                className={`sticky ${state.isActive ? "top-[8rem]" : "top-[6rem]"}`}
+              >
+                <ContactAgentForm
+                  data={state.detail}
+                  token={state.token}
+                  onClose={false}
+                  industryClick={() => redirect()}
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div className="lg:hidden fixed bottom-8 right-0 w-auto flex justify-center z-20">
-        <Button
-          className="bg-color2 hover:bg-color2 text-white px-4 py-4 rounded-l-full rounded-r-none font-normal shadow-lg text-md"
-          onClick={() => setIsMobileFormOpen(true)}
-        >
-          <PhoneForwarded />
-          Contact Developer
-        </Button>
-      </div>
-
-      {/* Similar Listings */}
-      {state.similarProperty.length > 0 && (
-        <div className="section-pad">
-          <SimilarListings1 data={state.similarProperty} />
-        </div>
-      )}
-
-      <AnimatePresence>
-        {isMobileFormOpen && (
-          <>
-            {/* Overlay */}
-            <motion.div
-              className="fixed inset-0 bg-black/50 z-40"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMobileFormOpen(false)}
-            />
-
-            {/* Modal Wrapper */}
-            <motion.div
-              className="fixed inset-0 flex items-center justify-center z-50 p-4 "
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
+          {/* <div className="lg:hidden fixed bottom-8 right-0 w-auto flex justify-center z-20">
+            <Button
+              className="bg-color2 hover:bg-color2 text-white px-4 py-4 rounded-l-full rounded-r-none font-normal shadow-lg text-md"
+              onClick={() => setIsMobileFormOpen(true)}
             >
-              {/* CONTACT FORM GOES HERE */}
-              <ContactAgentForm
-                data={state.detail}
-                token={state.token}
-                onClose={() => setIsMobileFormOpen(false)}
-                industryClick={() => redirect()}
-              />
-              {/* </div> */}
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </motion.div>
-    )}
+              <PhoneForwarded />
+              Contact Developer
+            </Button>
+          </div> */}
+
+          {/* Similar Listings */}
+          {state.similarProperty.length > 0 && (
+            <div className="section-pad">
+              <SimilarListings1 data={state.similarProperty} />
+            </div>
+          )}
+
+          <AnimatePresence>
+            {isMobileFormOpen && (
+              <>
+                {/* Overlay */}
+                <motion.div
+                  className="fixed inset-0 bg-black/50 z-40"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsMobileFormOpen(false)}
+                />
+
+                {/* Modal Wrapper */}
+                <motion.div
+                  className="fixed inset-0 flex items-center justify-center z-50 p-4 "
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                >
+                  {/* CONTACT FORM GOES HERE */}
+                  <ContactAgentForm
+                    data={state.detail}
+                    token={state.token}
+                    onClose={() => setIsMobileFormOpen(false)}
+                    industryClick={() => redirect()}
+                  />
+                  {/* </div> */}
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      )}
     </div>
   );
 }
