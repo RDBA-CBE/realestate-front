@@ -23,7 +23,7 @@ interface Props {
 
 const FloorPlans: React.FC<Props> = ({ data, masterPlan }) => {
   const [activeTab, setActiveTab] = useState<"floorplan" | "masterplan">(
-    "floorplan",
+    data?.length ? "floorplan" : "masterplan",
   );
   // ✅ Nested grouping: category → type → plans
   const groupedData = useMemo(() => {

@@ -97,7 +97,7 @@ const HomeBanner = (props) => {
           <button className="adv-btn lg:mb-12 border border-dred">
             <Link href="/property-list">Find Your Home</Link>
           </button>
-          <button className="!border !border-white !bg-transparent adv-btn  hover:!bg-white hover:!text-black lg:mb-12 ms-4"  > <a href="mailto:support@gmail.com">Contact Us</a></button>
+          <button className="!border !border-white !bg-transparent adv-btn  hover:!bg-white hover:!text-black lg:mb-12 ms-4"  > <a href="mailto:info@boomrealtys.com">Contact Us</a></button>
 
           {/* Tabs */}
           <div className="adv-tabs flex gap-8 mt-12 lg:mt-14 lg:ms-[25px]">
